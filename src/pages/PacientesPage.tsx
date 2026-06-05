@@ -6,12 +6,11 @@ type Paciente = {
   id: string
   nombres: string
   apellidos: string
-  rut: string | null
+  fecha_nacimiento: string | null
   telefono: string | null
   email: string | null
   comuna: string | null
   region: string | null
-  motivo_consulta: string | null
   estado: string
   created_at: string
 }
@@ -24,12 +23,11 @@ function PacientesPage() {
   const [formulario, setFormulario] = useState({
     nombres: '',
     apellidos: '',
-    rut: '',
+    fecha_nacimiento: '',
     telefono: '',
     email: '',
     comuna: '',
     region: '',
-    motivo_consulta: '',
   })
 
   async function cargarPacientes() {
@@ -57,12 +55,11 @@ function PacientesPage() {
     const { error } = await supabase.from('pacientes').insert({
       nombres: formulario.nombres,
       apellidos: formulario.apellidos,
-      rut: formulario.rut || null,
+      fecha_nacimiento: formulario.fecha_nacimiento || null,
       telefono: formulario.telefono || null,
       email: formulario.email || null,
       comuna: formulario.comuna || null,
       region: formulario.region || null,
-      motivo_consulta: formulario.motivo_consulta || null,
     })
 
     if (error) {
@@ -75,12 +72,11 @@ function PacientesPage() {
     setFormulario({
       nombres: '',
       apellidos: '',
-      rut: '',
+      fecha_nacimiento: '',
       telefono: '',
       email: '',
       comuna: '',
       region: '',
-      motivo_consulta: '',
     })
 
     await cargarPacientes()
@@ -112,9 +108,9 @@ function PacientesPage() {
           />
 
           <input
-            placeholder="RUT"
-            value={formulario.rut}
-            onChange={(e) => setFormulario({ ...formulario, rut: e.target.value })}
+            type="date"
+            value={formulario.fecha_nacimiento}
+            onChange={(e) => setFormulario({ ...formulario, fecha_nacimiento: e.target.value })}
           />
 
           <input
@@ -142,12 +138,6 @@ function PacientesPage() {
             onChange={(e) => setFormulario({ ...formulario, region: e.target.value })}
           />
 
-          <textarea
-            placeholder="Motivo de consulta"
-            value={formulario.motivo_consulta}
-            onChange={(e) => setFormulario({ ...formulario, motivo_consulta: e.target.value })}
-          />
-
           <button type="submit">Guardar paciente</button>
         </form>
 
@@ -164,10 +154,11 @@ function PacientesPage() {
             <thead>
               <tr>
                 <th>Nombre</th>
-                <th>RUT</th>
+                <th>Fecha nacimiento</th>
                 <th>Teléfono</th>
                 <th>Email</th>
                 <th>Comuna</th>
+                <th>Región</th>
                 <th>Estado</th>
               </tr>
             </thead>
@@ -176,10 +167,11 @@ function PacientesPage() {
               {pacientes.map((paciente) => (
                 <tr key={paciente.id}>
                   <td>{paciente.nombres} {paciente.apellidos}</td>
-                  <td>{paciente.rut}</td>
+                  <td>{paciente.fecha_nacimiento || 'Sin registrar'}</td>
                   <td>{paciente.telefono}</td>
                   <td>{paciente.email}</td>
                   <td>{paciente.comuna}</td>
+                  <td>{paciente.region}</td>
                   <td>{paciente.estado}</td>
                 </tr>
               ))}
