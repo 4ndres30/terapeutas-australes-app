@@ -25,17 +25,33 @@
   margin-top: 24px;
 }
 
+.formulario-pacientes label {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-weight: 600;
+  color: #3b1f54;
+  font-size: 14px;
+}
+
 .formulario-pacientes input,
+.formulario-pacientes select,
 .formulario-pacientes textarea {
   border: 1px solid #cdbfda;
   border-radius: 10px;
   padding: 12px;
   font-size: 15px;
+  font-weight: 400;
+  color: #24152f;
+  background: #ffffff;
 }
 
-.formulario-pacientes textarea {
-  min-height: 90px;
-  grid-column: span 2;
+.formulario-pacientes input:focus,
+.formulario-pacientes select:focus,
+.formulario-pacientes textarea:focus {
+  outline: none;
+  border-color: #5b2c83;
+  box-shadow: 0 0 0 3px rgba(91, 44, 131, 0.12);
 }
 
 .formulario-pacientes button {
@@ -46,6 +62,7 @@
   padding: 14px 18px;
   font-size: 16px;
   cursor: pointer;
+  align-self: end;
 }
 
 .formulario-pacientes button:hover {
@@ -79,10 +96,6 @@ th {
 @media (max-width: 768px) {
   .formulario-pacientes {
     grid-template-columns: 1fr;
-  }
-
-  .formulario-pacientes textarea {
-    grid-column: span 1;
   }
 
   .pacientes-layout {

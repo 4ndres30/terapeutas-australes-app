@@ -6,11 +6,12 @@ type Paciente = {
   id: string
   nombres: string
   apellidos: string
-  fecha_nacimiento: string | null
-  telefono: string | null
-  email: string | null
-  comuna: string | null
-  region: string | null
+  fecha_nacimiento: string
+  sexo: string
+  telefono: string
+  email: string
+  comuna: string
+  region: string
   estado: string
   created_at: string
 }
@@ -24,10 +25,12 @@ function PacientesPage() {
     nombres: '',
     apellidos: '',
     fecha_nacimiento: '',
+    sexo: '',
     telefono: '',
     email: '',
     comuna: '',
     region: '',
+    estado: 'activo',
   })
 
   async function cargarPacientes() {
@@ -55,11 +58,13 @@ function PacientesPage() {
     const { error } = await supabase.from('pacientes').insert({
       nombres: formulario.nombres,
       apellidos: formulario.apellidos,
-      fecha_nacimiento: formulario.fecha_nacimiento || null,
-      telefono: formulario.telefono || null,
-      email: formulario.email || null,
-      comuna: formulario.comuna || null,
-      region: formulario.region || null,
+      fecha_nacimiento: formulario.fecha_nacimiento,
+      sexo: formulario.sexo,
+      telefono: formulario.telefono,
+      email: formulario.email,
+      comuna: formulario.comuna,
+      region: formulario.region,
+      estado: formulario.estado,
     })
 
     if (error) {
@@ -73,10 +78,12 @@ function PacientesPage() {
       nombres: '',
       apellidos: '',
       fecha_nacimiento: '',
+      sexo: '',
       telefono: '',
       email: '',
       comuna: '',
       region: '',
+      estado: 'activo',
     })
 
     await cargarPacientes()
@@ -90,53 +97,106 @@ function PacientesPage() {
     <main className="pacientes-layout">
       <section className="panel">
         <h1>Pacientes</h1>
-        <p>Registro inicial de pacientes de Terapeutas Australes.</p>
+        <p>Registro inicial completo de pacientes de Terapeutas Australes.</p>
 
         <form onSubmit={guardarPaciente} className="formulario-pacientes">
-          <input
-            placeholder="Nombres"
-            value={formulario.nombres}
-            onChange={(e) => setFormulario({ ...formulario, nombres: e.target.value })}
-            required
-          />
+          <label>
+            Nombres *
+            <input
+              placeholder="Ej: Catalina Belén"
+              value={formulario.nombres}
+              onChange={(e) => setFormulario({ ...formulario, nombres: e.target.value })}
+              required
+            />
+          </label>
 
-          <input
-            placeholder="Apellidos"
-            value={formulario.apellidos}
-            onChange={(e) => setFormulario({ ...formulario, apellidos: e.target.value })}
-            required
-          />
+          <label>
+            Apellidos *
+            <input
+              placeholder="Ej: Troncoso Caro"
+              value={formulario.apellidos}
+              onChange={(e) => setFormulario({ ...formulario, apellidos: e.target.value })}
+              required
+            />
+          </label>
 
-          <input
-            type="date"
-            value={formulario.fecha_nacimiento}
-            onChange={(e) => setFormulario({ ...formulario, fecha_nacimiento: e.target.value })}
-          />
+          <label>
+            Fecha de nacimiento *
+            <input
+              type="date"
+              value={formulario.fecha_nacimiento}
+              onChange={(e) => setFormulario({ ...formulario, fecha_nacimiento: e.target.value })}
+              required
+            />
+          </label>
 
-          <input
-            placeholder="Teléfono"
-            value={formulario.telefono}
-            onChange={(e) => setFormulario({ ...formulario, telefono: e.target.value })}
-          />
+          <label>
+            Sexo *
+            <select
+              value={formulario.sexo}
+              onChange={(e) => setFormulario({ ...formulario, sexo: e.target.value })}
+              required
+            >
+              <option value="">Seleccionar</option>
+              <option value="femenino">Femenino</option>
+              <option value="masculino">Masculino</option>
+              <option value="otro">Otro</option>
+              <option value="prefiere_no_decir">Prefiere no decir</option>
+            </select>
+          </label>
 
-          <input
-            placeholder="Email"
-            type="email"
-            value={formulario.email}
-            onChange={(e) => setFormulario({ ...formulario, email: e.target.value })}
-          />
+          <label>
+            Teléfono *
+            <input
+              placeholder="Ej: +56 9 1234 5678"
+              value={formulario.telefono}
+              onChange={(e) => setFormulario({ ...formulario, telefono: e.target.value })}
+              required
+            />
+          </label>
 
-          <input
-            placeholder="Comuna"
-            value={formulario.comuna}
-            onChange={(e) => setFormulario({ ...formulario, comuna: e.target.value })}
-          />
+          <label>
+            Email *
+            <input
+              placeholder="Ej: paciente@correo.cl"
+              type="email"
+              value={formulario.email}
+              onChange={(e) => setFormulario({ ...formulario, email: e.target.value })}
+              required
+            />
+          </label>
 
-          <input
-            placeholder="Región"
-            value={formulario.region}
-            onChange={(e) => setFormulario({ ...formulario, region: e.target.value })}
-          />
+          <label>
+            Comuna *
+            <input
+              placeholder="Ej: Castro"
+              value={formulario.comuna}
+              onChange={(e) => setFormulario({ ...formulario, comuna: e.target.value })}
+              required
+            />
+          </label>
+
+          <label>
+            Región *
+            <input
+              placeholder="Ej: Los Lagos"
+              value={formulario.region}
+              onChange={(e) => setFormulario({ ...formulario, region: e.target.value })}
+              required
+            />
+          </label>
+
+          <label>
+            Estado *
+            <select
+              value={formulario.estado}
+              onChange={(e) => setFormulario({ ...formulario, estado: e.target.value })}
+              required
+            >
+              <option value="activo">Activo</option>
+              <option value="inactivo">Inactivo</option>
+            </select>
+          </label>
 
           <button type="submit">Guardar paciente</button>
         </form>
@@ -155,6 +215,7 @@ function PacientesPage() {
               <tr>
                 <th>Nombre</th>
                 <th>Fecha nacimiento</th>
+                <th>Sexo</th>
                 <th>Teléfono</th>
                 <th>Email</th>
                 <th>Comuna</th>
@@ -167,7 +228,8 @@ function PacientesPage() {
               {pacientes.map((paciente) => (
                 <tr key={paciente.id}>
                   <td>{paciente.nombres} {paciente.apellidos}</td>
-                  <td>{paciente.fecha_nacimiento || 'Sin registrar'}</td>
+                  <td>{paciente.fecha_nacimiento}</td>
+                  <td>{paciente.sexo}</td>
                   <td>{paciente.telefono}</td>
                   <td>{paciente.email}</td>
                   <td>{paciente.comuna}</td>
