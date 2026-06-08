@@ -21,8 +21,8 @@ Tablas trabajadas hasta ahora:
 | `elementos_caso` | Integrada | Personas, hogares, negocios, lugares, objetos u otros involucrados relevantes dentro de un caso. |
 | `revisiones` | Integrada | Sesion general de revision del caso. |
 | `revision_elementos` | Integrada | Elementos del caso incluidos en una revision especifica. |
-| `revision_aspectos` | Integrada | Aspectos revisados por cada elemento, con medicion radiestesica, presencia, tipo detectado, observaciones y canalizacion. |
-| `revision_hallazgos` | Integrada | Hallazgos relevantes detectados durante la revision de un aspecto. |
+| `revision_aspectos` | Integrada | Aspectos revisados por cada elemento, con medicion radiestesica, presencia, tipo detectado, observaciones y canalizacion. Incluye cuerpos sutiles, trauma energetico, separacion, retraimiento, aislamiento, secuestro, integracion, alineacion y localizacion. |
+| `revision_hallazgos` | Integrada | Hallazgos relevantes detectados durante la revision de un aspecto. Incluye cuerpos sutiles alterados, separados, retraidos, aislados, secuestrados, trauma localizado y desalineacion energetica. |
 | `trabajos` | Pendiente | Modulo futuro separado para registrar acciones realizadas, avances, intervenciones y resultados. |
 
 ---
@@ -335,6 +335,19 @@ revision_hallazgos
 
 Este modulo permite registrar revisiones radiestesicas/canalizadas de forma flexible, sin mezclar observacion con trabajo realizado.
 
+Tambien permite registrar estados asociados a cuerpos sutiles y traumas energeticos, por ejemplo:
+
+```text
+cuerpos sutiles separados
+cuerpos sutiles retraidos
+cuerpos sutiles aislados
+cuerpos sutiles secuestrados
+traumas energeticos localizados
+desalineacion energetica
+estado de integracion de cuerpos
+estado de alineacion energetica
+```
+
 ---
 
 ## Tabla `revisiones`
@@ -485,8 +498,28 @@ entidades o presencias detectadas
 tipos de magia negra o trabajos
 abundancia
 proteccion
+cuerpos sutiles separados, retraidos, aislados o secuestrados
+traumas energeticos localizados
+integracion y alineacion energetica
 informacion canalizada
 observaciones libres
+```
+
+Opciones ampliadas relevantes:
+
+```text
+area_revision:
+- Cuerpos sutiles
+- Trauma energetico
+
+metrica_revision:
+- Separacion
+- Retraimiento
+- Aislamiento
+- Secuestro
+- Integracion
+- Alineacion
+- Localizacion
 ```
 
 ---
@@ -537,6 +570,18 @@ created_at
 updated_at
 ```
 
+Categorias ampliadas relevantes:
+
+```text
+Cuerpo sutil alterado
+Cuerpo sutil separado
+Cuerpo sutil retraido
+Cuerpo sutil aislado
+Cuerpo sutil secuestrado
+Trauma localizado
+Desalineacion energetica
+```
+
 ---
 
 ## Modulo futuro `trabajos`
@@ -558,6 +603,27 @@ caso_id
 revision_id opcional
 elemento_caso_id opcional
 revision_hallazgo_id opcional
+```
+
+Trabajos frecuentes que debe considerar el modulo:
+
+```text
+retiro de entidades
+retiro de espiritus trascendidos
+liberacion de trabajo energetico
+desarme de trabajo energetico
+limpieza energetica de persona
+limpieza energetica de casa, hogar, habitacion o terreno
+ajuste energetico posterior a limpieza
+sello energetico de persona
+sello energetico de lugar
+sello de dano
+sello de entidades
+integracion de cuerpos sutiles
+recuperacion de cuerpos sutiles
+liberacion de cuerpos sutiles secuestrados
+trabajo sobre trauma localizado
+seguimiento de ajuste energetico por varias semanas
 ```
 
 ---
