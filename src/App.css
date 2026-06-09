@@ -309,6 +309,361 @@ button:disabled {
   line-height: 1.6;
 }
 
+/* Dashboard premium density pass: compacta proporciones sin tocar lógica ni componentes. */
+.dashboard-shell {
+  grid-template-columns: 232px minmax(0, 1fr);
+}
+
+.dashboard-sidebar {
+  padding: 18px 14px;
+}
+
+.sidebar-logo {
+  border-radius: 15px;
+  height: 42px;
+  width: 42px;
+}
+
+.sidebar-brand strong {
+  font-size: 14px;
+}
+
+.sidebar-brand span,
+.sidebar-user span {
+  font-size: 11px;
+}
+
+.sidebar-status {
+  margin-top: 18px;
+  padding: 7px 11px;
+}
+
+.sidebar-nav {
+  gap: 8px;
+  margin-top: 24px;
+}
+
+.sidebar-nav-item {
+  border-radius: 14px;
+  font-size: 13px;
+  padding: 11px 13px;
+}
+
+.sidebar-user {
+  border-radius: 18px;
+  gap: 10px;
+  padding: 10px;
+}
+
+.sidebar-user__avatar {
+  height: 38px;
+  width: 38px;
+}
+
+.sidebar-logout {
+  border-radius: 14px;
+  font-size: 13px;
+  padding: 10px;
+}
+
+.dashboard-main {
+  padding: 22px;
+}
+
+.dashboard-main .pacientes-shell {
+  margin: 0;
+  max-width: none;
+  width: 100%;
+}
+
+.dashboard-main .pacientes-dashboard-header {
+  border-radius: 22px;
+  min-height: 86px;
+  padding: 16px 22px;
+}
+
+.dashboard-main .modulo-badge {
+  font-size: 11px;
+  padding: 6px 10px;
+}
+
+.dashboard-main .pacientes-dashboard-header h1 {
+  font-size: 34px;
+  margin: 8px 0 6px;
+}
+
+.dashboard-main .pacientes-dashboard-header p {
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+.dashboard-main .metricas-dashboard {
+  gap: 14px;
+  margin-top: 14px;
+}
+
+.dashboard-main .metrica-dashboard-card {
+  border-radius: 18px;
+  gap: 12px;
+  min-height: 84px;
+  padding: 14px 16px;
+}
+
+.dashboard-main .metrica-icon {
+  border-radius: 14px;
+  height: 40px;
+  width: 40px;
+}
+
+.dashboard-main .metrica-dashboard-card strong {
+  font-size: 28px;
+}
+
+.dashboard-main .metrica-dashboard-card span:not(.metrica-icon) {
+  font-size: 12px;
+  margin-top: 4px;
+}
+
+.dashboard-main .metrica-dashboard-card p {
+  font-size: 11px;
+  margin-top: 3px;
+}
+
+.dashboard-main .pacientes-workspace {
+  gap: 20px;
+  grid-template-columns: minmax(400px, 0.78fr) minmax(780px, 1.42fr);
+  margin-top: 16px;
+}
+
+.dashboard-main .pacientes-list-panel,
+.dashboard-main .pacientes-form-panel {
+  border-radius: 24px;
+}
+
+.dashboard-main .pacientes-list-panel {
+  gap: 12px;
+  padding: 16px;
+}
+
+.dashboard-main .pacientes-form-panel {
+  gap: 14px;
+  padding: 16px;
+}
+
+.dashboard-main .panel-heading h2,
+.dashboard-main .form-panel-header h2 {
+  font-size: 20px;
+}
+
+.dashboard-main .panel-heading > strong {
+  border-radius: 14px;
+  font-size: 18px;
+  height: 42px;
+  min-width: 42px;
+}
+
+.dashboard-main .buscador-pacientes {
+  gap: 6px;
+}
+
+.dashboard-main .buscador-pacientes input {
+  border-radius: 14px;
+  height: 44px;
+  padding: 0 14px;
+}
+
+.dashboard-main .filtros-rapidos,
+.dashboard-main .selector-chips {
+  gap: 8px;
+}
+
+.dashboard-main .chip,
+.dashboard-main .selector-chip {
+  font-size: 12px;
+  min-height: 34px;
+  padding: 7px 12px;
+}
+
+.dashboard-main .estado-listado {
+  padding: 26px 18px;
+}
+
+.dashboard-main .pacientes-cards {
+  gap: 10px;
+  max-height: 610px;
+  padding-right: 6px;
+  scrollbar-color: rgba(109, 63, 211, 0.38) rgba(241, 233, 255, 0.55);
+  scrollbar-width: thin;
+}
+
+.dashboard-main .pacientes-cards::-webkit-scrollbar {
+  width: 8px;
+}
+
+.dashboard-main .pacientes-cards::-webkit-scrollbar-track {
+  background: rgba(241, 233, 255, 0.55);
+  border-radius: 999px;
+}
+
+.dashboard-main .pacientes-cards::-webkit-scrollbar-thumb {
+  background: rgba(109, 63, 211, 0.38);
+  border-radius: 999px;
+}
+
+.dashboard-main .paciente-card {
+  border-radius: 18px;
+  gap: 12px;
+  padding: 12px;
+}
+
+.dashboard-main .paciente-avatar {
+  border-radius: 15px;
+  font-size: 15px;
+  height: 44px;
+  width: 44px;
+}
+
+.dashboard-main .paciente-card h3 {
+  font-size: 15px;
+}
+
+.dashboard-main .paciente-card__topline span:not(.estado-badge) {
+  font-size: 11px;
+}
+
+.dashboard-main .paciente-card__details {
+  gap: 5px;
+  margin-top: 8px;
+}
+
+.dashboard-main .paciente-card__details div {
+  gap: 6px;
+  grid-template-columns: 62px minmax(0, 1fr);
+}
+
+.dashboard-main .paciente-card__details dt {
+  font-size: 10px;
+}
+
+.dashboard-main .paciente-card__details dd {
+  font-size: 12px;
+}
+
+.dashboard-main .form-panel-header {
+  gap: 12px;
+}
+
+.dashboard-main .form-panel-icon {
+  border-radius: 15px;
+  height: 44px;
+  width: 44px;
+}
+
+.dashboard-main .guardar-paciente {
+  border-radius: 14px;
+  font-size: 13px;
+  min-height: 42px;
+  padding: 0 20px;
+}
+
+.dashboard-main .form-panel-grid {
+  gap: 14px;
+  grid-template-columns: minmax(0, 1fr) 292px;
+}
+
+.dashboard-main .formulario-ficha {
+  gap: 12px;
+}
+
+.dashboard-main .form-section {
+  border-radius: 18px;
+  gap: 10px;
+  padding: 13px;
+}
+
+.dashboard-main .form-section__header {
+  gap: 10px;
+}
+
+.dashboard-main .form-section__header > span {
+  font-size: 11px;
+  height: 28px;
+  width: 28px;
+}
+
+.dashboard-main .form-section h3 {
+  font-size: 15px;
+}
+
+.dashboard-main .form-section p {
+  font-size: 11px;
+}
+
+.dashboard-main .form-grid {
+  gap: 10px;
+}
+
+.dashboard-main .form-grid input {
+  border-radius: 12px;
+  height: 42px;
+  padding: 0 12px;
+}
+
+.dashboard-main .preview-paciente {
+  border-radius: 20px;
+  gap: 12px;
+  padding: 16px;
+}
+
+.dashboard-main .preview-avatar {
+  border-radius: 20px;
+  font-size: 22px;
+  height: 58px;
+  width: 58px;
+}
+
+.dashboard-main .preview-heading span {
+  font-size: 11px;
+  margin-bottom: 6px;
+}
+
+.dashboard-main .preview-heading h3 {
+  font-size: 20px;
+}
+
+.dashboard-main .preview-heading p {
+  font-size: 12px;
+  line-height: 1.45;
+  margin-top: 8px;
+}
+
+.dashboard-main .preview-data {
+  gap: 8px;
+}
+
+.dashboard-main .preview-data p {
+  border-radius: 14px;
+  font-size: 12px;
+  padding: 10px 12px;
+}
+
+.dashboard-main .preview-data strong {
+  font-size: 10px;
+}
+
+.dashboard-main .preview-help {
+  border-radius: 14px;
+  font-size: 12px;
+  padding: 11px 12px;
+}
+
+@media (max-width: 1320px) {
+  .dashboard-main .pacientes-workspace,
+  .dashboard-main .form-panel-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
 @media (max-width: 1080px) {
   .dashboard-shell {
     grid-template-columns: 1fr;
