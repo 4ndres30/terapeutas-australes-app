@@ -233,38 +233,38 @@ function PacientesPage() {
   }, [])
 
   const metricas = [
-    { etiqueta: 'Total pacientes', valor: totalPacientes, detalle: 'Registros clínicos', icono: 'T' },
-    { etiqueta: 'Activos', valor: pacientesActivos, detalle: 'Disponibles para seguimiento', icono: 'A' },
-    { etiqueta: 'Inactivos', valor: pacientesInactivos, detalle: 'Archivados temporalmente', icono: 'I' },
-    { etiqueta: 'Último registro', valor: ultimoRegistro ? formatearFecha(ultimoRegistro) : 'Sin registros', detalle: 'Ingreso más reciente', icono: 'R' },
+    { etiqueta: 'Total', valor: totalPacientes, detalle: 'Pacientes', icono: 'T' },
+    { etiqueta: 'Activos', valor: pacientesActivos, detalle: 'Seguimiento', icono: 'A' },
+    { etiqueta: 'Inactivos', valor: pacientesInactivos, detalle: 'Archivados', icono: 'I' },
+    { etiqueta: 'Último', valor: ultimoRegistro ? formatearFecha(ultimoRegistro) : 'Sin registros', detalle: 'Registro', icono: 'R' },
   ]
 
   return (
-    <main className="pacientes-shell">
-      <section className="pacientes-dashboard-header">
-        <div>
+    <main className="pacientes-shell pacientes-shell--command">
+      <section className="pacientes-command-topbar">
+        <div className="pacientes-command-title">
           <span className="modulo-badge">Módulo clínico</span>
           <h1>Pacientes</h1>
-          <p>Gestiona, registra y revisa la información esencial de tus pacientes.</p>
+          <p>Centro de control para registrar, buscar y revisar fichas clínicas iniciales.</p>
         </div>
+
+        <section className="pacientes-metricas-rail" aria-label="Métricas de pacientes">
+          {metricas.map((metrica) => (
+            <article className="metrica-rail-card" key={metrica.etiqueta}>
+              <span className="metrica-icon" aria-hidden="true">{metrica.icono}</span>
+              <div>
+                <strong>{metrica.valor}</strong>
+                <span>{metrica.etiqueta}</span>
+                <p>{metrica.detalle}</p>
+              </div>
+            </article>
+          ))}
+        </section>
       </section>
 
-      <section className="metricas-dashboard" aria-label="Métricas de pacientes">
-        {metricas.map((metrica) => (
-          <article className="metrica-dashboard-card" key={metrica.etiqueta}>
-            <span className="metrica-icon" aria-hidden="true">{metrica.icono}</span>
-            <div>
-              <strong>{metrica.valor}</strong>
-              <span>{metrica.etiqueta}</span>
-              <p>{metrica.detalle}</p>
-            </div>
-          </article>
-        ))}
-      </section>
-
-      <section className="pacientes-workspace">
-        <aside className="pacientes-list-panel" aria-label="Listado de pacientes">
-          <div className="panel-heading">
+      <section className="pacientes-command-grid">
+        <aside className="pacientes-directory-panel" aria-label="Listado de pacientes">
+          <div className="panel-heading panel-heading--compact">
             <div>
               <span className="panel-kicker">Directorio</span>
               <h2>Pacientes registrados</h2>
@@ -272,16 +272,16 @@ function PacientesPage() {
             <strong>{pacientesFiltrados.length}</strong>
           </div>
 
-          <label className="buscador-pacientes">
+          <label className="buscador-pacientes buscador-pacientes--compact">
             <span>Buscar</span>
             <input
-              placeholder="Nombre, apellido, email, teléfono, comuna o región"
+              placeholder="Nombre, email, teléfono, comuna o región"
               value={busqueda}
               onChange={(event) => setBusqueda(event.target.value)}
             />
           </label>
 
-          <div className="filtros-rapidos" aria-label="Filtros rápidos de pacientes">
+          <div className="filtros-rapidos filtros-rapidos--compact" aria-label="Filtros rápidos de pacientes">
             {filtrosEstado.map((filtro) => (
               <button
                 className={filtroEstado === filtro.valor ? 'chip chip--activo' : 'chip'}
@@ -310,9 +310,9 @@ function PacientesPage() {
               <p>Ajusta la búsqueda o cambia el filtro de estado.</p>
             </div>
           ) : (
-            <div className="pacientes-cards" aria-live="polite">
+            <div className="pacientes-cards pacientes-cards--compact" aria-live="polite">
               {pacientesFiltrados.map((paciente) => (
-                <article className="paciente-card" key={paciente.id}>
+                <article className="paciente-card paciente-card--compact" key={paciente.id}>
                   <div className="paciente-avatar" aria-hidden="true">
                     {obtenerIniciales(paciente.nombres, paciente.apellidos)}
                   </div>
@@ -328,9 +328,9 @@ function PacientesPage() {
                       </span>
                     </div>
 
-                    <dl className="paciente-card__details">
+                    <dl className="paciente-card__details paciente-card__details--inline">
                       <div>
-                        <dt>Teléfono</dt>
+                        <dt>Tel.</dt>
                         <dd>{paciente.telefono}</dd>
                       </div>
                       <div>
@@ -338,7 +338,7 @@ function PacientesPage() {
                         <dd>{paciente.email}</dd>
                       </div>
                       <div>
-                        <dt>Ubicación</dt>
+                        <dt>Zona</dt>
                         <dd>{paciente.comuna}, {paciente.region}</dd>
                       </div>
                     </dl>
@@ -349,13 +349,14 @@ function PacientesPage() {
           )}
         </aside>
 
-        <section className="pacientes-form-panel" aria-label="Nuevo paciente">
-          <div className="form-panel-header">
+        <section className="pacientes-intake-panel" aria-label="Nuevo paciente">
+          <div className="form-panel-header form-panel-header--command">
             <div className="form-panel-title">
               <span className="form-panel-icon" aria-hidden="true">N</span>
               <div>
                 <span className="panel-kicker">Ficha inteligente</span>
                 <h2>Nuevo paciente</h2>
+                <p>Ingreso inicial con preview en vivo antes de guardar.</p>
               </div>
             </div>
 
@@ -364,8 +365,8 @@ function PacientesPage() {
             </button>
           </div>
 
-          <div className="form-panel-grid">
-            <form className="formulario-ficha" id="paciente-form" onSubmit={guardarPaciente}>
+          <div className="intake-command-layout">
+            <form className="formulario-ficha formulario-ficha--command" id="paciente-form" onSubmit={guardarPaciente}>
               <section className="form-section form-section--identidad">
                 <div className="form-section__header">
                   <span>01</span>
@@ -375,7 +376,7 @@ function PacientesPage() {
                   </div>
                 </div>
 
-                <div className="form-grid">
+                <div className="form-grid form-grid--command">
                   <label>
                     Nombres *
                     <input
@@ -409,7 +410,7 @@ function PacientesPage() {
 
                 <div className="chip-field">
                   <span>Sexo *</span>
-                  <div className="selector-chips">
+                  <div className="selector-chips selector-chips--command">
                     {opcionesSexo.map((opcion) => (
                       <label
                         className={formulario.sexo === opcion.valor ? 'selector-chip selector-chip--activo' : 'selector-chip'}
@@ -439,7 +440,7 @@ function PacientesPage() {
                   </div>
                 </div>
 
-                <div className="form-grid">
+                <div className="form-grid form-grid--command">
                   <label>
                     Teléfono *
                     <input
@@ -472,7 +473,7 @@ function PacientesPage() {
                   </div>
                 </div>
 
-                <div className="form-grid">
+                <div className="form-grid form-grid--command">
                   <label>
                     Comuna *
                     <input
@@ -495,16 +496,16 @@ function PacientesPage() {
                 </div>
               </section>
 
-              <section className="form-section form-section--estado">
+              <section className="form-section form-section--estado form-section--compact-status">
                 <div className="form-section__header">
                   <span>04</span>
                   <div>
                     <h3>Estado</h3>
-                    <p>Define si queda disponible para seguimiento.</p>
+                    <p>Disponibilidad para seguimiento.</p>
                   </div>
                 </div>
 
-                <div className="selector-chips selector-chips--estado">
+                <div className="selector-chips selector-chips--estado selector-chips--command">
                   {opcionesEstado.map((opcion) => (
                     <label
                       className={formulario.estado === opcion.valor ? 'selector-chip selector-chip--activo' : 'selector-chip'}
@@ -525,7 +526,7 @@ function PacientesPage() {
               </section>
             </form>
 
-            <aside className="preview-paciente" aria-label="Preview del nuevo paciente">
+            <aside className="preview-paciente preview-paciente--command" aria-label="Preview del nuevo paciente">
               <div className="preview-avatar" aria-hidden="true">
                 {obtenerIniciales(formulario.nombres, formulario.apellidos)}
               </div>
@@ -544,7 +545,7 @@ function PacientesPage() {
                 {formulario.estado}
               </span>
 
-              <div className="preview-data">
+              <div className="preview-data preview-data--command">
                 <p><strong>Tel.</strong> {formulario.telefono || 'Pendiente'}</p>
                 <p><strong>Email</strong> {formulario.email || 'Pendiente'}</p>
                 <p><strong>Zona</strong> {ubicacionPreview || 'Pendiente'}</p>
@@ -569,4 +570,3 @@ function PacientesPage() {
 }
 
 export default PacientesPage
-
