@@ -1,4 +1,5 @@
-import { FormEvent, useEffect, useState } from 'react'
+import type { FormEvent } from 'react'
+import { useEffect, useState } from 'react'
 import { supabase } from '../lib/supabase'
 import './PacientesPage.css'
 
@@ -16,9 +17,16 @@ type Paciente = {
   created_at: string
 }
 
+async function obtenerPacientes() {
+  return supabase
+    .from('pacientes')
+    .select('*')
+    .order('created_at', { ascending: false })
+}
+
 function PacientesPage() {
   const [pacientes, setPacientes] = useState<Paciente[]>([])
-  const [cargando, setCargando] = useState(false)
+  const [cargando, setCargando] = useState(true)
   const [mensaje, setMensaje] = useState('')
 
   const [formulario, setFormulario] = useState({
@@ -36,10 +44,7 @@ function PacientesPage() {
   async function cargarPacientes() {
     setCargando(true)
 
-    const { data, error } = await supabase
-      .from('pacientes')
-      .select('*')
-      .order('created_at', { ascending: false })
+    const { data, error } = await obtenerPacientes()
 
     if (error) {
       setMensaje(`Error al cargar pacientes: ${error.message}`)
@@ -90,7 +95,30 @@ function PacientesPage() {
   }
 
   useEffect(() => {
-    cargarPacientes()
+    let componenteActivo = true
+
+    async function cargarPacientesIniciales() {
+      const { data, error } = await obtenerPacientes()
+
+      if (!componenteActivo) {
+        return
+      }
+
+      if (error) {
+        setMensaje(`Error al cargar pacientes: ${error.message}`)
+        setCargando(false)
+        return
+      }
+
+      setPacientes(data || [])
+      setCargando(false)
+    }
+
+    void cargarPacientesIniciales()
+
+    return () => {
+      componenteActivo = false
+    }
   }, [])
 
   return (
