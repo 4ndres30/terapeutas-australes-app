@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import type { ReactNode } from 'react'
 import type { Session } from '@supabase/supabase-js'
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
 import PacientesPage from './pages/PacientesPage'
@@ -47,21 +48,62 @@ function PantallaCarga() {
   )
 }
 
-function MensajeModuloFinanzas({ usuarioInterno, onCerrarSesion }: {
+function DashboardShell({ usuarioInterno, onCerrarSesion, children }: {
   usuarioInterno: UsuarioInterno
   onCerrarSesion: () => Promise<void>
+  children: ReactNode
 }) {
   return (
-    <main className="auth-shell">
-      <section className="auth-card">
-        <p className="auth-label">{usuarioInterno.nombre_completo}</p>
-        <h1>Módulo financiero pendiente</h1>
-        <p>Tu usuario puede iniciar sesión, pero el módulo financiero aún no está implementado.</p>
-        <button type="button" onClick={() => void onCerrarSesion()}>
+    <div className="dashboard-shell">
+      <aside className="dashboard-sidebar" aria-label="Panel principal">
+        <div className="sidebar-brand">
+          <div className="sidebar-logo" aria-hidden="true">TA</div>
+          <div>
+            <strong>Terapeutas Australes</strong>
+            <span>Gestión clínica</span>
+          </div>
+        </div>
+
+        <div className="sidebar-status">
+          <span aria-hidden="true" />
+          En línea
+        </div>
+
+        <nav className="sidebar-nav" aria-label="Módulos disponibles">
+          <span className="sidebar-nav-item sidebar-nav-item--active">Pacientes</span>
+          <span className="sidebar-nav-item sidebar-nav-item--soon">Casos · próximamente</span>
+          <span className="sidebar-nav-item sidebar-nav-item--soon">Finanzas · próximamente</span>
+        </nav>
+
+        <div className="sidebar-user">
+          <div className="sidebar-user__avatar" aria-hidden="true">
+            {usuarioInterno.nombre_completo.slice(0, 2).toUpperCase()}
+          </div>
+          <div>
+            <strong>{usuarioInterno.nombre_completo}</strong>
+            <span>{usuarioInterno.rol}</span>
+          </div>
+        </div>
+
+        <button className="sidebar-logout" type="button" onClick={() => void onCerrarSesion()}>
           Cerrar sesión
         </button>
-      </section>
-    </main>
+      </aside>
+
+      <main className="dashboard-main">
+        {children}
+      </main>
+    </div>
+  )
+}
+
+function MensajeModuloFinanzas() {
+  return (
+    <section className="dashboard-placeholder-card">
+      <span>Módulo financiero</span>
+      <h1>Finanzas aún no está implementado</h1>
+      <p>Tu usuario puede iniciar sesión, pero este módulo se activará en una etapa posterior.</p>
+    </section>
   )
 }
 
@@ -70,18 +112,9 @@ function AppPrivada({ usuarioInterno, onCerrarSesion }: {
   onCerrarSesion: () => Promise<void>
 }) {
   return (
-    <>
-      <header className="app-header">
-        <div>
-          <strong>{usuarioInterno.nombre_completo}</strong>
-          <span>{usuarioInterno.rol}</span>
-        </div>
-        <button type="button" onClick={() => void onCerrarSesion()}>
-          Cerrar sesión
-        </button>
-      </header>
+    <DashboardShell usuarioInterno={usuarioInterno} onCerrarSesion={onCerrarSesion}>
       <PacientesPage />
-    </>
+    </DashboardShell>
   )
 }
 
@@ -94,7 +127,7 @@ function RutaProtegida({
   estadoAuth: EstadoAuth
   usuarioInterno: UsuarioInterno | null
   rolesPermitidos: RolUsuario[]
-  children: React.ReactNode
+  children: ReactNode
 }) {
   if (estadoAuth === 'cargando') {
     return <PantallaCarga />
@@ -251,7 +284,9 @@ function App() {
               usuarioInterno={usuarioInterno}
               rolesPermitidos={['finanzas']}
             >
-              <MensajeModuloFinanzas usuarioInterno={usuarioInterno!} onCerrarSesion={cerrarSesion} />
+              <DashboardShell usuarioInterno={usuarioInterno!} onCerrarSesion={cerrarSesion}>
+                <MensajeModuloFinanzas />
+              </DashboardShell>
             </RutaProtegida>
           }
         />
