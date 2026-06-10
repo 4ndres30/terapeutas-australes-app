@@ -18,6 +18,8 @@ type Paciente = {
 }
 
 type FiltroEstado = 'todos' | 'activos' | 'inactivos'
+type TipoMetrica = 'total' | 'activos' | 'inactivos' | 'ultimo'
+type PasoFicha = 'identidad' | 'contacto' | 'ubicacion' | 'estado'
 
 type FormularioPaciente = {
   nombres: string
@@ -34,6 +36,15 @@ type FormularioPaciente = {
 type OpcionFormulario = {
   etiqueta: string
   valor: string
+}
+
+type PasoFichaConfig = {
+  clave: PasoFicha
+  numero: string
+  etiqueta: string
+  titulo: string
+  descripcion: string
+  tono: string
 }
 
 const formularioInicial: FormularioPaciente = {
@@ -66,11 +77,39 @@ const opcionesEstado: OpcionFormulario[] = [
   { etiqueta: 'Inactivo', valor: 'inactivo' },
 ]
 
-const pasosFicha = [
-  { numero: '1', etiqueta: 'Identidad' },
-  { numero: '2', etiqueta: 'Contacto' },
-  { numero: '3', etiqueta: 'Ubicación' },
-  { numero: '4', etiqueta: 'Estado' },
+const pasosFicha: PasoFichaConfig[] = [
+  {
+    clave: 'identidad',
+    numero: '1',
+    etiqueta: 'Identidad',
+    titulo: 'Identidad personal',
+    descripcion: 'Datos base para reconocer la ficha clínica.',
+    tono: 'violeta',
+  },
+  {
+    clave: 'contacto',
+    numero: '2',
+    etiqueta: 'Contacto',
+    titulo: 'Contacto',
+    descripcion: 'Información de contacto y comunicación.',
+    tono: 'azul',
+  },
+  {
+    clave: 'ubicacion',
+    numero: '3',
+    etiqueta: 'Ubicación',
+    titulo: 'Ubicación',
+    descripcion: 'Comuna y región de residencia.',
+    tono: 'dorado',
+  },
+  {
+    clave: 'estado',
+    numero: '4',
+    etiqueta: 'Estado',
+    titulo: 'Estado',
+    descripcion: 'Estado actual del paciente.',
+    tono: 'verde',
+  },
 ]
 
 async function obtenerPacientes() {
@@ -175,6 +214,95 @@ function coincideConFiltroEstado(paciente: Paciente, filtroEstado: FiltroEstado)
   return true
 }
 
+function obtenerResumenPaso(paso: PasoFicha, formulario: FormularioPaciente) {
+  if (paso === 'identidad') {
+    const nombre = `${formulario.nombres} ${formulario.apellidos}`.trim()
+    return nombre || 'Nombre, nacimiento y sexo del paciente.'
+  }
+
+  if (paso === 'contacto') {
+    const contacto = [formulario.telefono, formulario.email].filter(Boolean).join(' · ')
+    return contacto || 'Teléfono y correo principal.'
+  }
+
+  if (paso === 'ubicacion') {
+    const ubicacion = [formulario.comuna, formulario.region].filter(Boolean).join(', ')
+    return ubicacion || 'Comuna y región de residencia.'
+  }
+
+  return obtenerEtiqueta(opcionesEstado, formulario.estado) || 'Estado actual del paciente.'
+}
+
+function validarFormularioPaciente(formulario: FormularioPaciente): { paso: PasoFicha; mensaje: string } | null {
+  if (!formulario.nombres.trim() || !formulario.apellidos.trim() || !formulario.fecha_nacimiento || !formulario.sexo) {
+    return { paso: 'identidad', mensaje: 'Completa nombres, apellidos, fecha de nacimiento y sexo.' }
+  }
+
+  if (!formulario.telefono.trim()) {
+    return { paso: 'contacto', mensaje: 'Ingresa un teléfono de contacto.' }
+  }
+
+  if (!/^\S+@\S+\.\S+$/.test(formulario.email.trim())) {
+    return { paso: 'contacto', mensaje: 'Ingresa un email válido.' }
+  }
+
+  if (!formulario.comuna.trim() || !formulario.region.trim()) {
+    return { paso: 'ubicacion', mensaje: 'Completa comuna y región.' }
+  }
+
+  if (!formulario.estado) {
+    return { paso: 'estado', mensaje: 'Selecciona el estado del paciente.' }
+  }
+
+  return null
+}
+
+function MetricaIcon({ tipo }: { tipo: TipoMetrica }) {
+  if (tipo === 'activos') {
+    return (
+      <svg aria-hidden="true" viewBox="0 0 24 24">
+        <path d="M8 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8Z" />
+        <path d="M2.5 21a6.5 6.5 0 0 1 11 0" />
+        <path d="M17 8v7" />
+        <path d="M13.5 11.5H20.5" />
+      </svg>
+    )
+  }
+
+  if (tipo === 'inactivos') {
+    return (
+      <svg aria-hidden="true" viewBox="0 0 24 24">
+        <path d="M8 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8Z" />
+        <path d="M2.5 21a6.5 6.5 0 0 1 11 0" />
+        <path d="M15 9l6 6" />
+        <path d="M21 9l-6 6" />
+      </svg>
+    )
+  }
+
+  if (tipo === 'ultimo') {
+    return (
+      <svg aria-hidden="true" viewBox="0 0 24 24">
+        <path d="M6 3v4" />
+        <path d="M18 3v4" />
+        <path d="M4 8h16" />
+        <path d="M5 5h14a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1Z" />
+        <path d="M9 13h6" />
+        <path d="M9 17h3" />
+      </svg>
+    )
+  }
+
+  return (
+    <svg aria-hidden="true" viewBox="0 0 24 24">
+      <path d="M8 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8Z" />
+      <path d="M16 12a3.5 3.5 0 1 0 0-7" />
+      <path d="M2.5 21a6.5 6.5 0 0 1 11 0" />
+      <path d="M14 17a5.5 5.5 0 0 1 7.5 4" />
+    </svg>
+  )
+}
+
 function PacientesPage() {
   const [pacientes, setPacientes] = useState<Paciente[]>([])
   const [cargando, setCargando] = useState(true)
@@ -182,6 +310,7 @@ function PacientesPage() {
   const [mensaje, setMensaje] = useState('')
   const [busqueda, setBusqueda] = useState('')
   const [filtroEstado, setFiltroEstado] = useState<FiltroEstado>('todos')
+  const [pasoActivo, setPasoActivo] = useState<PasoFicha>('identidad')
   const [formulario, setFormulario] = useState<FormularioPaciente>(formularioInicial)
 
   const totalPacientes = pacientes.length
@@ -231,6 +360,15 @@ function PacientesPage() {
 
   async function guardarPaciente(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
+
+    const validacion = validarFormularioPaciente(formulario)
+
+    if (validacion) {
+      setPasoActivo(validacion.paso)
+      setMensaje(`Error: ${validacion.mensaje}`)
+      return
+    }
+
     setGuardando(true)
     setMensaje('Guardando paciente...')
 
@@ -245,6 +383,7 @@ function PacientesPage() {
 
     setMensaje('Paciente guardado correctamente')
     setFormulario(formularioInicial)
+    setPasoActivo('identidad')
 
     await cargarPacientes()
     setGuardando(false)
@@ -277,12 +416,202 @@ function PacientesPage() {
     }
   }, [])
 
-  const metricas = [
-    { etiqueta: 'Total', valor: totalPacientes, detalle: 'Pacientes', icono: 'T' },
-    { etiqueta: 'Activos', valor: pacientesActivos, detalle: 'Seguimiento', icono: 'A' },
-    { etiqueta: 'Inactivos', valor: pacientesInactivos, detalle: 'Archivados', icono: 'I' },
-    { etiqueta: 'Último', valor: ultimoRegistro ? formatearFecha(ultimoRegistro) : 'Sin registros', detalle: 'Registro', icono: 'R' },
+  const metricas: { etiqueta: string; valor: number | string; detalle: string; tipo: TipoMetrica }[] = [
+    { etiqueta: 'Total', valor: totalPacientes, detalle: 'Pacientes', tipo: 'total' },
+    { etiqueta: 'Activos', valor: pacientesActivos, detalle: 'Seguimiento', tipo: 'activos' },
+    { etiqueta: 'Inactivos', valor: pacientesInactivos, detalle: 'Archivados', tipo: 'inactivos' },
+    { etiqueta: 'Último', valor: ultimoRegistro ? formatearFecha(ultimoRegistro) : 'Sin registros', detalle: 'Registro', tipo: 'ultimo' },
   ]
+
+  function renderCamposPaso(paso: PasoFicha) {
+    if (paso === 'identidad') {
+      return (
+        <>
+          <div className="form-grid form-grid--command">
+            <label>
+              Nombres *
+              <input
+                autoComplete="given-name"
+                disabled={guardando}
+                placeholder="Ej: Catalina Belén"
+                value={formulario.nombres}
+                onChange={(event) => actualizarFormulario('nombres', event.target.value)}
+                required
+              />
+            </label>
+
+            <label>
+              Apellidos *
+              <input
+                autoComplete="family-name"
+                disabled={guardando}
+                placeholder="Ej: Troncoso Caro"
+                value={formulario.apellidos}
+                onChange={(event) => actualizarFormulario('apellidos', event.target.value)}
+                required
+              />
+            </label>
+
+            <label>
+              Fecha de nacimiento *
+              <input
+                disabled={guardando}
+                type="date"
+                value={formulario.fecha_nacimiento}
+                onChange={(event) => actualizarFormulario('fecha_nacimiento', event.target.value)}
+                required
+              />
+            </label>
+          </div>
+
+          <div className="chip-field">
+            <span>Sexo *</span>
+            <div className="selector-chips selector-chips--command">
+              {opcionesSexo.map((opcion) => (
+                <label
+                  className={formulario.sexo === opcion.valor ? 'selector-chip selector-chip--activo' : 'selector-chip'}
+                  key={opcion.valor}
+                >
+                  <input
+                    checked={formulario.sexo === opcion.valor}
+                    disabled={guardando}
+                    name="sexo"
+                    onChange={(event) => actualizarFormulario('sexo', event.target.value)}
+                    required
+                    type="radio"
+                    value={opcion.valor}
+                  />
+                  {opcion.etiqueta}
+                </label>
+              ))}
+            </div>
+          </div>
+        </>
+      )
+    }
+
+    if (paso === 'contacto') {
+      return (
+        <div className="form-grid form-grid--command">
+          <label>
+            Teléfono *
+            <input
+              autoComplete="tel"
+              disabled={guardando}
+              placeholder="Ej: +56 9 1234 5678"
+              type="tel"
+              value={formulario.telefono}
+              onChange={(event) => actualizarFormulario('telefono', event.target.value)}
+              required
+            />
+          </label>
+
+          <label>
+            Email *
+            <input
+              autoComplete="email"
+              disabled={guardando}
+              placeholder="Ej: paciente@correo.cl"
+              type="email"
+              value={formulario.email}
+              onChange={(event) => actualizarFormulario('email', event.target.value)}
+              required
+            />
+          </label>
+        </div>
+      )
+    }
+
+    if (paso === 'ubicacion') {
+      return (
+        <div className="form-grid form-grid--command">
+          <label>
+            Comuna *
+            <input
+              autoComplete="address-level2"
+              disabled={guardando}
+              placeholder="Ej: Castro"
+              value={formulario.comuna}
+              onChange={(event) => actualizarFormulario('comuna', event.target.value)}
+              required
+            />
+          </label>
+
+          <label>
+            Región *
+            <input
+              autoComplete="address-level1"
+              disabled={guardando}
+              placeholder="Ej: Los Lagos"
+              value={formulario.region}
+              onChange={(event) => actualizarFormulario('region', event.target.value)}
+              required
+            />
+          </label>
+        </div>
+      )
+    }
+
+    return (
+      <div className="selector-chips selector-chips--estado selector-chips--command">
+        {opcionesEstado.map((opcion) => (
+          <label
+            className={formulario.estado === opcion.valor ? 'selector-chip selector-chip--activo' : 'selector-chip'}
+            key={opcion.valor}
+          >
+            <input
+              checked={formulario.estado === opcion.valor}
+              disabled={guardando}
+              name="estado"
+              onChange={(event) => actualizarFormulario('estado', event.target.value)}
+              required
+              type="radio"
+              value={opcion.valor}
+            />
+            {opcion.etiqueta}
+          </label>
+        ))}
+      </div>
+    )
+  }
+
+  function renderPasoFormulario(paso: PasoFichaConfig) {
+    const estaActivo = pasoActivo === paso.clave
+
+    if (!estaActivo) {
+      return (
+        <button
+          className={`form-section form-section--summary form-section--summary-${paso.tono}`}
+          key={paso.clave}
+          onClick={() => setPasoActivo(paso.clave)}
+          type="button"
+        >
+          <div className="form-section__header">
+            <span>{paso.numero.padStart(2, '0')}</span>
+            <div>
+              <h3>{paso.titulo}</h3>
+              <p>{obtenerResumenPaso(paso.clave, formulario)}</p>
+            </div>
+          </div>
+          <span className="form-section__chevron" aria-hidden="true">⌄</span>
+        </button>
+      )
+    }
+
+    return (
+      <section className={`form-section form-section--${paso.clave} form-section--active`} key={paso.clave}>
+        <div className="form-section__header">
+          <span>{paso.numero.padStart(2, '0')}</span>
+          <div>
+            <h3>{paso.titulo}</h3>
+            <p>{paso.descripcion}</p>
+          </div>
+        </div>
+
+        {renderCamposPaso(paso.clave)}
+      </section>
+    )
+  }
 
   return (
     <main className="pacientes-shell pacientes-shell--command">
@@ -295,8 +624,8 @@ function PacientesPage() {
 
         <section className="pacientes-metricas-rail" aria-label="Métricas de pacientes">
           {metricas.map((metrica) => (
-            <article className="metrica-rail-card" key={metrica.etiqueta}>
-              <span className="metrica-icon" aria-hidden="true">{metrica.icono}</span>
+            <article className={`metrica-rail-card metrica-rail-card--${metrica.tipo}`} key={metrica.etiqueta}>
+              <span className="metrica-icon" aria-hidden="true"><MetricaIcon tipo={metrica.tipo} /></span>
               <div>
                 <strong>{metrica.valor}</strong>
                 <span>{metrica.etiqueta}</span>
@@ -428,189 +757,23 @@ function PacientesPage() {
           </div>
 
           <div className="form-stepper" aria-label="Etapas de la ficha de paciente">
-            {pasosFicha.map((paso, index) => (
-              <span className={index === 0 ? 'form-stepper__item form-stepper__item--activo' : 'form-stepper__item'} key={paso.numero}>
+            {pasosFicha.map((paso) => (
+              <button
+                aria-current={pasoActivo === paso.clave ? 'step' : undefined}
+                className={pasoActivo === paso.clave ? 'form-stepper__item form-stepper__item--activo' : 'form-stepper__item'}
+                key={paso.numero}
+                onClick={() => setPasoActivo(paso.clave)}
+                type="button"
+              >
                 <strong>{paso.numero}</strong>
                 {paso.etiqueta}
-              </span>
+              </button>
             ))}
           </div>
 
           <div className="intake-command-layout">
             <form className="formulario-ficha formulario-ficha--command" id="paciente-form" onSubmit={guardarPaciente}>
-              <section className="form-section form-section--identidad">
-                <div className="form-section__header">
-                  <span>01</span>
-                  <div>
-                    <h3>Identidad personal</h3>
-                    <p>Datos base para reconocer la ficha clínica.</p>
-                  </div>
-                </div>
-
-                <div className="form-grid form-grid--command">
-                  <label>
-                    Nombres *
-                    <input
-                      autoComplete="given-name"
-                      disabled={guardando}
-                      placeholder="Ej: Catalina Belén"
-                      value={formulario.nombres}
-                      onChange={(event) => actualizarFormulario('nombres', event.target.value)}
-                      required
-                    />
-                  </label>
-
-                  <label>
-                    Apellidos *
-                    <input
-                      autoComplete="family-name"
-                      disabled={guardando}
-                      placeholder="Ej: Troncoso Caro"
-                      value={formulario.apellidos}
-                      onChange={(event) => actualizarFormulario('apellidos', event.target.value)}
-                      required
-                    />
-                  </label>
-
-                  <label>
-                    Fecha de nacimiento *
-                    <input
-                      disabled={guardando}
-                      type="date"
-                      value={formulario.fecha_nacimiento}
-                      onChange={(event) => actualizarFormulario('fecha_nacimiento', event.target.value)}
-                      required
-                    />
-                  </label>
-                </div>
-
-                <div className="chip-field">
-                  <span>Sexo *</span>
-                  <div className="selector-chips selector-chips--command">
-                    {opcionesSexo.map((opcion) => (
-                      <label
-                        className={formulario.sexo === opcion.valor ? 'selector-chip selector-chip--activo' : 'selector-chip'}
-                        key={opcion.valor}
-                      >
-                        <input
-                          checked={formulario.sexo === opcion.valor}
-                          disabled={guardando}
-                          name="sexo"
-                          onChange={(event) => actualizarFormulario('sexo', event.target.value)}
-                          required
-                          type="radio"
-                          value={opcion.valor}
-                        />
-                        {opcion.etiqueta}
-                      </label>
-                    ))}
-                  </div>
-                </div>
-              </section>
-
-              <section className="form-section form-section--contacto">
-                <div className="form-section__header">
-                  <span>02</span>
-                  <div>
-                    <h3>Contacto</h3>
-                    <p>Canales principales para coordinación.</p>
-                  </div>
-                </div>
-
-                <div className="form-grid form-grid--command">
-                  <label>
-                    Teléfono *
-                    <input
-                      autoComplete="tel"
-                      disabled={guardando}
-                      placeholder="Ej: +56 9 1234 5678"
-                      type="tel"
-                      value={formulario.telefono}
-                      onChange={(event) => actualizarFormulario('telefono', event.target.value)}
-                      required
-                    />
-                  </label>
-
-                  <label>
-                    Email *
-                    <input
-                      autoComplete="email"
-                      disabled={guardando}
-                      placeholder="Ej: paciente@correo.cl"
-                      type="email"
-                      value={formulario.email}
-                      onChange={(event) => actualizarFormulario('email', event.target.value)}
-                      required
-                    />
-                  </label>
-                </div>
-              </section>
-
-              <section className="form-section form-section--ubicacion">
-                <div className="form-section__header">
-                  <span>03</span>
-                  <div>
-                    <h3>Ubicación</h3>
-                    <p>Contexto territorial del paciente.</p>
-                  </div>
-                </div>
-
-                <div className="form-grid form-grid--command">
-                  <label>
-                    Comuna *
-                    <input
-                      autoComplete="address-level2"
-                      disabled={guardando}
-                      placeholder="Ej: Castro"
-                      value={formulario.comuna}
-                      onChange={(event) => actualizarFormulario('comuna', event.target.value)}
-                      required
-                    />
-                  </label>
-
-                  <label>
-                    Región *
-                    <input
-                      autoComplete="address-level1"
-                      disabled={guardando}
-                      placeholder="Ej: Los Lagos"
-                      value={formulario.region}
-                      onChange={(event) => actualizarFormulario('region', event.target.value)}
-                      required
-                    />
-                  </label>
-                </div>
-              </section>
-
-              <section className="form-section form-section--estado form-section--compact-status">
-                <div className="form-section__header">
-                  <span>04</span>
-                  <div>
-                    <h3>Estado</h3>
-                    <p>Disponibilidad para seguimiento.</p>
-                  </div>
-                </div>
-
-                <div className="selector-chips selector-chips--estado selector-chips--command">
-                  {opcionesEstado.map((opcion) => (
-                    <label
-                      className={formulario.estado === opcion.valor ? 'selector-chip selector-chip--activo' : 'selector-chip'}
-                      key={opcion.valor}
-                    >
-                      <input
-                        checked={formulario.estado === opcion.valor}
-                        disabled={guardando}
-                        name="estado"
-                        onChange={(event) => actualizarFormulario('estado', event.target.value)}
-                        required
-                        type="radio"
-                        value={opcion.valor}
-                      />
-                      {opcion.etiqueta}
-                    </label>
-                  ))}
-                </div>
-              </section>
+              {pasosFicha.map(renderPasoFormulario)}
             </form>
 
             <aside className="preview-paciente preview-paciente--command" aria-label="Preview del nuevo paciente">
@@ -633,11 +796,11 @@ function PacientesPage() {
               </span>
 
               <div className="preview-data preview-data--command">
-                <p><strong>Tel.</strong> {mostrarDato(formulario.telefono)}</p>
-                <p><strong>Email</strong> {mostrarDato(formulario.email)}</p>
-                <p><strong>Zona</strong> {mostrarDato(ubicacionPreview)}</p>
-                <p><strong>Sexo</strong> {sexoPreview || 'Pendiente'}</p>
-                <p><strong>Nacimiento</strong> {fechaNacimientoPreview}</p>
+                <p><strong>Tel.</strong> <span>{mostrarDato(formulario.telefono)}</span></p>
+                <p><strong>Email</strong> <span>{mostrarDato(formulario.email)}</span></p>
+                <p><strong>Zona</strong> <span>{mostrarDato(ubicacionPreview)}</span></p>
+                <p><strong>Sexo</strong> <span>{sexoPreview || 'Pendiente'}</span></p>
+                <p><strong>Nacimiento</strong> <span>{fechaNacimientoPreview}</span></p>
               </div>
 
               <div className="preview-help">
