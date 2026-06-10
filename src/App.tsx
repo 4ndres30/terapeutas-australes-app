@@ -11,6 +11,7 @@ import RevisionesPage from './pages/RevisionesPage'
 import DetalleRevisionesPage from './pages/DetalleRevisionesPage'
 import FinanzasPage from './pages/FinanzasPage'
 import AgendaPage from './pages/AgendaPage'
+import ReportesPage from './pages/ReportesPage'
 import LoginPage from './pages/LoginPage'
 import { supabase } from './lib/supabase'
 import './App.css'
@@ -56,7 +57,7 @@ const navegacionPrincipal: NavegacionLateral[] = [
   { etiqueta: 'Trabajos', icono: '◈', estado: 'pronto' },
   { etiqueta: 'Cobros', icono: '$', ruta: '/finanzas', estado: 'activo' },
   { etiqueta: 'Agenda', icono: '☷', ruta: '/agenda', estado: 'activo' },
-  { etiqueta: 'Reportes', icono: '↗', estado: 'pronto' },
+  { etiqueta: 'Reportes', icono: '↗', ruta: '/reportes', estado: 'activo' },
   { etiqueta: 'Configuración', icono: '⚙', estado: 'pronto' },
 ]
 
@@ -472,6 +473,20 @@ function App() {
             >
               <AppPrivada usuarioInterno={usuarioInterno!} onCerrarSesion={cerrarSesion}>
                 <AgendaPage />
+              </AppPrivada>
+            </RutaProtegida>
+          }
+        />
+        <Route
+          path="/reportes"
+          element={
+            <RutaProtegida
+              estadoAuth={estadoAuth}
+              usuarioInterno={usuarioInterno}
+              rolesPermitidos={['admin', 'terapeuta', 'finanzas']}
+            >
+              <AppPrivada usuarioInterno={usuarioInterno!} onCerrarSesion={cerrarSesion}>
+                <ReportesPage />
               </AppPrivada>
             </RutaProtegida>
           }
