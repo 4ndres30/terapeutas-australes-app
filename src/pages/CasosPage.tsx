@@ -1,6 +1,7 @@
 import type { FormEvent } from 'react'
 import { useEffect, useMemo, useState } from 'react'
 import { supabase } from '../lib/supabase'
+import './CasosPage.css'
 
 type Paciente = {
   id: string
@@ -175,7 +176,7 @@ function CasosPage() {
   }, [])
 
   return (
-    <main className="pacientes-shell pacientes-shell--command">
+    <main className="pacientes-shell pacientes-shell--command casos-page">
       <section className="pacientes-command-topbar">
         <div className="pacientes-command-title">
           <span className="modulo-badge">Módulo clínico</span>
