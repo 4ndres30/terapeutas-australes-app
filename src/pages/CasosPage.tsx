@@ -121,7 +121,7 @@ function mapearCasoDesdeSupabase(row: CasoRow, pacientes: Paciente[]): CasoVista
     ?? row.observaciones
     ?? row['Observaciones Generales'],
   )
-  const pacienteId = obtenerString(row.paciente_id ?? row['Untitled Dropdown'])
+  const pacienteId = obtenerString(row.paciente_id ?? row.untitled_dropdown ?? row['Untitled Dropdown'])
   const paciente = pacientes.find((item) => item.id === pacienteId)
   const pacienteNombre = obtenerNombrePaciente(paciente) !== 'Paciente sin seleccionar'
     ? obtenerNombrePaciente(paciente)
@@ -132,10 +132,10 @@ function mapearCasoDesdeSupabase(row: CasoRow, pacientes: Paciente[]): CasoVista
     codigo_caso: obtenerString(row.codigo_caso ?? row.codigo ?? row['Codigo Caso'] ?? row['Código Caso'], 'Sin código'),
     paciente_id: pacienteId,
     paciente_nombre: pacienteNombre,
-    titulo: obtenerString(row.nombre_caso ?? row.titulo ?? row['Nombre del Caso'] ?? row['Combre del Caso'], 'Caso sin título'),
+    titulo: obtenerString(row.nombre_caso ?? row.combre_del_caso ?? row.titulo ?? row['Nombre del Caso'] ?? row['Combre del Caso'], 'Caso sin título'),
     motivo: obtenerString(row.motivo_principal ?? row.motivo ?? row['Motivo Principal'], 'Sin motivo registrado'),
-    area_principal: obtenerString(row.tipo_caso ?? row.area_principal ?? row['Tipo de Caso'], 'Sin área'),
-    estado: normalizarEstadoCaso(row.estado_caso ?? row.estado ?? row['Estado del Caso']),
+    area_principal: obtenerString(row.tipo_caso ?? row.tipo_de_caso ?? row.area_principal ?? row['Tipo de Caso'], 'Sin área'),
+    estado: normalizarEstadoCaso(row.estado_caso ?? row.estado_del_caso ?? row.estado ?? row['Estado del Caso']),
     prioridad: obtenerString(row.prioridad ?? row['Prioridad'], 'normal'),
     seguimiento: obtenerString(row.seguimiento ?? row['Seguimiento'], 'pendiente'),
     observaciones_generales: observaciones,
@@ -167,6 +167,28 @@ function crearPayloadAppSheet(
   }
 }
 
+function crearPayloadSnakeCaseTablaCasos(
+  formulario: FormularioCaso,
+  pacienteNombre: string,
+  codigoCaso: string,
+  fechaApertura: string,
+  observaciones: string,
+  incluirPaciente = true,
+) {
+  return {
+    codigo_caso: codigoCaso,
+    ...(incluirPaciente ? { untitled_dropdown: formulario.paciente_id } : {}),
+    combre_del_caso: formulario.titulo.trim(),
+    fecha_apertura: fechaApertura,
+    motivo_principal: formulario.motivo.trim(),
+    tipo_de_caso: formulario.area_principal.trim(),
+    estado_del_caso: obtenerEtiquetaEstado(formulario.estado),
+    prioridad: formulario.prioridad,
+    seguimiento: formulario.seguimiento,
+    observaciones_generales: observaciones || `Paciente asociado: ${pacienteNombre}`,
+  }
+}
+
 function crearPayloadsCaso(formulario: FormularioCaso, paciente?: Paciente) {
   const codigoCaso = generarCodigoCaso()
   const pacienteNombre = obtenerNombrePaciente(paciente)
@@ -177,6 +199,8 @@ function crearPayloadsCaso(formulario: FormularioCaso, paciente?: Paciente) {
   ].filter(Boolean).join(' | ')
 
   return [
+    crearPayloadSnakeCaseTablaCasos(formulario, pacienteNombre, codigoCaso, fechaApertura, observaciones),
+    crearPayloadSnakeCaseTablaCasos(formulario, pacienteNombre, codigoCaso, fechaApertura, observaciones, false),
     {
       codigo_caso: codigoCaso,
       nombre_caso: formulario.titulo.trim(),
