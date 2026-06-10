@@ -9,6 +9,7 @@ import CasosPage from './pages/CasosPage'
 import ElementosCasoPage from './pages/ElementosCasoPage'
 import RevisionesPage from './pages/RevisionesPage'
 import DetalleRevisionesPage from './pages/DetalleRevisionesPage'
+import FinanzasPage from './pages/FinanzasPage'
 import LoginPage from './pages/LoginPage'
 import { supabase } from './lib/supabase'
 import './App.css'
@@ -52,7 +53,7 @@ const navegacionPrincipal: NavegacionLateral[] = [
   { etiqueta: 'Revisiones', icono: '◎', ruta: '/revisiones', estado: 'activo' },
   { etiqueta: 'Detalle revisión', icono: '◌', ruta: '/detalle-revisiones', estado: 'activo' },
   { etiqueta: 'Trabajos', icono: '◈', estado: 'pronto' },
-  { etiqueta: 'Cobros', icono: '$', estado: 'pronto' },
+  { etiqueta: 'Cobros', icono: '$', ruta: '/finanzas', estado: 'activo' },
   { etiqueta: 'Agenda', icono: '☷', estado: 'pronto' },
   { etiqueta: 'Reportes', icono: '↗', estado: 'pronto' },
   { etiqueta: 'Configuración', icono: '⚙', estado: 'pronto' },
@@ -187,16 +188,6 @@ function DashboardShell({ usuarioInterno, onCerrarSesion, children }: {
         {children}
       </main>
     </div>
-  )
-}
-
-function MensajeModuloFinanzas() {
-  return (
-    <section className="dashboard-placeholder-card">
-      <span>Módulo financiero</span>
-      <h1>Finanzas aún no está implementado</h1>
-      <p>Tu usuario puede iniciar sesión, pero este módulo se activará en una etapa posterior.</p>
-    </section>
   )
 }
 
@@ -464,9 +455,9 @@ function App() {
               usuarioInterno={usuarioInterno}
               rolesPermitidos={['finanzas']}
             >
-              <DashboardShell usuarioInterno={usuarioInterno!} onCerrarSesion={cerrarSesion}>
-                <MensajeModuloFinanzas />
-              </DashboardShell>
+              <AppPrivada usuarioInterno={usuarioInterno!} onCerrarSesion={cerrarSesion}>
+                <FinanzasPage />
+              </AppPrivada>
             </RutaProtegida>
           }
         />
