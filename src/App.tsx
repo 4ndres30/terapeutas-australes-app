@@ -3,6 +3,7 @@ import type { ReactNode } from 'react'
 import type { Session } from '@supabase/supabase-js'
 import { BrowserRouter, Navigate, NavLink, Route, Routes } from 'react-router-dom'
 import PacientesPage from './pages/PacientesPage'
+import ConsultasPage from './pages/ConsultasPage'
 import CasosPage from './pages/CasosPage'
 import LoginPage from './pages/LoginPage'
 import { supabase } from './lib/supabase'
@@ -40,7 +41,7 @@ const rolesValidos: RolUsuario[] = ['admin', 'terapeuta', 'finanzas']
 const navegacionPrincipal: NavegacionLateral[] = [
   { etiqueta: 'Inicio', icono: '⌂', estado: 'pronto' },
   { etiqueta: 'Pacientes', icono: '♙', ruta: '/pacientes', estado: 'activo' },
-  { etiqueta: 'Consultas', icono: '✧', estado: 'pronto' },
+  { etiqueta: 'Consultas', icono: '✧', ruta: '/consultas', estado: 'activo' },
   { etiqueta: 'Evaluaciones', icono: '□', estado: 'pronto' },
   { etiqueta: 'Casos', icono: '◇', ruta: '/casos', estado: 'activo' },
   { etiqueta: 'Trabajos', icono: '◈', estado: 'pronto' },
@@ -360,6 +361,20 @@ function App() {
             >
               <AppPrivada usuarioInterno={usuarioInterno!} onCerrarSesion={cerrarSesion}>
                 <PacientesPage />
+              </AppPrivada>
+            </RutaProtegida>
+          }
+        />
+        <Route
+          path="/consultas"
+          element={
+            <RutaProtegida
+              estadoAuth={estadoAuth}
+              usuarioInterno={usuarioInterno}
+              rolesPermitidos={['admin', 'terapeuta']}
+            >
+              <AppPrivada usuarioInterno={usuarioInterno!} onCerrarSesion={cerrarSesion}>
+                <ConsultasPage />
               </AppPrivada>
             </RutaProtegida>
           }
