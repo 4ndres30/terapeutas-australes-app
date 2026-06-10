@@ -1,0 +1,112 @@
+/* Elegant typography layer for Terapeutas Australes.
+   Reduces heavy/bold weights to a calmer, formal and modern visual tone. */
+
+.dashboard-shell,
+.pacientes-shell {
+  font-weight: 400;
+}
+
+.dashboard-shell strong,
+.dashboard-shell h1,
+.dashboard-shell h2,
+.dashboard-shell h3,
+.dashboard-shell h4,
+.dashboard-shell button,
+.dashboard-shell label,
+.dashboard-shell dt,
+.dashboard-shell .panel-kicker,
+.dashboard-shell .modulo-badge,
+.dashboard-shell .estado-badge,
+.dashboard-shell .chip,
+.dashboard-shell .selector-chip,
+.dashboard-shell .mensaje {
+  font-weight: 560;
+}
+
+.dashboard-main .pacientes-command-title h1 {
+  font-weight: 560;
+  letter-spacing: -0.035em;
+}
+
+.dashboard-main .pacientes-command-title p,
+.dashboard-topbar p,
+.sidebar-quote p,
+.form-section p,
+.preview-heading p,
+.preview-help {
+  font-weight: 400;
+}
+
+.sidebar-brand strong,
+.sidebar-nav-item,
+.sidebar-footer,
+.sidebar-status,
+.dashboard-userbar__meta strong,
+.dashboard-userbar__meta span {
+  font-weight: 500;
+}
+
+.dashboard-eyebrow,
+.panel-kicker,
+.modulo-badge,
+.preview-heading span,
+.preview-data strong,
+.paciente-card__details dt {
+  font-weight: 560;
+  letter-spacing: 0.08em;
+}
+
+.dashboard-main .metrica-rail-card strong {
+  font-weight: 540;
+  letter-spacing: -0.035em;
+}
+
+.dashboard-main .metrica-rail-card span:not(.metrica-icon),
+.dashboard-main .metrica-rail-card p {
+  font-weight: 430;
+}
+
+.dashboard-main .panel-heading--compact h2,
+.dashboard-main .form-panel-header--command h2,
+.dashboard-main .formulario-ficha--command .form-section h3,
+.dashboard-main .preview-paciente--command .preview-heading h3,
+.dashboard-main .paciente-card--compact h3 {
+  font-weight: 560;
+  letter-spacing: -0.018em;
+}
+
+.dashboard-main .panel-heading--compact > strong,
+.dashboard-main .metrica-rail-card .metrica-icon,
+.dashboard-main .form-panel-header--command .form-panel-icon,
+.dashboard-main .paciente-card--compact .paciente-avatar,
+.dashboard-main .preview-paciente--command .preview-avatar,
+.dashboard-userbar__avatar,
+.dashboard-notification strong,
+.sidebar-logo {
+  font-weight: 560;
+}
+
+.dashboard-main .buscador-pacientes--compact,
+.dashboard-main .form-grid--command label,
+.chip-field > span {
+  font-weight: 500;
+}
+
+.dashboard-main .filtros-rapidos--compact .chip,
+.dashboard-main .selector-chips--command .selector-chip,
+.dashboard-main .guardar-paciente {
+  font-weight: 560;
+}
+
+.dashboard-main .paciente-card__details--inline dd,
+.dashboard-main .preview-data--command p {
+  font-weight: 400;
+}
+
+.dashboard-main input {
+  font-weight: 400;
+}
+
+.dashboard-main input::placeholder {
+  font-weight: 400;
+}
