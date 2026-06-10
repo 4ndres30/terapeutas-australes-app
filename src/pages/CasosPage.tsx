@@ -116,8 +116,12 @@ function obtenerPacienteDesdeObservacion(observaciones: string) {
 }
 
 function mapearCasoDesdeSupabase(row: CasoRow, pacientes: Paciente[]): CasoVista {
-  const observaciones = obtenerString(row.observaciones_generales ?? row.observaciones)
-  const pacienteId = obtenerString(row.paciente_id)
+  const observaciones = obtenerString(
+    row.observaciones_generales
+    ?? row.observaciones
+    ?? row['Observaciones Generales'],
+  )
+  const pacienteId = obtenerString(row.paciente_id ?? row['Untitled Dropdown'])
   const paciente = pacientes.find((item) => item.id === pacienteId)
   const pacienteNombre = obtenerNombrePaciente(paciente) !== 'Paciente sin seleccionar'
     ? obtenerNombrePaciente(paciente)
@@ -125,17 +129,41 @@ function mapearCasoDesdeSupabase(row: CasoRow, pacientes: Paciente[]): CasoVista
 
   return {
     id: obtenerString(row.id, crypto.randomUUID()),
-    codigo_caso: obtenerString(row.codigo_caso, obtenerString(row.codigo, 'Sin código')),
+    codigo_caso: obtenerString(row.codigo_caso ?? row.codigo ?? row['Codigo Caso'] ?? row['Código Caso'], 'Sin código'),
     paciente_id: pacienteId,
     paciente_nombre: pacienteNombre,
-    titulo: obtenerString(row.nombre_caso ?? row.titulo, 'Caso sin título'),
-    motivo: obtenerString(row.motivo_principal ?? row.motivo, 'Sin motivo registrado'),
-    area_principal: obtenerString(row.tipo_caso ?? row.area_principal, 'Sin área'),
-    estado: normalizarEstadoCaso(row.estado_caso ?? row.estado),
-    prioridad: obtenerString(row.prioridad, 'normal'),
-    seguimiento: obtenerString(row.seguimiento, 'pendiente'),
+    titulo: obtenerString(row.nombre_caso ?? row.titulo ?? row['Nombre del Caso'] ?? row['Combre del Caso'], 'Caso sin título'),
+    motivo: obtenerString(row.motivo_principal ?? row.motivo ?? row['Motivo Principal'], 'Sin motivo registrado'),
+    area_principal: obtenerString(row.tipo_caso ?? row.area_principal ?? row['Tipo de Caso'], 'Sin área'),
+    estado: normalizarEstadoCaso(row.estado_caso ?? row.estado ?? row['Estado del Caso']),
+    prioridad: obtenerString(row.prioridad ?? row['Prioridad'], 'normal'),
+    seguimiento: obtenerString(row.seguimiento ?? row['Seguimiento'], 'pendiente'),
     observaciones_generales: observaciones,
-    fecha_apertura: obtenerString(row.fecha_apertura ?? row.created_at, ''),
+    fecha_apertura: obtenerString(row.fecha_apertura ?? row.created_at ?? row['Fecha Apertura'], ''),
+  }
+}
+
+function crearPayloadAppSheet(
+  codigoKey: 'Codigo Caso' | 'Código Caso',
+  tituloKey: 'Nombre del Caso' | 'Combre del Caso',
+  formulario: FormularioCaso,
+  pacienteNombre: string,
+  codigoCaso: string,
+  fechaApertura: string,
+  observaciones: string,
+  incluirPaciente = true,
+) {
+  return {
+    [codigoKey]: codigoCaso,
+    ...(incluirPaciente ? { 'Untitled Dropdown': formulario.paciente_id } : {}),
+    [tituloKey]: formulario.titulo.trim(),
+    'Fecha Apertura': fechaApertura,
+    'Motivo Principal': formulario.motivo.trim(),
+    'Tipo de Caso': formulario.area_principal.trim(),
+    'Estado del Caso': obtenerEtiquetaEstado(formulario.estado),
+    Prioridad: formulario.prioridad,
+    Seguimiento: formulario.seguimiento,
+    'Observaciones Generales': observaciones || `Paciente asociado: ${pacienteNombre}`,
   }
 }
 
@@ -171,6 +199,11 @@ function crearPayloadsCaso(formulario: FormularioCaso, paciente?: Paciente) {
       seguimiento: formulario.seguimiento,
       observaciones: observaciones,
     },
+    crearPayloadAppSheet('Codigo Caso', 'Nombre del Caso', formulario, pacienteNombre, codigoCaso, fechaApertura, observaciones),
+    crearPayloadAppSheet('Código Caso', 'Nombre del Caso', formulario, pacienteNombre, codigoCaso, fechaApertura, observaciones),
+    crearPayloadAppSheet('Codigo Caso', 'Nombre del Caso', formulario, pacienteNombre, codigoCaso, fechaApertura, observaciones, false),
+    crearPayloadAppSheet('Código Caso', 'Nombre del Caso', formulario, pacienteNombre, codigoCaso, fechaApertura, observaciones, false),
+    crearPayloadAppSheet('Codigo Caso', 'Combre del Caso', formulario, pacienteNombre, codigoCaso, fechaApertura, observaciones, false),
   ]
 }
 
