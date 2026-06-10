@@ -146,6 +146,41 @@
   grid-template-columns: 1fr;
 }
 
+.casos-page .paciente-card--compact {
+  position: relative;
+}
+
+.casos-page .paciente-card__body {
+  min-width: 0;
+}
+
+.casos-page .abrir-ficha-caso {
+  align-self: flex-end;
+  background: rgba(123, 66, 28, 0.92);
+  border: 1px solid rgba(123, 66, 28, 0.16);
+  border-radius: 999px;
+  box-shadow: 0 10px 24px rgba(123, 66, 28, 0.14);
+  color: #fffaf4;
+  display: inline-flex;
+  font-size: 12px;
+  font-weight: 700;
+  justify-content: center;
+  line-height: 1;
+  margin-left: auto;
+  margin-top: 10px;
+  min-height: 34px;
+  padding: 10px 14px;
+  text-decoration: none;
+  transition: transform 160ms ease, box-shadow 160ms ease, background 160ms ease;
+  width: fit-content;
+}
+
+.casos-page .abrir-ficha-caso:hover {
+  background: #8b4d22;
+  box-shadow: 0 14px 28px rgba(123, 66, 28, 0.18);
+  transform: translateY(-1px);
+}
+
 .casos-inline-note {
   background: rgba(255, 243, 207, 0.68);
   border: 1px solid rgba(201, 154, 46, 0.22);
@@ -196,5 +231,10 @@
   .casos-page .preview-paciente--command .preview-data--command span {
     flex: initial;
     text-align: left;
+  }
+
+  .casos-page .abrir-ficha-caso {
+    align-self: stretch;
+    width: 100%;
   }
 }
