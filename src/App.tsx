@@ -8,6 +8,7 @@ import { supabase } from './lib/supabase'
 import './App.css'
 import './DashboardPremium.css'
 import './TypographyElegant.css'
+import './ReferencePolish.css'
 
 type RolUsuario = 'admin' | 'terapeuta' | 'finanzas'
 
