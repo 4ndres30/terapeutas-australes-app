@@ -147,6 +147,16 @@
   width: 50px;
 }
 
+.dashboard-main .metrica-rail-card .metrica-icon svg {
+  fill: none;
+  height: 26px;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.8;
+  width: 26px;
+}
+
 .dashboard-main .metrica-rail-card:nth-child(2) .metrica-icon {
   background: linear-gradient(135deg, #e6fff2, #bff0d6);
   color: #12a765;
@@ -228,6 +238,10 @@
 }
 
 .form-stepper__item {
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+  font: inherit;
   min-height: 38px;
 }
 
@@ -252,6 +266,41 @@
 
 .dashboard-main .formulario-ficha--command .form-section h3 {
   color: var(--ta-ink);
+}
+
+.form-section--summary {
+  align-items: center;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  text-align: left;
+  width: 100%;
+}
+
+.form-section--summary:hover {
+  border-color: rgba(109, 63, 211, 0.22);
+  transform: translateY(-1px);
+}
+
+.form-section--summary-azul {
+  background: linear-gradient(135deg, rgba(232, 242, 255, 0.92), rgba(246, 250, 255, 0.84)) !important;
+}
+
+.form-section--summary-dorado {
+  background: linear-gradient(135deg, rgba(255, 246, 226, 0.94), rgba(255, 252, 245, 0.86)) !important;
+}
+
+.form-section--summary-verde {
+  background: linear-gradient(135deg, rgba(230, 255, 242, 0.92), rgba(248, 255, 251, 0.86)) !important;
+}
+
+.form-section__chevron {
+  align-items: center;
+  color: var(--ta-violet-deep);
+  display: inline-flex;
+  font-size: 18px;
+  justify-content: center;
+  min-width: 28px;
 }
 
 .dashboard-main .form-grid--command {
@@ -305,14 +354,14 @@
   align-items: center;
   display: grid;
   gap: 8px;
-  grid-template-columns: 18px 54px minmax(0, 1fr);
+  grid-template-columns: 18px 82px minmax(0, 1fr);
   text-align: left;
 }
 
 .dashboard-main .preview-data--command p::before {
   color: var(--ta-violet-deep);
   content: '•';
-  font-size: 16px;
+  font-size: 15px;
   line-height: 1;
   text-align: center;
 }
@@ -322,6 +371,12 @@
 .dashboard-main .preview-data--command p:nth-child(3)::before { content: '⌖'; }
 .dashboard-main .preview-data--command p:nth-child(4)::before { content: '◌'; }
 .dashboard-main .preview-data--command p:nth-child(5)::before { content: '◷'; }
+
+.dashboard-main .preview-data--command strong,
+.dashboard-main .preview-data--command span {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
 
 .dashboard-main .preview-help {
   border: 1px solid rgba(109, 63, 211, 0.10);
