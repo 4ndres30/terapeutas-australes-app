@@ -31,6 +31,11 @@ type FormularioPaciente = {
   estado: string
 }
 
+type OpcionFormulario = {
+  etiqueta: string
+  valor: string
+}
+
 const formularioInicial: FormularioPaciente = {
   nombres: '',
   apellidos: '',
@@ -49,14 +54,14 @@ const filtrosEstado: { etiqueta: string; valor: FiltroEstado }[] = [
   { etiqueta: 'Inactivos', valor: 'inactivos' },
 ]
 
-const opcionesSexo = [
+const opcionesSexo: OpcionFormulario[] = [
   { etiqueta: 'Femenino', valor: 'femenino' },
   { etiqueta: 'Masculino', valor: 'masculino' },
   { etiqueta: 'Otro', valor: 'otro' },
   { etiqueta: 'Prefiere no decir', valor: 'prefiere_no_decir' },
 ]
 
-const opcionesEstado = [
+const opcionesEstado: OpcionFormulario[] = [
   { etiqueta: 'Activo', valor: 'activo' },
   { etiqueta: 'Inactivo', valor: 'inactivo' },
 ]
@@ -83,8 +88,25 @@ function obtenerIniciales(nombres: string, apellidos: string) {
   return iniciales ? iniciales.toUpperCase() : 'TA'
 }
 
+function crearFechaLocal(fecha: string) {
+  const [fechaBase] = fecha.split('T')
+  const [anio, mes, dia] = fechaBase.split('-').map(Number)
+
+  if (anio && mes && dia) {
+    return new Date(anio, mes - 1, dia)
+  }
+
+  return new Date(fecha)
+}
+
 function formatearFecha(fecha: string) {
   if (!fecha) {
+    return 'Sin fecha'
+  }
+
+  const fechaLocal = crearFechaLocal(fecha)
+
+  if (Number.isNaN(fechaLocal.getTime())) {
     return 'Sin fecha'
   }
 
@@ -92,7 +114,29 @@ function formatearFecha(fecha: string) {
     day: '2-digit',
     month: 'short',
     year: 'numeric',
-  }).format(new Date(fecha))
+  }).format(fechaLocal)
+}
+
+function obtenerEtiqueta(opciones: OpcionFormulario[], valor: string) {
+  return opciones.find((opcion) => opcion.valor === valor)?.etiqueta || ''
+}
+
+function mostrarDato(valor: string, respaldo = 'Pendiente') {
+  return valor.trim() || respaldo
+}
+
+function prepararPacienteParaGuardar(formulario: FormularioPaciente) {
+  return {
+    nombres: formulario.nombres.trim(),
+    apellidos: formulario.apellidos.trim(),
+    fecha_nacimiento: formulario.fecha_nacimiento,
+    sexo: formulario.sexo,
+    telefono: formulario.telefono.trim(),
+    email: formulario.email.trim().toLowerCase(),
+    comuna: formulario.comuna.trim(),
+    region: formulario.region.trim(),
+    estado: formulario.estado,
+  }
 }
 
 function coincideConBusqueda(paciente: Paciente, busqueda: string) {
@@ -151,6 +195,8 @@ function PacientesPage() {
 
   const nombrePreview = `${formulario.nombres} ${formulario.apellidos}`.trim()
   const ubicacionPreview = [formulario.comuna, formulario.region].filter(Boolean).join(', ')
+  const sexoPreview = obtenerEtiqueta(opcionesSexo, formulario.sexo)
+  const fechaNacimientoPreview = formulario.fecha_nacimiento ? formatearFecha(formulario.fecha_nacimiento) : 'Pendiente'
   const mensajeEsError = mensaje.toLowerCase().startsWith('error')
 
   function actualizarFormulario(campo: keyof FormularioPaciente, valor: string) {
@@ -180,17 +226,8 @@ function PacientesPage() {
     setGuardando(true)
     setMensaje('Guardando paciente...')
 
-    const { error } = await supabase.from('pacientes').insert({
-      nombres: formulario.nombres,
-      apellidos: formulario.apellidos,
-      fecha_nacimiento: formulario.fecha_nacimiento,
-      sexo: formulario.sexo,
-      telefono: formulario.telefono,
-      email: formulario.email,
-      comuna: formulario.comuna,
-      region: formulario.region,
-      estado: formulario.estado,
-    })
+    const pacienteParaGuardar = prepararPacienteParaGuardar(formulario)
+    const { error } = await supabase.from('pacientes').insert(pacienteParaGuardar)
 
     if (error) {
       setMensaje(`Error al guardar: ${error.message}`)
@@ -275,7 +312,9 @@ function PacientesPage() {
           <label className="buscador-pacientes buscador-pacientes--compact">
             <span>Buscar</span>
             <input
+              autoComplete="off"
               placeholder="Nombre, email, teléfono, comuna o región"
+              type="search"
               value={busqueda}
               onChange={(event) => setBusqueda(event.target.value)}
             />
@@ -284,6 +323,7 @@ function PacientesPage() {
           <div className="filtros-rapidos filtros-rapidos--compact" aria-label="Filtros rápidos de pacientes">
             {filtrosEstado.map((filtro) => (
               <button
+                aria-pressed={filtroEstado === filtro.valor}
                 className={filtroEstado === filtro.valor ? 'chip chip--activo' : 'chip'}
                 key={filtro.valor}
                 onClick={() => setFiltroEstado(filtro.valor)}
@@ -324,22 +364,22 @@ function PacientesPage() {
                         <span>Registrado el {formatearFecha(paciente.created_at)}</span>
                       </div>
                       <span className={`estado-badge estado-badge--${paciente.estado}`}>
-                        {paciente.estado}
+                        {obtenerEtiqueta(opcionesEstado, paciente.estado) || paciente.estado}
                       </span>
                     </div>
 
                     <dl className="paciente-card__details paciente-card__details--inline">
                       <div>
                         <dt>Tel.</dt>
-                        <dd>{paciente.telefono}</dd>
+                        <dd>{mostrarDato(paciente.telefono, 'Sin teléfono')}</dd>
                       </div>
                       <div>
                         <dt>Email</dt>
-                        <dd>{paciente.email}</dd>
+                        <dd>{mostrarDato(paciente.email, 'Sin email')}</dd>
                       </div>
                       <div>
                         <dt>Zona</dt>
-                        <dd>{paciente.comuna}, {paciente.region}</dd>
+                        <dd>{mostrarDato([paciente.comuna, paciente.region].filter(Boolean).join(', '), 'Sin ubicación')}</dd>
                       </div>
                     </dl>
                   </div>
@@ -380,6 +420,8 @@ function PacientesPage() {
                   <label>
                     Nombres *
                     <input
+                      autoComplete="given-name"
+                      disabled={guardando}
                       placeholder="Ej: Catalina Belén"
                       value={formulario.nombres}
                       onChange={(event) => actualizarFormulario('nombres', event.target.value)}
@@ -390,6 +432,8 @@ function PacientesPage() {
                   <label>
                     Apellidos *
                     <input
+                      autoComplete="family-name"
+                      disabled={guardando}
                       placeholder="Ej: Troncoso Caro"
                       value={formulario.apellidos}
                       onChange={(event) => actualizarFormulario('apellidos', event.target.value)}
@@ -400,6 +444,7 @@ function PacientesPage() {
                   <label>
                     Fecha de nacimiento *
                     <input
+                      disabled={guardando}
                       type="date"
                       value={formulario.fecha_nacimiento}
                       onChange={(event) => actualizarFormulario('fecha_nacimiento', event.target.value)}
@@ -418,6 +463,7 @@ function PacientesPage() {
                       >
                         <input
                           checked={formulario.sexo === opcion.valor}
+                          disabled={guardando}
                           name="sexo"
                           onChange={(event) => actualizarFormulario('sexo', event.target.value)}
                           required
@@ -444,7 +490,10 @@ function PacientesPage() {
                   <label>
                     Teléfono *
                     <input
+                      autoComplete="tel"
+                      disabled={guardando}
                       placeholder="Ej: +56 9 1234 5678"
+                      type="tel"
                       value={formulario.telefono}
                       onChange={(event) => actualizarFormulario('telefono', event.target.value)}
                       required
@@ -454,6 +503,8 @@ function PacientesPage() {
                   <label>
                     Email *
                     <input
+                      autoComplete="email"
+                      disabled={guardando}
                       placeholder="Ej: paciente@correo.cl"
                       type="email"
                       value={formulario.email}
@@ -477,6 +528,8 @@ function PacientesPage() {
                   <label>
                     Comuna *
                     <input
+                      autoComplete="address-level2"
+                      disabled={guardando}
                       placeholder="Ej: Castro"
                       value={formulario.comuna}
                       onChange={(event) => actualizarFormulario('comuna', event.target.value)}
@@ -487,6 +540,8 @@ function PacientesPage() {
                   <label>
                     Región *
                     <input
+                      autoComplete="address-level1"
+                      disabled={guardando}
                       placeholder="Ej: Los Lagos"
                       value={formulario.region}
                       onChange={(event) => actualizarFormulario('region', event.target.value)}
@@ -513,6 +568,7 @@ function PacientesPage() {
                     >
                       <input
                         checked={formulario.estado === opcion.valor}
+                        disabled={guardando}
                         name="estado"
                         onChange={(event) => actualizarFormulario('estado', event.target.value)}
                         required
@@ -542,14 +598,15 @@ function PacientesPage() {
               </div>
 
               <span className={`estado-badge estado-badge--${formulario.estado}`}>
-                {formulario.estado}
+                {obtenerEtiqueta(opcionesEstado, formulario.estado) || formulario.estado}
               </span>
 
               <div className="preview-data preview-data--command">
-                <p><strong>Tel.</strong> {formulario.telefono || 'Pendiente'}</p>
-                <p><strong>Email</strong> {formulario.email || 'Pendiente'}</p>
-                <p><strong>Zona</strong> {ubicacionPreview || 'Pendiente'}</p>
-                <p><strong>Nacimiento</strong> {formulario.fecha_nacimiento || 'Pendiente'}</p>
+                <p><strong>Tel.</strong> {mostrarDato(formulario.telefono)}</p>
+                <p><strong>Email</strong> {mostrarDato(formulario.email)}</p>
+                <p><strong>Zona</strong> {mostrarDato(ubicacionPreview)}</p>
+                <p><strong>Sexo</strong> {sexoPreview || 'Pendiente'}</p>
+                <p><strong>Nacimiento</strong> {fechaNacimientoPreview}</p>
               </div>
 
               <div className="preview-help">
