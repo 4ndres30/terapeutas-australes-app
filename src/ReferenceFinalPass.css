@@ -1,0 +1,343 @@
+/* Final visual pass for Pacientes.
+   Goal: closer match to the reference dashboard without touching data, auth or migrations. */
+
+:root {
+  --ta-ink: #150927;
+  --ta-ink-soft: #433158;
+  --ta-muted: #746582;
+  --ta-violet: #6d3fd3;
+  --ta-violet-deep: #4d2074;
+  --ta-gold: #d49b2d;
+  --ta-line: rgba(85, 55, 125, 0.12);
+  --ta-panel: rgba(255, 255, 255, 0.92);
+}
+
+.dashboard-shell {
+  background:
+    radial-gradient(circle at 73% 5%, rgba(255, 245, 223, 0.95), transparent 24%),
+    radial-gradient(circle at 96% 13%, rgba(229, 219, 255, 0.48), transparent 22%),
+    linear-gradient(135deg, #fbf3e8 0%, #fffaf2 44%, #f6f0ff 100%);
+}
+
+.dashboard-main {
+  gap: 12px;
+  padding: 20px 28px 24px;
+}
+
+.dashboard-topbar {
+  min-height: 38px;
+}
+
+.dashboard-userbar__avatar,
+.dashboard-notification {
+  height: 42px;
+  width: 42px;
+}
+
+.dashboard-userbar__meta strong {
+  color: var(--ta-ink);
+  letter-spacing: -0.01em;
+}
+
+.dashboard-sidebar {
+  box-shadow: inset -1px 0 0 rgba(255, 255, 255, 0.08), 16px 0 34px rgba(32, 16, 51, 0.16);
+}
+
+.sidebar-logo {
+  border-color: rgba(232, 196, 106, 0.94);
+  border-radius: 16px;
+}
+
+.sidebar-nav-item {
+  color: rgba(255, 255, 255, 0.76);
+}
+
+.sidebar-nav-item--active {
+  color: #ffffff;
+}
+
+.dashboard-main .pacientes-command-topbar {
+  align-items: end;
+  gap: 18px;
+  grid-template-columns: minmax(300px, 0.44fr) minmax(780px, 1.56fr);
+}
+
+.dashboard-main .pacientes-command-title {
+  padding-bottom: 2px;
+}
+
+.dashboard-main .pacientes-command-title .modulo-badge {
+  background: rgba(255, 255, 255, 0.72);
+  border-color: rgba(109, 63, 211, 0.14);
+  box-shadow: 0 8px 18px rgba(53, 28, 86, 0.045);
+  color: #5b2c83;
+  font-size: 9px;
+  font-weight: 520;
+  letter-spacing: 0.08em;
+  margin-bottom: 12px;
+}
+
+.dashboard-main .pacientes-command-title h1 {
+  color: var(--ta-ink);
+  font-size: clamp(38px, 3vw, 50px);
+  font-weight: 510;
+  letter-spacing: -0.045em;
+  line-height: 0.98;
+}
+
+.dashboard-main .pacientes-command-title p {
+  color: #4f438d;
+  font-size: 15px;
+  max-width: 540px;
+}
+
+.dashboard-main .pacientes-metricas-rail {
+  gap: 16px;
+}
+
+.dashboard-main .metrica-rail-card {
+  border: 1px solid rgba(85, 55, 125, 0.10);
+  border-radius: 22px;
+  min-height: 96px;
+  overflow: hidden;
+  padding: 18px 70px 18px 20px;
+  position: relative;
+}
+
+.dashboard-main .metrica-rail-card::after {
+  background:
+    linear-gradient(135deg, transparent 0 14%, rgba(109, 63, 211, 0.18) 14% 17%, transparent 17% 32%, rgba(109, 63, 211, 0.32) 32% 35%, transparent 35% 49%, rgba(109, 63, 211, 0.22) 49% 52%, transparent 52% 66%, rgba(109, 63, 211, 0.34) 66% 69%, transparent 69% 100%);
+  border-radius: 999px;
+  bottom: 22px;
+  content: '';
+  height: 34px;
+  opacity: 0.72;
+  position: absolute;
+  right: 18px;
+  width: 58px;
+}
+
+.dashboard-main .metrica-rail-card::before {
+  background: rgba(109, 63, 211, 0.07);
+  border-radius: 999px;
+  bottom: 31px;
+  content: '';
+  height: 10px;
+  position: absolute;
+  right: 18px;
+  width: 62px;
+}
+
+.dashboard-main .metrica-rail-card:nth-child(2)::after {
+  background: linear-gradient(135deg, transparent 0 16%, rgba(28, 173, 102, 0.18) 16% 19%, transparent 19% 34%, rgba(28, 173, 102, 0.32) 34% 37%, transparent 37% 54%, rgba(28, 173, 102, 0.22) 54% 57%, transparent 57% 72%, rgba(28, 173, 102, 0.35) 72% 75%, transparent 75% 100%);
+}
+
+.dashboard-main .metrica-rail-card:nth-child(3)::after {
+  background: linear-gradient(135deg, transparent 0 16%, rgba(225, 44, 103, 0.16) 16% 19%, transparent 19% 36%, rgba(225, 44, 103, 0.30) 36% 39%, transparent 39% 52%, rgba(225, 44, 103, 0.22) 52% 55%, transparent 55% 70%, rgba(225, 44, 103, 0.34) 70% 73%, transparent 73% 100%);
+}
+
+.dashboard-main .metrica-rail-card:nth-child(4)::after {
+  background: linear-gradient(135deg, transparent 0 16%, rgba(212, 155, 45, 0.18) 16% 19%, transparent 19% 36%, rgba(212, 155, 45, 0.32) 36% 39%, transparent 39% 55%, rgba(212, 155, 45, 0.22) 55% 58%, transparent 58% 72%, rgba(212, 155, 45, 0.35) 72% 75%, transparent 75% 100%);
+}
+
+.dashboard-main .metrica-rail-card .metrica-icon {
+  background: linear-gradient(135deg, #6d3fd3, #8f59ef 72%, #d6b4ff);
+  color: #ffffff;
+  height: 50px;
+  width: 50px;
+}
+
+.dashboard-main .metrica-rail-card:nth-child(2) .metrica-icon {
+  background: linear-gradient(135deg, #e6fff2, #bff0d6);
+  color: #12a765;
+}
+
+.dashboard-main .metrica-rail-card:nth-child(3) .metrica-icon {
+  background: linear-gradient(135deg, #ffe8f0, #ffd1df);
+  color: #d92d65;
+}
+
+.dashboard-main .metrica-rail-card:nth-child(4) .metrica-icon {
+  background: linear-gradient(135deg, #fff3d6, #ffe0a3);
+  color: #c38316;
+}
+
+.dashboard-main .metrica-rail-card strong {
+  color: var(--ta-ink);
+  font-size: 28px;
+  line-height: 1;
+}
+
+.dashboard-main .pacientes-command-grid {
+  gap: 18px;
+  grid-template-columns: minmax(430px, 0.77fr) minmax(820px, 1.43fr);
+}
+
+.dashboard-main .pacientes-directory-panel,
+.dashboard-main .pacientes-intake-panel {
+  background: rgba(255, 255, 255, 0.91);
+  border-radius: 24px;
+  padding: 18px;
+}
+
+.dashboard-main .panel-heading--compact,
+.dashboard-main .form-panel-header--command {
+  align-items: center;
+}
+
+.dashboard-main .panel-kicker {
+  color: var(--ta-gold);
+  font-size: 10px;
+  font-weight: 520;
+}
+
+.dashboard-main .panel-heading--compact h2,
+.dashboard-main .form-panel-header--command h2 {
+  color: var(--ta-ink);
+  font-size: 19px;
+}
+
+.dashboard-main .paciente-card--compact {
+  grid-template-columns: 50px minmax(0, 1fr);
+  padding: 13px 14px;
+}
+
+.dashboard-main .paciente-card--compact .paciente-avatar {
+  height: 50px;
+  width: 50px;
+}
+
+.dashboard-main .paciente-card--compact h3 {
+  color: var(--ta-ink);
+  font-size: 14px;
+}
+
+.paciente-card__contact-line,
+.paciente-card__footer-line {
+  font-size: 11px;
+}
+
+.estado-badge {
+  letter-spacing: 0.06em;
+}
+
+.form-stepper {
+  background: rgba(250, 247, 255, 0.78);
+  border-radius: 22px;
+  padding: 8px;
+}
+
+.form-stepper__item {
+  min-height: 38px;
+}
+
+.form-stepper__item--activo {
+  background: rgba(109, 63, 211, 0.13);
+}
+
+.dashboard-main .formulario-ficha--command .form-section {
+  border-radius: 22px;
+  padding: 16px 17px;
+}
+
+.dashboard-main .formulario-ficha--command .form-section__header {
+  align-items: center;
+}
+
+.dashboard-main .formulario-ficha--command .form-section__header > span {
+  background: rgba(241, 233, 255, 0.95);
+  border: 1px solid rgba(109, 63, 211, 0.14);
+  color: var(--ta-violet);
+}
+
+.dashboard-main .formulario-ficha--command .form-section h3 {
+  color: var(--ta-ink);
+}
+
+.dashboard-main .form-grid--command {
+  gap: 12px;
+}
+
+.dashboard-main .form-grid--command input {
+  border-radius: 13px;
+  height: 42px;
+}
+
+.dashboard-main .selector-chips--command .selector-chip {
+  min-height: 34px;
+}
+
+.dashboard-main .preview-paciente--command {
+  background:
+    linear-gradient(180deg, rgba(255, 248, 238, 0.64), rgba(255, 255, 255, 0.97)),
+    radial-gradient(circle at 50% 32%, rgba(109, 63, 211, 0.14), transparent 28%),
+    linear-gradient(135deg, transparent 0 58%, rgba(232, 196, 106, 0.16) 58% 100%);
+  border-radius: 22px;
+  position: sticky;
+  top: 14px;
+}
+
+.dashboard-main .preview-paciente--command::before {
+  background:
+    linear-gradient(135deg, transparent 0 48%, rgba(109, 63, 211, 0.08) 49% 50%, transparent 51%),
+    linear-gradient(45deg, transparent 0 55%, rgba(232, 196, 106, 0.12) 56% 57%, transparent 58%);
+  bottom: 0;
+  content: '';
+  height: 118px;
+  left: 0;
+  opacity: 0.72;
+  pointer-events: none;
+  position: absolute;
+  right: 0;
+}
+
+.dashboard-main .preview-paciente--command > * {
+  position: relative;
+  z-index: 1;
+}
+
+.dashboard-main .preview-paciente--command .preview-avatar {
+  height: 88px;
+  width: 88px;
+}
+
+.dashboard-main .preview-data--command p {
+  align-items: center;
+  display: grid;
+  gap: 8px;
+  grid-template-columns: 18px 54px minmax(0, 1fr);
+  text-align: left;
+}
+
+.dashboard-main .preview-data--command p::before {
+  color: var(--ta-violet-deep);
+  content: '•';
+  font-size: 16px;
+  line-height: 1;
+  text-align: center;
+}
+
+.dashboard-main .preview-data--command p:nth-child(1)::before { content: '☎'; }
+.dashboard-main .preview-data--command p:nth-child(2)::before { content: '✉'; }
+.dashboard-main .preview-data--command p:nth-child(3)::before { content: '⌖'; }
+.dashboard-main .preview-data--command p:nth-child(4)::before { content: '◌'; }
+.dashboard-main .preview-data--command p:nth-child(5)::before { content: '◷'; }
+
+.dashboard-main .preview-help {
+  border: 1px solid rgba(109, 63, 211, 0.10);
+}
+
+@media (min-width: 1501px) {
+  .dashboard-main .pacientes-cards--compact {
+    max-height: calc(100vh - 390px);
+    min-height: 420px;
+  }
+}
+
+@media (max-width: 1500px) {
+  .dashboard-main .pacientes-command-topbar,
+  .dashboard-main .pacientes-command-grid,
+  .dashboard-main .intake-command-layout {
+    grid-template-columns: 1fr;
+  }
+}
