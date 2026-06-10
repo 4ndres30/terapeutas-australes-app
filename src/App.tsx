@@ -463,7 +463,7 @@ function App() {
             <RutaProtegida
               estadoAuth={estadoAuth}
               usuarioInterno={usuarioInterno}
-              rolesPermitidos={['finanzas']}
+              rolesPermitidos={['admin', 'finanzas']}
             >
               <AppPrivada usuarioInterno={usuarioInterno!} onCerrarSesion={cerrarSesion}>
                 <FinanzasPage />
