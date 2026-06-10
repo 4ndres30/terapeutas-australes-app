@@ -7,6 +7,7 @@ import LoginPage from './pages/LoginPage'
 import { supabase } from './lib/supabase'
 import './App.css'
 import './DashboardPremium.css'
+import './TypographyElegant.css'
 
 type RolUsuario = 'admin' | 'terapeuta' | 'finanzas'
 
