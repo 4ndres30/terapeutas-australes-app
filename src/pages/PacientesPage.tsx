@@ -66,6 +66,13 @@ const opcionesEstado: OpcionFormulario[] = [
   { etiqueta: 'Inactivo', valor: 'inactivo' },
 ]
 
+const pasosFicha = [
+  { numero: '1', etiqueta: 'Identidad' },
+  { numero: '2', etiqueta: 'Contacto' },
+  { numero: '3', etiqueta: 'Ubicación' },
+  { numero: '4', etiqueta: 'Estado' },
+]
+
 async function obtenerPacientes() {
   return supabase
     .from('pacientes')
@@ -198,6 +205,7 @@ function PacientesPage() {
   const sexoPreview = obtenerEtiqueta(opcionesSexo, formulario.sexo)
   const fechaNacimientoPreview = formulario.fecha_nacimiento ? formatearFecha(formulario.fecha_nacimiento) : 'Pendiente'
   const mensajeEsError = mensaje.toLowerCase().startsWith('error')
+  const cantidadVisible = pacientesFiltrados.length
 
   function actualizarFormulario(campo: keyof FormularioPaciente, valor: string) {
     setFormulario((formularioActual) => ({
@@ -306,19 +314,24 @@ function PacientesPage() {
               <span className="panel-kicker">Directorio</span>
               <h2>Pacientes registrados</h2>
             </div>
-            <strong>{pacientesFiltrados.length}</strong>
+            <strong>{cantidadVisible}</strong>
           </div>
 
-          <label className="buscador-pacientes buscador-pacientes--compact">
-            <span>Buscar</span>
-            <input
-              autoComplete="off"
-              placeholder="Nombre, email, teléfono, comuna o región"
-              type="search"
-              value={busqueda}
-              onChange={(event) => setBusqueda(event.target.value)}
-            />
-          </label>
+          <div className="directory-search-row">
+            <label className="buscador-pacientes buscador-pacientes--compact">
+              <span>Buscar</span>
+              <input
+                autoComplete="off"
+                placeholder="Nombre, email, teléfono, comuna o región"
+                type="search"
+                value={busqueda}
+                onChange={(event) => setBusqueda(event.target.value)}
+              />
+            </label>
+            <button className="directory-filter-button" type="button" aria-label="Abrir filtros avanzados">
+              ≡
+            </button>
+          </div>
 
           <div className="filtros-rapidos filtros-rapidos--compact" aria-label="Filtros rápidos de pacientes">
             {filtrosEstado.map((filtro) => (
@@ -350,42 +363,51 @@ function PacientesPage() {
               <p>Ajusta la búsqueda o cambia el filtro de estado.</p>
             </div>
           ) : (
-            <div className="pacientes-cards pacientes-cards--compact" aria-live="polite">
-              {pacientesFiltrados.map((paciente) => (
-                <article className="paciente-card paciente-card--compact" key={paciente.id}>
-                  <div className="paciente-avatar" aria-hidden="true">
-                    {obtenerIniciales(paciente.nombres, paciente.apellidos)}
-                  </div>
+            <>
+              <div className="pacientes-cards pacientes-cards--compact" aria-live="polite">
+                {pacientesFiltrados.map((paciente) => {
+                  const ubicacionPaciente = [paciente.comuna, paciente.region].filter(Boolean).join(', ')
 
-                  <div className="paciente-card__body">
-                    <div className="paciente-card__topline">
-                      <div>
-                        <h3>{paciente.nombres} {paciente.apellidos}</h3>
-                        <span>Registrado el {formatearFecha(paciente.created_at)}</span>
+                  return (
+                    <article className="paciente-card paciente-card--compact" key={paciente.id}>
+                      <div className="paciente-avatar" aria-hidden="true">
+                        {obtenerIniciales(paciente.nombres, paciente.apellidos)}
                       </div>
-                      <span className={`estado-badge estado-badge--${paciente.estado}`}>
-                        {obtenerEtiqueta(opcionesEstado, paciente.estado) || paciente.estado}
-                      </span>
-                    </div>
 
-                    <dl className="paciente-card__details paciente-card__details--inline">
-                      <div>
-                        <dt>Tel.</dt>
-                        <dd>{mostrarDato(paciente.telefono, 'Sin teléfono')}</dd>
+                      <div className="paciente-card__body">
+                        <div className="paciente-card__topline">
+                          <div>
+                            <h3>{paciente.nombres} {paciente.apellidos}</h3>
+                            <p className="paciente-card__contact-line">
+                              <span>{mostrarDato(paciente.telefono, 'Sin teléfono')}</span>
+                              <span aria-hidden="true">·</span>
+                              <span>{mostrarDato(paciente.email, 'Sin email')}</span>
+                            </p>
+                          </div>
+                          <span className={`estado-badge estado-badge--${paciente.estado}`}>
+                            {obtenerEtiqueta(opcionesEstado, paciente.estado) || paciente.estado}
+                          </span>
+                        </div>
+
+                        <div className="paciente-card__footer-line">
+                          <span>{mostrarDato(ubicacionPaciente, 'Sin ubicación')}</span>
+                          <time dateTime={paciente.created_at}>{formatearFecha(paciente.created_at)}</time>
+                        </div>
                       </div>
-                      <div>
-                        <dt>Email</dt>
-                        <dd>{mostrarDato(paciente.email, 'Sin email')}</dd>
-                      </div>
-                      <div>
-                        <dt>Zona</dt>
-                        <dd>{mostrarDato([paciente.comuna, paciente.region].filter(Boolean).join(', '), 'Sin ubicación')}</dd>
-                      </div>
-                    </dl>
-                  </div>
-                </article>
-              ))}
-            </div>
+                    </article>
+                  )
+                })}
+              </div>
+
+              <div className="directory-pagination">
+                <span>Mostrando 1 a {cantidadVisible} de {totalPacientes} pacientes</span>
+                <div aria-hidden="true">
+                  <button type="button">‹</button>
+                  <strong>1</strong>
+                  <button type="button">›</button>
+                </div>
+              </div>
+            </>
           )}
         </aside>
 
@@ -405,13 +427,22 @@ function PacientesPage() {
             </button>
           </div>
 
+          <div className="form-stepper" aria-label="Etapas de la ficha de paciente">
+            {pasosFicha.map((paso, index) => (
+              <span className={index === 0 ? 'form-stepper__item form-stepper__item--activo' : 'form-stepper__item'} key={paso.numero}>
+                <strong>{paso.numero}</strong>
+                {paso.etiqueta}
+              </span>
+            ))}
+          </div>
+
           <div className="intake-command-layout">
             <form className="formulario-ficha formulario-ficha--command" id="paciente-form" onSubmit={guardarPaciente}>
               <section className="form-section form-section--identidad">
                 <div className="form-section__header">
                   <span>01</span>
                   <div>
-                    <h3>Identidad</h3>
+                    <h3>Identidad personal</h3>
                     <p>Datos base para reconocer la ficha clínica.</p>
                   </div>
                 </div>
