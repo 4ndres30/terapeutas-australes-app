@@ -1,0 +1,195 @@
+.caso-detalle-page {
+  gap: 20px;
+}
+
+.caso-detail-hero,
+.caso-detail-section,
+.caso-detail-tabs {
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(45, 31, 18, 0.12);
+  border-radius: 28px;
+  box-shadow: 0 20px 52px rgba(83, 52, 24, 0.08);
+  padding: 24px;
+}
+
+.caso-detail-hero {
+  align-items: stretch;
+  display: grid;
+  gap: 18px;
+  grid-template-columns: minmax(0, 1.1fr) minmax(320px, 0.55fr);
+}
+
+.caso-detail-hero__copy h1,
+.caso-detail-section h2 {
+  color: var(--clinical-ink, #23190f);
+  font-size: clamp(1.55rem, 2.4vw, 2.5rem);
+  letter-spacing: -0.045em;
+  line-height: 1.05;
+  margin: 8px 0 10px;
+}
+
+.caso-detail-hero__copy p,
+.caso-section-heading p,
+.caso-info-card p,
+.caso-detail-summary dd {
+  color: var(--clinical-muted, #786d61);
+  line-height: 1.5;
+  margin: 0;
+}
+
+.caso-hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 18px;
+}
+
+.caso-back-link,
+.caso-secondary-action,
+.abrir-ficha-caso {
+  align-items: center;
+  border-radius: 999px;
+  display: inline-flex;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 800;
+  justify-content: center;
+  min-height: 42px;
+  padding: 10px 16px;
+  text-decoration: none;
+}
+
+.caso-back-link,
+.abrir-ficha-caso {
+  background: linear-gradient(135deg, #7b421c, #b4692e);
+  color: #fffaf4;
+}
+
+.caso-secondary-action {
+  background: rgba(255, 244, 224, 0.88);
+  border: 1px solid rgba(181, 124, 48, 0.22);
+  color: #6b5017;
+  cursor: pointer;
+}
+
+.caso-detail-summary {
+  background: linear-gradient(145deg, rgba(255, 250, 242, 0.96), rgba(255, 244, 227, 0.76));
+  border: 1px solid rgba(45, 31, 18, 0.12);
+  border-radius: 24px;
+  padding: 20px;
+}
+
+.caso-detail-summary dl,
+.caso-info-grid {
+  display: grid;
+  gap: 12px;
+  margin: 0;
+}
+
+.caso-detail-summary div,
+.caso-info-card {
+  background: rgba(255, 255, 255, 0.72);
+  border: 1px solid rgba(45, 31, 18, 0.08);
+  border-radius: 18px;
+  padding: 13px 14px;
+}
+
+.caso-detail-summary dt,
+.caso-info-card span {
+  color: var(--clinical-accent-strong, #6f3d1b);
+  display: block;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  margin-bottom: 6px;
+  text-transform: uppercase;
+}
+
+.caso-detail-summary dd,
+.caso-info-card strong {
+  color: var(--clinical-ink, #23190f);
+  font-size: 15px;
+  font-weight: 800;
+  margin: 0;
+}
+
+.caso-detail-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  padding: 14px;
+  position: sticky;
+  top: 12px;
+  z-index: 2;
+}
+
+.caso-detail-tabs a {
+  background: rgba(255, 244, 224, 0.78);
+  border: 1px solid rgba(181, 124, 48, 0.2);
+  border-radius: 999px;
+  color: #6b5017;
+  font-size: 12px;
+  font-weight: 800;
+  padding: 9px 12px;
+  text-decoration: none;
+}
+
+.caso-section-heading {
+  align-items: flex-start;
+  display: flex;
+  gap: 16px;
+  justify-content: space-between;
+  margin-bottom: 18px;
+}
+
+.caso-info-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.caso-origin-grid {
+  display: grid;
+  gap: 14px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.caso-detail-metrics {
+  margin-bottom: 18px;
+}
+
+.caso-panel-layout {
+  grid-template-columns: minmax(0, 0.95fr) minmax(360px, 0.75fr);
+}
+
+.abrir-ficha-caso {
+  margin-top: 12px;
+  width: fit-content;
+}
+
+@media (max-width: 1120px) {
+  .caso-detail-hero,
+  .caso-origin-grid,
+  .caso-panel-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .caso-detail-tabs {
+    position: static;
+  }
+}
+
+@media (max-width: 720px) {
+  .caso-detail-hero,
+  .caso-detail-section,
+  .caso-detail-tabs {
+    border-radius: 22px;
+    padding: 18px;
+  }
+
+  .caso-info-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .caso-section-heading {
+    flex-direction: column;
+  }
+}
