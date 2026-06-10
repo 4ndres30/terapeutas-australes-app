@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react'
 import type { ReactNode } from 'react'
 import type { Session } from '@supabase/supabase-js'
-import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
+import { BrowserRouter, Navigate, NavLink, Route, Routes } from 'react-router-dom'
 import PacientesPage from './pages/PacientesPage'
+import CasosPage from './pages/CasosPage'
 import LoginPage from './pages/LoginPage'
 import { supabase } from './lib/supabase'
 import './App.css'
@@ -30,6 +31,7 @@ type EstadoAuth = 'cargando' | 'sin_sesion' | 'autorizado' | 'sin_autorizacion' 
 type NavegacionLateral = {
   etiqueta: string
   icono: string
+  ruta?: string
   estado?: 'activo' | 'pronto'
 }
 
@@ -37,10 +39,10 @@ const rolesValidos: RolUsuario[] = ['admin', 'terapeuta', 'finanzas']
 
 const navegacionPrincipal: NavegacionLateral[] = [
   { etiqueta: 'Inicio', icono: '⌂', estado: 'pronto' },
-  { etiqueta: 'Pacientes', icono: '♙', estado: 'activo' },
+  { etiqueta: 'Pacientes', icono: '♙', ruta: '/pacientes', estado: 'activo' },
   { etiqueta: 'Consultas', icono: '✧', estado: 'pronto' },
   { etiqueta: 'Evaluaciones', icono: '□', estado: 'pronto' },
-  { etiqueta: 'Casos', icono: '◇', estado: 'pronto' },
+  { etiqueta: 'Casos', icono: '◇', ruta: '/casos', estado: 'activo' },
   { etiqueta: 'Trabajos', icono: '◈', estado: 'pronto' },
   { etiqueta: 'Cobros', icono: '$', estado: 'pronto' },
   { etiqueta: 'Agenda', icono: '☷', estado: 'pronto' },
@@ -116,13 +118,23 @@ function DashboardShell({ usuarioInterno, onCerrarSesion, children }: {
 
         <nav className="sidebar-nav" aria-label="Módulos disponibles">
           {navegacionPrincipal.map((item) => (
-            <span
-              className={item.estado === 'activo' ? 'sidebar-nav-item sidebar-nav-item--active' : 'sidebar-nav-item sidebar-nav-item--soon'}
-              key={item.etiqueta}
-            >
-              <span className="sidebar-nav-icon" aria-hidden="true">{item.icono}</span>
-              {item.etiqueta}
-            </span>
+            item.ruta ? (
+              <NavLink
+                className={({ isActive }) => (
+                  isActive ? 'sidebar-nav-item sidebar-nav-item--active' : 'sidebar-nav-item sidebar-nav-item--soon'
+                )}
+                key={item.etiqueta}
+                to={item.ruta}
+              >
+                <span className="sidebar-nav-icon" aria-hidden="true">{item.icono}</span>
+                {item.etiqueta}
+              </NavLink>
+            ) : (
+              <span className="sidebar-nav-item sidebar-nav-item--soon" key={item.etiqueta}>
+                <span className="sidebar-nav-icon" aria-hidden="true">{item.icono}</span>
+                {item.etiqueta}
+              </span>
+            )
           ))}
         </nav>
 
@@ -180,13 +192,14 @@ function MensajeModuloFinanzas() {
   )
 }
 
-function AppPrivada({ usuarioInterno, onCerrarSesion }: {
+function AppPrivada({ usuarioInterno, onCerrarSesion, children }: {
   usuarioInterno: UsuarioInterno
   onCerrarSesion: () => Promise<void>
+  children: ReactNode
 }) {
   return (
     <DashboardShell usuarioInterno={usuarioInterno} onCerrarSesion={onCerrarSesion}>
-      <PacientesPage />
+      {children}
     </DashboardShell>
   )
 }
@@ -345,7 +358,23 @@ function App() {
               usuarioInterno={usuarioInterno}
               rolesPermitidos={['admin', 'terapeuta']}
             >
-              <AppPrivada usuarioInterno={usuarioInterno!} onCerrarSesion={cerrarSesion} />
+              <AppPrivada usuarioInterno={usuarioInterno!} onCerrarSesion={cerrarSesion}>
+                <PacientesPage />
+              </AppPrivada>
+            </RutaProtegida>
+          }
+        />
+        <Route
+          path="/casos"
+          element={
+            <RutaProtegida
+              estadoAuth={estadoAuth}
+              usuarioInterno={usuarioInterno}
+              rolesPermitidos={['admin', 'terapeuta']}
+            >
+              <AppPrivada usuarioInterno={usuarioInterno!} onCerrarSesion={cerrarSesion}>
+                <CasosPage />
+              </AppPrivada>
             </RutaProtegida>
           }
         />
