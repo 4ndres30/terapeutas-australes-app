@@ -1,4 +1,4 @@
-import type { FormEvent } from 'react'
+import type { FormEvent, KeyboardEvent } from 'react'
 import { useEffect, useMemo, useState } from 'react'
 import { supabase } from '../lib/supabase'
 import './PacientesPage.css'
@@ -77,6 +77,25 @@ const opcionesEstado: OpcionFormulario[] = [
   { etiqueta: 'Inactivo', valor: 'inactivo' },
 ]
 
+const regionesChile = [
+  'Arica y Parinacota',
+  'Tarapacá',
+  'Antofagasta',
+  'Atacama',
+  'Coquimbo',
+  'Valparaíso',
+  'Metropolitana de Santiago',
+  "Libertador General Bernardo O'Higgins",
+  'Maule',
+  'Ñuble',
+  'Biobío',
+  'La Araucanía',
+  'Los Ríos',
+  'Los Lagos',
+  'Aysén del General Carlos Ibáñez del Campo',
+  'Magallanes y de la Antártica Chilena',
+]
+
 const pasosFicha: PasoFichaConfig[] = [
   {
     clave: 'identidad',
@@ -124,6 +143,10 @@ function normalizarTexto(texto: string) {
     .toLowerCase()
     .normalize('NFD')
     .replace(/[\u0300-\u036f]/g, '')
+}
+
+function normalizarClave(texto: string) {
+  return normalizarTexto(texto.trim().replace(/\s+/g, ' '))
 }
 
 function obtenerIniciales(nombres: string, apellidos: string) {
@@ -183,6 +206,20 @@ function prepararPacienteParaGuardar(formulario: FormularioPaciente) {
     region: formulario.region.trim(),
     estado: formulario.estado,
   }
+}
+
+function construirClavePaciente(datos: FormularioPaciente | Paciente) {
+  return [
+    normalizarClave(datos.nombres),
+    normalizarClave(datos.apellidos),
+    datos.fecha_nacimiento.trim(),
+    normalizarClave(datos.sexo),
+    normalizarClave(datos.telefono),
+    normalizarClave(datos.email),
+    normalizarClave(datos.comuna),
+    normalizarClave(datos.region),
+    normalizarClave(datos.estado),
+  ].join('|')
 }
 
 function coincideConBusqueda(paciente: Paciente, busqueda: string) {
@@ -255,6 +292,31 @@ function validarFormularioPaciente(formulario: FormularioPaciente): { paso: Paso
   }
 
   return null
+}
+
+function pasoEstaCompleto(paso: PasoFicha, formulario: FormularioPaciente) {
+  if (paso === 'identidad') {
+    return Boolean(formulario.nombres.trim() && formulario.apellidos.trim() && formulario.fecha_nacimiento && formulario.sexo)
+  }
+
+  if (paso === 'contacto') {
+    return Boolean(formulario.telefono.trim() && /^\S+@\S+\.\S+$/.test(formulario.email.trim()))
+  }
+
+  if (paso === 'ubicacion') {
+    return Boolean(formulario.comuna.trim() && formulario.region.trim())
+  }
+
+  return Boolean(formulario.estado)
+}
+
+function obtenerSiguientePaso(paso: PasoFicha) {
+  const indiceActual = pasosFicha.findIndex((pasoFicha) => pasoFicha.clave === paso)
+  return pasosFicha[indiceActual + 1]?.clave || null
+}
+
+function formularioCompleto(formulario: FormularioPaciente) {
+  return validarFormularioPaciente(formulario) === null
 }
 
 function MetricaIcon({ tipo }: { tipo: TipoMetrica }) {
@@ -336,11 +398,24 @@ function PacientesPage() {
   const mensajeEsError = mensaje.toLowerCase().startsWith('error')
   const cantidadVisible = pacientesFiltrados.length
 
+  function avanzarAlSiguientePasoSiCorresponde(pasoActual: PasoFicha, formularioActualizado: FormularioPaciente) {
+    const siguientePaso = obtenerSiguientePaso(pasoActual)
+
+    if (siguientePaso && pasoEstaCompleto(pasoActual, formularioActualizado)) {
+      window.setTimeout(() => setPasoActivo(siguientePaso), 180)
+    }
+  }
+
   function actualizarFormulario(campo: keyof FormularioPaciente, valor: string) {
-    setFormulario((formularioActual) => ({
-      ...formularioActual,
-      [campo]: valor,
-    }))
+    setFormulario((formularioActual) => {
+      const formularioActualizado = {
+        ...formularioActual,
+        [campo]: valor,
+      }
+
+      avanzarAlSiguientePasoSiCorresponde(pasoActivo, formularioActualizado)
+      return formularioActualizado
+    })
   }
 
   async function cargarPacientes() {
@@ -369,10 +444,19 @@ function PacientesPage() {
       return
     }
 
+    const pacienteParaGuardar = prepararPacienteParaGuardar(formulario)
+    const clavePacienteNuevo = construirClavePaciente(pacienteParaGuardar)
+    const existeDuplicado = pacientes.some((paciente) => construirClavePaciente(paciente) === clavePacienteNuevo)
+
+    if (existeDuplicado) {
+      setPasoActivo('identidad')
+      setMensaje('Error: Este paciente ya existe con exactamente los mismos datos.')
+      return
+    }
+
     setGuardando(true)
     setMensaje('Guardando paciente...')
 
-    const pacienteParaGuardar = prepararPacienteParaGuardar(formulario)
     const { error } = await supabase.from('pacientes').insert(pacienteParaGuardar)
 
     if (error) {
@@ -387,6 +471,39 @@ function PacientesPage() {
 
     await cargarPacientes()
     setGuardando(false)
+  }
+
+  function manejarEnterFormulario(event: KeyboardEvent<HTMLFormElement>) {
+    if (event.key !== 'Enter' || event.shiftKey) {
+      return
+    }
+
+    const elemento = event.target as HTMLElement
+
+    if (elemento.tagName !== 'INPUT') {
+      return
+    }
+
+    event.preventDefault()
+
+    const siguientePaso = obtenerSiguientePaso(pasoActivo)
+
+    if (siguientePaso && pasoEstaCompleto(pasoActivo, formulario)) {
+      setPasoActivo(siguientePaso)
+      return
+    }
+
+    if (formularioCompleto(formulario)) {
+      event.currentTarget.requestSubmit()
+      return
+    }
+
+    const validacion = validarFormularioPaciente(formulario)
+
+    if (validacion) {
+      setPasoActivo(validacion.paso)
+      setMensaje(`Error: ${validacion.mensaje}`)
+    }
   }
 
   useEffect(() => {
@@ -542,6 +659,7 @@ function PacientesPage() {
             <input
               autoComplete="address-level1"
               disabled={guardando}
+              list="regiones-chile"
               placeholder="Ej: Los Lagos"
               value={formulario.region}
               onChange={(event) => actualizarFormulario('region', event.target.value)}
@@ -772,7 +890,17 @@ function PacientesPage() {
           </div>
 
           <div className="intake-command-layout">
-            <form className="formulario-ficha formulario-ficha--command" id="paciente-form" onSubmit={guardarPaciente}>
+            <form
+              className="formulario-ficha formulario-ficha--command"
+              id="paciente-form"
+              onKeyDown={manejarEnterFormulario}
+              onSubmit={guardarPaciente}
+            >
+              <datalist id="regiones-chile">
+                {regionesChile.map((region) => (
+                  <option key={region} value={region} />
+                ))}
+              </datalist>
               {pasosFicha.map(renderPasoFormulario)}
             </form>
 
