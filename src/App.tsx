@@ -6,6 +6,10 @@ import PacientesPage from './pages/PacientesPage'
 import LoginPage from './pages/LoginPage'
 import { supabase } from './lib/supabase'
 import './App.css'
+import './DashboardPremium.css'
+import './TypographyElegant.css'
+import './ReferencePolish.css'
+import './ReferenceFinalPass.css'
 
 type RolUsuario = 'admin' | 'terapeuta' | 'finanzas'
 
@@ -23,7 +27,26 @@ type UsuarioInternoRow = Omit<UsuarioInterno, 'rol'> & {
 
 type EstadoAuth = 'cargando' | 'sin_sesion' | 'autorizado' | 'sin_autorizacion' | 'inactivo' | 'error'
 
+type NavegacionLateral = {
+  etiqueta: string
+  icono: string
+  estado?: 'activo' | 'pronto'
+}
+
 const rolesValidos: RolUsuario[] = ['admin', 'terapeuta', 'finanzas']
+
+const navegacionPrincipal: NavegacionLateral[] = [
+  { etiqueta: 'Inicio', icono: '⌂', estado: 'pronto' },
+  { etiqueta: 'Pacientes', icono: '♙', estado: 'activo' },
+  { etiqueta: 'Consultas', icono: '✧', estado: 'pronto' },
+  { etiqueta: 'Evaluaciones', icono: '□', estado: 'pronto' },
+  { etiqueta: 'Casos', icono: '◇', estado: 'pronto' },
+  { etiqueta: 'Trabajos', icono: '◈', estado: 'pronto' },
+  { etiqueta: 'Cobros', icono: '$', estado: 'pronto' },
+  { etiqueta: 'Agenda', icono: '☷', estado: 'pronto' },
+  { etiqueta: 'Reportes', icono: '↗', estado: 'pronto' },
+  { etiqueta: 'Configuración', icono: '⚙', estado: 'pronto' },
+]
 
 function esRolUsuario(rol: string): rol is RolUsuario {
   return rolesValidos.includes(rol as RolUsuario)
@@ -35,6 +58,30 @@ function rutaInicial(usuarioInterno: UsuarioInterno | null) {
   }
 
   return '/pacientes'
+}
+
+function obtenerInicialesUsuario(nombreCompleto: string) {
+  const iniciales = nombreCompleto
+    .trim()
+    .split(/\s+/)
+    .slice(0, 2)
+    .map((parte) => parte.charAt(0))
+    .join('')
+    .toUpperCase()
+
+  return iniciales || 'TA'
+}
+
+function formatearRol(rol: RolUsuario) {
+  if (rol === 'admin') {
+    return 'Administrador'
+  }
+
+  if (rol === 'finanzas') {
+    return 'Finanzas'
+  }
+
+  return 'Terapeuta'
 }
 
 function PantallaCarga() {
@@ -53,35 +100,42 @@ function DashboardShell({ usuarioInterno, onCerrarSesion, children }: {
   onCerrarSesion: () => Promise<void>
   children: ReactNode
 }) {
+  const inicialesUsuario = obtenerInicialesUsuario(usuarioInterno.nombre_completo)
+  const rolVisible = formatearRol(usuarioInterno.rol)
+
   return (
     <div className="dashboard-shell">
       <aside className="dashboard-sidebar" aria-label="Panel principal">
         <div className="sidebar-brand">
-          <div className="sidebar-logo" aria-hidden="true">TA</div>
+          <div className="sidebar-logo" aria-hidden="true">✦</div>
           <div>
             <strong>Terapeutas Australes</strong>
-            <span>Gestión clínica</span>
+            <span>Gestión profesional</span>
           </div>
-        </div>
-
-        <div className="sidebar-status">
-          <span aria-hidden="true" />
-          En línea
         </div>
 
         <nav className="sidebar-nav" aria-label="Módulos disponibles">
-          <span className="sidebar-nav-item sidebar-nav-item--active">Pacientes</span>
-          <span className="sidebar-nav-item sidebar-nav-item--soon">Casos · próximamente</span>
-          <span className="sidebar-nav-item sidebar-nav-item--soon">Finanzas · próximamente</span>
+          {navegacionPrincipal.map((item) => (
+            <span
+              className={item.estado === 'activo' ? 'sidebar-nav-item sidebar-nav-item--active' : 'sidebar-nav-item sidebar-nav-item--soon'}
+              key={item.etiqueta}
+            >
+              <span className="sidebar-nav-icon" aria-hidden="true">{item.icono}</span>
+              {item.etiqueta}
+            </span>
+          ))}
         </nav>
 
-        <div className="sidebar-user">
-          <div className="sidebar-user__avatar" aria-hidden="true">
-            {usuarioInterno.nombre_completo.slice(0, 2).toUpperCase()}
-          </div>
-          <div>
-            <strong>{usuarioInterno.nombre_completo}</strong>
-            <span>{usuarioInterno.rol}</span>
+        <div className="sidebar-quote" aria-label="Mensaje institucional">
+          <span aria-hidden="true">“</span>
+          <p>Cada persona que acompañamos es una historia única.</p>
+        </div>
+
+        <div className="sidebar-footer">
+          <span>v1.0.0</span>
+          <div className="sidebar-status">
+            <span aria-hidden="true" />
+            En línea
           </div>
         </div>
 
@@ -91,6 +145,25 @@ function DashboardShell({ usuarioInterno, onCerrarSesion, children }: {
       </aside>
 
       <main className="dashboard-main">
+        <header className="dashboard-topbar" aria-label="Barra superior">
+          <div>
+            <span className="dashboard-eyebrow">Centro clínico</span>
+            <p>Gestión interna de Terapeutas Australes</p>
+          </div>
+
+          <div className="dashboard-userbar">
+            <button className="dashboard-notification" aria-label="Notificaciones" type="button">
+              <span aria-hidden="true">⌁</span>
+              <strong>3</strong>
+            </button>
+            <div className="dashboard-userbar__avatar" aria-hidden="true">{inicialesUsuario}</div>
+            <div className="dashboard-userbar__meta">
+              <strong>{usuarioInterno.nombre_completo}</strong>
+              <span>{rolVisible}</span>
+            </div>
+          </div>
+        </header>
+
         {children}
       </main>
     </div>

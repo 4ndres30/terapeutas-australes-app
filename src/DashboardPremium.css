@@ -1,0 +1,502 @@
+/* Premium dashboard shell aligned with the Terapeutas Australes reference model.
+   This layer only adjusts visual structure; it does not touch auth, database or migrations. */
+
+.dashboard-shell {
+  background:
+    radial-gradient(circle at 78% 4%, rgba(255, 245, 223, 0.92), transparent 26%),
+    radial-gradient(circle at 94% 18%, rgba(224, 212, 255, 0.56), transparent 22%),
+    linear-gradient(135deg, #fbf4ea 0%, #fffaf2 45%, #f4efff 100%);
+  grid-template-columns: 258px minmax(0, 1fr);
+}
+
+.dashboard-sidebar {
+  background:
+    radial-gradient(circle at 50% 82%, rgba(109, 63, 211, 0.38), transparent 30%),
+    linear-gradient(180deg, #1d103a 0%, #25134d 48%, #130922 100%);
+  box-shadow: inset -1px 0 0 rgba(255, 255, 255, 0.07), 18px 0 44px rgba(32, 16, 51, 0.18);
+  gap: 18px;
+  grid-template-rows: auto 1fr auto auto auto;
+  overflow: hidden;
+  padding: 26px 20px 22px;
+  position: sticky;
+  top: 0;
+}
+
+.dashboard-sidebar::before {
+  background:
+    radial-gradient(circle at 24% 20%, rgba(232, 196, 106, 0.18), transparent 12%),
+    linear-gradient(150deg, transparent 0%, transparent 62%, rgba(109, 63, 211, 0.18) 100%);
+  content: '';
+  inset: 0;
+  pointer-events: none;
+  position: absolute;
+}
+
+.dashboard-sidebar > * {
+  position: relative;
+  z-index: 1;
+}
+
+.sidebar-brand {
+  gap: 13px;
+}
+
+.sidebar-logo {
+  background: transparent;
+  border: 2px solid rgba(232, 196, 106, 0.88);
+  border-radius: 18px;
+  box-shadow: 0 18px 34px rgba(0, 0, 0, 0.24), inset 0 0 18px rgba(232, 196, 106, 0.10);
+  color: #e8c46a;
+  font-size: 23px;
+  height: 48px;
+  width: 48px;
+}
+
+.sidebar-brand strong {
+  color: #ffffff;
+  font-size: 15px;
+  letter-spacing: -0.015em;
+}
+
+.sidebar-brand span {
+  color: rgba(255, 243, 207, 0.76);
+  font-size: 12px;
+  margin-top: 5px;
+}
+
+.sidebar-nav {
+  gap: 9px;
+  margin-top: 12px;
+}
+
+.sidebar-nav-item {
+  align-items: center;
+  border: 1px solid transparent;
+  border-radius: 22px;
+  color: rgba(255, 255, 255, 0.82);
+  display: flex;
+  font-size: 14px;
+  font-weight: 750;
+  gap: 12px;
+  letter-spacing: -0.01em;
+  min-height: 46px;
+  padding: 12px 14px;
+}
+
+.sidebar-nav-icon {
+  align-items: center;
+  color: rgba(255, 255, 255, 0.90);
+  display: inline-flex;
+  font-size: 17px;
+  height: 22px;
+  justify-content: center;
+  width: 22px;
+}
+
+.sidebar-nav-item--active {
+  background: linear-gradient(135deg, rgba(109, 63, 211, 0.82), rgba(91, 44, 131, 0.62));
+  border-color: rgba(228, 213, 255, 0.22);
+  box-shadow: 0 18px 32px rgba(0, 0, 0, 0.18), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+  color: #ffffff;
+}
+
+.sidebar-nav-item--soon {
+  color: rgba(255, 255, 255, 0.72);
+}
+
+.sidebar-quote {
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.09), rgba(255, 255, 255, 0.04));
+  border: 1px solid rgba(255, 255, 255, 0.11);
+  border-radius: 24px;
+  color: #ffffff;
+  margin-top: auto;
+  padding: 22px;
+}
+
+.sidebar-quote span {
+  color: #e8c46a;
+  display: block;
+  font-family: Georgia, serif;
+  font-size: 42px;
+  line-height: 0.75;
+}
+
+.sidebar-quote p {
+  color: rgba(255, 255, 255, 0.92);
+  font-size: 15px;
+  font-weight: 650;
+  line-height: 1.55;
+  margin: 10px 0 0;
+}
+
+.sidebar-footer {
+  align-items: center;
+  color: rgba(255, 255, 255, 0.78);
+  display: flex;
+  font-size: 12px;
+  font-weight: 650;
+  justify-content: space-between;
+}
+
+.sidebar-status {
+  background: transparent;
+  border: none;
+  color: rgba(255, 255, 255, 0.80);
+  font-size: 12px;
+  margin: 0;
+  padding: 0;
+}
+
+.sidebar-status span {
+  background: #36d387;
+  height: 7px;
+  width: 7px;
+}
+
+.sidebar-logout {
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 18px;
+  min-height: 42px;
+}
+
+.dashboard-main {
+  display: grid;
+  gap: 22px;
+  padding: 26px 30px 28px;
+}
+
+.dashboard-topbar {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+  min-height: 58px;
+}
+
+.dashboard-eyebrow {
+  color: #c99a2e;
+  display: block;
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+}
+
+.dashboard-topbar p {
+  color: #4e3e62;
+  font-size: 14px;
+  font-weight: 650;
+  margin: 5px 0 0;
+}
+
+.dashboard-userbar {
+  align-items: center;
+  display: flex;
+  gap: 12px;
+}
+
+.dashboard-notification {
+  align-items: center;
+  background: rgba(255, 255, 255, 0.82);
+  border: 1px solid rgba(85, 55, 125, 0.10);
+  border-radius: 18px;
+  box-shadow: 0 12px 28px rgba(53, 28, 86, 0.10);
+  color: #201033;
+  display: inline-flex;
+  height: 44px;
+  justify-content: center;
+  position: relative;
+  width: 44px;
+}
+
+.dashboard-notification strong {
+  align-items: center;
+  background: #6d3fd3;
+  border-radius: 999px;
+  color: #ffffff;
+  display: inline-flex;
+  font-size: 10px;
+  font-weight: 900;
+  height: 18px;
+  justify-content: center;
+  position: absolute;
+  right: -2px;
+  top: -4px;
+  width: 18px;
+}
+
+.dashboard-userbar__avatar {
+  align-items: center;
+  background: linear-gradient(135deg, #f4edff, #fff3cf);
+  border: 1px solid rgba(85, 55, 125, 0.12);
+  border-radius: 999px;
+  box-shadow: 0 12px 28px rgba(53, 28, 86, 0.10);
+  color: #432166;
+  display: inline-flex;
+  font-size: 13px;
+  font-weight: 900;
+  height: 46px;
+  justify-content: center;
+  width: 46px;
+}
+
+.dashboard-userbar__meta strong {
+  color: #170b25;
+  display: block;
+  font-size: 14px;
+  font-weight: 900;
+  letter-spacing: -0.02em;
+}
+
+.dashboard-userbar__meta span {
+  color: #756883;
+  display: block;
+  font-size: 12px;
+  font-weight: 700;
+  margin-top: 3px;
+}
+
+.dashboard-main .pacientes-command-topbar {
+  gap: 18px;
+  grid-template-columns: minmax(320px, 0.72fr) minmax(680px, 1.28fr);
+}
+
+.dashboard-main .pacientes-command-title {
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  min-height: auto;
+  padding: 0 6px;
+}
+
+.dashboard-main .pacientes-command-title h1 {
+  font-size: clamp(34px, 3vw, 46px);
+  line-height: 1;
+  margin: 8px 0;
+}
+
+.dashboard-main .pacientes-command-title p {
+  color: #4f438d;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.dashboard-main .pacientes-command-title .modulo-badge,
+.dashboard-main .modulo-badge {
+  background: rgba(255, 255, 255, 0.74);
+  border-color: rgba(109, 63, 211, 0.14);
+  font-size: 10px;
+  padding: 6px 10px;
+}
+
+.dashboard-main .pacientes-metricas-rail {
+  gap: 16px;
+}
+
+.dashboard-main .metrica-rail-card {
+  border-radius: 22px;
+  gap: 15px;
+  min-height: 116px;
+  padding: 22px;
+}
+
+.dashboard-main .metrica-rail-card .metrica-icon {
+  border-radius: 999px;
+  font-size: 16px;
+  height: 58px;
+  width: 58px;
+}
+
+.dashboard-main .metrica-rail-card strong {
+  font-size: 30px;
+}
+
+.dashboard-main .metrica-rail-card span:not(.metrica-icon) {
+  font-size: 13px;
+}
+
+.dashboard-main .metrica-rail-card p {
+  font-size: 12px;
+}
+
+.dashboard-main .pacientes-command-grid {
+  gap: 20px;
+  grid-template-columns: minmax(420px, 0.78fr) minmax(760px, 1.42fr);
+  margin-top: 0;
+}
+
+.dashboard-main .pacientes-directory-panel,
+.dashboard-main .pacientes-intake-panel {
+  background: rgba(255, 255, 255, 0.92);
+  border-radius: 24px;
+  box-shadow: 0 18px 44px rgba(53, 28, 86, 0.10);
+}
+
+.dashboard-main .pacientes-directory-panel,
+.dashboard-main .pacientes-intake-panel {
+  padding: 20px;
+}
+
+.dashboard-main .pacientes-intake-panel {
+  gap: 16px;
+}
+
+.dashboard-main .pacientes-cards--compact {
+  gap: 12px;
+  max-height: 640px;
+}
+
+.dashboard-main .paciente-card--compact {
+  border-radius: 20px;
+  grid-template-columns: 54px minmax(0, 1fr);
+  padding: 15px;
+}
+
+.dashboard-main .paciente-card--compact .paciente-avatar {
+  border-radius: 999px;
+  font-size: 17px;
+  height: 52px;
+  width: 52px;
+}
+
+.dashboard-main .paciente-card--compact h3 {
+  font-size: 16px;
+}
+
+.dashboard-main .paciente-card__details--inline div {
+  grid-template-columns: 58px minmax(0, 1fr);
+}
+
+.dashboard-main .paciente-card__details--inline dd {
+  font-size: 12px;
+}
+
+.dashboard-main .form-panel-header--command {
+  padding-bottom: 16px;
+}
+
+.dashboard-main .guardar-paciente {
+  border-radius: 14px;
+  font-size: 14px;
+  min-height: 48px;
+  padding: 0 24px;
+}
+
+.dashboard-main .intake-command-layout {
+  gap: 18px;
+  grid-template-columns: minmax(0, 1fr) 318px;
+}
+
+.dashboard-main .formulario-ficha--command {
+  gap: 14px;
+}
+
+.dashboard-main .formulario-ficha--command .form-section {
+  border-radius: 20px;
+  gap: 13px;
+  padding: 16px;
+}
+
+.dashboard-main .formulario-ficha--command .form-section h3 {
+  font-size: 15px;
+}
+
+.dashboard-main .formulario-ficha--command .form-section p {
+  font-size: 11px;
+}
+
+.dashboard-main .form-grid--command input {
+  height: 44px;
+}
+
+.dashboard-main .preview-paciente--command {
+  background:
+    linear-gradient(180deg, rgba(255, 248, 238, 0.76), rgba(255, 255, 255, 0.92)),
+    radial-gradient(circle at 50% 42%, rgba(109, 63, 211, 0.16), transparent 34%);
+  border-radius: 22px;
+  gap: 13px;
+  overflow: hidden;
+  padding: 18px;
+}
+
+.dashboard-main .preview-paciente--command .preview-avatar {
+  border-radius: 999px;
+  font-size: 28px;
+  height: 82px;
+  justify-self: center;
+  width: 82px;
+}
+
+.dashboard-main .preview-paciente--command .preview-heading {
+  text-align: center;
+}
+
+.dashboard-main .preview-paciente--command .preview-heading h3 {
+  font-size: 21px;
+}
+
+.dashboard-main .preview-data--command p {
+  background: rgba(255, 255, 255, 0.78);
+  border-radius: 14px;
+  font-size: 12px;
+}
+
+.dashboard-main .preview-paciente--command .preview-help {
+  background: rgba(241, 233, 255, 0.88);
+  font-size: 12px;
+  text-align: center;
+}
+
+.dashboard-main .mensaje {
+  background: linear-gradient(135deg, rgba(241, 233, 255, 0.88), rgba(255, 243, 207, 0.62));
+  border-radius: 18px;
+  order: -1;
+  text-align: center;
+}
+
+@media (max-width: 1500px) {
+  .dashboard-main .pacientes-command-topbar,
+  .dashboard-main .pacientes-command-grid,
+  .dashboard-main .intake-command-layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 1080px) {
+  .dashboard-shell {
+    grid-template-columns: 1fr;
+  }
+
+  .dashboard-sidebar {
+    min-height: auto;
+    position: static;
+  }
+
+  .sidebar-quote,
+  .sidebar-footer {
+    display: none;
+  }
+
+  .dashboard-main {
+    padding: 18px;
+  }
+
+  .dashboard-topbar {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 14px;
+  }
+}
+
+@media (max-width: 680px) {
+  .dashboard-userbar__meta {
+    display: none;
+  }
+
+  .dashboard-main .pacientes-metricas-rail {
+    grid-template-columns: 1fr;
+  }
+
+  .dashboard-main .paciente-card--compact {
+    grid-template-columns: 1fr;
+  }
+}
