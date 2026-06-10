@@ -7,6 +7,7 @@ import ConsultasPage from './pages/ConsultasPage'
 import EvaluacionesPage from './pages/EvaluacionesPage'
 import CasosPage from './pages/CasosPage'
 import ElementosCasoPage from './pages/ElementosCasoPage'
+import RevisionesPage from './pages/RevisionesPage'
 import LoginPage from './pages/LoginPage'
 import { supabase } from './lib/supabase'
 import './App.css'
@@ -47,6 +48,7 @@ const navegacionPrincipal: NavegacionLateral[] = [
   { etiqueta: 'Evaluaciones', icono: '□', ruta: '/evaluaciones', estado: 'activo' },
   { etiqueta: 'Casos', icono: '◇', ruta: '/casos', estado: 'activo' },
   { etiqueta: 'Elementos', icono: '◆', ruta: '/elementos-caso', estado: 'activo' },
+  { etiqueta: 'Revisiones', icono: '◎', ruta: '/revisiones', estado: 'activo' },
   { etiqueta: 'Trabajos', icono: '◈', estado: 'pronto' },
   { etiqueta: 'Cobros', icono: '$', estado: 'pronto' },
   { etiqueta: 'Agenda', icono: '☷', estado: 'pronto' },
@@ -420,6 +422,20 @@ function App() {
             >
               <AppPrivada usuarioInterno={usuarioInterno!} onCerrarSesion={cerrarSesion}>
                 <ElementosCasoPage />
+              </AppPrivada>
+            </RutaProtegida>
+          }
+        />
+        <Route
+          path="/revisiones"
+          element={
+            <RutaProtegida
+              estadoAuth={estadoAuth}
+              usuarioInterno={usuarioInterno}
+              rolesPermitidos={['admin', 'terapeuta']}
+            >
+              <AppPrivada usuarioInterno={usuarioInterno!} onCerrarSesion={cerrarSesion}>
+                <RevisionesPage />
               </AppPrivada>
             </RutaProtegida>
           }
