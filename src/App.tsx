@@ -6,6 +6,7 @@ import PacientesPage from './pages/PacientesPage'
 import LoginPage from './pages/LoginPage'
 import { supabase } from './lib/supabase'
 import './App.css'
+import './DashboardPremium.css'
 
 type RolUsuario = 'admin' | 'terapeuta' | 'finanzas'
 
