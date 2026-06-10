@@ -1,7 +1,9 @@
 import type { FormEvent, KeyboardEvent } from 'react'
 import { useEffect, useMemo, useState } from 'react'
+import { Link } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import './CasosPage.css'
+import './CasoDetallePage.css'
 
 type Paciente = {
   id: string
@@ -905,6 +907,7 @@ function CasosPage() {
                           <dd>{evaluacion ? formatearFecha(evaluacion.fecha_evaluacion) : 'Sin vínculo'}</dd>
                         </div>
                       </dl>
+                      <Link className="abrir-ficha-caso" to={`/casos/${caso.id_caso}`}>Abrir ficha</Link>
                     </div>
                   </article>
                 )

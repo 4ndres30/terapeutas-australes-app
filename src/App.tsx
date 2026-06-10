@@ -6,9 +6,7 @@ import PacientesPage from './pages/PacientesPage'
 import ConsultasPage from './pages/ConsultasPage'
 import EvaluacionesPage from './pages/EvaluacionesPage'
 import CasosPage from './pages/CasosPage'
-import ElementosCasoPage from './pages/ElementosCasoPage'
-import RevisionesPage from './pages/RevisionesPage'
-import DetalleRevisionesPage from './pages/DetalleRevisionesPage'
+import CasoDetallePage from './pages/CasoDetallePage'
 import FinanzasPage from './pages/FinanzasPage'
 import AgendaPage from './pages/AgendaPage'
 import ReportesPage from './pages/ReportesPage'
@@ -51,12 +49,8 @@ const navegacionPrincipal: NavegacionLateral[] = [
   { etiqueta: 'Consultas', icono: '✧', ruta: '/consultas', estado: 'activo' },
   { etiqueta: 'Evaluaciones', icono: '□', ruta: '/evaluaciones', estado: 'activo' },
   { etiqueta: 'Casos', icono: '◇', ruta: '/casos', estado: 'activo' },
-  { etiqueta: 'Elementos', icono: '◆', ruta: '/elementos-caso', estado: 'activo' },
-  { etiqueta: 'Revisiones', icono: '◎', ruta: '/revisiones', estado: 'activo' },
-  { etiqueta: 'Detalle revisión', icono: '◌', ruta: '/detalle-revisiones', estado: 'activo' },
-  { etiqueta: 'Trabajos', icono: '◈', estado: 'pronto' },
-  { etiqueta: 'Cobros', icono: '$', ruta: '/finanzas', estado: 'activo' },
   { etiqueta: 'Agenda', icono: '☷', ruta: '/agenda', estado: 'activo' },
+  { etiqueta: 'Finanzas / Pagos', icono: '$', ruta: '/finanzas', estado: 'activo' },
   { etiqueta: 'Reportes', icono: '↗', ruta: '/reportes', estado: 'activo' },
   { etiqueta: 'Configuración', icono: '⚙', estado: 'pronto' },
 ]
@@ -408,6 +402,20 @@ function App() {
           }
         />
         <Route
+          path="/casos/:id"
+          element={
+            <RutaProtegida
+              estadoAuth={estadoAuth}
+              usuarioInterno={usuarioInterno}
+              rolesPermitidos={['admin', 'terapeuta']}
+            >
+              <AppPrivada usuarioInterno={usuarioInterno!} onCerrarSesion={cerrarSesion}>
+                <CasoDetallePage />
+              </AppPrivada>
+            </RutaProtegida>
+          }
+        />
+        <Route
           path="/elementos-caso"
           element={
             <RutaProtegida
@@ -416,7 +424,7 @@ function App() {
               rolesPermitidos={['admin', 'terapeuta']}
             >
               <AppPrivada usuarioInterno={usuarioInterno!} onCerrarSesion={cerrarSesion}>
-                <ElementosCasoPage />
+                <Navigate to="/casos" replace />
               </AppPrivada>
             </RutaProtegida>
           }
@@ -430,7 +438,7 @@ function App() {
               rolesPermitidos={['admin', 'terapeuta']}
             >
               <AppPrivada usuarioInterno={usuarioInterno!} onCerrarSesion={cerrarSesion}>
-                <RevisionesPage />
+                <Navigate to="/casos" replace />
               </AppPrivada>
             </RutaProtegida>
           }
@@ -444,7 +452,7 @@ function App() {
               rolesPermitidos={['admin', 'terapeuta']}
             >
               <AppPrivada usuarioInterno={usuarioInterno!} onCerrarSesion={cerrarSesion}>
-                <DetalleRevisionesPage />
+                <Navigate to="/casos" replace />
               </AppPrivada>
             </RutaProtegida>
           }
