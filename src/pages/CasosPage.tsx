@@ -11,90 +11,153 @@ type Paciente = {
   email: string
 }
 
-type EstadoCaso = 'abierto' | 'en_revision' | 'pausado' | 'cerrado'
-
-type CasoVista = {
-  id: string
-  codigo_caso: string
+type Consulta = {
+  id_consulta: string
   paciente_id: string
-  paciente_nombre: string
-  titulo: string
-  motivo: string
-  area_principal: string
-  estado: EstadoCaso
-  prioridad: string
-  seguimiento: string
-  observaciones_generales: string
-  fecha_apertura: string
+  fecha_consulta: string
+  tipo_consulta: string
+  estado_consulta: string
+  motivo_consulta: string
 }
 
-type CasoRow = Record<string, unknown>
+type Evaluacion = {
+  id_evaluacion: string
+  paciente_id: string
+  consulta_id: string
+  fecha_evaluacion: string
+  decision_revision: string
+  estado_evaluacion: string
+  relato_antecedentes: string
+}
+
+type TipoCaso =
+  | 'Personal'
+  | 'Familiar'
+  | 'Vinculo'
+  | 'Linaje'
+  | 'Casa/Espacio'
+  | 'Bloqueo'
+  | 'Entidad/Presencia'
+  | 'Proteccion'
+  | 'Seguimiento'
+  | 'Otro'
+
+type PrioridadCaso = 'Baja' | 'Media' | 'Alta' | 'Urgente'
+type EstadoCaso = 'Abierto' | 'En proceso' | 'Pausado' | 'Cerrado' | 'Anulado'
+
+type Caso = {
+  id_caso: string
+  paciente_id: string
+  consulta_id: string | null
+  evaluacion_id: string | null
+  fecha_apertura: string
+  nombre_caso: string
+  motivo_apertura: string
+  descripcion_general: string | null
+  objetivo_trabajo: string | null
+  tipo_caso: TipoCaso
+  prioridad: PrioridadCaso
+  estado_caso: EstadoCaso
+  requiere_seguimiento: boolean
+  notas_seguimiento: string | null
+  created_at: string
+}
 
 type FormularioCaso = {
   paciente_id: string
-  titulo: string
-  motivo: string
-  area_principal: string
-  prioridad: string
-  estado: EstadoCaso
-  seguimiento: string
-  observaciones_generales: string
+  consulta_id: string
+  evaluacion_id: string
+  fecha_apertura: string
+  nombre_caso: string
+  motivo_apertura: string
+  descripcion_general: string
+  objetivo_trabajo: string
+  tipo_caso: TipoCaso
+  prioridad: PrioridadCaso
+  estado_caso: EstadoCaso
+  requiere_seguimiento: boolean
+  notas_seguimiento: string
 }
 
-const formularioInicial: FormularioCaso = {
-  paciente_id: '',
-  titulo: '',
-  motivo: '',
-  area_principal: '',
-  prioridad: 'normal',
-  estado: 'abierto',
-  seguimiento: 'pendiente',
-  observaciones_generales: '',
-}
+const CASO_SELECT = [
+  'id_caso',
+  'paciente_id',
+  'consulta_id',
+  'evaluacion_id',
+  'fecha_apertura',
+  'nombre_caso',
+  'motivo_apertura',
+  'descripcion_general',
+  'objetivo_trabajo',
+  'tipo_caso',
+  'prioridad',
+  'estado_caso',
+  'requiere_seguimiento',
+  'notas_seguimiento',
+  'created_at',
+].join(', ')
 
-const estadosCaso: { etiqueta: string; valor: EstadoCaso }[] = [
-  { etiqueta: 'Abierto', valor: 'abierto' },
-  { etiqueta: 'En revisión', valor: 'en_revision' },
-  { etiqueta: 'Pausado', valor: 'pausado' },
-  { etiqueta: 'Cerrado', valor: 'cerrado' },
+const tiposCaso: TipoCaso[] = [
+  'Personal',
+  'Familiar',
+  'Vinculo',
+  'Linaje',
+  'Casa/Espacio',
+  'Bloqueo',
+  'Entidad/Presencia',
+  'Proteccion',
+  'Seguimiento',
+  'Otro',
 ]
 
-const prioridadesCaso = ['baja', 'normal', 'alta', 'urgente']
-const seguimientosCaso = ['pendiente', 'en seguimiento', 'requiere revisión', 'completado']
+const prioridadesCaso: PrioridadCaso[] = ['Baja', 'Media', 'Alta', 'Urgente']
+const estadosCaso: EstadoCaso[] = ['Abierto', 'En proceso', 'Pausado', 'Cerrado', 'Anulado']
+
+function obtenerFechaHoy() {
+  return new Date().toISOString().slice(0, 10)
+}
+
+function crearFormularioInicial(): FormularioCaso {
+  return {
+    paciente_id: '',
+    consulta_id: '',
+    evaluacion_id: '',
+    fecha_apertura: obtenerFechaHoy(),
+    nombre_caso: '',
+    motivo_apertura: '',
+    descripcion_general: '',
+    objetivo_trabajo: '',
+    tipo_caso: 'Personal',
+    prioridad: 'Media',
+    estado_caso: 'Abierto',
+    requiere_seguimiento: false,
+    notas_seguimiento: '',
+  }
+}
 
 function normalizarTexto(texto: string) {
   return texto.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '')
 }
 
-function obtenerString(valor: unknown, respaldo = '') {
-  return typeof valor === 'string' && valor.trim() ? valor.trim() : respaldo
-}
-
 function obtenerNombrePaciente(paciente?: Paciente) {
-  if (!paciente) return 'Paciente sin seleccionar'
-  return `${paciente.nombres} ${paciente.apellidos}`.trim()
-}
+  if (!paciente) {
+    return 'Paciente sin seleccionar'
+  }
 
-function obtenerEtiquetaEstado(estado: EstadoCaso) {
-  return estadosCaso.find((opcion) => opcion.valor === estado)?.etiqueta || estado
-}
-
-function normalizarEstadoCaso(valor: unknown): EstadoCaso {
-  const texto = normalizarTexto(obtenerString(valor, 'abierto'))
-
-  if (texto.includes('cerr')) return 'cerrado'
-  if (texto.includes('paus')) return 'pausado'
-  if (texto.includes('revision') || texto.includes('revisión')) return 'en_revision'
-
-  return 'abierto'
+  return `${paciente.nombres} ${paciente.apellidos}`.trim() || 'Paciente sin nombre'
 }
 
 function formatearFecha(fecha: string) {
-  if (!fecha) return 'Sin fecha'
+  if (!fecha) {
+    return 'Sin fecha'
+  }
 
-  const fechaCaso = new Date(fecha)
+  const fechaNormalizada = fecha.includes('T') ? fecha : `${fecha}T00:00:00`
+  const fechaCaso = new Date(fechaNormalizada)
 
-  if (Number.isNaN(fechaCaso.getTime())) return 'Sin fecha'
+  if (Number.isNaN(fechaCaso.getTime())) {
+    return 'Sin fecha'
+  }
 
   return new Intl.DateTimeFormat('es-CL', {
     day: '2-digit',
@@ -103,204 +166,121 @@ function formatearFecha(fecha: string) {
   }).format(fechaCaso)
 }
 
-function generarCodigoCaso() {
-  const fecha = new Date()
-  const fechaTexto = fecha.toISOString().slice(0, 10).replace(/-/g, '')
-  const sufijo = crypto.randomUUID().slice(0, 6).toUpperCase()
-  return `CASO-${fechaTexto}-${sufijo}`
-}
+function textoCorto(texto: string, largo = 96) {
+  const limpio = texto.trim()
 
-function obtenerPacienteDesdeObservacion(observaciones: string) {
-  const coincidencia = observaciones.match(/Paciente asociado:\s*([^|]+)/i)
-  return coincidencia?.[1]?.trim() || ''
-}
-
-function mapearCasoDesdeSupabase(row: CasoRow, pacientes: Paciente[]): CasoVista {
-  const observaciones = obtenerString(
-    row.observaciones_generales
-    ?? row.observaciones
-    ?? row['Observaciones Generales'],
-  )
-  const pacienteId = obtenerString(row.paciente_id ?? row.untitled_dropdown ?? row['Untitled Dropdown'])
-  const paciente = pacientes.find((item) => item.id === pacienteId)
-  const pacienteNombre = obtenerNombrePaciente(paciente) !== 'Paciente sin seleccionar'
-    ? obtenerNombrePaciente(paciente)
-    : obtenerPacienteDesdeObservacion(observaciones) || 'Paciente no asociado'
-
-  return {
-    id: obtenerString(row.id, crypto.randomUUID()),
-    codigo_caso: obtenerString(row.codigo_caso ?? row.codigo ?? row['Codigo Caso'] ?? row['Código Caso'], 'Sin código'),
-    paciente_id: pacienteId,
-    paciente_nombre: pacienteNombre,
-    titulo: obtenerString(row.nombre_caso ?? row.combre_del_caso ?? row.titulo ?? row['Nombre del Caso'] ?? row['Combre del Caso'], 'Caso sin título'),
-    motivo: obtenerString(row.motivo_principal ?? row.motivo ?? row['Motivo Principal'], 'Sin motivo registrado'),
-    area_principal: obtenerString(row.tipo_caso ?? row.tipo_de_caso ?? row.area_principal ?? row['Tipo de Caso'], 'Sin área'),
-    estado: normalizarEstadoCaso(row.estado_caso ?? row.estado_del_caso ?? row.estado ?? row['Estado del Caso']),
-    prioridad: obtenerString(row.prioridad ?? row['Prioridad'], 'normal'),
-    seguimiento: obtenerString(row.seguimiento ?? row['Seguimiento'], 'pendiente'),
-    observaciones_generales: observaciones,
-    fecha_apertura: obtenerString(row.fecha_apertura ?? row.created_at ?? row['Fecha Apertura'], ''),
-  }
-}
-
-function crearPayloadAppSheet(
-  codigoKey: 'Codigo Caso' | 'Código Caso',
-  tituloKey: 'Nombre del Caso' | 'Combre del Caso',
-  formulario: FormularioCaso,
-  pacienteNombre: string,
-  codigoCaso: string,
-  fechaApertura: string,
-  observaciones: string,
-  incluirPaciente = true,
-) {
-  return {
-    [codigoKey]: codigoCaso,
-    ...(incluirPaciente ? { 'Untitled Dropdown': formulario.paciente_id } : {}),
-    [tituloKey]: formulario.titulo.trim(),
-    'Fecha Apertura': fechaApertura,
-    'Motivo Principal': formulario.motivo.trim(),
-    'Tipo de Caso': formulario.area_principal.trim(),
-    'Estado del Caso': obtenerEtiquetaEstado(formulario.estado),
-    Prioridad: formulario.prioridad,
-    Seguimiento: formulario.seguimiento,
-    'Observaciones Generales': observaciones || `Paciente asociado: ${pacienteNombre}`,
-  }
-}
-
-function crearPayloadSnakeCaseTablaCasos(
-  formulario: FormularioCaso,
-  pacienteNombre: string,
-  codigoCaso: string,
-  fechaApertura: string,
-  observaciones: string,
-  incluirPaciente = true,
-) {
-  return {
-    codigo_caso: codigoCaso,
-    ...(incluirPaciente ? { untitled_dropdown: formulario.paciente_id } : {}),
-    combre_del_caso: formulario.titulo.trim(),
-    fecha_apertura: fechaApertura,
-    motivo_principal: formulario.motivo.trim(),
-    tipo_de_caso: formulario.area_principal.trim(),
-    estado_del_caso: obtenerEtiquetaEstado(formulario.estado),
-    prioridad: formulario.prioridad,
-    seguimiento: formulario.seguimiento,
-    observaciones_generales: observaciones || `Paciente asociado: ${pacienteNombre}`,
-  }
-}
-
-function crearPayloadsCaso(formulario: FormularioCaso, paciente?: Paciente) {
-  const codigoCaso = generarCodigoCaso()
-  const pacienteNombre = obtenerNombrePaciente(paciente)
-  const fechaApertura = new Date().toISOString()
-  const observaciones = [
-    `Paciente asociado: ${pacienteNombre}`,
-    formulario.observaciones_generales.trim(),
-  ].filter(Boolean).join(' | ')
-
-  return [
-    crearPayloadSnakeCaseTablaCasos(formulario, pacienteNombre, codigoCaso, fechaApertura, observaciones),
-    crearPayloadSnakeCaseTablaCasos(formulario, pacienteNombre, codigoCaso, fechaApertura, observaciones, false),
-    {
-      codigo_caso: codigoCaso,
-      nombre_caso: formulario.titulo.trim(),
-      fecha_apertura: fechaApertura,
-      motivo_principal: formulario.motivo.trim(),
-      tipo_caso: formulario.area_principal.trim(),
-      estado_caso: formulario.estado,
-      prioridad: formulario.prioridad,
-      seguimiento: formulario.seguimiento,
-      observaciones_generales: observaciones,
-    },
-    {
-      paciente_id: formulario.paciente_id,
-      titulo: formulario.titulo.trim(),
-      fecha_apertura: fechaApertura,
-      motivo: formulario.motivo.trim(),
-      area_principal: formulario.area_principal.trim(),
-      estado: formulario.estado,
-      prioridad: formulario.prioridad,
-      seguimiento: formulario.seguimiento,
-      observaciones: observaciones,
-    },
-    crearPayloadAppSheet('Codigo Caso', 'Nombre del Caso', formulario, pacienteNombre, codigoCaso, fechaApertura, observaciones),
-    crearPayloadAppSheet('Código Caso', 'Nombre del Caso', formulario, pacienteNombre, codigoCaso, fechaApertura, observaciones),
-    crearPayloadAppSheet('Codigo Caso', 'Nombre del Caso', formulario, pacienteNombre, codigoCaso, fechaApertura, observaciones, false),
-    crearPayloadAppSheet('Código Caso', 'Nombre del Caso', formulario, pacienteNombre, codigoCaso, fechaApertura, observaciones, false),
-    crearPayloadAppSheet('Codigo Caso', 'Combre del Caso', formulario, pacienteNombre, codigoCaso, fechaApertura, observaciones, false),
-  ]
-}
-
-function errorEsPorColumnas(error: { code?: string; message?: string } | null) {
-  const mensaje = error?.message?.toLowerCase() || ''
-  return error?.code === 'PGRST204' || mensaje.includes('column') || mensaje.includes('columna')
-}
-
-async function insertarCasoConCompatibilidad(payloads: CasoRow[]) {
-  let ultimoError: { message?: string; code?: string } | null = null
-
-  for (const payload of payloads) {
-    const { data, error } = await supabase
-      .from('casos')
-      .insert(payload)
-      .select('*')
-      .single()
-
-    if (!error) {
-      return data as CasoRow
-    }
-
-    ultimoError = error
-
-    if (!errorEsPorColumnas(error)) {
-      break
-    }
+  if (limpio.length <= largo) {
+    return limpio
   }
 
-  throw new Error(ultimoError?.message || 'No se pudo guardar el caso.')
+  return `${limpio.slice(0, largo - 1)}...`
+}
+
+function obtenerConsultaResumen(consulta?: Consulta) {
+  if (!consulta) {
+    return 'Sin consulta asociada'
+  }
+
+  return `${formatearFecha(consulta.fecha_consulta)} · ${consulta.tipo_consulta} · ${textoCorto(consulta.motivo_consulta, 58)}`
+}
+
+function obtenerEvaluacionResumen(evaluacion?: Evaluacion) {
+  if (!evaluacion) {
+    return 'Sin evaluación asociada'
+  }
+
+  return `${formatearFecha(evaluacion.fecha_evaluacion)} · ${evaluacion.estado_evaluacion} · ${textoCorto(evaluacion.relato_antecedentes, 58)}`
+}
+
+function estadoBadgeVisual(estado: EstadoCaso) {
+  return estado === 'Cerrado' || estado === 'Anulado' ? 'inactivo' : 'activo'
 }
 
 function CasosPage() {
   const [pacientes, setPacientes] = useState<Paciente[]>([])
-  const [casos, setCasos] = useState<CasoVista[]>([])
+  const [consultas, setConsultas] = useState<Consulta[]>([])
+  const [evaluaciones, setEvaluaciones] = useState<Evaluacion[]>([])
+  const [casos, setCasos] = useState<Caso[]>([])
   const [busqueda, setBusqueda] = useState('')
-  const [formulario, setFormulario] = useState<FormularioCaso>(formularioInicial)
+  const [formulario, setFormulario] = useState<FormularioCaso>(() => crearFormularioInicial())
   const [mensaje, setMensaje] = useState('')
   const [cargando, setCargando] = useState(true)
   const [guardando, setGuardando] = useState(false)
 
   const pacienteSeleccionado = pacientes.find((paciente) => paciente.id === formulario.paciente_id)
+  const consultaSeleccionada = consultas.find((consulta) => consulta.id_consulta === formulario.consulta_id)
+  const evaluacionSeleccionada = evaluaciones.find((evaluacion) => evaluacion.id_evaluacion === formulario.evaluacion_id)
+
+  const pacientesPorId = useMemo(() => new Map(pacientes.map((paciente) => [paciente.id, paciente])), [pacientes])
+  const consultasPorId = useMemo(() => new Map(consultas.map((consulta) => [consulta.id_consulta, consulta])), [consultas])
+  const evaluacionesPorId = useMemo(() => new Map(evaluaciones.map((evaluacion) => [evaluacion.id_evaluacion, evaluacion])), [evaluaciones])
+
+  const consultasPaciente = useMemo(() => (
+    consultas.filter((consulta) => consulta.paciente_id === formulario.paciente_id)
+  ), [consultas, formulario.paciente_id])
+
+  const evaluacionesPaciente = useMemo(() => (
+    evaluaciones.filter((evaluacion) => evaluacion.paciente_id === formulario.paciente_id)
+  ), [evaluaciones, formulario.paciente_id])
 
   const casosFiltrados = useMemo(() => {
-    if (!busqueda.trim()) return casos
+    if (!busqueda.trim()) {
+      return casos
+    }
 
-    const filtro = normalizarTexto(busqueda)
-    return casos.filter((caso) => normalizarTexto([
-      caso.codigo_caso,
-      caso.paciente_nombre,
-      caso.titulo,
-      caso.motivo,
-      caso.area_principal,
-      caso.estado,
-      caso.prioridad,
-      caso.seguimiento,
-    ].join(' ')).includes(filtro))
-  }, [busqueda, casos])
+    const filtro = normalizarTexto(busqueda.trim())
+
+    return casos.filter((caso) => {
+      const paciente = pacientesPorId.get(caso.paciente_id)
+      const consulta = caso.consulta_id ? consultasPorId.get(caso.consulta_id) : undefined
+      const evaluacion = caso.evaluacion_id ? evaluacionesPorId.get(caso.evaluacion_id) : undefined
+      const texto = [
+        caso.nombre_caso,
+        caso.motivo_apertura,
+        caso.tipo_caso,
+        caso.prioridad,
+        caso.estado_caso,
+        caso.objetivo_trabajo || '',
+        obtenerNombrePaciente(paciente),
+        consulta?.motivo_consulta || '',
+        evaluacion?.relato_antecedentes || '',
+      ].join(' ')
+
+      return normalizarTexto(texto).includes(filtro)
+    })
+  }, [busqueda, casos, consultasPorId, evaluacionesPorId, pacientesPorId])
 
   const metricas = [
-    { etiqueta: 'Total', valor: casos.length, detalle: 'Casos registrados' },
-    { etiqueta: 'Abiertos', valor: casos.filter((caso) => caso.estado === 'abierto').length, detalle: 'En curso' },
-    { etiqueta: 'Revisión', valor: casos.filter((caso) => caso.estado === 'en_revision').length, detalle: 'Seguimiento' },
-    { etiqueta: 'Cerrados', valor: casos.filter((caso) => caso.estado === 'cerrado').length, detalle: 'Finalizados' },
+    { etiqueta: 'Total', valor: casos.length, detalle: 'Casos reales' },
+    { etiqueta: 'Abiertos', valor: casos.filter((caso) => caso.estado_caso === 'Abierto').length, detalle: 'Inicio activo' },
+    { etiqueta: 'En proceso', valor: casos.filter((caso) => caso.estado_caso === 'En proceso').length, detalle: 'Trabajo vigente' },
+    { etiqueta: 'Seguimiento', valor: casos.filter((caso) => caso.requiere_seguimiento).length, detalle: 'Requieren acción' },
   ]
 
-  function actualizarFormulario(campo: keyof FormularioCaso, valor: string) {
+  function actualizarFormulario(campo: keyof FormularioCaso, valor: string | boolean) {
     setFormulario((actual) => ({ ...actual, [campo]: valor }))
   }
 
-  async function cargarBaseCasos() {
-    setCargando(true)
+  function actualizarPaciente(pacienteId: string) {
+    setFormulario((actual) => ({
+      ...actual,
+      paciente_id: pacienteId,
+      consulta_id: '',
+      evaluacion_id: '',
+    }))
+  }
 
+  function actualizarEvaluacion(evaluacionId: string) {
+    const evaluacion = evaluaciones.find((item) => item.id_evaluacion === evaluacionId)
+
+    setFormulario((actual) => ({
+      ...actual,
+      evaluacion_id: evaluacionId,
+      consulta_id: evaluacion?.consulta_id || actual.consulta_id,
+    }))
+  }
+
+  async function cargarBaseCasos() {
     const { data: pacientesData, error: pacientesError } = await supabase
       .from('pacientes')
       .select('id, nombres, apellidos, telefono, email')
@@ -312,67 +292,150 @@ function CasosPage() {
       return
     }
 
-    const pacientesCargados = pacientesData || []
-    setPacientes(pacientesCargados)
+    const { data: consultasData, error: consultasError } = await supabase
+      .from('consultas')
+      .select('id_consulta, paciente_id, fecha_consulta, tipo_consulta, estado_consulta, motivo_consulta')
+      .order('fecha_consulta', { ascending: false })
 
-    const { data: casosData, error: casosError } = await supabase
-      .from('casos')
-      .select('*')
-
-    if (casosError) {
-      setMensaje(`Error al cargar casos: ${casosError.message}`)
-      setCasos([])
+    if (consultasError) {
+      setMensaje(`Error al cargar consultas: ${consultasError.message}`)
       setCargando(false)
       return
     }
 
-    const casosMapeados = (casosData || [])
-      .map((row) => mapearCasoDesdeSupabase(row as CasoRow, pacientesCargados))
-      .sort((a, b) => new Date(b.fecha_apertura).getTime() - new Date(a.fecha_apertura).getTime())
+    const { data: evaluacionesData, error: evaluacionesError } = await supabase
+      .from('evaluaciones')
+      .select('id_evaluacion, paciente_id, consulta_id, fecha_evaluacion, decision_revision, estado_evaluacion, relato_antecedentes')
+      .order('fecha_evaluacion', { ascending: false })
 
-    setCasos(casosMapeados)
+    if (evaluacionesError) {
+      setMensaje(`Error al cargar evaluaciones: ${evaluacionesError.message}`)
+      setCargando(false)
+      return
+    }
+
+    const { data: casosData, error: casosError } = await supabase
+      .from('casos')
+      .select(CASO_SELECT)
+      .order('created_at', { ascending: false })
+
+    if (casosError) {
+      setMensaje(`Error al cargar casos: ${casosError.message}`)
+      setCargando(false)
+      return
+    }
+
+    setPacientes((pacientesData || []) as Paciente[])
+    setConsultas((consultasData || []) as Consulta[])
+    setEvaluaciones((evaluacionesData || []) as Evaluacion[])
+    setCasos((casosData || []) as unknown as Caso[])
     setCargando(false)
+  }
+
+  function validarFormulario() {
+    if (pacientes.length === 0) {
+      return 'Error: primero debes crear un paciente antes de abrir un caso.'
+    }
+
+    if (!formulario.paciente_id) {
+      return 'Error: selecciona el paciente asociado al caso.'
+    }
+
+    if (!formulario.nombre_caso.trim() || !formulario.motivo_apertura.trim()) {
+      return 'Error: completa el nombre del caso y el motivo de apertura.'
+    }
+
+    if (!formulario.fecha_apertura) {
+      return 'Error: selecciona la fecha de apertura del caso.'
+    }
+
+    if (formulario.consulta_id) {
+      const consulta = consultasPorId.get(formulario.consulta_id)
+
+      if (!consulta || consulta.paciente_id !== formulario.paciente_id) {
+        return 'Error: la consulta seleccionada no pertenece al paciente del caso.'
+      }
+    }
+
+    if (formulario.evaluacion_id) {
+      const evaluacion = evaluacionesPorId.get(formulario.evaluacion_id)
+
+      if (!evaluacion || evaluacion.paciente_id !== formulario.paciente_id) {
+        return 'Error: la evaluación seleccionada no pertenece al paciente del caso.'
+      }
+
+      if (formulario.consulta_id && evaluacion.consulta_id !== formulario.consulta_id) {
+        return 'Error: la evaluación seleccionada pertenece a otra consulta.'
+      }
+    }
+
+    const duplicado = casos.some((caso) => (
+      caso.paciente_id === formulario.paciente_id
+      && normalizarTexto(caso.nombre_caso) === normalizarTexto(formulario.nombre_caso.trim())
+      && caso.estado_caso !== 'Cerrado'
+      && caso.estado_caso !== 'Anulado'
+    ))
+
+    if (duplicado) {
+      return 'Error: ya existe un caso abierto o en proceso con ese nombre para este paciente.'
+    }
+
+    return ''
   }
 
   async function guardarCaso(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
 
-    if (!formulario.paciente_id || !formulario.titulo.trim() || !formulario.motivo.trim() || !formulario.area_principal.trim()) {
-      setMensaje('Error: completa paciente, título, motivo y área principal.')
-      return
-    }
+    const errorValidacion = validarFormulario()
 
-    const duplicado = casos.some((caso) => (
-      caso.paciente_id === formulario.paciente_id
-      && normalizarTexto(caso.titulo) === normalizarTexto(formulario.titulo.trim())
-      && caso.estado !== 'cerrado'
-    ))
-
-    if (duplicado) {
-      setMensaje('Error: ya existe un caso abierto o en curso con ese título para este paciente.')
+    if (errorValidacion) {
+      setMensaje(errorValidacion)
       return
     }
 
     setGuardando(true)
     setMensaje('Guardando caso...')
 
-    try {
-      const payloads = crearPayloadsCaso(formulario, pacienteSeleccionado)
-      const casoGuardado = await insertarCasoConCompatibilidad(payloads)
-      const casoMapeado = mapearCasoDesdeSupabase(casoGuardado, pacientes)
-
-      setCasos((actuales) => [casoMapeado, ...actuales])
-      setFormulario(formularioInicial)
-      setMensaje('Caso guardado correctamente')
-    } catch (error) {
-      setMensaje(`Error al guardar caso: ${error instanceof Error ? error.message : 'error desconocido'}`)
-    } finally {
-      setGuardando(false)
+    const payload = {
+      paciente_id: formulario.paciente_id,
+      consulta_id: formulario.consulta_id || null,
+      evaluacion_id: formulario.evaluacion_id || null,
+      fecha_apertura: formulario.fecha_apertura,
+      nombre_caso: formulario.nombre_caso.trim(),
+      motivo_apertura: formulario.motivo_apertura.trim(),
+      descripcion_general: formulario.descripcion_general.trim() || null,
+      objetivo_trabajo: formulario.objetivo_trabajo.trim() || null,
+      tipo_caso: formulario.tipo_caso,
+      prioridad: formulario.prioridad,
+      estado_caso: formulario.estado_caso,
+      requiere_seguimiento: formulario.requiere_seguimiento,
+      notas_seguimiento: formulario.notas_seguimiento.trim() || null,
     }
+
+    const { data, error } = await supabase
+      .from('casos')
+      .insert(payload)
+      .select(CASO_SELECT)
+      .single()
+
+    if (error) {
+      setMensaje(`Error al guardar caso: ${error.message}`)
+      setGuardando(false)
+      return
+    }
+
+    setCasos((actuales) => [data as unknown as Caso, ...actuales])
+    setFormulario(crearFormularioInicial())
+    setMensaje('Caso guardado correctamente')
+    setGuardando(false)
   }
 
   useEffect(() => {
-    void cargarBaseCasos()
+    const cargaInicial = window.setTimeout(() => {
+      void cargarBaseCasos()
+    }, 0)
+
+    return () => window.clearTimeout(cargaInicial)
   }, [])
 
   return (
@@ -381,7 +444,7 @@ function CasosPage() {
         <div className="pacientes-command-title">
           <span className="modulo-badge">Módulo clínico</span>
           <h1>Casos</h1>
-          <p>Base inicial para abrir, revisar y seguir casos asociados a pacientes.</p>
+          <p>Casos reales conectados a `public.casos`, con paciente directo y origen clínico opcional.</p>
         </div>
 
         <section className="pacientes-metricas-rail" aria-label="Métricas de casos">
@@ -408,46 +471,66 @@ function CasosPage() {
             <strong>{casosFiltrados.length}</strong>
           </div>
 
-          <div className="directory-search-row">
-            <label className="buscador-pacientes buscador-pacientes--compact">
-              <span>Buscar</span>
-              <input
-                placeholder="Paciente, título, motivo, área o estado"
-                type="search"
-                value={busqueda}
-                onChange={(event) => setBusqueda(event.target.value)}
-              />
-            </label>
-            <button className="directory-filter-button" type="button" aria-label="Filtros de casos">≡</button>
-          </div>
+          <label className="buscador-pacientes buscador-pacientes--compact">
+            <span>Buscar</span>
+            <input
+              placeholder="Paciente, nombre, motivo, tipo o estado"
+              type="search"
+              value={busqueda}
+              onChange={(event) => setBusqueda(event.target.value)}
+            />
+          </label>
 
           {casosFiltrados.length === 0 ? (
             <div className="estado-listado estado-listado--vacio">
               <strong>{cargando ? 'Cargando casos' : 'Aún no hay casos en esta vista'}</strong>
-              <p>{cargando ? 'Preparando casos y selector de pacientes.' : 'Crea el primer caso desde el formulario de ingreso.'}</p>
+              <p>{cargando ? 'Consultando pacientes, consultas, evaluaciones y casos reales.' : 'Crea el primer caso desde el formulario de ingreso.'}</p>
             </div>
           ) : (
-            <div className="pacientes-cards pacientes-cards--compact">
-              {casosFiltrados.map((caso) => (
-                <article className="paciente-card paciente-card--compact" key={caso.id}>
-                  <div className="paciente-avatar" aria-hidden="true">C</div>
-                  <div className="paciente-card__body">
-                    <div className="paciente-card__topline">
-                      <div>
-                        <h3>{caso.titulo}</h3>
-                        <p className="paciente-card__contact-line">{caso.paciente_nombre} · {caso.codigo_caso}</p>
+            <div className="pacientes-cards pacientes-cards--compact" aria-live="polite">
+              {casosFiltrados.map((caso) => {
+                const paciente = pacientesPorId.get(caso.paciente_id)
+                const consulta = caso.consulta_id ? consultasPorId.get(caso.consulta_id) : undefined
+                const evaluacion = caso.evaluacion_id ? evaluacionesPorId.get(caso.evaluacion_id) : undefined
+
+                return (
+                  <article className="paciente-card paciente-card--compact" key={caso.id_caso}>
+                    <div className="paciente-avatar" aria-hidden="true">C</div>
+                    <div className="paciente-card__body">
+                      <div className="paciente-card__topline">
+                        <div>
+                          <h3>{caso.nombre_caso}</h3>
+                          <p className="paciente-card__contact-line">
+                            {obtenerNombrePaciente(paciente)} · abierto el {formatearFecha(caso.fecha_apertura)}
+                          </p>
+                        </div>
+                        <span className={`estado-badge estado-badge--${estadoBadgeVisual(caso.estado_caso)}`}>
+                          {caso.estado_caso}
+                        </span>
                       </div>
-                      <span className={`estado-badge estado-badge--${caso.estado === 'cerrado' ? 'inactivo' : 'activo'}`}>
-                        {obtenerEtiquetaEstado(caso.estado)}
-                      </span>
+
+                      <dl className="paciente-card__details paciente-card__details--inline casos-card-details">
+                        <div>
+                          <dt>Tipo</dt>
+                          <dd>{caso.tipo_caso}</dd>
+                        </div>
+                        <div>
+                          <dt>Prioridad</dt>
+                          <dd>{caso.prioridad}</dd>
+                        </div>
+                        <div>
+                          <dt>Consulta</dt>
+                          <dd>{consulta ? formatearFecha(consulta.fecha_consulta) : 'Sin vínculo'}</dd>
+                        </div>
+                        <div>
+                          <dt>Evaluación</dt>
+                          <dd>{evaluacion ? formatearFecha(evaluacion.fecha_evaluacion) : 'Sin vínculo'}</dd>
+                        </div>
+                      </dl>
                     </div>
-                    <div className="paciente-card__footer-line">
-                      <span>{caso.area_principal} · prioridad {caso.prioridad}</span>
-                      <time dateTime={caso.fecha_apertura}>{formatearFecha(caso.fecha_apertura)}</time>
-                    </div>
-                  </div>
-                </article>
-              ))}
+                  </article>
+                )
+              })}
             </div>
           )}
         </aside>
@@ -459,10 +542,10 @@ function CasosPage() {
               <div>
                 <span className="panel-kicker">Ficha de caso</span>
                 <h2>Nuevo caso</h2>
-                <p>Apertura inicial vinculada a un paciente existente.</p>
+                <p>Apertura vinculada a `public.casos` con columnas reales.</p>
               </div>
             </div>
-            <button className="guardar-paciente" disabled={guardando} form="caso-form" type="submit">
+            <button className="guardar-paciente" disabled={guardando || pacientes.length === 0} form="caso-form" type="submit">
               {guardando ? 'Guardando...' : 'Guardar caso'}
             </button>
           </div>
@@ -473,72 +556,170 @@ function CasosPage() {
                 <div className="form-section__header">
                   <span>01</span>
                   <div>
-                    <h3>Paciente asociado</h3>
-                    <p>Selecciona el paciente al que pertenece el caso.</p>
+                    <h3>Paciente y origen</h3>
+                    <p>`casos.paciente_id` es obligatorio. Consulta y evaluación son vínculos opcionales.</p>
                   </div>
                 </div>
+
                 <div className="form-grid form-grid--command">
                   <label>
                     Paciente *
-                    <select value={formulario.paciente_id} onChange={(event) => actualizarFormulario('paciente_id', event.target.value)} required>
+                    <select value={formulario.paciente_id} onChange={(event) => actualizarPaciente(event.target.value)} required>
                       <option value="">Seleccionar paciente</option>
                       {pacientes.map((paciente) => (
                         <option key={paciente.id} value={paciente.id}>{obtenerNombrePaciente(paciente)}</option>
                       ))}
                     </select>
                   </label>
+
                   <label>
-                    Estado *
-                    <select value={formulario.estado} onChange={(event) => actualizarFormulario('estado', event.target.value as EstadoCaso)} required>
-                      {estadosCaso.map((estado) => (
-                        <option key={estado.valor} value={estado.valor}>{estado.etiqueta}</option>
+                    Consulta asociada
+                    <select
+                      disabled={!formulario.paciente_id || consultasPaciente.length === 0}
+                      value={formulario.consulta_id}
+                      onChange={(event) => actualizarFormulario('consulta_id', event.target.value)}
+                    >
+                      <option value="">Sin consulta asociada</option>
+                      {consultasPaciente.map((consulta) => (
+                        <option key={consulta.id_consulta} value={consulta.id_consulta}>{obtenerConsultaResumen(consulta)}</option>
                       ))}
                     </select>
                   </label>
+
+                  <label>
+                    Evaluación asociada
+                    <select
+                      disabled={!formulario.paciente_id || evaluacionesPaciente.length === 0}
+                      value={formulario.evaluacion_id}
+                      onChange={(event) => actualizarEvaluacion(event.target.value)}
+                    >
+                      <option value="">Sin evaluación asociada</option>
+                      {evaluacionesPaciente.map((evaluacion) => (
+                        <option key={evaluacion.id_evaluacion} value={evaluacion.id_evaluacion}>{obtenerEvaluacionResumen(evaluacion)}</option>
+                      ))}
+                    </select>
+                  </label>
+
+                  <label>
+                    Fecha de apertura *
+                    <input
+                      required
+                      type="date"
+                      value={formulario.fecha_apertura}
+                      onChange={(event) => actualizarFormulario('fecha_apertura', event.target.value)}
+                    />
+                  </label>
                 </div>
+
+                {formulario.paciente_id && consultasPaciente.length === 0 && evaluacionesPaciente.length === 0 && (
+                  <p className="casos-inline-note">
+                    Este paciente no tiene consultas/evaluaciones asociadas. La tabla `casos` permite abrir el caso con paciente directo.
+                  </p>
+                )}
               </section>
 
               <section className="form-section form-section--active">
                 <div className="form-section__header">
                   <span>02</span>
                   <div>
-                    <h3>Identificación del caso</h3>
-                    <p>Registra el motivo y el área principal de revisión.</p>
+                    <h3>Datos del caso</h3>
+                    <p>Usa los valores exactos permitidos por los checks de `public.casos`.</p>
                   </div>
                 </div>
+
                 <div className="form-grid form-grid--command">
                   <label>
-                    Título del caso *
-                    <input value={formulario.titulo} onChange={(event) => actualizarFormulario('titulo', event.target.value)} placeholder="Ej: Bloqueo familiar recurrente" required />
+                    Nombre del caso *
+                    <input
+                      value={formulario.nombre_caso}
+                      onChange={(event) => actualizarFormulario('nombre_caso', event.target.value)}
+                      placeholder="Ej: Bloqueo familiar recurrente"
+                      required
+                    />
                   </label>
+
                   <label>
-                    Área principal *
-                    <input value={formulario.area_principal} onChange={(event) => actualizarFormulario('area_principal', event.target.value)} placeholder="Ej: Linaje energético" required />
+                    Tipo de caso *
+                    <select value={formulario.tipo_caso} onChange={(event) => actualizarFormulario('tipo_caso', event.target.value as TipoCaso)} required>
+                      {tiposCaso.map((tipo) => (
+                        <option key={tipo} value={tipo}>{tipo}</option>
+                      ))}
+                    </select>
                   </label>
+
                   <label>
                     Prioridad *
-                    <select value={formulario.prioridad} onChange={(event) => actualizarFormulario('prioridad', event.target.value)} required>
+                    <select value={formulario.prioridad} onChange={(event) => actualizarFormulario('prioridad', event.target.value as PrioridadCaso)} required>
                       {prioridadesCaso.map((prioridad) => (
                         <option key={prioridad} value={prioridad}>{prioridad}</option>
                       ))}
                     </select>
                   </label>
+
                   <label>
-                    Seguimiento *
-                    <select value={formulario.seguimiento} onChange={(event) => actualizarFormulario('seguimiento', event.target.value)} required>
-                      {seguimientosCaso.map((seguimiento) => (
-                        <option key={seguimiento} value={seguimiento}>{seguimiento}</option>
+                    Estado *
+                    <select value={formulario.estado_caso} onChange={(event) => actualizarFormulario('estado_caso', event.target.value as EstadoCaso)} required>
+                      {estadosCaso.map((estado) => (
+                        <option key={estado} value={estado}>{estado}</option>
                       ))}
                     </select>
                   </label>
                 </div>
+
                 <label>
                   Motivo de apertura *
-                  <textarea value={formulario.motivo} onChange={(event) => actualizarFormulario('motivo', event.target.value)} placeholder="Describe el motivo inicial del caso." required />
+                  <textarea
+                    value={formulario.motivo_apertura}
+                    onChange={(event) => actualizarFormulario('motivo_apertura', event.target.value)}
+                    placeholder="Describe el motivo inicial del caso."
+                    required
+                  />
                 </label>
+
                 <label>
-                  Observaciones generales
-                  <textarea value={formulario.observaciones_generales} onChange={(event) => actualizarFormulario('observaciones_generales', event.target.value)} placeholder="Antecedentes adicionales del caso." />
+                  Objetivo de trabajo
+                  <textarea
+                    value={formulario.objetivo_trabajo}
+                    onChange={(event) => actualizarFormulario('objetivo_trabajo', event.target.value)}
+                    placeholder="Objetivo terapéutico o resultado esperado."
+                  />
+                </label>
+
+                <label>
+                  Descripción general
+                  <textarea
+                    value={formulario.descripcion_general}
+                    onChange={(event) => actualizarFormulario('descripcion_general', event.target.value)}
+                    placeholder="Contexto, antecedentes o alcance inicial."
+                  />
+                </label>
+              </section>
+
+              <section className="form-section form-section--active">
+                <div className="form-section__header">
+                  <span>03</span>
+                  <div>
+                    <h3>Seguimiento</h3>
+                    <p>Campos reales: `requiere_seguimiento` y `notas_seguimiento`.</p>
+                  </div>
+                </div>
+
+                <label className="casos-checkbox-card">
+                  <input
+                    checked={formulario.requiere_seguimiento}
+                    type="checkbox"
+                    onChange={(event) => actualizarFormulario('requiere_seguimiento', event.target.checked)}
+                  />
+                  <span>Este caso requiere seguimiento</span>
+                </label>
+
+                <label>
+                  Notas de seguimiento
+                  <textarea
+                    value={formulario.notas_seguimiento}
+                    onChange={(event) => actualizarFormulario('notas_seguimiento', event.target.value)}
+                    placeholder="Próxima acción, pendiente o criterio de seguimiento."
+                  />
                 </label>
               </section>
             </form>
@@ -547,19 +728,20 @@ function CasosPage() {
               <div className="preview-avatar" aria-hidden="true">C</div>
               <div className="preview-heading">
                 <span>Preview vivo</span>
-                <h3>{formulario.titulo || 'Nuevo caso'}</h3>
+                <h3>{formulario.nombre_caso || 'Nuevo caso'}</h3>
                 <p>{obtenerNombrePaciente(pacienteSeleccionado)}</p>
               </div>
-              <span className={`estado-badge estado-badge--${formulario.estado === 'cerrado' ? 'inactivo' : 'activo'}`}>
-                {obtenerEtiquetaEstado(formulario.estado)}
+              <span className={`estado-badge estado-badge--${estadoBadgeVisual(formulario.estado_caso)}`}>
+                {formulario.estado_caso}
               </span>
               <div className="preview-data preview-data--command">
-                <p><strong>Área</strong> <span>{formulario.area_principal || 'Pendiente'}</span></p>
+                <p><strong>Tipo</strong> <span>{formulario.tipo_caso}</span></p>
                 <p><strong>Prioridad</strong> <span>{formulario.prioridad}</span></p>
-                <p><strong>Seguimiento</strong> <span>{formulario.seguimiento}</span></p>
-                <p><strong>Motivo</strong> <span>{formulario.motivo || 'Pendiente'}</span></p>
+                <p><strong>Consulta</strong> <span>{consultaSeleccionada ? formatearFecha(consultaSeleccionada.fecha_consulta) : 'Sin vínculo'}</span></p>
+                <p><strong>Evaluación</strong> <span>{evaluacionSeleccionada ? formatearFecha(evaluacionSeleccionada.fecha_evaluacion) : 'Sin vínculo'}</span></p>
+                <p><strong>Motivo</strong> <span>{formulario.motivo_apertura || 'Pendiente'}</span></p>
               </div>
-              <div className="preview-help">Esta tarjeta resume el caso antes de conectarlo a revisiones y elementos del caso.</div>
+              <div className="preview-help">El caso se guardará usando únicamente columnas reales de `public.casos`.</div>
             </aside>
           </div>
 
