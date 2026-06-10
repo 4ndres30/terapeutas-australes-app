@@ -4,6 +4,7 @@ import type { Session } from '@supabase/supabase-js'
 import { BrowserRouter, Navigate, NavLink, Route, Routes } from 'react-router-dom'
 import PacientesPage from './pages/PacientesPage'
 import ConsultasPage from './pages/ConsultasPage'
+import EvaluacionesPage from './pages/EvaluacionesPage'
 import CasosPage from './pages/CasosPage'
 import LoginPage from './pages/LoginPage'
 import { supabase } from './lib/supabase'
@@ -42,7 +43,7 @@ const navegacionPrincipal: NavegacionLateral[] = [
   { etiqueta: 'Inicio', icono: '⌂', estado: 'pronto' },
   { etiqueta: 'Pacientes', icono: '♙', ruta: '/pacientes', estado: 'activo' },
   { etiqueta: 'Consultas', icono: '✧', ruta: '/consultas', estado: 'activo' },
-  { etiqueta: 'Evaluaciones', icono: '□', estado: 'pronto' },
+  { etiqueta: 'Evaluaciones', icono: '□', ruta: '/evaluaciones', estado: 'activo' },
   { etiqueta: 'Casos', icono: '◇', ruta: '/casos', estado: 'activo' },
   { etiqueta: 'Trabajos', icono: '◈', estado: 'pronto' },
   { etiqueta: 'Cobros', icono: '$', estado: 'pronto' },
@@ -375,6 +376,20 @@ function App() {
             >
               <AppPrivada usuarioInterno={usuarioInterno!} onCerrarSesion={cerrarSesion}>
                 <ConsultasPage />
+              </AppPrivada>
+            </RutaProtegida>
+          }
+        />
+        <Route
+          path="/evaluaciones"
+          element={
+            <RutaProtegida
+              estadoAuth={estadoAuth}
+              usuarioInterno={usuarioInterno}
+              rolesPermitidos={['admin', 'terapeuta']}
+            >
+              <AppPrivada usuarioInterno={usuarioInterno!} onCerrarSesion={cerrarSesion}>
+                <EvaluacionesPage />
               </AppPrivada>
             </RutaProtegida>
           }
