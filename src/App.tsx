@@ -9,6 +9,7 @@ import './App.css'
 import './DashboardPremium.css'
 import './TypographyElegant.css'
 import './ReferencePolish.css'
+import './ReferenceFinalPass.css'
 
 type RolUsuario = 'admin' | 'terapeuta' | 'finanzas'
 
