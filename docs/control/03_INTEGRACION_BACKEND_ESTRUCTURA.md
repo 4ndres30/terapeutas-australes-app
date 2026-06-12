@@ -41,12 +41,13 @@ Una tarea backend debe indicar:
 
 ## BE-001 - Inventariar estructura backend y Supabase local
 
-**Estado:** Pendiente  
+**Estado:** Aprobada con observaciones  
 **Prioridad:** Alta  
 **Responsable:** Integracion Backend/Estructura  
 **Origen:** Control de desarrollo  
 **Fecha creacion:** 2026-06-11  
-**Rama sugerida:** `docs/inventario-backend-estructura`  
+**Fecha documentacion:** 2026-06-12  
+**Rama sugerida:** `docs/be-001-inventario-backend`  
 **Dependencias:** PEND-001  
 
 ### Descripcion
@@ -56,6 +57,23 @@ Revisar la estructura tecnica existente para identificar migraciones, tablas esp
 - `supabase/migrations/`
 - `src/`
 - `package.json`
+- `docs/control/auditorias/BE-001_INVENTARIO_BACKEND_SUPABASE.md`
+
+### Resumen ejecutivo
+- BE-001 queda documentada como inventario backend y Supabase local.
+- Se detectaron tablas clinicas base, tablas de revisiones, hallazgos, trabajos, finanzas y usuarios internos.
+- Se detecto la vista `vista_cobros_estado`.
+- Se detectaron triggers de `updated_at`, validacion de relaciones y actualizacion de estado financiero.
+- Se detecto RLS activo para tablas clinicas, financieras y usuarios internos.
+- React consume Supabase desde paginas clinicas, paneles de caso, finanzas y reportes.
+- Hay formularios operativos para pacientes, consultas, evaluaciones, casos, elementos, revisiones y aspectos.
+- No se detecto formulario operativo para hallazgos, trabajos, cobros ni pagos.
+- Agenda no tiene tabla backend dedicada.
+- La auditoria detecto desalineaciones React/Supabase que requieren tareas posteriores.
+- Las observaciones tecnicas quedan registradas en el informe detallado.
+
+### Informe detallado
+- [`BE-001_INVENTARIO_BACKEND_SUPABASE.md`](auditorias/BE-001_INVENTARIO_BACKEND_SUPABASE.md)
 
 ### Criterios de aceptacion
 - Listar migraciones existentes sin modificarlas.
@@ -67,10 +85,10 @@ Revisar la estructura tecnica existente para identificar migraciones, tablas esp
 - No fusionar a `main`.
 
 ### Resultado
-Pendiente.
+Aprobada con observaciones. Resultado registrado en `docs/control/auditorias/BE-001_INVENTARIO_BACKEND_SUPABASE.md`.
 
 ### Observaciones
-No decidir cambios clinicos durante esta tarea; esos hallazgos deben volver a Revision de flujo clinico.
+No se corrigieron errores ni se modifico logica. Las desalineaciones detectadas deben transformarse en tareas posteriores y pasar por Control de Desarrollo antes de implementarse.
 
 ## BE-002 - Comparar backend con flujo clinico aprobado
 
