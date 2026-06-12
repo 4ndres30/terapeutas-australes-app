@@ -74,7 +74,7 @@ RFC-001 valida el flujo clinico central como aprobado con observaciones. El caso
 
 ### Informe detallado
 
-- [`RFC-001_REVISION_FLUJO_CLINICO.md`](docs/control/auditorias/RFC-001_REVISION_FLUJO_CLINICO.md)
+- [`RFC-001_REVISION_FLUJO_CLINICO.md`](auditorias/RFC-001_REVISION_FLUJO_CLINICO.md)
 
 ### Archivos relacionados
 
