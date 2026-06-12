@@ -1,7 +1,7 @@
 # Revision de flujo clinico
 
 Responsable: Revision de flujo clinico  
-Estado del documento: En analisis  
+Estado del documento: En análisis
 Fecha creacion: `2026-06-11`
 
 Este documento controla las revisiones clinicas y funcionales. Su foco es validar que la aplicacion represente bien el trabajo terapeutico, sin duplicar informacion ni ubicar campos en entidades incorrectas.

@@ -2,7 +2,7 @@
 
 Fecha de corte: `2026-06-11`  
 Responsable del documento: Control de desarrollo  
-Estado general documental: En analisis
+Estado general documental: En análisis
 
 ## Resumen
 
@@ -91,9 +91,9 @@ Estructura documental inicial creada.
 ### Observaciones
 Pendiente de validacion por Javier.
 
-## QA-001 - Validar control contra estado real del proyecto
+## QA-001 - Auditoria inicial del proyecto
 
-**Estado:** Pendiente  
+**Estado:** Integrada
 **Prioridad:** Alta  
 **Responsable:** Control de desarrollo  
 **Origen:** Control de desarrollo  
@@ -102,12 +102,13 @@ Pendiente de validacion por Javier.
 **Dependencias:** CTRL-001  
 
 ### Descripcion
-Comparar esta estructura documental con el estado real del repositorio, sin modificar codigo ni base de datos, para completar pendientes con informacion concreta.
+Auditar el estado tecnico inicial del proyecto sin modificar codigo, migraciones, base de datos ni configuracion sensible.
 
 ### Archivos relacionados
 - `docs/control/`
 - `src/`
 - `supabase/`
+- `docs/control/auditorias/QA-001_AUDITORIA_INICIAL.md`
 
 ### Criterios de aceptacion
 - Identificar pantallas, rutas y modulos relevantes.
@@ -118,7 +119,7 @@ Comparar esta estructura documental con el estado real del repositorio, sin modi
 - No fusionar a `main`.
 
 ### Resultado
-Pendiente.
+Integrada. Resultado registrado en `docs/control/auditorias/QA-001_AUDITORIA_INICIAL.md`.
 
 ### Observaciones
-Debe ejecutarse como auditoria documental, no como implementacion.
+QA-001 queda reservada como auditoria inicial, no como implementacion ni tarea pendiente reutilizable.

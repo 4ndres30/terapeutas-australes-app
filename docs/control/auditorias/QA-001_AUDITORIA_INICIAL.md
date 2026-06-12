@@ -2,7 +2,7 @@
 
 ## Estado
 
-En analisis
+En análisis
 
 ## Fecha
 
@@ -162,7 +162,7 @@ Evidencia:
 
 ## Tareas sugeridas posteriores
 
-## BE-001 - Validar esquema consolidado Supabase local contra frontend
+## BE-004 - Validar esquema consolidado Supabase local contra frontend
 
 **Estado:** Pendiente  
 **Prioridad:** Alta  
@@ -194,7 +194,7 @@ Pendiente.
 ### Observaciones
 Debe ser una validacion local o documental; cualquier cambio requiere tarea posterior aprobada.
 
-## RFC-001 - Revisar responsabilidad clinica de revisiones, detalle y hallazgos
+## RFC-004 - Revisar responsabilidad clinica de revisiones, detalle y hallazgos
 
 **Estado:** Pendiente  
 **Prioridad:** Alta  
@@ -227,7 +227,7 @@ Pendiente.
 ### Observaciones
 No implementar hasta que Javier valide el flujo clinico.
 
-## UI-001 - Auditar modulos pendientes y lectura operacional
+## UI-004 - Auditar modulos pendientes y lectura operacional
 
 **Estado:** Pendiente  
 **Prioridad:** Media  
@@ -270,7 +270,7 @@ No convertir placeholders en formularios sin decision backend y clinica previa.
 **Origen:** QA-001  
 **Fecha creacion:** 2026-06-11  
 **Rama sugerida:** `docs/qa-runtime-local`  
-**Dependencias:** BE-001  
+**Dependencias:** BE-004
 
 ### Descripcion
 Ejecutar una auditoria de runtime en entorno local, con Supabase local y sesion adecuada, para confirmar que RLS, vistas y formularios funcionan como se espera.

@@ -21,7 +21,7 @@ Este documento es la lista maestra de pendientes. Cada pendiente debe tener un c
 | RFC-001 | Auditar flujo clinico completo. | Pendiente | Alta | Revision de flujo clinico |
 | BE-001 | Inventariar estructura backend y Supabase local. | Pendiente | Alta | Integracion Backend/Estructura |
 | UI-001 | Auditar pantallas principales y pulido visual. | Pendiente | Media | UI / UX / Pulido visual |
-| QA-001 | Validar documentacion contra estado real del repo. | Pendiente | Alta | Control de desarrollo |
+| QA-001 | Auditoria inicial del proyecto. | Integrada | Alta | Control de desarrollo |
 
 ## PEND-001 - Levantar inventario real del proyecto desde main
 
@@ -87,9 +87,9 @@ Pendiente.
 ### Observaciones
 Si una tarea cruza dominios, Control de desarrollo debe dividirla antes de ejecutarla.
 
-## QA-001 - Validar documentacion contra estado real del repo
+## QA-001 - Auditoria inicial del proyecto
 
-**Estado:** Pendiente  
+**Estado:** Integrada
 **Prioridad:** Alta  
 **Responsable:** Control de desarrollo  
 **Origen:** Control de desarrollo  
@@ -98,11 +98,12 @@ Si una tarea cruza dominios, Control de desarrollo debe dividirla antes de ejecu
 **Dependencias:** CTRL-001  
 
 ### Descripcion
-Revisar que los documentos de `docs/control/` coincidan con el estado real del repositorio y no arrastren supuestos de documentos antiguos.
+Auditar el estado tecnico inicial del proyecto sin modificar codigo, migraciones, base de datos ni configuracion sensible.
 
 ### Archivos relacionados
 - `docs/control/`
 - `docs/avance-tecnico-2026-06-06-0304.md`
+- `docs/control/auditorias/QA-001_AUDITORIA_INICIAL.md`
 
 ### Criterios de aceptacion
 - Confirmar que el repositorio oficial usado es `4ndres30/terapeutas-australes-app`.
@@ -113,7 +114,7 @@ Revisar que los documentos de `docs/control/` coincidan con el estado real del r
 - No fusionar a `main`.
 
 ### Resultado
-Pendiente.
+Integrada. Resultado registrado en `docs/control/auditorias/QA-001_AUDITORIA_INICIAL.md`.
 
 ### Observaciones
-El documento historico en `docs/` menciona el repositorio antiguo; esta tarea solo debe levantar el hallazgo salvo instruccion posterior.
+QA-001 queda reservada como auditoria inicial, no como tarea pendiente reutilizable.

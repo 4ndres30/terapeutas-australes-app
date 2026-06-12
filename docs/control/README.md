@@ -10,7 +10,7 @@ Este directorio es el sistema liviano de control del proyecto. Su objetivo es qu
 ## Reglas no negociables
 
 - Usar solo el repositorio oficial: `4ndres30/terapeutas-australes-app`.
-- No usar el repositorio antiguo: `JaRviS3892/terapeutas-australes-app`.
+- No usar ningun repositorio antiguo no oficial.
 - No tocar `.env`.
 - No ejecutar `supabase db push`.
 - No tocar Supabase remoto.
@@ -52,10 +52,16 @@ Este directorio es el sistema liviano de control del proyecto. Su objetivo es qu
 - `QA-001`: validaciones / auditorias.
 - `LOG-001`: bitacora.
 
+Reglas de codigos:
+
+- Los codigos de tarea deben ser unicos.
+- No reutilizar `QA-001`, `BE-001`, `RFC-001`, `UI-001` u otros codigos para tareas distintas.
+- Si una auditoria sugiere nuevas tareas, debe usar el siguiente correlativo disponible.
+
 ## Estados permitidos
 
 - Pendiente.
-- En analisis.
+- En análisis.
 - En proceso.
 - Bloqueada.
 - Integrada.

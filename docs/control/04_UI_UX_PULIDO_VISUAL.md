@@ -1,7 +1,7 @@
 # UI / UX / Pulido visual
 
 Responsable: UI / UX / Pulido visual  
-Estado del documento: En analisis  
+Estado del documento: En análisis
 Fecha creacion: `2026-06-11`
 
 Este documento controla tareas de experiencia de usuario, formularios, responsive y pulido visual. El objetivo es que la aplicacion sea clara, sobria, profesional y facil de usar para el flujo terapeutico.

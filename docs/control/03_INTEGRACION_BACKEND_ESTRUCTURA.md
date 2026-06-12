@@ -1,7 +1,7 @@
 # Integracion backend / estructura
 
 Responsable: Integracion Backend/Estructura  
-Estado del documento: En analisis  
+Estado del documento: En análisis
 Fecha creacion: `2026-06-11`
 
 Este documento controla tareas tecnicas relacionadas con estructura, Supabase, migraciones, vistas SQL, servicios, tipos, hooks y logica funcional. Las tareas tecnicas deben venir aprobadas por Control de desarrollo o por una decision registrada.

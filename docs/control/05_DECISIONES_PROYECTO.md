@@ -21,6 +21,7 @@ Este documento registra decisiones estables. No reemplaza la conversacion, pero 
 | DEC-003 | Sistema de codigos, estados y prioridades. | Validada | 2026-06-11 |
 | DEC-004 | Restricciones de seguridad operativa. | Validada | 2026-06-11 |
 | DEC-005 | `docs/control/` como centro documental. | Integrada | 2026-06-11 |
+| DEC-006 | Revisiones y detalle de revisiones viven dentro de la ficha del caso. | Validada | 2026-06-12 |
 
 ## DEC-001 - Repositorio oficial del proyecto
 
@@ -42,7 +43,7 @@ Evitar trabajar sobre el repositorio antiguo o mezclar historiales.
 Todo trabajo futuro debe verificar remoto antes de editar, commitear, empujar o abrir PR.
 
 ### Observaciones
-El repositorio antiguo `JaRviS3892/terapeutas-australes-app` no debe usarse.
+El repositorio antiguo no oficial no debe usarse.
 
 ## DEC-002 - Sistema de chats y responsabilidades
 
@@ -131,3 +132,28 @@ Los chats deben revisar este directorio antes de proponer o ejecutar tareas rele
 
 ### Observaciones
 La estructura queda pendiente de validacion final por Javier antes de abrir PR.
+
+## DEC-006 - Revisiones y detalle de revisiones viven dentro de la ficha del caso
+
+**Estado:** Validada
+**Prioridad:** Crítica
+**Responsable:** Control de desarrollo
+**Origen:** Javier / Control de desarrollo
+**Fecha creación:** 2026-06-12
+**Rama sugerida:** `docs/control-proyecto`
+**Dependencias:** DEC-002, QA-001
+
+### Decisión
+Las revisiones y el detalle de revisiones no serán módulos principales independientes. Deben vivir dentro de la ficha del caso.
+
+### Razón
+Una revisión pertenece a un caso. El detalle de revisión depende de una revisión existente y de elementos reales del caso.
+
+### Impacto
+- `/revisiones` debe redirigir o depender de `/casos`.
+- `/detalle-revisiones` debe redirigir o depender de `/casos`.
+- La creación de revisiones debe realizarse desde la ficha del caso.
+- La creación de detalles debe exigir revisión y elemento del caso existentes.
+
+### Observaciones
+Esta decisión protege el flujo clínico central y evita duplicidades funcionales.
