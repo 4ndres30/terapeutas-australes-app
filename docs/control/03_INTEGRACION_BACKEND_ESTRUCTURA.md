@@ -92,13 +92,14 @@ No se corrigieron errores ni se modifico logica. Las desalineaciones detectadas 
 
 ## BE-002 - Comparar backend con flujo clinico aprobado
 
-**Estado:** Pendiente  
+**Estado:** Aprobada con observaciones  
 **Prioridad:** Alta  
 **Responsable:** Integracion Backend/Estructura  
 **Origen:** Control de desarrollo  
 **Fecha creacion:** 2026-06-11  
-**Rama sugerida:** `docs/backend-vs-flujo-clinico`  
-**Dependencias:** RFC-001, BE-001  
+**Fecha documentacion:** 2026-06-12  
+**Rama sugerida:** `docs/be-002-alineacion-backend-flujo-clinico`  
+**Dependencias:** RFC-001, BE-001, DEC-006, DEC-007, DEC-008, DEC-009, DEC-010, DEC-011, DEC-012  
 
 ### Descripcion
 Comparar la estructura tecnica existente con las responsabilidades clinicas aprobadas para detectar campos, relaciones o servicios que requieran ajuste futuro.
@@ -107,6 +108,25 @@ Comparar la estructura tecnica existente con las responsabilidades clinicas apro
 - `supabase/migrations/`
 - `src/`
 - `docs/control/02_REVISION_FLUJO_CLINICO.md`
+- `docs/control/auditorias/RFC-001_REVISION_FLUJO_CLINICO.md`
+- `docs/control/auditorias/BE-001_INVENTARIO_BACKEND_SUPABASE.md`
+- `docs/control/05_DECISIONES_PROYECTO.md`
+- `docs/control/auditorias/BE-002_ALINEACION_BACKEND_FLUJO_CLINICO.md`
+
+### Resumen ejecutivo
+- BE-002 valida que el backend esta alineado con el flujo clinico aprobado.
+- `revision_aspectos` soporta el registro de lo medido u observado.
+- `revision_hallazgos` esta bien trazado hacia caso, revision, elemento y aspecto.
+- Hallazgos debe operar dentro del detalle de revision, no como modulo principal.
+- `trabajos`, `trabajo_sesiones` y `trabajo_acciones` estan correctamente separados.
+- Falta flujo operativo completo para hallazgos, trabajos, sesiones y acciones.
+- Agenda no tiene backend dedicado y debe diseñarse como modulo mixto tipificado.
+- Cobros/pagos requieren reforzar la regla de unidad cobrable para evitar duplicidad.
+- RLS existe, pero debe validarse runtime por roles.
+- Reportes requieren evolucionar hacia vistas o separacion por rol.
+
+### Informe detallado
+- [`BE-002_ALINEACION_BACKEND_FLUJO_CLINICO.md`](auditorias/BE-002_ALINEACION_BACKEND_FLUJO_CLINICO.md)
 
 ### Criterios de aceptacion
 - Separar hallazgos de estructura, datos y logica.
@@ -118,10 +138,10 @@ Comparar la estructura tecnica existente con las responsabilidades clinicas apro
 - No fusionar a `main`.
 
 ### Resultado
-Pendiente.
+Aprobada con observaciones. Resultado registrado en `docs/control/auditorias/BE-002_ALINEACION_BACKEND_FLUJO_CLINICO.md`.
 
 ### Observaciones
-Todo cambio estructural debe transformarse en decision antes de implementarse.
+BE-002 no implementa cambios. Habilita planificar tareas tecnicas posteriores desde BE-010 en adelante, previa revision de Control de Desarrollo.
 
 ## BE-003 - Preparar criterios para futuras migraciones
 
