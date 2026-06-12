@@ -34,15 +34,17 @@ Inventariar la estructura backend y Supabase local contra el frontend actual, in
 ## Resumen ejecutivo
 
 - La base contiene estructura clinica base, revisiones, hallazgos, trabajos/intervenciones, finanzas y usuarios internos.
-- La estructura backend es relacional y usa foreign keys para sostener paciente, consulta, evaluacion, caso, elementos, revisiones y trabajos.
+- La estructura backend es relacional y usa foreign keys para sostener paciente, consulta, evaluacion, caso, elementos, revisiones, trabajos y finanzas.
 - Se detectaron triggers para `updated_at`, validacion de relaciones y actualizacion de estado financiero.
 - Se detecto RLS activo para tablas clinicas, financieras y usuarios internos.
 - React consume Supabase desde paginas clinicas, paneles de caso, finanzas y reportes.
 - Hay formularios operativos para pacientes, consultas, evaluaciones, casos, elementos, revisiones y aspectos de revision.
 - No se detecto formulario operativo para `revision_hallazgos`, trabajos/intervenciones, cobros ni pagos.
 - Agenda existe como pantalla placeholder, sin tabla backend dedicada.
-- La desalineacion mas sensible esta en `revision_aspectos`: React ofrece valores que no pasan los checks SQL.
-- La segunda desalineacion relevante esta en `PagosCasoPanel`: intenta leer `revision_id` desde `vista_cobros_estado`, pero la vista no lo expone.
+- Los riesgos historicos inicialmente asociados a `revision_aspectos` y `vista_cobros_estado` aparecen cubiertos por migraciones posteriores.
+- `revision_aspectos` fue ampliada para incluir cuerpos sutiles, trauma energetico y metricas relacionadas.
+- `vista_cobros_estado` fue recreada incluyendo `evaluacion_id`, `revision_id` y `trabajo_id`.
+- Persisten observaciones funcionales por modulos incompletos: hallazgos, trabajos, finanzas operativas, agenda, RLS runtime y politica de anulacion/delete.
 - Reportes puede operar parcial por RLS si lo usa un rol financiero sin acceso clinico.
 - BE-001 queda aprobada con observaciones y debe originar tareas posteriores antes de implementar cambios.
 
@@ -69,8 +71,10 @@ Migraciones relevantes identificadas durante la auditoria:
 - `supabase/migrations/20260606041000_crear_tabla_revision_elementos.sql`
 - `supabase/migrations/20260606042000_crear_tabla_revision_aspectos.sql`
 - `supabase/migrations/20260606043000_crear_tabla_revision_hallazgos.sql`
+- `supabase/migrations/20260606050000_ampliar_revision_cuerpos_sutiles_y_traumas.sql`
 - `supabase/migrations/20260606051000_crear_modulo_trabajos.sql`
 - `supabase/migrations/20260606052000_crear_modulo_pagos.sql`
+- `supabase/migrations/20260606053000_ajustar_relaciones_cobros_evaluaciones_revisiones.sql`
 - `supabase/migrations/20260606054000_crear_tabla_usuarios_internos.sql`
 - `supabase/migrations/20260606055000_activar_rls_y_policies.sql`
 
@@ -96,7 +100,7 @@ Migraciones relevantes identificadas durante la auditoria:
 
 - **Proposito:** Registrar evaluacion derivada de una consulta.
 - **Campos criticos:** `id_evaluacion`, `paciente_id`, `consulta_id`, `fecha_evaluacion`, `hora_evaluacion`, `relato_antecedentes`, `sintomas_reportados`, `hechos_clave`, `personas_mencionadas`, `decision_revision`, `fundamento_decision`, `notas_internas`, `estado_evaluacion`.
-- **Relaciones principales:** FK a `pacientes(id)` y `consultas(id_consulta)`. Es referenciada por `casos` y `revisiones`.
+- **Relaciones principales:** FK a `pacientes(id)` y `consultas(id_consulta)`. Es referenciada por `casos`, `revisiones` y `cobros`.
 - **Checks o restricciones importantes:** Validacion de decisiones y estados por checks SQL.
 - **Uso desde React:** `EvaluacionesPage`, `CasosPage`, `CasoDetallePage`, `ReportesPage`.
 
@@ -120,9 +124,9 @@ Migraciones relevantes identificadas durante la auditoria:
 
 - **Proposito:** Registrar revisiones de un caso con numero correlativo por caso.
 - **Campos criticos:** `id_revision`, `paciente_id`, `caso_id`, `consulta_id`, `evaluacion_id`, `fecha_revision`, `hora_inicio`, `hora_termino`, `numero_revision`, `tipo_revision`, `modalidad`, `metodo_revision`, `alcance_revision`, `objetivo_revision`, `resumen_general`, `resultado_general`, `requiere_seguimiento`, `proxima_accion`, `estado_revision`, `notas_internas`.
-- **Relaciones principales:** FK a pacientes, casos, consultas y evaluaciones. Es referenciada por detalle de revision, hallazgos y trabajos.
+- **Relaciones principales:** FK a pacientes, casos, consultas y evaluaciones. Es referenciada por detalle de revision, hallazgos, trabajos y cobros.
 - **Checks o restricciones importantes:** `numero_revision > 0`, horario valido y `unique(caso_id, numero_revision)`.
-- **Uso desde React:** `RevisionesCasoPanel`, `DetalleRevisionesPanel`, `TrabajosCasoPanel`, `ReportesPage`.
+- **Uso desde React:** `RevisionesCasoPanel`, `DetalleRevisionesPanel`, `TrabajosCasoPanel`, `PagosCasoPanel`, `ReportesPage`.
 
 ### `revision_elementos`
 
@@ -137,7 +141,7 @@ Migraciones relevantes identificadas durante la auditoria:
 - **Proposito:** Registrar el detalle de aspectos revisados para una revision y elemento.
 - **Campos criticos:** `id_revision_aspecto`, `paciente_id`, `caso_id`, `revision_id`, `revision_elemento_id`, `elemento_caso_id`, `orden_aspecto`, `area_revision`, `aspecto_revisado`, `metodo_revision`, `tipo_medicion`, `metrica_revision`, `valor_porcentaje`, `presencia_detectada`, `tipo_detectado`, `estado_revision_aspecto`, `resultado_aspecto`, `requiere_seguimiento`, `pendiente_revision`, `motivo_pendiente`, `informacion_canalizada`, `observaciones`, `notas_internas`.
 - **Relaciones principales:** FK a pacientes, casos, revisiones, `revision_elementos` y `elementos_caso`.
-- **Checks o restricciones importantes:** Area, metodo, tipo de medicion, metrica, estado y porcentaje 0-100.
+- **Checks o restricciones importantes:** Area, metodo, tipo de medicion, metrica, estado y porcentaje 0-100. La migracion `20260606050000_ampliar_revision_cuerpos_sutiles_y_traumas.sql` amplia `area_revision` y `metrica_revision` para incluir cuerpos sutiles, trauma energetico y metricas asociadas.
 - **Uso desde React:** `DetalleRevisionesPanel`.
 
 ### `revision_hallazgos`
@@ -145,7 +149,7 @@ Migraciones relevantes identificadas durante la auditoria:
 - **Proposito:** Registrar hallazgos detectados desde un aspecto de revision.
 - **Campos criticos:** `id_revision_hallazgo`, `paciente_id`, `caso_id`, `revision_id`, `revision_elemento_id`, `revision_aspecto_id`, `elemento_caso_id`, `categoria_hallazgo`, `tipo_hallazgo`, `subtipo_hallazgo`, `descripcion_hallazgo`, `intensidad_hallazgo_porcentaje`, `nivel_bloqueo_porcentaje`, `origen_sugerido`, `fuente_deteccion`, `nivel_confirmacion`, `requiere_seguimiento`, `prioridad_hallazgo`, `estado_hallazgo`, `informacion_canalizada`, `observaciones`, `notas_internas`.
 - **Relaciones principales:** FK a pacientes, casos, revisiones, `revision_elementos`, `revision_aspectos` y `elementos_caso`.
-- **Checks o restricciones importantes:** Categoria, fuente, confirmacion, prioridad, estado y porcentajes 0-100.
+- **Checks o restricciones importantes:** Categoria, fuente, confirmacion, prioridad, estado y porcentajes 0-100. La migracion de cuerpos sutiles tambien amplia categorias de hallazgos asociadas a cuerpos sutiles y trauma localizado.
 - **Uso desde React:** No se detecto formulario operativo ni panel especifico de gestion.
 
 ### `trabajos`
@@ -182,10 +186,10 @@ Migraciones relevantes identificadas durante la auditoria:
 
 ### `cobros`
 
-- **Proposito:** Registrar cobros asociados a paciente, consulta, caso o trabajo.
-- **Campos criticos:** `id_cobro`, `paciente_id`, `consulta_id`, `caso_id`, `trabajo_id`, `fecha_cobro`, `fecha_vencimiento`, `concepto_cobro`, `tipo_cobro`, `descripcion_cobro`, `monto_cobro`, `monto_descuento`, `monto_total`, `moneda`, `estado_cobro`, `observaciones`, `notas_internas`.
-- **Relaciones principales:** FK a pacientes, consultas, casos y trabajos. Es referenciada por pagos.
-- **Checks o restricciones importantes:** Monto positivo, descuento no superior al monto, fecha vencimiento valida y `monto_total` generado.
+- **Proposito:** Registrar cobros asociados a paciente, consulta, evaluacion, caso, revision o trabajo.
+- **Campos criticos:** `id_cobro`, `paciente_id`, `consulta_id`, `evaluacion_id`, `caso_id`, `revision_id`, `trabajo_id`, `fecha_cobro`, `fecha_vencimiento`, `concepto_cobro`, `tipo_cobro`, `descripcion_cobro`, `monto_cobro`, `monto_descuento`, `monto_total`, `moneda`, `estado_cobro`, `observaciones`, `notas_internas`.
+- **Relaciones principales:** FK a pacientes, consultas, evaluaciones, casos, revisiones y trabajos. Es referenciada por pagos.
+- **Checks o restricciones importantes:** Monto positivo, descuento no superior al monto, fecha vencimiento valida y `monto_total` generado. La migracion `20260606053000_ajustar_relaciones_cobros_evaluaciones_revisiones.sql` agrega `evaluacion_id` y `revision_id`, y valida consistencia relacional.
 - **Uso desde React:** `FinanzasPage` y `PagosCasoPanel` consumen la vista financiera, no la tabla directa.
 
 ### `pagos`
@@ -209,9 +213,9 @@ Migraciones relevantes identificadas durante la auditoria:
 ### `vista_cobros_estado`
 
 - **Proposito:** Calcular estado financiero de cobros usando pagos asociados.
-- **Columnas criticas:** `id_cobro`, `paciente_id`, `consulta_id`, `caso_id`, `trabajo_id`, `fecha_cobro`, `fecha_vencimiento`, `concepto_cobro`, `tipo_cobro`, `monto_cobro`, `monto_descuento`, `monto_total`, `moneda`, `estado_cobro`, `monto_pagado`, `saldo_pendiente`, `estado_calculado`.
+- **Columnas criticas:** `id_cobro`, `paciente_id`, `consulta_id`, `evaluacion_id`, `caso_id`, `revision_id`, `trabajo_id`, `fecha_cobro`, `fecha_vencimiento`, `concepto_cobro`, `tipo_cobro`, `monto_cobro`, `monto_descuento`, `monto_total`, `moneda`, `estado_cobro`, `monto_pagado`, `saldo_pendiente`, `estado_calculado`.
 - **Componentes que la consumen:** `FinanzasPage`, `PagosCasoPanel`, `ReportesPage`.
-- **Observacion:** La vista fue configurada con `security_invoker = true`.
+- **Observacion:** La vista fue configurada con `security_invoker = true` y recreada posteriormente para incluir `evaluacion_id`, `revision_id` y `trabajo_id`.
 
 No se detectaron otras vistas operativas durante BE-001.
 
@@ -240,7 +244,9 @@ No se detectaron otras vistas operativas durante BE-001.
 - `trabajo_elementos.id_trabajo_elemento` -> `trabajo_acciones.trabajo_elemento_id`.
 - `pacientes.id` -> `cobros.paciente_id`.
 - `consultas.id_consulta` -> `cobros.consulta_id`.
+- `evaluaciones.id_evaluacion` -> `cobros.evaluacion_id`.
 - `casos.id_caso` -> `cobros.caso_id`.
+- `revisiones.id_revision` -> `cobros.revision_id`.
 - `trabajos.id_trabajo` -> `cobros.trabajo_id`.
 - `cobros.id_cobro` -> `pagos.cobro_id`.
 - `pacientes.id` -> `pagos.paciente_id`.
@@ -258,7 +264,7 @@ No se detectaron otras vistas operativas durante BE-001.
 - `validar_trabajo_elemento_relaciones`: valida elemento de trabajo contra trabajo, elemento del caso y hallazgo.
 - `validar_trabajo_sesion_relaciones`: valida sesion contra trabajo y revisiones.
 - `validar_trabajo_accion_relaciones`: valida accion contra trabajo, sesion, elemento de trabajo, elemento del caso y hallazgo.
-- `validar_cobro_relaciones`: valida cobros contra consulta, caso y trabajo; puede completar `caso_id` desde trabajo.
+- `validar_cobro_relaciones`: valida cobros contra consulta, evaluacion, caso, revision y trabajo; puede completar relaciones derivadas segun corresponda.
 - `validar_pago_relaciones`: valida paciente, moneda y saldo disponible antes de registrar o actualizar pagos.
 - `actualizar_cobros_estado_desde_pagos`: actualiza estado de cobro despues de cambios en pagos.
 
@@ -308,6 +314,7 @@ No se detectaron otras vistas operativas durante BE-001.
 - Confirmar que `ReportesPage` no genera una mala experiencia por lecturas parciales segun rol.
 - Confirmar que `vista_cobros_estado` con `security_invoker` respeta las policies esperadas.
 - Confirmar si la falta de delete en tablas clinicas y financieras es decision intencional.
+- Confirmar en QA-002 que las migraciones posteriores aplican correctamente en runtime local.
 
 ## Componentes React revisados
 
@@ -375,7 +382,7 @@ No se detectaron otras vistas operativas durante BE-001.
 - **Campos enviados a `revision_elementos`:** paciente, caso, revision, elemento, prioridad, estado.
 - **Campos enviados a `revision_aspectos`:** paciente, caso, revision, revision_elemento, elemento, orden, area, aspecto, metodo, tipo medicion, metrica, porcentaje, presencia, tipo detectado, estado, resultado, seguimiento, pendiente, motivo, informacion, observaciones, notas.
 - **Campos obligatorios cubiertos:** revision, elemento y aspecto revisado.
-- **Riesgos:** Desalineacion de valores permitidos en `area_revision` y `metrica_revision`.
+- **Riesgos:** Riesgo historico de opciones no cubiertas por checks aparece resuelto por migracion posterior; validar runtime local en QA-002.
 
 ## Selects y vistas usadas por paneles
 
@@ -390,7 +397,7 @@ No se detectaron otras vistas operativas durante BE-001.
 | `RevisionesCasoPanel` | `revisiones` | `.eq(caso_id)`, `.eq(paciente_id)` | Caso y paciente |
 | `DetalleRevisionesPanel` | `revisiones`, `elementos_caso`, `revision_elementos`, `revision_aspectos` | `.eq(caso_id)`, `.eq(paciente_id)` | Revision-elemento-aspecto |
 | `TrabajosCasoPanel` | `trabajos` | `.eq(caso_id)`, `.eq(paciente_id)` | Caso y paciente |
-| `PagosCasoPanel` | `vista_cobros_estado`, `pagos` | `.eq(caso_id)`, `.eq(paciente_id)`, `.in(cobro_id)` | Cobro -> pago |
+| `PagosCasoPanel` | `vista_cobros_estado`, `pagos` | `.eq(caso_id)`, `.eq(paciente_id)`, `.in(cobro_id)` | Cobro -> pago; vista incluye revision/evaluacion/trabajo |
 | `FinanzasPage` | `pacientes`, `vista_cobros_estado`, `pagos` | Orden por fechas | Paciente, cobro y pago |
 | `ReportesPage` | multiples tablas + `vista_cobros_estado` | Sin filtros especificos | Agregados generales |
 
@@ -403,25 +410,25 @@ No se detectaron otras vistas operativas durante BE-001.
 - `ElementosCasoPanel` respeta los valores de tipo, rol, prioridad, fuente, confirmacion y estado detectados.
 - `RevisionesCasoPanel` respeta tipo, modalidad, metodo, alcance y estado.
 - `DetalleRevisionesPanel` respeta la necesidad de crear `revision_elementos` antes de `revision_aspectos`.
+- La migracion `20260606050000_ampliar_revision_cuerpos_sutiles_y_traumas.sql` cubre valores ampliados usados en detalle de revisiones.
+- `PagosCasoPanel` usa una vista que, tras migracion posterior, expone `evaluacion_id`, `revision_id` y `trabajo_id`.
 - `TrabajosCasoPanel` usa `trabajos` en modo lectura compatible con la tabla.
 - `FinanzasPage` usa `vista_cobros_estado` y `pagos` en modo lectura.
 - `AgendaPage` evita inventar inserciones sin tabla backend.
 
 ## Posibles desalineaciones React / Supabase
 
-1. `DetalleRevisionesPanel` incluye `area_revision` con `Cuerpos sutiles` y `Trauma energetico`, valores no permitidos por el check SQL de `revision_aspectos`.
-2. `DetalleRevisionesPanel` incluye `metrica_revision` con `Separacion`, `Retraimiento`, `Aislamiento`, `Secuestro`, `Integracion`, `Alineacion` y `Localizacion`, valores no permitidos por el check SQL.
-3. `PagosCasoPanel` intenta leer `revision_id` desde `vista_cobros_estado`, pero la vista no lo expone.
-4. `FinanzasPage` es lectura, aunque el backend ya permite insertar y actualizar cobros/pagos bajo RLS.
-5. `revision_hallazgos` existe, pero no tiene pantalla operativa detectada.
-6. `trabajos` y subtablas existen, pero no tienen flujo de creacion/edicion completo detectado.
-7. `ReportesPage` consulta tablas clinicas y financieras, lo que puede producir reportes parciales segun rol.
-8. `AgendaPage` no tiene tabla real de agenda.
+1. `revision_hallazgos` existe, pero no tiene pantalla operativa detectada.
+2. `trabajos` y subtablas existen, pero no tienen flujo de creacion/edicion completo detectado.
+3. `FinanzasPage` y `PagosCasoPanel` son principalmente de lectura, aunque el backend ya permite insertar y actualizar cobros/pagos bajo RLS.
+4. `ReportesPage` consulta tablas clinicas y financieras, lo que puede producir reportes parciales segun rol.
+5. `AgendaPage` no tiene tabla real de agenda.
+6. Riesgo historico ya cubierto: los valores ampliados de `revision_aspectos` aparecen incorporados por migracion posterior; validar runtime local en QA-002.
+7. Riesgo historico ya cubierto: `vista_cobros_estado` aparece recreada con `evaluacion_id`, `revision_id` y `trabajo_id`; validar runtime local en QA-002.
 
 ## Hallazgos criticos
 
-1. **Desalineacion de checks en `revision_aspectos`:** React permite valores que SQL rechaza en `area_revision` y `metrica_revision`. Esto puede bloquear guardado de detalles de revision.
-2. **Desalineacion en `PagosCasoPanel`:** el componente solicita `revision_id` desde `vista_cobros_estado`, pero la vista no contiene esa columna. Esto puede romper la lectura financiera por caso.
+Sin hallazgos criticos confirmados en esta auditoria documental.
 
 ## Hallazgos medios
 
@@ -435,19 +442,21 @@ No se detectaron otras vistas operativas durante BE-001.
 
 ## Hallazgos menores
 
-1. El nombre de algunos valores clinicos usa acentos y variantes; esto exige cuidado para no romper checks.
-2. Algunas validaciones existen en frontend y SQL; conviene documentar cual es fuente de verdad.
-3. Algunos campos existen en backend pero no se usan aun en UI, por ejemplo `foto_url` en elementos o campos extendidos de trabajos.
-4. Algunos paneles hacen agregados en frontend en vez de vistas SQL dedicadas.
+1. Riesgo historico ya cubierto por migracion posterior: `revision_aspectos` fue ampliada para valores de cuerpos sutiles, trauma energetico y metricas asociadas; validar runtime local en QA-002.
+2. Riesgo historico ya cubierto por migracion posterior: `vista_cobros_estado` fue recreada con `evaluacion_id`, `revision_id` y `trabajo_id`; validar runtime local en QA-002.
+3. El nombre de algunos valores clinicos usa acentos y variantes; esto exige cuidado para no romper checks.
+4. Algunas validaciones existen en frontend y SQL; conviene documentar cual es fuente de verdad.
+5. Algunos campos existen en backend pero no se usan aun en UI, por ejemplo `foto_url` en elementos o campos extendidos de trabajos.
+6. Algunos paneles hacen agregados en frontend en vez de vistas SQL dedicadas.
 
 ## Riesgos tecnicos
 
-- Riesgo de error de insercion por valores no permitidos en checks SQL.
-- Riesgo de error de select por columnas inexistentes.
 - Riesgo de experiencia parcial por RLS en reportes.
 - Riesgo de desalineacion futura si se agregan opciones en React sin migracion correspondiente.
 - Riesgo de backend sobredimensionado si trabajos/hallazgos no reciben flujo funcional claro.
 - Riesgo de datos financieros incompletos si no existe formulario operativo para cobros/pagos.
+- Riesgo de validacion no confirmada en runtime local para migraciones posteriores ya detectadas.
+- Riesgo de falta de politica formal para delete/anulacion de registros clinicos y financieros.
 
 ## Riesgos que deben pasar a Revision de flujo clinico
 
@@ -456,11 +465,11 @@ No se detectaron otras vistas operativas durante BE-001.
 - Ubicacion funcional de trabajos/intervenciones dentro del flujo clinico.
 - Rol de agenda dentro del flujo clinico: cita, consulta programada, sesion de trabajo, seguimiento o recordatorio.
 - Definir si `Cuerpos sutiles`, `Trauma energetico`, `Secuestro`, `Integracion` y conceptos similares son areas, metricas, hallazgos o acciones de trabajo.
-- Definir si cobros pueden asociarse directamente a revisiones o solo a consultas, casos y trabajos.
+- Definir si cobros pueden asociarse directamente a revisiones, evaluaciones, consultas, casos y trabajos segun flujo real.
 
 ## Riesgos que deben pasar a UI / UX
 
-- Experiencia de usuario cuando una opcion visible en formulario falla por check SQL.
+- Experiencia de usuario cuando una opcion visible en formulario falla por validacion backend futura.
 - Visualizacion de reportes parciales segun rol.
 - Diseño de pantalla para crear hallazgos sin sobrecargar detalle de revisiones.
 - Diseño de flujo para crear trabajos, sesiones y acciones.
@@ -469,59 +478,45 @@ No se detectaron otras vistas operativas durante BE-001.
 
 ## Tareas backend sugeridas
 
-### BE-004 — Alinear opciones de `revision_aspectos`
-
-- **Prioridad:** Alta.
-- **Motivo:** Evitar errores de insercion por checks SQL.
-- **Dependencias:** BE-001, validacion de Revision de flujo clinico.
-- **Resultado esperado:** SQL y React aceptan el mismo set de `area_revision` y `metrica_revision`.
-
-### BE-005 — Corregir modelo financiero de revisiones
-
-- **Prioridad:** Alta.
-- **Motivo:** `PagosCasoPanel` usa `revision_id`, pero la vista financiera no lo expone.
-- **Dependencias:** BE-001, decision funcional sobre cobros de revisiones.
-- **Resultado esperado:** O se agrega `revision_id` a `cobros`/vista, o se elimina su uso desde React.
-
-### BE-006 — Crear flujo backend/frontend para `revision_hallazgos`
+### BE-004 — Crear flujo backend/frontend para `revision_hallazgos`
 
 - **Prioridad:** Media-alta.
 - **Motivo:** La tabla existe, pero no hay UI operativa detectada.
 - **Dependencias:** RFC sobre responsabilidad clinica del hallazgo.
 - **Resultado esperado:** Hallazgos pueden crearse, listarse y relacionarse sin duplicar aspectos.
 
-### BE-007 — Crear modulo operativo de trabajos
+### BE-005 — Crear modulo operativo de trabajos
 
 - **Prioridad:** Media-alta.
 - **Motivo:** Backend de trabajos existe, pero falta creacion/edicion de trabajos, elementos, sesiones y acciones.
 - **Dependencias:** RFC sobre flujo de intervenciones.
 - **Resultado esperado:** Flujo funcional completo para trabajos/intervenciones.
 
-### BE-008 — Crear gestion de cobros y pagos
+### BE-006 — Crear gestion de cobros y pagos
 
 - **Prioridad:** Media-alta.
 - **Motivo:** Backend financiero existe, pero frontend detectado es principalmente lectura.
-- **Dependencias:** BE-005.
+- **Dependencias:** Decision funcional sobre gestion financiera operativa.
 - **Resultado esperado:** Formularios de cobros/pagos alineados con triggers, RLS y vista.
 
-### BE-009 — Diseñar backend de agenda
+### BE-007 — Diseñar backend de agenda
 
 - **Prioridad:** Media.
 - **Motivo:** `AgendaPage` no tiene tabla real.
 - **Dependencias:** RFC sobre rol clinico de agenda.
 - **Resultado esperado:** Tabla o modulo de agenda definido antes de implementar UI operativa.
 
-### BE-010 — Validar RLS por roles en runtime local
+### BE-008 — Validar RLS por roles en runtime local
 
 - **Prioridad:** Alta.
 - **Motivo:** La auditoria fue estatica; falta confirmar comportamiento real.
 - **Dependencias:** Usuarios locales de prueba.
 - **Resultado esperado:** Matriz de permisos validada para `admin`, `terapeuta` y `finanzas`.
 
-### BE-011 — Documentar politica de borrado
+### BE-009 — Documentar politica de borrado/anulacion
 
 - **Prioridad:** Media.
-- **Motivo:** Las tablas clinicas y financieras no tienen delete policies detectadas.
+- **Motivo:** Las tablas clinicas y financieras no tienen delete policies detectadas, y el flujo podria requerir anulacion logica.
 - **Dependencias:** Decision de Control de Desarrollo.
 - **Resultado esperado:** Politica clara sobre eliminacion, anulacion y auditoria de registros.
 
@@ -534,12 +529,12 @@ No se detectaron otras vistas operativas durante BE-001.
 - **Dependencias:** BE-001.
 - **Resultado esperado:** Criterio claro para crear `revision_hallazgos`.
 
-### RFC-005 — Validar taxonomia de areas y metricas de revision
+### RFC-005 — Validar taxonomia de areas, metricas y hallazgos de revision
 
 - **Prioridad:** Alta.
-- **Motivo:** React y SQL tienen diferencias conceptuales en areas/metricas.
+- **Motivo:** Aunque las migraciones posteriores cubren valores ampliados, se requiere criterio clinico para confirmar ubicacion conceptual.
 - **Dependencias:** BE-001.
-- **Resultado esperado:** Lista clinicamente validada para `area_revision`, `aspecto_revisado` y `metrica_revision`.
+- **Resultado esperado:** Lista clinicamente validada para `area_revision`, `aspecto_revisado`, `metrica_revision` y categorias de hallazgo.
 
 ### RFC-006 — Definir flujo clinico de trabajos/intervenciones
 
@@ -557,45 +552,46 @@ No se detectaron otras vistas operativas durante BE-001.
 
 ## Tareas sugeridas para UI / UX
 
-### UI-002 — Diseñar experiencia de errores por checks SQL
-
-- **Prioridad:** Alta.
-- **Motivo:** El usuario puede seleccionar opciones visibles que SQL rechaza.
-- **Dependencias:** BE-004.
-- **Resultado esperado:** Formularios no ofrecen valores invalidos y muestran errores claros.
-
-### UI-003 — Diseñar pantalla de hallazgos
+### UI-002 — Diseñar pantalla de hallazgos
 
 - **Prioridad:** Media-alta.
 - **Motivo:** Existe backend, pero falta flujo visual.
-- **Dependencias:** RFC-004, BE-006.
+- **Dependencias:** RFC-004, BE-004.
 - **Resultado esperado:** Panel claro para crear, listar y priorizar hallazgos.
 
-### UI-004 — Diseñar flujo operativo de trabajos
+### UI-003 — Diseñar flujo operativo de trabajos
 
 - **Prioridad:** Media-alta.
 - **Motivo:** Trabajos tiene estructura compleja y necesita UI guiada.
-- **Dependencias:** RFC-006, BE-007.
+- **Dependencias:** RFC-006, BE-005.
 - **Resultado esperado:** Pantallas o wizard para trabajos, elementos, sesiones y acciones.
 
-### UI-005 — Diseñar reportes por rol
+### UI-004 — Diseñar reportes por rol
 
 - **Prioridad:** Media.
 - **Motivo:** RLS puede producir reportes parciales.
-- **Dependencias:** BE-010.
+- **Dependencias:** BE-008.
 - **Resultado esperado:** Reportes clinicos, financieros y admin diferenciados.
 
-### UI-006 — Diseñar modulo Agenda
+### UI-005 — Diseñar modulo Agenda
 
 - **Prioridad:** Media.
 - **Motivo:** Agenda es placeholder.
-- **Dependencias:** RFC-007, BE-009.
+- **Dependencias:** RFC-007, BE-007.
 - **Resultado esperado:** Prototipo UI alineado a tabla real.
+
+### UI-006 — Diseñar gestion visual de Finanzas
+
+- **Prioridad:** Media.
+- **Motivo:** El frontend financiero detectado es principalmente lectura.
+- **Dependencias:** BE-006.
+- **Resultado esperado:** Flujo claro para registrar cobros, registrar pagos, ver saldos y estados.
 
 ## Conclusion
 
 BE-001 queda **integrada y aprobada con observaciones** en la documentacion oficial del proyecto.  
-No queda bloqueada, pero sus hallazgos tecnicos requieren tareas posteriores antes de corregir o ampliar codigo/migraciones.  
+No queda bloqueada y no mantiene hallazgos criticos confirmados tras la revision documental puntual.  
+Las observaciones vigentes se concentran en modulos incompletos, validacion runtime, RLS, agenda y definiciones clinicas/operativas pendientes.  
 Queda pendiente de revision por Control de Desarrollo para priorizar BE-004 en adelante.
 
 ## Anexo — Hallazgos completos
@@ -613,3 +609,5 @@ Queda pendiente de revision por Control de Desarrollo para priorizar BE-004 en a
 - `ReportesPage` hace agregados desde multiples tablas y puede sufrir diferencias por RLS.
 - BE-001 no ejecuto build ni validacion runtime.
 - No se modificaron archivos durante la auditoria fuente.
+- Revision posterior de Control de Desarrollo confirmo que `revision_aspectos` fue ampliada por migracion posterior.
+- Revision posterior de Control de Desarrollo confirmo que `vista_cobros_estado` fue recreada con `evaluacion_id`, `revision_id` y `trabajo_id`.
