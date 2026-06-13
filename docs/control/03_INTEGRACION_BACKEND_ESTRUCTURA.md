@@ -191,3 +191,64 @@ Aprobada con observaciones. Resultado registrado en `docs/control/auditorias/BE-
 
 ### Observaciones
 BE-003 no crea migraciones ni implementa cambios. Habilita planificar BE-010 a BE-017 bajo un marco seguro, revisable y alineado con el flujo clinico aprobado.
+
+## BE-010 - Ajustar soporte operativo de hallazgos derivados de aspectos
+
+**Estado:** Aprobada con observaciones  
+**Prioridad:** Alta  
+**Responsable:** Integracion Backend/Estructura  
+**Origen:** BE-002 / Control de desarrollo  
+**Fecha creacion:** 2026-06-12  
+**Fecha documentacion:** 2026-06-13  
+**Rama sugerida:** `docs/be-010-plan-hallazgos-operativos`  
+**Dependencias:** DEC-006, DEC-007, DEC-008, DEC-009, DEC-010, BE-002, BE-003, UI-011  
+
+### Descripcion
+Definir el soporte tecnico minimo para operar `revision_hallazgos` dentro del detalle de revision, respetando que los hallazgos nacen desde aspectos revisados y viven dentro del caso.
+
+### Archivos relacionados
+- `supabase/migrations/20260606043000_crear_tabla_revision_hallazgos.sql`
+- `supabase/migrations/20260606042000_crear_tabla_revision_aspectos.sql`
+- `supabase/migrations/20260606041000_crear_tabla_revision_elementos.sql`
+- `supabase/migrations/20260606055000_activar_rls_y_policies.sql`
+- `src/pages/CasoDetallePage.tsx`
+- `src/pages/casos/RevisionesCasoPanel.tsx`
+- `src/pages/casos/DetalleRevisionesPanel.tsx`
+- `docs/control/auditorias/BE-010_PLAN_TECNICO_HALLAZGOS_OPERATIVOS.md`
+
+### Resumen ejecutivo
+- BE-010 queda documentada como plan tecnico para hallazgos operativos.
+- `revision_hallazgos` parece suficiente para iniciar soporte operativo minimo sin migracion inicial.
+- La tabla mantiene trazabilidad hacia paciente, caso, revision, elemento de revision, elemento del caso y aspecto revisado.
+- La brecha principal esta en frontend, servicio/hook y tipos TypeScript.
+- La accion de crear hallazgo debe vivir dentro de `DetalleRevisionesPanel`.
+- No debe crearse modulo principal independiente de hallazgos.
+- No deben crearse trabajos automaticamente desde hallazgos.
+- BE-011 queda fuera de alcance y debera tratar la trazabilidad hallazgo a trabajo.
+- Debe coordinarse con UI-011 antes de la implementacion visual.
+
+### Informe detallado
+- [`BE-010_PLAN_TECNICO_HALLAZGOS_OPERATIVOS.md`](auditorias/BE-010_PLAN_TECNICO_HALLAZGOS_OPERATIVOS.md)
+
+### Criterios de aceptacion
+- Confirmar estado tecnico de `revision_hallazgos`.
+- Confirmar si requiere migracion inicial.
+- Definir flujo tecnico recomendado.
+- Definir flujo esperado desde UI.
+- Definir cambios futuros en frontend, servicio/hook y tipos TypeScript.
+- Mantener hallazgos dentro del detalle de revision.
+- No crear modulo principal independiente de hallazgos.
+- No crear trabajos automaticamente.
+- No modificar codigo fuente.
+- No modificar migraciones.
+- No crear migraciones.
+- No tocar `.env`.
+- No hacer `supabase db push`.
+- No tocar Supabase remoto.
+- No fusionar a `main`.
+
+### Resultado
+Aprobada con observaciones. Resultado registrado en `docs/control/auditorias/BE-010_PLAN_TECNICO_HALLAZGOS_OPERATIVOS.md`.
+
+### Observaciones
+BE-010 no implementa cambios. No requiere migracion inicial para el soporte operativo minimo. Requiere implementacion posterior en frontend, servicio/hook y tipos TypeScript. Debe coordinarse con UI-011. BE-011 queda fuera de alcance.
