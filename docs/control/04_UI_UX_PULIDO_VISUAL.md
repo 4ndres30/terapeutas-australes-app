@@ -1,8 +1,9 @@
 # UI / UX / Pulido visual
 
 Responsable: UI / UX / Pulido visual  
-Estado del documento: En análisis
-Fecha creacion: `2026-06-11`
+Estado del documento: En analisis  
+Fecha creacion: `2026-06-11`  
+Ultima actualizacion: `2026-06-12`
 
 Este documento controla tareas de experiencia de usuario, formularios, responsive y pulido visual. El objetivo es que la aplicacion sea clara, sobria, profesional y facil de usar para el flujo terapeutico.
 
@@ -35,13 +36,20 @@ Este documento controla tareas de experiencia de usuario, formularios, responsiv
 - Revisar mobile y desktop antes de validar.
 - No ocultar informacion clinica importante por decisiones esteticas.
 
+## Resumen auditoria UI-001 + UI-002
+
+La auditoria UI-001 + UI-002 queda **aprobada con observaciones**. La interfaz actual sostiene bien el flujo clinico aprobado y respeta que el caso sea el contenedor central de elementos, revisiones, detalle, trabajos y pagos. La app ya se siente seria y funcional en Pacientes, Casos y ficha de caso, pero aun requiere diseno operativo para hallazgos, trabajos/sesiones/acciones, finanzas por unidad cobrable, agenda tipificada y reportes por rol.
+
+Informe completo: [`auditorias/UI-001_UI-002_AUDITORIA_VISUAL_FORMULARIOS.md`](auditorias/UI-001_UI-002_AUDITORIA_VISUAL_FORMULARIOS.md)
+
 ## UI-001 - Auditar pantallas principales y pulido visual
 
-**Estado:** Pendiente  
+**Estado:** Aprobada con observaciones  
 **Prioridad:** Media  
 **Responsable:** UI / UX / Pulido visual  
 **Origen:** Control de desarrollo  
 **Fecha creacion:** 2026-06-11  
+**Fecha documentacion:** 2026-06-12  
 **Rama sugerida:** `docs/auditoria-ui-ux`  
 **Dependencias:** PEND-001  
 
@@ -51,6 +59,7 @@ Revisar pantallas principales de la aplicacion para detectar problemas de jerarq
 ### Archivos relacionados
 - `src/`
 - `public/`
+- `docs/control/auditorias/UI-001_UI-002_AUDITORIA_VISUAL_FORMULARIOS.md`
 
 ### Criterios de aceptacion
 - Listar pantallas revisadas.
@@ -62,18 +71,19 @@ Revisar pantallas principales de la aplicacion para detectar problemas de jerarq
 - No fusionar a `main`.
 
 ### Resultado
-Pendiente.
+Aprobada con observaciones. Informe oficial consolidado en `docs/control/auditorias/UI-001_UI-002_AUDITORIA_VISUAL_FORMULARIOS.md`.
 
 ### Observaciones
-La salida esperada es una auditoria con propuestas, no cambios de codigo desde esta rama documental.
+La auditoria confirma que la estructura visual actual acompana el flujo clinico aprobado, pero recomienda redisenar navegacion del detalle de caso, hallazgos dentro del detalle de revision, flujo hallazgo a trabajo, finanzas por unidad cobrable y reportes por rol.
 
 ## UI-002 - Revisar formularios del flujo clinico
 
-**Estado:** Pendiente  
+**Estado:** Aprobada con observaciones  
 **Prioridad:** Alta  
 **Responsable:** UI / UX / Pulido visual  
 **Origen:** Control de desarrollo  
 **Fecha creacion:** 2026-06-11  
+**Fecha documentacion:** 2026-06-12  
 **Rama sugerida:** `docs/revision-formularios-clinicos`  
 **Dependencias:** RFC-001  
 
@@ -83,6 +93,7 @@ Revisar si los formularios respetan el flujo clinico y si los campos aparecen en
 ### Archivos relacionados
 - `src/`
 - `docs/control/02_REVISION_FLUJO_CLINICO.md`
+- `docs/control/auditorias/UI-001_UI-002_AUDITORIA_VISUAL_FORMULARIOS.md`
 
 ### Criterios de aceptacion
 - Identificar formularios revisados.
@@ -94,10 +105,10 @@ Revisar si los formularios respetan el flujo clinico y si los campos aparecen en
 - No fusionar a `main`.
 
 ### Resultado
-Pendiente.
+Aprobada con observaciones. Informe oficial consolidado en `docs/control/auditorias/UI-001_UI-002_AUDITORIA_VISUAL_FORMULARIOS.md`.
 
 ### Observaciones
-Si un campo parece mal ubicado, debe volver a Revision de flujo clinico antes de pedir cambios backend.
+Los formularios principales respetan el flujo clinico base. Las mayores brechas son hallazgos sin panel operativo, trabajos/sesiones/acciones sin flujo guiado, formularios clinicos largos y finanzas sin experiencia clara por unidad cobrable.
 
 ## UI-003 - Definir checklist responsive y estados UI
 
