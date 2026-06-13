@@ -234,3 +234,101 @@ Documentacion maestra sincronizada para revision de Control de desarrollo.
 
 ### Observaciones
 Luego de esta sincronizacion se debe priorizar el siguiente bloque: BE-010, UI-001/UI-002 o BE-003.
+
+## LOG-008 - Integracion de UI-001 + UI-002
+
+**Estado:** Integrada  
+**Prioridad:** Alta  
+**Responsable:** UI / UX / Pulido visual  
+**Origen:** UI-001 + UI-002  
+**Fecha creacion:** 2026-06-13  
+**Rama sugerida:** `docs/auditoria-ui-ux`  
+**Dependencias:** QA-001, RFC-001, BE-001, BE-002  
+
+### Descripcion
+Se integra la auditoria visual y revision de formularios del flujo clinico.
+
+### Archivos relacionados
+- `docs/control/04_UI_UX_PULIDO_VISUAL.md`
+- `docs/control/auditorias/UI-001_UI-002_AUDITORIA_VISUAL_FORMULARIOS.md`
+
+### Restricciones respetadas
+- No se modifico codigo fuente.
+- No se modificaron migraciones.
+- No se toco `.env`.
+- No se ejecuto Supabase.
+- No se ejecuto `supabase db push`.
+- No se toco Supabase remoto.
+- No se modificaron datos reales.
+
+### Resultado
+UI-001 y UI-002 quedan integradas como auditoria aprobada con observaciones.
+
+### Observaciones
+La auditoria deriva UI-010 a UI-019 como tareas de planificacion visual y operativa.
+
+## LOG-009 - Integracion de BE-003
+
+**Estado:** Integrada  
+**Prioridad:** Alta  
+**Responsable:** Integracion Backend/Estructura  
+**Origen:** BE-003  
+**Fecha creacion:** 2026-06-13  
+**Rama sugerida:** `docs/be-003-criterios-migraciones`  
+**Dependencias:** BE-001, BE-002  
+
+### Descripcion
+Se integran los criterios para futuras migraciones de Supabase/PostgreSQL.
+
+### Archivos relacionados
+- `docs/control/03_INTEGRACION_BACKEND_ESTRUCTURA.md`
+- `docs/control/auditorias/BE-003_CRITERIOS_FUTURAS_MIGRACIONES.md`
+
+### Restricciones respetadas
+- No se modifico codigo fuente.
+- No se modificaron migraciones.
+- No se toco `.env`.
+- No se ejecuto Supabase.
+- No se ejecuto `supabase db push`.
+- No se toco Supabase remoto.
+- No se modificaron datos reales.
+
+### Resultado
+BE-003 queda integrada como pauta tecnica documental para futuras migraciones.
+
+### Observaciones
+BE-018 a BE-021 quedan solo como tareas sugeridas posteriores, no activas.
+
+## LOG-010 - Sincronizacion documental CTRL-003
+
+**Estado:** Integrada  
+**Prioridad:** Alta  
+**Responsable:** Control de desarrollo  
+**Origen:** CTRL-003  
+**Fecha creacion:** 2026-06-13  
+**Rama sugerida:** `docs/ctrl-003-sincronizacion-final`  
+**Dependencias:** UI-001, UI-002, BE-003  
+
+### Descripcion
+Se sincronizan documentos maestros posterior a la integracion de UI-001/UI-002 y BE-003.
+
+### Archivos relacionados
+- `docs/control/00_ESTADO_GENERAL_PROYECTO.md`
+- `docs/control/01_PENDIENTES_PROYECTO.md`
+- `docs/control/06_BITACORA_CAMBIOS.md`
+
+### Restricciones respetadas
+- No se modifico codigo fuente.
+- No se modificaron migraciones.
+- No se toco `.env`.
+- No se ejecuto Supabase.
+- No se ejecuto `supabase db push`.
+- No se toco Supabase remoto.
+- No se modificaron datos reales.
+- No se hizo merge a `main`.
+
+### Resultado
+Documentacion maestra sincronizada para revision de Control de desarrollo.
+
+### Observaciones
+El siguiente bloque recomendado queda como BE-010 coordinado con UI-011, manteniendo BE-010, UI-010, UI-011, UI-012 y UI-015 como prioridades de planificacion.
