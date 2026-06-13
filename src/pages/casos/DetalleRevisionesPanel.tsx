@@ -1,6 +1,21 @@
 import type { FormEvent } from 'react'
 import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useRevisionHallazgos } from '../../hooks/useRevisionHallazgos'
 import { supabase } from '../../lib/supabase'
+import {
+  categoriasHallazgo,
+  estadosHallazgo,
+  fuentesDeteccion,
+  nivelesConfirmacion,
+  prioridadesHallazgo,
+  type CategoriaHallazgo,
+  type CrearRevisionHallazgoPayload,
+  type EstadoHallazgo,
+  type FuenteDeteccion,
+  type NivelConfirmacion,
+  type PrioridadHallazgo,
+  type RevisionHallazgo,
+} from '../../types/revisionHallazgos'
 import '../ClinicalModuleBase.css'
 
 type DetalleRevisionesPanelProps = {
@@ -112,6 +127,24 @@ type FormularioDetalle = {
   notas_internas: string
 }
 
+type FormularioHallazgo = {
+  categoria_hallazgo: CategoriaHallazgo
+  tipo_hallazgo: string
+  subtipo_hallazgo: string
+  descripcion_hallazgo: string
+  intensidad_hallazgo_porcentaje: string
+  nivel_bloqueo_porcentaje: string
+  origen_sugerido: string
+  fuente_deteccion: FuenteDeteccion
+  nivel_confirmacion: NivelConfirmacion
+  requiere_seguimiento: boolean
+  prioridad_hallazgo: '' | PrioridadHallazgo
+  estado_hallazgo: EstadoHallazgo
+  informacion_canalizada: string
+  observaciones: string
+  notas_internas: string
+}
+
 const ASPECTO_SELECT = [
   'id_revision_aspecto',
   'paciente_id',
@@ -200,6 +233,26 @@ function crearFormularioInicial(): FormularioDetalle {
   }
 }
 
+function crearFormularioHallazgoInicial(): FormularioHallazgo {
+  return {
+    categoria_hallazgo: 'Otro',
+    tipo_hallazgo: '',
+    subtipo_hallazgo: '',
+    descripcion_hallazgo: '',
+    intensidad_hallazgo_porcentaje: '',
+    nivel_bloqueo_porcentaje: '',
+    origen_sugerido: '',
+    fuente_deteccion: 'Radiestesia',
+    nivel_confirmacion: 'Detectado',
+    requiere_seguimiento: false,
+    prioridad_hallazgo: '',
+    estado_hallazgo: 'Activo',
+    informacion_canalizada: '',
+    observaciones: '',
+    notas_internas: '',
+  }
+}
+
 function normalizarTexto(texto: string) {
   return texto.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '')
 }
@@ -267,6 +320,45 @@ function validarFormulario(formulario: FormularioDetalle, revisiones: Revision[]
   return ''
 }
 
+function validarPorcentajeHallazgo(valor: string, etiqueta: string) {
+  if (!valor.trim()) {
+    return ''
+  }
+
+  const numero = Number(valor)
+
+  if (!Number.isInteger(numero) || numero < 0 || numero > 100) {
+    return `${etiqueta} debe ser un entero entre 0 y 100.`
+  }
+
+  return ''
+}
+
+function obtenerPorcentajeHallazgo(valor: string) {
+  return valor.trim() ? Number(valor) : null
+}
+
+function validarFormularioHallazgo(aspecto: RevisionAspecto | null, formulario: FormularioHallazgo) {
+  if (!aspecto) {
+    return 'Selecciona un aspecto revisado para crear el hallazgo.'
+  }
+
+  if (!aspecto.id_revision_aspecto) {
+    return 'No se puede crear un hallazgo sin aspecto revisado asociado.'
+  }
+
+  if (!aspecto.paciente_id || !aspecto.caso_id || !aspecto.revision_id || !aspecto.revision_elemento_id || !aspecto.elemento_caso_id) {
+    return 'Faltan relaciones críticas del aspecto para crear el hallazgo.'
+  }
+
+  if (!formulario.descripcion_hallazgo.trim()) {
+    return 'Completa la descripción del hallazgo.'
+  }
+
+  return validarPorcentajeHallazgo(formulario.intensidad_hallazgo_porcentaje, 'La intensidad del hallazgo')
+    || validarPorcentajeHallazgo(formulario.nivel_bloqueo_porcentaje, 'El nivel de bloqueo')
+}
+
 function DetalleRevisionesPanel({ casoId, pacienteId }: DetalleRevisionesPanelProps) {
   const [revisiones, setRevisiones] = useState<Revision[]>([])
   const [elementos, setElementos] = useState<ElementoCaso[]>([])
@@ -277,10 +369,34 @@ function DetalleRevisionesPanel({ casoId, pacienteId }: DetalleRevisionesPanelPr
   const [mensaje, setMensaje] = useState('')
   const [cargando, setCargando] = useState(true)
   const [guardando, setGuardando] = useState(false)
+  const [revisionHallazgosId, setRevisionHallazgosId] = useState('')
+  const [aspectoHallazgoActivo, setAspectoHallazgoActivo] = useState<RevisionAspecto | null>(null)
+  const [hallazgoEnVista, setHallazgoEnVista] = useState<RevisionHallazgo | null>(null)
+  const [formularioHallazgo, setFormularioHallazgo] = useState<FormularioHallazgo>(() => crearFormularioHallazgoInicial())
+  const [mensajeHallazgos, setMensajeHallazgos] = useState('')
+  const [guardandoHallazgo, setGuardandoHallazgo] = useState(false)
+  const {
+    hallazgos,
+    cargando: cargandoHallazgos,
+    error: errorHallazgos,
+    refrescarHallazgos,
+    listarHallazgosPorRevision,
+    listarHallazgosPorAspecto,
+    obtenerHallazgoPorAspecto,
+    existeHallazgoParaAspecto,
+    crearHallazgoDesdeAspecto,
+  } = useRevisionHallazgos({ casoId, pacienteId })
 
   const revisionesPorId = useMemo(() => new Map(revisiones.map((revision) => [revision.id_revision, revision])), [revisiones])
   const elementosPorId = useMemo(() => new Map(elementos.map((elemento) => [elemento.id_elemento_caso, elemento])), [elementos])
   const revisionSeleccionada = revisionesPorId.get(formulario.revision_id)
+  const revisionHallazgosSeleccionadaId = revisionHallazgosId && revisionesPorId.has(revisionHallazgosId)
+    ? revisionHallazgosId
+    : revisiones[0]?.id_revision || ''
+  const revisionHallazgosSeleccionada = revisionesPorId.get(revisionHallazgosSeleccionadaId)
+  const hallazgosRevisionSeleccionada = useMemo(() => (
+    revisionHallazgosSeleccionadaId ? listarHallazgosPorRevision(revisionHallazgosSeleccionadaId) : []
+  ), [listarHallazgosPorRevision, revisionHallazgosSeleccionadaId])
 
   const aspectosFiltrados = useMemo(() => {
     if (!busqueda.trim()) {
@@ -313,10 +429,15 @@ function DetalleRevisionesPanel({ casoId, pacienteId }: DetalleRevisionesPanelPr
     { etiqueta: 'Pendientes', valor: aspectos.filter((aspecto) => aspecto.estado_revision_aspecto === 'Pendiente').length, detalle: 'Por revisar' },
     { etiqueta: 'Seguimiento', valor: aspectos.filter((aspecto) => aspecto.requiere_seguimiento).length, detalle: 'Con acción pendiente' },
     { etiqueta: 'Presencia', valor: aspectos.filter((aspecto) => aspecto.presencia_detectada === true).length, detalle: 'Detectadas' },
+    { etiqueta: 'Hallazgos', valor: hallazgos.length, detalle: 'Registrados' },
   ]
 
   function actualizarFormulario(campo: keyof FormularioDetalle, valor: string | boolean) {
     setFormulario((actual) => ({ ...actual, [campo]: valor }))
+  }
+
+  function actualizarFormularioHallazgo(campo: keyof FormularioHallazgo, valor: string | boolean) {
+    setFormularioHallazgo((actual) => ({ ...actual, [campo]: valor }))
   }
 
   function actualizarRevision(revisionId: string) {
@@ -325,6 +446,90 @@ function DetalleRevisionesPanel({ casoId, pacienteId }: DetalleRevisionesPanelPr
       revision_id: revisionId,
       elemento_caso_id: '',
     }))
+  }
+
+  function abrirFormularioHallazgo(aspecto: RevisionAspecto) {
+    const hallazgoExistente = obtenerHallazgoPorAspecto(aspecto.id_revision_aspecto)
+
+    if (hallazgoExistente) {
+      setHallazgoEnVista(hallazgoExistente)
+      setMensajeHallazgos('Ya existe un hallazgo asociado a este aspecto. Revisa el registro antes de crear uno nuevo.')
+      return
+    }
+
+    setAspectoHallazgoActivo(aspecto)
+    setFormularioHallazgo(crearFormularioHallazgoInicial())
+    setMensajeHallazgos('')
+  }
+
+  function cerrarFormularioHallazgo() {
+    if (guardandoHallazgo) {
+      return
+    }
+
+    setAspectoHallazgoActivo(null)
+    setFormularioHallazgo(crearFormularioHallazgoInicial())
+  }
+
+  function verHallazgo(hallazgo: RevisionHallazgo) {
+    setHallazgoEnVista(hallazgo)
+    setMensajeHallazgos('')
+  }
+
+  async function guardarHallazgo(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault()
+
+    const errorFormulario = validarFormularioHallazgo(aspectoHallazgoActivo, formularioHallazgo)
+
+    if (errorFormulario) {
+      setMensajeHallazgos(`Error: ${errorFormulario}`)
+      return
+    }
+
+    if (!aspectoHallazgoActivo) {
+      setMensajeHallazgos('Error: No fue posible resolver el aspecto revisado.')
+      return
+    }
+
+    setGuardandoHallazgo(true)
+    setMensajeHallazgos('Guardando hallazgo...')
+
+    const payload: CrearRevisionHallazgoPayload = {
+      paciente_id: aspectoHallazgoActivo.paciente_id,
+      caso_id: aspectoHallazgoActivo.caso_id,
+      revision_id: aspectoHallazgoActivo.revision_id,
+      revision_elemento_id: aspectoHallazgoActivo.revision_elemento_id,
+      revision_aspecto_id: aspectoHallazgoActivo.id_revision_aspecto,
+      elemento_caso_id: aspectoHallazgoActivo.elemento_caso_id,
+      categoria_hallazgo: formularioHallazgo.categoria_hallazgo,
+      tipo_hallazgo: formularioHallazgo.tipo_hallazgo.trim() || null,
+      subtipo_hallazgo: formularioHallazgo.subtipo_hallazgo.trim() || null,
+      descripcion_hallazgo: formularioHallazgo.descripcion_hallazgo.trim(),
+      intensidad_hallazgo_porcentaje: obtenerPorcentajeHallazgo(formularioHallazgo.intensidad_hallazgo_porcentaje),
+      nivel_bloqueo_porcentaje: obtenerPorcentajeHallazgo(formularioHallazgo.nivel_bloqueo_porcentaje),
+      origen_sugerido: formularioHallazgo.origen_sugerido.trim() || null,
+      fuente_deteccion: formularioHallazgo.fuente_deteccion,
+      nivel_confirmacion: formularioHallazgo.nivel_confirmacion,
+      requiere_seguimiento: formularioHallazgo.requiere_seguimiento,
+      prioridad_hallazgo: formularioHallazgo.prioridad_hallazgo || null,
+      estado_hallazgo: formularioHallazgo.estado_hallazgo,
+      informacion_canalizada: formularioHallazgo.informacion_canalizada.trim() || null,
+      observaciones: formularioHallazgo.observaciones.trim() || null,
+      notas_internas: formularioHallazgo.notas_internas.trim() || null,
+    }
+
+    try {
+      const hallazgoCreado = await crearHallazgoDesdeAspecto(payload)
+      await refrescarHallazgos()
+      setRevisionHallazgosId(hallazgoCreado.revision_id)
+      setAspectoHallazgoActivo(null)
+      setFormularioHallazgo(crearFormularioHallazgoInicial())
+      setMensajeHallazgos('Hallazgo guardado correctamente en esta revisión')
+    } catch (error) {
+      setMensajeHallazgos(`Error al guardar hallazgo: ${error instanceof Error ? error.message : 'error desconocido'}`)
+    } finally {
+      setGuardandoHallazgo(false)
+    }
   }
 
   const cargarDatos = useCallback(async () => {
@@ -503,6 +708,12 @@ function DetalleRevisionesPanel({ casoId, pacienteId }: DetalleRevisionesPanelPr
     return () => window.clearTimeout(carga)
   }, [cargarDatos])
 
+  const revisionOrigenHallazgo = aspectoHallazgoActivo ? revisionesPorId.get(aspectoHallazgoActivo.revision_id) : null
+  const elementoOrigenHallazgo = aspectoHallazgoActivo ? elementosPorId.get(aspectoHallazgoActivo.elemento_caso_id) : null
+  const aspectoOrigenVista = hallazgoEnVista ? aspectos.find((aspecto) => aspecto.id_revision_aspecto === hallazgoEnVista.revision_aspecto_id) : null
+  const revisionVista = hallazgoEnVista ? revisionesPorId.get(hallazgoEnVista.revision_id) : null
+  const elementoVista = hallazgoEnVista ? elementosPorId.get(hallazgoEnVista.elemento_caso_id) : null
+
   return (
     <section className="caso-detail-section" id="detalle-revisiones">
       <div className="caso-section-heading">
@@ -555,6 +766,16 @@ function DetalleRevisionesPanel({ casoId, pacienteId }: DetalleRevisionesPanelPr
               {aspectosFiltrados.map((aspecto) => {
                 const revision = revisionesPorId.get(aspecto.revision_id)
                 const elemento = elementosPorId.get(aspecto.elemento_caso_id)
+                const hallazgosDelAspecto = listarHallazgosPorAspecto(aspecto.id_revision_aspecto)
+                const hallazgoPrincipal = hallazgosDelAspecto[0] || null
+                const tieneRelacionesHallazgo = Boolean(
+                  aspecto.paciente_id
+                  && aspecto.caso_id
+                  && aspecto.revision_id
+                  && aspecto.revision_elemento_id
+                  && aspecto.id_revision_aspecto
+                  && aspecto.elemento_caso_id,
+                )
 
                 return (
                   <article className="clinical-card" key={aspecto.id_revision_aspecto}>
@@ -580,10 +801,126 @@ function DetalleRevisionesPanel({ casoId, pacienteId }: DetalleRevisionesPanelPr
                         <dd>{aspecto.valor_porcentaje ?? 'N/A'}</dd>
                       </div>
                     </dl>
+
+                    <div className="clinical-hallazgo-context">
+                      {hallazgoPrincipal ? (
+                        <>
+                          <div className="clinical-hallazgo-context__header">
+                            <span className="clinical-badge">Hallazgo registrado</span>
+                            {hallazgoPrincipal.prioridad_hallazgo && <span className="clinical-badge clinical-badge--muted">{hallazgoPrincipal.prioridad_hallazgo}</span>}
+                            <span className="clinical-badge clinical-badge--muted">{hallazgoPrincipal.estado_hallazgo}</span>
+                          </div>
+                          <p>{textoCorto(hallazgoPrincipal.descripcion_hallazgo, 140)}</p>
+                          <div className="clinical-actions">
+                            <button className="clinical-button clinical-button--secondary clinical-button--compact" type="button" onClick={() => verHallazgo(hallazgoPrincipal)}>
+                              Ver hallazgo
+                            </button>
+                            <button className="clinical-button clinical-button--ghost clinical-button--compact" disabled type="button">
+                              Evaluar trabajo próximamente
+                            </button>
+                          </div>
+                        </>
+                      ) : (
+                        <>
+                          <p>Si este resultado es clínicamente relevante, puedes registrarlo como hallazgo.</p>
+                          <button
+                            className="clinical-button clinical-button--secondary clinical-button--compact"
+                            disabled={!tieneRelacionesHallazgo || cargandoHallazgos || guardandoHallazgo || existeHallazgoParaAspecto(aspecto.id_revision_aspecto)}
+                            type="button"
+                            onClick={() => abrirFormularioHallazgo(aspecto)}
+                          >
+                            Crear hallazgo
+                          </button>
+                        </>
+                      )}
+                    </div>
                   </article>
                 )
               })}
             </div>
+          )}
+
+          <section className="clinical-hallazgos-panel" aria-label="Hallazgos de esta revisión">
+            <div className="clinical-hallazgos-panel__header">
+              <div>
+                <span className="clinical-kicker">Hallazgos</span>
+                <h3>Hallazgos de esta revisión</h3>
+                <p>Un aspecto revisado registra lo observado o medido; un hallazgo guarda solo aquello que necesita destacarse, seguirse o evaluarse.</p>
+              </div>
+              <span className="clinical-count">{hallazgosRevisionSeleccionada.length}</span>
+            </div>
+
+            <label className="clinical-field">
+              <span>Revisión</span>
+              <select className="clinical-select" disabled={revisiones.length === 0} value={revisionHallazgosSeleccionadaId} onChange={(event) => setRevisionHallazgosId(event.target.value)}>
+                <option value="">Seleccionar revisión</option>
+                {revisiones.map((revision) => (
+                  <option key={revision.id_revision} value={revision.id_revision}>Revisión {revision.numero_revision} · {formatearFecha(revision.fecha_revision)}</option>
+                ))}
+              </select>
+            </label>
+
+            {errorHallazgos && <p className="clinical-message clinical-message--error">{errorHallazgos}</p>}
+
+            {cargandoHallazgos ? (
+              <div className="clinical-empty">
+                <strong>Cargando hallazgos</strong>
+                <p>Consultando hallazgos asociados al caso.</p>
+              </div>
+            ) : hallazgosRevisionSeleccionada.length === 0 ? (
+              <div className="clinical-empty">
+                <strong>{revisionHallazgosSeleccionada ? `Revisión ${revisionHallazgosSeleccionada.numero_revision} sin hallazgos` : 'Sin revisión seleccionada'}</strong>
+                <p>Aún no hay hallazgos registrados en esta revisión. Los hallazgos se crean desde un aspecto revisado cuando el resultado requiere seguimiento, prioridad o posible intervención.</p>
+              </div>
+            ) : (
+              <div className="clinical-list">
+                {hallazgosRevisionSeleccionada.map((hallazgo) => {
+                  const aspectoOrigen = aspectos.find((aspecto) => aspecto.id_revision_aspecto === hallazgo.revision_aspecto_id)
+                  const elementoOrigen = elementosPorId.get(hallazgo.elemento_caso_id)
+
+                  return (
+                    <article className="clinical-hallazgo-item" key={hallazgo.id_revision_hallazgo}>
+                      <div className="clinical-card__top">
+                        <div>
+                          <h4>{hallazgo.categoria_hallazgo}</h4>
+                          <small>{elementoOrigen?.nombre_elemento || 'Elemento no encontrado'} · {aspectoOrigen?.aspecto_revisado || 'Aspecto no encontrado'}</small>
+                        </div>
+                        <span className="clinical-badge">{hallazgo.estado_hallazgo}</span>
+                      </div>
+                      <p>{textoCorto(hallazgo.descripcion_hallazgo, 150)}</p>
+                      <dl className="clinical-details">
+                        <div>
+                          <dt>Prioridad</dt>
+                          <dd>{hallazgo.prioridad_hallazgo || 'Sin prioridad'}</dd>
+                        </div>
+                        <div>
+                          <dt>Seguimiento</dt>
+                          <dd>{hallazgo.requiere_seguimiento ? 'Sí' : 'No'}</dd>
+                        </div>
+                        <div>
+                          <dt>Fuente</dt>
+                          <dd>{hallazgo.fuente_deteccion}</dd>
+                        </div>
+                      </dl>
+                      <div className="clinical-actions">
+                        <button className="clinical-button clinical-button--secondary clinical-button--compact" type="button" onClick={() => verHallazgo(hallazgo)}>
+                          Ver hallazgo
+                        </button>
+                        <button className="clinical-button clinical-button--ghost clinical-button--compact" disabled type="button">
+                          Evaluar trabajo próximamente
+                        </button>
+                      </div>
+                    </article>
+                  )
+                })}
+              </div>
+            )}
+          </section>
+
+          {mensajeHallazgos && (
+            <p className={mensajeHallazgos.startsWith('Error') ? 'clinical-message clinical-message--error' : 'clinical-message'}>
+              {mensajeHallazgos}
+            </p>
           )}
         </section>
 
@@ -741,6 +1078,220 @@ function DetalleRevisionesPanel({ casoId, pacienteId }: DetalleRevisionesPanelPr
           {mensaje && <p className={mensaje.startsWith('Error') ? 'clinical-message clinical-message--error' : 'clinical-message'}>{mensaje}</p>}
         </section>
       </section>
+
+      {aspectoHallazgoActivo && (
+        <div className="clinical-modal-backdrop">
+          <section className="clinical-modal" role="dialog" aria-modal="true" aria-labelledby="crear-hallazgo-titulo">
+            <div className="clinical-modal__header">
+              <div>
+                <span className="clinical-kicker">Hallazgo operativo</span>
+                <h2 id="crear-hallazgo-titulo">Crear hallazgo desde aspecto revisado</h2>
+                <p>Describe solo lo clínicamente relevante. El contexto del caso, revisión, elemento y aspecto se hereda automáticamente.</p>
+              </div>
+              <button className="clinical-icon-button" disabled={guardandoHallazgo} type="button" aria-label="Cerrar formulario de hallazgo" onClick={cerrarFormularioHallazgo}>
+                ×
+              </button>
+            </div>
+
+            <div className="clinical-origin-summary">
+              <span>Origen</span>
+              <strong>Revisión {revisionOrigenHallazgo?.numero_revision || '-'} · {elementoOrigenHallazgo?.nombre_elemento || 'Elemento no encontrado'}</strong>
+              <p>{aspectoHallazgoActivo.aspecto_revisado}</p>
+              <small>{aspectoHallazgoActivo.area_revision} · {aspectoHallazgoActivo.tipo_medicion}{aspectoHallazgoActivo.valor_porcentaje !== null ? ` · ${aspectoHallazgoActivo.valor_porcentaje}%` : ''}</small>
+            </div>
+
+            <form className="clinical-form" onSubmit={guardarHallazgo}>
+              <div className="clinical-grid">
+                <label className="clinical-field">
+                  <span>Categoría *</span>
+                  <select className="clinical-select" disabled={guardandoHallazgo} value={formularioHallazgo.categoria_hallazgo} onChange={(event) => actualizarFormularioHallazgo('categoria_hallazgo', event.target.value as CategoriaHallazgo)} required>
+                    {categoriasHallazgo.map((categoria) => <option key={categoria} value={categoria}>{categoria}</option>)}
+                  </select>
+                </label>
+
+                <label className="clinical-field">
+                  <span>Estado *</span>
+                  <select className="clinical-select" disabled={guardandoHallazgo} value={formularioHallazgo.estado_hallazgo} onChange={(event) => actualizarFormularioHallazgo('estado_hallazgo', event.target.value as EstadoHallazgo)} required>
+                    {estadosHallazgo.map((estado) => <option key={estado} value={estado}>{estado}</option>)}
+                  </select>
+                </label>
+              </div>
+
+              <label className="clinical-field">
+                <span>Descripción del hallazgo *</span>
+                <textarea className="clinical-textarea" disabled={guardandoHallazgo} value={formularioHallazgo.descripcion_hallazgo} onChange={(event) => actualizarFormularioHallazgo('descripcion_hallazgo', event.target.value)} required />
+              </label>
+
+              <div className="clinical-grid">
+                <label className="clinical-field">
+                  <span>Prioridad</span>
+                  <select className="clinical-select" disabled={guardandoHallazgo} value={formularioHallazgo.prioridad_hallazgo} onChange={(event) => actualizarFormularioHallazgo('prioridad_hallazgo', event.target.value as '' | PrioridadHallazgo)}>
+                    <option value="">Sin prioridad</option>
+                    {prioridadesHallazgo.map((prioridad) => <option key={prioridad} value={prioridad}>{prioridad}</option>)}
+                  </select>
+                </label>
+
+                <label className="clinical-field">
+                  <span>Fuente</span>
+                  <select className="clinical-select" disabled={guardandoHallazgo} value={formularioHallazgo.fuente_deteccion} onChange={(event) => actualizarFormularioHallazgo('fuente_deteccion', event.target.value as FuenteDeteccion)}>
+                    {fuentesDeteccion.map((fuente) => <option key={fuente} value={fuente}>{fuente}</option>)}
+                  </select>
+                </label>
+              </div>
+
+              <label className="clinical-checkbox">
+                <input checked={formularioHallazgo.requiere_seguimiento} disabled={guardandoHallazgo} type="checkbox" onChange={(event) => actualizarFormularioHallazgo('requiere_seguimiento', event.target.checked)} />
+                <span>Requiere seguimiento</span>
+              </label>
+
+              <label className="clinical-field">
+                <span>Observaciones</span>
+                <textarea className="clinical-textarea" disabled={guardandoHallazgo} value={formularioHallazgo.observaciones} onChange={(event) => actualizarFormularioHallazgo('observaciones', event.target.value)} />
+              </label>
+
+              <details className="clinical-disclosure">
+                <summary>Más detalle</summary>
+                <div className="clinical-form clinical-form--nested">
+                  <div className="clinical-grid">
+                    <label className="clinical-field">
+                      <span>Tipo hallazgo</span>
+                      <input className="clinical-input" disabled={guardandoHallazgo} value={formularioHallazgo.tipo_hallazgo} onChange={(event) => actualizarFormularioHallazgo('tipo_hallazgo', event.target.value)} />
+                    </label>
+
+                    <label className="clinical-field">
+                      <span>Subtipo</span>
+                      <input className="clinical-input" disabled={guardandoHallazgo} value={formularioHallazgo.subtipo_hallazgo} onChange={(event) => actualizarFormularioHallazgo('subtipo_hallazgo', event.target.value)} />
+                    </label>
+                  </div>
+
+                  <div className="clinical-grid">
+                    <label className="clinical-field">
+                      <span>Intensidad %</span>
+                      <input className="clinical-input" disabled={guardandoHallazgo} max="100" min="0" type="number" value={formularioHallazgo.intensidad_hallazgo_porcentaje} onChange={(event) => actualizarFormularioHallazgo('intensidad_hallazgo_porcentaje', event.target.value)} />
+                    </label>
+
+                    <label className="clinical-field">
+                      <span>Nivel bloqueo %</span>
+                      <input className="clinical-input" disabled={guardandoHallazgo} max="100" min="0" type="number" value={formularioHallazgo.nivel_bloqueo_porcentaje} onChange={(event) => actualizarFormularioHallazgo('nivel_bloqueo_porcentaje', event.target.value)} />
+                    </label>
+                  </div>
+
+                  <div className="clinical-grid">
+                    <label className="clinical-field">
+                      <span>Origen sugerido</span>
+                      <input className="clinical-input" disabled={guardandoHallazgo} value={formularioHallazgo.origen_sugerido} onChange={(event) => actualizarFormularioHallazgo('origen_sugerido', event.target.value)} />
+                    </label>
+
+                    <label className="clinical-field">
+                      <span>Confirmación</span>
+                      <select className="clinical-select" disabled={guardandoHallazgo} value={formularioHallazgo.nivel_confirmacion} onChange={(event) => actualizarFormularioHallazgo('nivel_confirmacion', event.target.value as NivelConfirmacion)}>
+                        {nivelesConfirmacion.map((nivel) => <option key={nivel} value={nivel}>{nivel}</option>)}
+                      </select>
+                    </label>
+                  </div>
+
+                  <label className="clinical-field">
+                    <span>Información canalizada</span>
+                    <textarea className="clinical-textarea" disabled={guardandoHallazgo} value={formularioHallazgo.informacion_canalizada} onChange={(event) => actualizarFormularioHallazgo('informacion_canalizada', event.target.value)} />
+                  </label>
+
+                  <label className="clinical-field">
+                    <span>Notas internas</span>
+                    <textarea className="clinical-textarea" disabled={guardandoHallazgo} value={formularioHallazgo.notas_internas} onChange={(event) => actualizarFormularioHallazgo('notas_internas', event.target.value)} />
+                  </label>
+                </div>
+              </details>
+
+              <div className="clinical-actions clinical-actions--end">
+                <button className="clinical-button clinical-button--secondary" disabled={guardandoHallazgo} type="button" onClick={cerrarFormularioHallazgo}>
+                  Cancelar
+                </button>
+                <button className="clinical-button" disabled={guardandoHallazgo} type="submit">
+                  {guardandoHallazgo ? 'Guardando...' : 'Guardar hallazgo'}
+                </button>
+              </div>
+            </form>
+          </section>
+        </div>
+      )}
+
+      {hallazgoEnVista && (
+        <div className="clinical-modal-backdrop">
+          <section className="clinical-modal clinical-modal--compact" role="dialog" aria-modal="true" aria-labelledby="ver-hallazgo-titulo">
+            <div className="clinical-modal__header">
+              <div>
+                <span className="clinical-kicker">Hallazgo registrado</span>
+                <h2 id="ver-hallazgo-titulo">{hallazgoEnVista.categoria_hallazgo}</h2>
+                <p>{hallazgoEnVista.descripcion_hallazgo}</p>
+              </div>
+              <button className="clinical-icon-button" type="button" aria-label="Cerrar hallazgo" onClick={() => setHallazgoEnVista(null)}>
+                ×
+              </button>
+            </div>
+
+            <dl className="clinical-details clinical-details--modal">
+              <div>
+                <dt>Revisión</dt>
+                <dd>{revisionVista ? `Revisión ${revisionVista.numero_revision}` : 'No encontrada'}</dd>
+              </div>
+              <div>
+                <dt>Elemento</dt>
+                <dd>{elementoVista?.nombre_elemento || 'No encontrado'}</dd>
+              </div>
+              <div>
+                <dt>Aspecto</dt>
+                <dd>{aspectoOrigenVista?.aspecto_revisado || 'No encontrado'}</dd>
+              </div>
+              <div>
+                <dt>Prioridad</dt>
+                <dd>{hallazgoEnVista.prioridad_hallazgo || 'Sin prioridad'}</dd>
+              </div>
+              <div>
+                <dt>Estado</dt>
+                <dd>{hallazgoEnVista.estado_hallazgo}</dd>
+              </div>
+              <div>
+                <dt>Seguimiento</dt>
+                <dd>{hallazgoEnVista.requiere_seguimiento ? 'Sí' : 'No'}</dd>
+              </div>
+            </dl>
+
+            {(hallazgoEnVista.observaciones || hallazgoEnVista.informacion_canalizada || hallazgoEnVista.notas_internas) && (
+              <div className="clinical-readonly-stack">
+                {hallazgoEnVista.informacion_canalizada && (
+                  <article>
+                    <span>Información canalizada</span>
+                    <p>{hallazgoEnVista.informacion_canalizada}</p>
+                  </article>
+                )}
+                {hallazgoEnVista.observaciones && (
+                  <article>
+                    <span>Observaciones</span>
+                    <p>{hallazgoEnVista.observaciones}</p>
+                  </article>
+                )}
+                {hallazgoEnVista.notas_internas && (
+                  <article>
+                    <span>Notas internas</span>
+                    <p>{hallazgoEnVista.notas_internas}</p>
+                  </article>
+                )}
+              </div>
+            )}
+
+            <p className="clinical-note">Un hallazgo no crea un trabajo automáticamente. Primero debe evaluarse si requiere intervención.</p>
+
+            <div className="clinical-actions clinical-actions--end">
+              <button className="clinical-button clinical-button--ghost" disabled type="button">
+                Evaluar trabajo próximamente
+              </button>
+              <button className="clinical-button" type="button" onClick={() => setHallazgoEnVista(null)}>
+                Cerrar
+              </button>
+            </div>
+          </section>
+        </div>
+      )}
     </section>
   )
 }

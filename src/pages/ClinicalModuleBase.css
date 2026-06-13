@@ -291,6 +291,35 @@
   opacity: 0.55;
 }
 
+.clinical-button--secondary {
+  background: rgba(255, 244, 224, 0.92);
+  border: 1px solid rgba(181, 124, 48, 0.24);
+  color: #6b5017;
+}
+
+.clinical-button--ghost {
+  background: rgba(238, 228, 216, 0.7);
+  border: 1px solid rgba(88, 78, 66, 0.16);
+  color: #635547;
+}
+
+.clinical-button--compact {
+  font-size: 12px;
+  min-height: 34px;
+  padding: 8px 12px;
+}
+
+.clinical-actions {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.clinical-actions--end {
+  justify-content: flex-end;
+}
+
 .clinical-message,
 .clinical-empty,
 .clinical-note {
@@ -319,6 +348,155 @@
   color: var(--clinical-ink);
 }
 
+.clinical-hallazgo-context,
+.clinical-hallazgos-panel,
+.clinical-origin-summary,
+.clinical-readonly-stack article {
+  background: rgba(255, 247, 236, 0.74);
+  border: 1px solid rgba(181, 124, 48, 0.18);
+  border-radius: 18px;
+  display: grid;
+  gap: 10px;
+  padding: 13px;
+}
+
+.clinical-hallazgo-context__header,
+.clinical-hallazgos-panel__header {
+  align-items: flex-start;
+  display: flex;
+  gap: 10px;
+  justify-content: space-between;
+}
+
+.clinical-hallazgo-context__header {
+  flex-wrap: wrap;
+  justify-content: flex-start;
+}
+
+.clinical-hallazgos-panel {
+  margin-top: 16px;
+}
+
+.clinical-hallazgos-panel__header h3,
+.clinical-hallazgo-item h4,
+.clinical-modal h2 {
+  color: var(--clinical-ink);
+  letter-spacing: -0.02em;
+  margin: 4px 0;
+}
+
+.clinical-hallazgos-panel__header h3,
+.clinical-hallazgo-item h4 {
+  font-size: 1rem;
+}
+
+.clinical-hallazgo-item {
+  background: rgba(255, 255, 255, 0.74);
+  border: 1px solid var(--clinical-line);
+  border-radius: 18px;
+  display: grid;
+  gap: 12px;
+  padding: 14px;
+}
+
+.clinical-modal-backdrop {
+  align-items: center;
+  background: rgba(35, 25, 15, 0.34);
+  display: flex;
+  inset: 0;
+  justify-content: center;
+  padding: 18px;
+  position: fixed;
+  z-index: 40;
+}
+
+.clinical-modal {
+  background: rgba(255, 250, 242, 0.99);
+  border: 1px solid rgba(45, 31, 18, 0.16);
+  border-radius: 24px;
+  box-shadow: 0 26px 80px rgba(35, 25, 15, 0.24);
+  display: grid;
+  gap: 16px;
+  max-height: calc(100vh - 36px);
+  max-width: 760px;
+  overflow: auto;
+  padding: 22px;
+  width: min(760px, 100%);
+}
+
+.clinical-modal--compact {
+  max-width: 640px;
+}
+
+.clinical-modal__header {
+  align-items: flex-start;
+  display: flex;
+  gap: 16px;
+  justify-content: space-between;
+}
+
+.clinical-icon-button {
+  align-items: center;
+  background: rgba(255, 244, 224, 0.9);
+  border: 1px solid rgba(181, 124, 48, 0.22);
+  border-radius: 999px;
+  color: #6b5017;
+  cursor: pointer;
+  display: inline-flex;
+  flex: 0 0 auto;
+  font: inherit;
+  font-size: 22px;
+  font-weight: 700;
+  height: 36px;
+  justify-content: center;
+  line-height: 1;
+  width: 36px;
+}
+
+.clinical-origin-summary span,
+.clinical-readonly-stack span {
+  color: var(--clinical-accent-strong);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+}
+
+.clinical-origin-summary strong {
+  color: var(--clinical-ink);
+}
+
+.clinical-origin-summary small {
+  color: var(--clinical-muted);
+}
+
+.clinical-disclosure {
+  background: rgba(255, 255, 255, 0.72);
+  border: 1px solid var(--clinical-line);
+  border-radius: 18px;
+  padding: 12px;
+}
+
+.clinical-disclosure summary {
+  color: var(--clinical-accent-strong);
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.clinical-form--nested {
+  margin-top: 12px;
+}
+
+.clinical-details--modal {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.clinical-readonly-stack {
+  display: grid;
+  gap: 10px;
+}
+
 @media (max-width: 1120px) {
   .clinical-hero,
   .clinical-layout {
@@ -342,8 +520,29 @@
 
   .clinical-panel__header,
   .clinical-form-panel__header,
-  .clinical-card__top {
+  .clinical-card__top,
+  .clinical-hallazgos-panel__header,
+  .clinical-modal__header {
     align-items: flex-start;
     flex-direction: column;
+  }
+
+  .clinical-modal-backdrop {
+    align-items: stretch;
+    padding: 0;
+  }
+
+  .clinical-modal {
+    border-radius: 0;
+    max-height: 100vh;
+    width: 100%;
+  }
+
+  .clinical-actions--end {
+    justify-content: stretch;
+  }
+
+  .clinical-actions--end .clinical-button {
+    flex: 1 1 100%;
   }
 }
