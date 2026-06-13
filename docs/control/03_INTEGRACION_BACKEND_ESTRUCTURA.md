@@ -145,20 +145,36 @@ BE-002 no implementa cambios. Habilita planificar tareas tecnicas posteriores de
 
 ## BE-003 - Preparar criterios para futuras migraciones
 
-**Estado:** Pendiente  
+**Estado:** Aprobada con observaciones  
 **Prioridad:** Media  
 **Responsable:** Integracion Backend/Estructura  
 **Origen:** Control de desarrollo  
 **Fecha creacion:** 2026-06-11  
-**Rama sugerida:** `docs/criterios-migraciones`  
-**Dependencias:** BE-001  
+**Fecha documentacion:** 2026-06-12  
+**Rama sugerida:** `docs/be-003-criterios-migraciones`  
+**Dependencias:** BE-001, BE-002  
 
 ### Descripcion
-Definir criterios minimos para crear, revisar y validar futuras migraciones sin afectar Supabase remoto ni `main`.
+Definir criterios minimos para crear, revisar, probar y aprobar futuras migraciones de Supabase/PostgreSQL sin afectar `.env`, Supabase remoto ni `main`.
 
 ### Archivos relacionados
 - `supabase/migrations/`
 - `docs/control/05_DECISIONES_PROYECTO.md`
+- `docs/control/auditorias/BE-003_CRITERIOS_FUTURAS_MIGRACIONES.md`
+
+### Resumen ejecutivo
+- BE-003 queda documentada como pauta tecnica para futuras migraciones.
+- Define criterios previos antes de crear migraciones.
+- Define estructura recomendada de migraciones y orden seguro de cambios.
+- Registra checklist previo y posterior a ejecucion local.
+- Refuerza reglas de seguridad: no tocar `.env`, no usar `supabase db push`, no tocar Supabase remoto y no modificar datos reales.
+- Define criterios para PRs con migraciones y validacion por Control de Desarrollo.
+- Define criterios por tipo de cambio: tablas, columnas, checks, FK, indices, triggers, vistas, RLS/policies y funciones SQL.
+- Establece criterios especiales para BE-010 a BE-017.
+- Sugiere tareas posteriores BE-018 a BE-021 como propuestas, no activas.
+
+### Informe detallado
+- [`BE-003_CRITERIOS_FUTURAS_MIGRACIONES.md`](auditorias/BE-003_CRITERIOS_FUTURAS_MIGRACIONES.md)
 
 ### Criterios de aceptacion
 - Definir checklist previo a migracion.
@@ -166,10 +182,12 @@ Definir criterios minimos para crear, revisar y validar futuras migraciones sin 
 - Reforzar que `supabase db push` esta prohibido salvo instruccion expresa futura.
 - No tocar `.env`.
 - No hacer `supabase db push`.
+- No tocar Supabase remoto.
+- No crear migraciones todavia.
 - No fusionar a `main`.
 
 ### Resultado
-Pendiente.
+Aprobada con observaciones. Resultado registrado en `docs/control/auditorias/BE-003_CRITERIOS_FUTURAS_MIGRACIONES.md`.
 
 ### Observaciones
-Esta tarea solo documenta criterios; no crea migraciones.
+BE-003 no crea migraciones ni implementa cambios. Habilita planificar BE-010 a BE-017 bajo un marco seguro, revisable y alineado con el flujo clinico aprobado.
