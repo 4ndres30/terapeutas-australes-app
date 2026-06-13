@@ -1,6 +1,6 @@
 # Estado general del proyecto
 
-Fecha de corte: `2026-06-12`  
+Fecha de corte: `2026-06-13`  
 Responsable del documento: Control de desarrollo  
 Estado general documental: En control activo
 
@@ -8,7 +8,7 @@ Estado general documental: En control activo
 
 El proyecto cuenta con una estructura documental de control en `docs/control/`. Esta estructura ordena responsabilidades, pendientes, decisiones, bitacora, auditorias y flujo de trabajo sin modificar codigo, migraciones ni base de datos.
 
-Al corte actual ya quedaron integradas las auditorias iniciales de control, backend y flujo clinico. Tambien quedaron registradas decisiones clinicas/operativas clave que permiten iniciar planificacion tecnica real sin romper el flujo definido.
+Al corte actual ya quedaron integradas las auditorias iniciales de control, backend, flujo clinico y UI/UX. Tambien quedaron registradas decisiones clinicas/operativas clave y una pauta tecnica para futuras migraciones, lo que permite iniciar planificacion tecnica real con mayor seguridad.
 
 El proyecto se mantiene alineado con el metodo acordado: primero documentar, auditar y decidir; luego implementar por tareas aprobadas.
 
@@ -29,18 +29,23 @@ El proyecto se mantiene alineado con el metodo acordado: primero documentar, aud
 - DEC-006: revisiones y detalle de revisiones viven dentro de la ficha del caso.
 - DEC-007 a DEC-012: decisiones clinicas/operativas derivadas de BE-001 y RFC-001 integradas.
 - BE-002: alineacion backend con flujo clinico aprobado integrada.
+- UI-001 + UI-002: auditoria visual y formularios del flujo clinico integrada.
+- BE-003: criterios para futuras migraciones integrado.
+- CTRL-002: sincronizacion documental posterior a BE-002 integrada.
 
 ## En revision / planificacion
 
-- BE-010 a BE-017: tareas backend sugeridas por BE-002 para hallazgos, trabajos, agenda, cobros, vistas, RLS y reportes.
-- UI-001 y UI-002: auditoria visual y revision de formularios del flujo clinico.
+- CTRL-003: sincronizacion documental posterior a UI-001/UI-002 y BE-003.
+- BE-010: soporte operativo de hallazgos derivados de aspectos.
+- UI-010, UI-011, UI-012 y UI-015: tareas UI prioritarias sugeridas por la auditoria UI-001 + UI-002.
 - RFC-002: deteccion de duplicidades entre entidades clinicas.
-- BE-003: criterios para futuras migraciones.
+- BE-011 a BE-017: tareas backend sugeridas por BE-002 y reforzadas por BE-003.
 
 ## Pendiente operativo
 
-- Definir prioridad de implementacion entre BE-010, UI-001/UI-002 y BE-003.
-- Sincronizar periodicamente `01_PENDIENTES_PROYECTO.md` cuando una tarea cambie de estado.
+- Definir alcance exacto de BE-010 antes de implementar cambios tecnicos.
+- Coordinar BE-010 con UI-011 para que los hallazgos operen dentro del detalle de revision.
+- Mantener `01_PENDIENTES_PROYECTO.md` actualizado cuando una tarea cambie de estado.
 - Mantener `06_BITACORA_CAMBIOS.md` actualizado despues de cada bloque documental o tecnico relevante.
 - Validar runtime local de RLS por roles antes de avanzar a reportes mixtos o vistas sensibles.
 
@@ -124,10 +129,45 @@ Actualizar estado general, pendientes y bitacora para reflejar que QA-001, BE-00
 - No tocar Supabase remoto.
 
 ### Resultado
+Integrada.
+
+### Observaciones
+Permitio ordenar el estado antes de integrar UI-001/UI-002 y BE-003.
+
+## CTRL-003 - Sincronizar documentacion maestra tras UI-001/UI-002 y BE-003
+
+**Estado:** Integrada  
+**Prioridad:** Alta  
+**Responsable:** Control de desarrollo  
+**Origen:** Control de desarrollo  
+**Fecha creacion:** 2026-06-13  
+**Rama sugerida:** `docs/ctrl-003-sync-post-ui-be003`  
+**Dependencias:** UI-001, UI-002, BE-003  
+
+### Descripcion
+Actualizar estado general, pendientes y bitacora para reflejar que UI-001/UI-002 y BE-003 ya fueron integradas oficialmente.
+
+### Archivos relacionados
+- `docs/control/00_ESTADO_GENERAL_PROYECTO.md`
+- `docs/control/01_PENDIENTES_PROYECTO.md`
+- `docs/control/06_BITACORA_CAMBIOS.md`
+
+### Criterios de aceptacion
+- Reflejar UI-001/UI-002 como integradas.
+- Reflejar BE-003 como integrada.
+- Registrar tareas UI-010 a UI-019 como pendientes derivados de auditoria.
+- Mantener BE-010 como siguiente prioridad tecnica recomendada.
+- No modificar codigo fuente.
+- No modificar migraciones.
+- No tocar `.env`.
+- No hacer `supabase db push`.
+- No tocar Supabase remoto.
+
+### Resultado
 Sincronizacion documental preparada para integracion mediante PR.
 
 ### Observaciones
-Despues de esta sincronizacion, el siguiente bloque debe priorizar implementacion backend BE-010 en adelante o auditoria UI/UX segun definicion de Javier.
+Despues de esta sincronizacion, el siguiente bloque recomendado es planificar BE-010 en coordinacion con UI-011.
 
 ## QA-001 - Auditoria inicial del proyecto
 
