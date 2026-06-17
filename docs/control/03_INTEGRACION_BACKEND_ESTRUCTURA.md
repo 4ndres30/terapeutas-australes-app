@@ -252,3 +252,62 @@ Aprobada con observaciones. Resultado registrado en `docs/control/auditorias/BE-
 
 ### Observaciones
 BE-010 no implementa cambios. No requiere migracion inicial para el soporte operativo minimo. Requiere implementacion posterior en frontend, servicio/hook y tipos TypeScript. Debe coordinarse con UI-011. BE-011 queda fuera de alcance.
+
+## BE-011 - Trazabilidad hallazgo → trabajo
+
+**Estado:** Aprobada con observaciones  
+**Prioridad:** Alta  
+**Responsable:** Integracion Backend/Estructura  
+**Origen:** Control de desarrollo / BE-010  
+**Fecha creacion:** 2026-06-16  
+**Fecha documentacion:** 2026-06-16  
+**Rama sugerida:** `docs/be-011-trazabilidad-hallazgo-trabajo`  
+**Dependencias:** BE-010, UI-011, DEC-007, DEC-008, DEC-009, DEC-010, DEC-012  
+
+### Descripcion
+Diseñar la trazabilidad tecnica entre `revision_hallazgos` y `trabajos`, sin implementar cambios, migraciones ni codigo.
+
+### Archivos relacionados
+- `supabase/migrations/20260606043000_crear_tabla_revision_hallazgos.sql`
+- `supabase/migrations/20260606051000_crear_modulo_trabajos.sql`
+- `src/hooks/useRevisionHallazgos.ts`
+- `src/types/revisionHallazgos.ts`
+- `src/pages/casos/DetalleRevisionesPanel.tsx`
+- `src/pages/casos/TrabajosCasoPanel.tsx`
+- `docs/control/auditorias/BE-011_TRAZABILIDAD_HALLAZGO_TRABAJO.md`
+
+### Resumen ejecutivo
+- BE-011 queda documentada como informe tecnico de trazabilidad hallazgo a trabajo.
+- La estructura actual permite vincular trabajos con hallazgos mediante `trabajos.revision_hallazgo_origen_id`.
+- No se requiere migracion inicial para una primera version.
+- La primera version debe usar un hallazgo origen principal por trabajo.
+- La tabla puente `trabajo_hallazgos` queda como alternativa futura si se confirma necesidad muchos-a-muchos.
+- No deben crearse trabajos automaticamente desde hallazgos.
+- No deben crearse sesiones, acciones ni cobros automaticamente.
+- Debe coordinarse con UI-012 para el flujo visual hallazgo a trabajo.
+- Debe coordinarse con BE-013/BE-016 para evitar duplicidad financiera si el trabajo se cobra.
+
+### Informe detallado
+- [`BE-011_TRAZABILIDAD_HALLAZGO_TRABAJO.md`](auditorias/BE-011_TRAZABILIDAD_HALLAZGO_TRABAJO.md)
+
+### Criterios de aceptacion
+- Confirmar si `trabajos` permite vincularse a un hallazgo.
+- Confirmar si `revision_hallazgo_origen_id` es suficiente para primera version.
+- Definir si se requiere tabla puente futura.
+- Definir escenarios uno a uno, uno a varios y varios a uno.
+- Definir flujo tecnico recomendado.
+- Definir validaciones frontend y base de datos.
+- Definir riesgos clinicos, tecnicos y financieros.
+- No modificar codigo fuente.
+- No modificar migraciones.
+- No crear migraciones.
+- No tocar `.env`.
+- No hacer `supabase db push`.
+- No tocar Supabase remoto.
+- No fusionar a `main`.
+
+### Resultado
+Aprobada con observaciones. Resultado registrado en `docs/control/auditorias/BE-011_TRAZABILIDAD_HALLAZGO_TRABAJO.md`.
+
+### Observaciones
+La estructura actual permite vincular trabajos con hallazgos mediante `trabajos.revision_hallazgo_origen_id`, por lo que no se requiere migracion inicial. La primera version debe usar un hallazgo origen principal por trabajo. La tabla puente `trabajo_hallazgos` queda como alternativa futura si se confirma necesidad muchos-a-muchos.
