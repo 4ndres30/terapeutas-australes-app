@@ -56,7 +56,7 @@ Validado visualmente por el usuario:
 Pendiente:
 
 - QA-002 debe validar el guardado real de un hallazgo nuevo desde la UI.
-- UI-012 debe disenar el flujo visual `Evaluar trabajo`.
+- UI-012 disena el flujo visual `Evaluar trabajo`; la implementacion funcional queda para una tarea posterior.
 
 Regla vigente:
 
@@ -208,11 +208,12 @@ Los hallazgos deben vivir dentro de `DetalleRevisionesPanel`. La accion debe nac
 
 ## UI-012 - Disenar flujo visual Evaluar trabajo
 
-**Estado:** Pendiente
+**Estado:** Aprobada con observaciones
 **Prioridad:** Alta
 **Responsable:** UI / UX / Pulido visual
 **Origen:** UI-011 + BE-011
 **Fecha creacion:** 2026-06-17
+**Fecha documentacion:** 2026-06-17
 **Rama sugerida:** `docs/ui-012-evaluar-trabajo`
 **Dependencias:** UI-011, BE-011, DEC-009, DEC-013, DEC-014, DEC-015
 
@@ -222,6 +223,7 @@ Disenar el flujo visual para que un terapeuta evalue si un hallazgo amerita crea
 ### Archivos relacionados
 - `src/pages/casos/DetalleRevisionesPanel.tsx`
 - `src/pages/casos/TrabajosCasoPanel.tsx`
+- `docs/control/auditorias/UI-012_FLUJO_EVALUAR_TRABAJO.md`
 - `docs/control/auditorias/BE-011_TRAZABILIDAD_HALLAZGO_TRABAJO.md`
 
 ### Criterios de aceptacion
@@ -237,7 +239,7 @@ Disenar el flujo visual para que un terapeuta evalue si un hallazgo amerita crea
 - No tocar `.env`.
 
 ### Resultado
-Pendiente.
+Aprobada con observaciones. Informe oficial consolidado en `docs/control/auditorias/UI-012_FLUJO_EVALUAR_TRABAJO.md`.
 
 ### Observaciones
-UI-012 debe coordinarse con la implementacion futura hallazgo a trabajo y respetar que la primera version usara `trabajos.revision_hallazgo_origen_id`.
+El boton debe llamarse `Evaluar trabajo` y vivir junto al hallazgo operativo dentro de `DetalleRevisionesPanel`. La creacion futura debe requerir confirmacion manual del terapeuta, usar `trabajos.revision_hallazgo_origen_id` como hallazgo origen principal y no crear cobros, sesiones ni acciones automaticamente.
