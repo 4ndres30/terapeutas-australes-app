@@ -1,6 +1,6 @@
 # Revision de flujo clinico
 
-Responsable: Revision de flujo clinico  
+Responsable: Revision de flujo clinico
 Estado del documento: En análisis
 Fecha creacion: `2026-06-11`
 
@@ -43,6 +43,24 @@ Casos no guarda todo.
 Casos conecta todo.
 ```
 
+## Estado post IMP-001 / DATA-001
+
+El caso demo `DATA-001 - Caso Demo Integral` permite validar el flujo clinico de hallazgos dentro del detalle de revision.
+
+Validacion visual ya realizada por el usuario:
+
+- Hallazgo precargado visible como `Hallazgo registrado`.
+- Modal `Ver hallazgo` funcional.
+- Modal `Crear hallazgo desde aspecto revisado` abre correctamente.
+- El modal de creacion hereda revision, elemento, area y aspecto desde el aspecto revisado.
+
+Pendiente funcional:
+
+- QA-002 debe validar el guardado real de un hallazgo nuevo desde la UI.
+- QA-002 debe confirmar persistencia, recarga visible y ausencia de duplicidad no deseada.
+
+Esta validacion mantiene el criterio clinico definido: el hallazgo nace desde un aspecto revisado, vive dentro del detalle de revision y no crea trabajo automaticamente.
+
 ## Preguntas de revision
 
 - Que dato pertenece al paciente y no a la consulta?
@@ -55,14 +73,14 @@ Casos conecta todo.
 
 ## RFC-001 - Auditar flujo clinico completo
 
-**Estado:** Aprobada con observaciones  
-**Prioridad:** Alta  
-**Responsable:** Revision de flujo clinico  
-**Origen:** Control de desarrollo  
-**Fecha creacion:** 2026-06-11  
-**Fecha documentacion:** 2026-06-12  
-**Rama sugerida:** `docs/rfc-001-revision-flujo-clinico`  
-**Dependencias:** PEND-001, QA-001, BE-001, DEC-006  
+**Estado:** Aprobada con observaciones
+**Prioridad:** Alta
+**Responsable:** Revision de flujo clinico
+**Origen:** Control de desarrollo
+**Fecha creacion:** 2026-06-11
+**Fecha documentacion:** 2026-06-12
+**Rama sugerida:** `docs/rfc-001-revision-flujo-clinico`
+**Dependencias:** PEND-001, QA-001, BE-001, DEC-006
 
 ### Descripcion
 
@@ -104,13 +122,13 @@ Las decisiones sugeridas por RFC-001 no quedan validadas automaticamente. Deben 
 
 ## RFC-002 - Detectar duplicidades entre entidades clinicas
 
-**Estado:** Pendiente  
-**Prioridad:** Alta  
-**Responsable:** Revision de flujo clinico  
-**Origen:** Revision de flujo clinico  
-**Fecha creacion:** 2026-06-11  
-**Rama sugerida:** `docs/duplicidades-flujo-clinico`  
-**Dependencias:** RFC-001  
+**Estado:** Pendiente
+**Prioridad:** Alta
+**Responsable:** Revision de flujo clinico
+**Origen:** Revision de flujo clinico
+**Fecha creacion:** 2026-06-11
+**Rama sugerida:** `docs/duplicidades-flujo-clinico`
+**Dependencias:** RFC-001
 
 ### Descripcion
 
@@ -140,13 +158,13 @@ Toda recomendacion estructural debe transformarse en decision o tarea backend an
 
 ## RFC-003 - Validar detalle de revision
 
-**Estado:** Pendiente  
-**Prioridad:** Media  
-**Responsable:** Revision de flujo clinico  
-**Origen:** Control de desarrollo  
-**Fecha creacion:** 2026-06-11  
-**Rama sugerida:** `docs/detalle-revision-clinica`  
-**Dependencias:** RFC-001  
+**Estado:** Pendiente
+**Prioridad:** Media
+**Responsable:** Revision de flujo clinico
+**Origen:** Control de desarrollo
+**Fecha creacion:** 2026-06-11
+**Rama sugerida:** `docs/detalle-revision-clinica`
+**Dependencias:** RFC-001
 
 ### Descripcion
 

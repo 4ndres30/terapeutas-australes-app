@@ -1,6 +1,6 @@
 # Decisiones del proyecto
 
-Responsable del documento: Control de desarrollo  
+Responsable del documento: Control de desarrollo
 Fecha creacion: `2026-06-11`
 
 Este documento registra decisiones estables. No reemplaza la conversacion, pero evita perder acuerdos importantes entre chats.
@@ -28,16 +28,19 @@ Este documento registra decisiones estables. No reemplaza la conversacion, pero 
 | DEC-010 | Separacion trabajo, sesion y accion. | Validada | 2026-06-12 |
 | DEC-011 | Agenda como modulo mixto tipificado. | Validada | 2026-06-12 |
 | DEC-012 | Cobros por unidad cobrable. | Validada | 2026-06-12 |
+| DEC-013 | Hallazgo origen principal de trabajo. | Validada | 2026-06-17 |
+| DEC-014 | No crear tabla puente `trabajo_hallazgos` en esta etapa. | Validada | 2026-06-17 |
+| DEC-015 | Crear trabajo no crea derivados automaticos. | Validada | 2026-06-17 |
 
 ## DEC-001 - Repositorio oficial del proyecto
 
-**Estado:** Validada  
-**Prioridad:** Crítica  
-**Responsable:** Control de desarrollo  
-**Origen:** Javier  
-**Fecha creacion:** 2026-06-11  
-**Rama sugerida:** `docs/control-proyecto`  
-**Dependencias:** Ninguna  
+**Estado:** Validada
+**Prioridad:** Crítica
+**Responsable:** Control de desarrollo
+**Origen:** Javier
+**Fecha creacion:** 2026-06-11
+**Rama sugerida:** `docs/control-proyecto`
+**Dependencias:** Ninguna
 
 ### Decision
 El repositorio oficial del proyecto es `4ndres30/terapeutas-australes-app`.
@@ -53,13 +56,13 @@ El repositorio antiguo no oficial no debe usarse.
 
 ## DEC-002 - Sistema de chats y responsabilidades
 
-**Estado:** Validada  
-**Prioridad:** Alta  
-**Responsable:** Control de desarrollo  
-**Origen:** Javier  
-**Fecha creacion:** 2026-06-11  
-**Rama sugerida:** `docs/control-proyecto`  
-**Dependencias:** Ninguna  
+**Estado:** Validada
+**Prioridad:** Alta
+**Responsable:** Control de desarrollo
+**Origen:** Javier
+**Fecha creacion:** 2026-06-11
+**Rama sugerida:** `docs/control-proyecto`
+**Dependencias:** Ninguna
 
 ### Decision
 El proyecto se ordena en cuatro chats: Control de desarrollo, Revision de flujo clinico, Integracion estructura / backend y UI / UX / Pulido visual.
@@ -75,13 +78,13 @@ Control de desarrollo coordina; no ejecuta codigo salvo instruccion expresa.
 
 ## DEC-003 - Sistema de codigos, estados y prioridades
 
-**Estado:** Validada  
-**Prioridad:** Alta  
-**Responsable:** Control de desarrollo  
-**Origen:** Javier  
-**Fecha creacion:** 2026-06-11  
-**Rama sugerida:** `docs/control-proyecto`  
-**Dependencias:** Ninguna  
+**Estado:** Validada
+**Prioridad:** Alta
+**Responsable:** Control de desarrollo
+**Origen:** Javier
+**Fecha creacion:** 2026-06-11
+**Rama sugerida:** `docs/control-proyecto`
+**Dependencias:** Ninguna
 
 ### Decision
 Se usaran codigos por tipo de trabajo, estados permitidos y prioridades permitidas definidos en `README.md`.
@@ -97,13 +100,13 @@ No crear estados o prioridades nuevas sin actualizar esta decision.
 
 ## DEC-004 - Restricciones de seguridad operativa
 
-**Estado:** Validada  
-**Prioridad:** Crítica  
-**Responsable:** Control de desarrollo  
-**Origen:** Javier  
-**Fecha creacion:** 2026-06-11  
-**Rama sugerida:** `docs/control-proyecto`  
-**Dependencias:** Ninguna  
+**Estado:** Validada
+**Prioridad:** Crítica
+**Responsable:** Control de desarrollo
+**Origen:** Javier
+**Fecha creacion:** 2026-06-11
+**Rama sugerida:** `docs/control-proyecto`
+**Dependencias:** Ninguna
 
 ### Decision
 Queda prohibido tocar `.env`, ejecutar `supabase db push`, tocar Supabase remoto, fusionar a `main`, modificar codigo fuente, modificar migraciones, ejecutar cambios de base de datos o abrir PR desde esta tarea documental.
@@ -119,13 +122,13 @@ Estas restricciones aplican especialmente a Codex y ChatGPT cuando trabajan con 
 
 ## DEC-005 - docs/control como centro documental
 
-**Estado:** Integrada  
-**Prioridad:** Alta  
-**Responsable:** Control de desarrollo  
-**Origen:** Javier  
-**Fecha creacion:** 2026-06-11  
-**Rama sugerida:** `docs/control-proyecto`  
-**Dependencias:** DEC-001, DEC-002, DEC-003, DEC-004  
+**Estado:** Integrada
+**Prioridad:** Alta
+**Responsable:** Control de desarrollo
+**Origen:** Javier
+**Fecha creacion:** 2026-06-11
+**Rama sugerida:** `docs/control-proyecto`
+**Dependencias:** DEC-001, DEC-002, DEC-003, DEC-004
 
 ### Decision
 La carpeta `docs/control/` sera el centro documental practico del proyecto.
@@ -166,13 +169,13 @@ Esta decisión protege el flujo clínico central y evita duplicidades funcionale
 
 ## DEC-007 - Responsabilidad de `revision_hallazgos`
 
-**Estado:** Validada  
-**Prioridad:** Alta  
-**Responsable:** Control de desarrollo  
-**Origen:** RFC-001 / BE-001  
-**Fecha creacion:** 2026-06-12  
-**Rama sugerida:** `docs/decisiones-rfc-001`  
-**Dependencias:** DEC-006, BE-001, RFC-001  
+**Estado:** Validada
+**Prioridad:** Alta
+**Responsable:** Control de desarrollo
+**Origen:** RFC-001 / BE-001
+**Fecha creacion:** 2026-06-12
+**Rama sugerida:** `docs/decisiones-rfc-001`
+**Dependencias:** DEC-006, BE-001, RFC-001
 
 ### Decision
 `revision_hallazgos` registra solo hallazgos clinicamente relevantes derivados preferentemente de `revision_aspectos`.
@@ -191,13 +194,13 @@ Esta decision no implementa cambios tecnicos. Debe guiar futuras tareas de Backe
 
 ## DEC-008 - Hallazgos viven dentro del detalle de revision
 
-**Estado:** Validada  
-**Prioridad:** Alta  
-**Responsable:** Control de desarrollo  
-**Origen:** RFC-001  
-**Fecha creacion:** 2026-06-12  
-**Rama sugerida:** `docs/decisiones-rfc-001`  
-**Dependencias:** DEC-006, DEC-007, RFC-001  
+**Estado:** Validada
+**Prioridad:** Alta
+**Responsable:** Control de desarrollo
+**Origen:** RFC-001
+**Fecha creacion:** 2026-06-12
+**Rama sugerida:** `docs/decisiones-rfc-001`
+**Dependencias:** DEC-006, DEC-007, RFC-001
 
 ### Decision
 Los hallazgos no tendran un modulo principal independiente de creacion. Deben gestionarse desde la ficha del caso, dentro del detalle de revision.
@@ -215,13 +218,13 @@ Esta decision complementa DEC-006 y evita que `revision_hallazgos` se transforme
 
 ## DEC-009 - Criterio de conversion hallazgo a trabajo
 
-**Estado:** Validada  
-**Prioridad:** Alta  
-**Responsable:** Control de desarrollo  
-**Origen:** RFC-001  
-**Fecha creacion:** 2026-06-12  
-**Rama sugerida:** `docs/decisiones-rfc-001`  
-**Dependencias:** DEC-007, DEC-008, RFC-001  
+**Estado:** Validada
+**Prioridad:** Alta
+**Responsable:** Control de desarrollo
+**Origen:** RFC-001
+**Fecha creacion:** 2026-06-12
+**Rama sugerida:** `docs/decisiones-rfc-001`
+**Dependencias:** DEC-007, DEC-008, RFC-001
 
 ### Decision
 Un hallazgo se convierte en trabajo/intervencion solo cuando requiere intervencion, seguimiento operativo, cierre terapeutico o acciones planificadas.
@@ -240,13 +243,13 @@ Esta decision debe orientar futuras tareas sobre flujo operativo de trabajos/int
 
 ## DEC-010 - Separacion trabajo, sesion y accion
 
-**Estado:** Validada  
-**Prioridad:** Alta  
-**Responsable:** Control de desarrollo  
-**Origen:** RFC-001 / BE-001  
-**Fecha creacion:** 2026-06-12  
-**Rama sugerida:** `docs/decisiones-rfc-001`  
-**Dependencias:** DEC-009, RFC-001, BE-001  
+**Estado:** Validada
+**Prioridad:** Alta
+**Responsable:** Control de desarrollo
+**Origen:** RFC-001 / BE-001
+**Fecha creacion:** 2026-06-12
+**Rama sugerida:** `docs/decisiones-rfc-001`
+**Dependencias:** DEC-009, RFC-001, BE-001
 
 ### Decision
 `trabajos` define la intervencion; `trabajo_sesiones` registra sesiones o jornadas de ejecucion; `trabajo_acciones` registra actos concretos realizados dentro de una sesion.
@@ -265,13 +268,13 @@ Esta decision no obliga a implementar el modulo de trabajos inmediatamente; solo
 
 ## DEC-011 - Agenda como modulo mixto tipificado
 
-**Estado:** Validada  
-**Prioridad:** Media-alta  
-**Responsable:** Control de desarrollo  
-**Origen:** RFC-001 / BE-001  
-**Fecha creacion:** 2026-06-12  
-**Rama sugerida:** `docs/decisiones-rfc-001`  
-**Dependencias:** RFC-001, BE-001  
+**Estado:** Validada
+**Prioridad:** Media-alta
+**Responsable:** Control de desarrollo
+**Origen:** RFC-001 / BE-001
+**Fecha creacion:** 2026-06-12
+**Rama sugerida:** `docs/decisiones-rfc-001`
+**Dependencias:** RFC-001, BE-001
 
 ### Decision
 Agenda sera un modulo mixto de eventos programados con tipo de evento obligatorio.
@@ -296,13 +299,13 @@ BE-001 confirma que Agenda actualmente no tiene backend dedicado. Esta decision 
 
 ## DEC-012 - Cobros por unidad cobrable
 
-**Estado:** Validada  
-**Prioridad:** Media-alta  
-**Responsable:** Control de desarrollo  
-**Origen:** RFC-001 / BE-001  
-**Fecha creacion:** 2026-06-12  
-**Rama sugerida:** `docs/decisiones-rfc-001`  
-**Dependencias:** RFC-001, BE-001  
+**Estado:** Validada
+**Prioridad:** Media-alta
+**Responsable:** Control de desarrollo
+**Origen:** RFC-001 / BE-001
+**Fecha creacion:** 2026-06-12
+**Rama sugerida:** `docs/decisiones-rfc-001`
+**Dependencias:** RFC-001, BE-001
 
 ### Decision
 Cada cobro debe representar una unidad cobrable clara. Los cobros pueden asociarse a consulta, evaluacion, caso, revision o trabajo, pero no deben duplicar el cobro de una misma prestacion.
@@ -323,3 +326,77 @@ Los pagos deben aplicarse a cobros, no directamente a caso, revision o trabajo.
 
 ### Observaciones
 Backend debe revisar posteriormente si se requieren validaciones SQL o reglas de UI para impedir asociaciones contradictorias.
+
+## DEC-013 - Hallazgo origen principal de trabajo
+
+**Estado:** Validada
+**Prioridad:** Alta
+**Responsable:** Control de desarrollo
+**Origen:** BE-011
+**Fecha creacion:** 2026-06-17
+**Rama sugerida:** `docs/ctrl-004-sync-post-imp-data-be011`
+**Dependencias:** DEC-007, DEC-008, DEC-009, DEC-010, BE-011
+
+### Decision
+La primera version de trazabilidad hallazgo a trabajo usara `trabajos.revision_hallazgo_origen_id` como hallazgo origen principal del trabajo.
+
+### Razon
+La estructura actual ya permite vincular un trabajo con un hallazgo sin crear migracion inicial. Esto cubre el flujo inicial recomendado: un hallazgo relevante se evalua manualmente y puede originar un trabajo principal.
+
+### Impacto
+- La implementacion futura debe insertar trabajos con `revision_hallazgo_origen_id` cuando el origen sea un hallazgo.
+- La UI debe advertir si ya existe un trabajo asociado al mismo hallazgo.
+- No se debe sobredisenar el modelo antes de validar necesidad real muchos-a-muchos.
+
+### Observaciones
+Esta decision confirma BE-011 y debe guiar UI-012 e IMP-002.
+
+## DEC-014 - No crear tabla puente `trabajo_hallazgos` en esta etapa
+
+**Estado:** Validada
+**Prioridad:** Alta
+**Responsable:** Control de desarrollo
+**Origen:** BE-011
+**Fecha creacion:** 2026-06-17
+**Rama sugerida:** `docs/ctrl-004-sync-post-imp-data-be011`
+**Dependencias:** BE-011, DEC-013
+
+### Decision
+No se crea tabla puente `trabajo_hallazgos` en esta etapa.
+
+### Razon
+La primera version puede operar con un hallazgo origen principal mediante `trabajos.revision_hallazgo_origen_id`. Una tabla puente agregaria complejidad antes de confirmar si el flujo requiere una relacion muchos-a-muchos formal.
+
+### Impacto
+- No crear migracion para `trabajo_hallazgos` en la implementacion inicial.
+- Mantener `trabajo_hallazgos` como alternativa futura si se confirma necesidad clinica y tecnica.
+- Si se requiere mayor trazabilidad granular, evaluar primero `trabajo_elementos.revision_hallazgo_id` y `trabajo_acciones.revision_hallazgo_id`.
+
+### Observaciones
+Cualquier tabla puente futura debe pasar por tarea backend especifica y aplicar criterios BE-003.
+
+## DEC-015 - Crear trabajo no crea derivados automaticos
+
+**Estado:** Validada
+**Prioridad:** Alta
+**Responsable:** Control de desarrollo
+**Origen:** BE-011
+**Fecha creacion:** 2026-06-17
+**Rama sugerida:** `docs/ctrl-004-sync-post-imp-data-be011`
+**Dependencias:** DEC-009, DEC-010, DEC-012, BE-011
+
+### Decision
+Crear un trabajo desde un hallazgo no crea cobro, sesiones ni acciones automaticamente.
+
+### Razon
+Un trabajo representa una decision clinica y un plan operativo. Las sesiones, acciones y cobros requieren decisiones posteriores, con contexto propio y validaciones especificas.
+
+### Impacto
+- El flujo `Evaluar trabajo` debe pedir confirmacion manual antes de crear un trabajo.
+- El trabajo creado no debe generar sesiones automaticamente.
+- El trabajo creado no debe generar acciones automaticamente.
+- El trabajo creado no debe generar cobros automaticamente.
+- Finanzas debe decidir posteriormente si el trabajo es unidad cobrable separada, parte de un paquete o seguimiento sin cobro.
+
+### Observaciones
+Esta decision protege DEC-009, DEC-010 y DEC-012, y debe quedar visible en UI-012 e IMP-002.

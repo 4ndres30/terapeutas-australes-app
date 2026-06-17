@@ -1,6 +1,6 @@
 # Integracion backend / estructura
 
-Responsable: Integracion Backend/Estructura  
+Responsable: Integracion Backend/Estructura
 Estado del documento: En análisis
 Fecha creacion: `2026-06-11`
 
@@ -39,16 +39,26 @@ Una tarea backend debe indicar:
 - Criterios de aceptacion verificables.
 - Riesgos de datos o compatibilidad.
 
+## Estado post BE-011
+
+BE-011 queda integrada documentalmente por PR #18.
+
+La decision tecnica registrada es que la primera version de trazabilidad hallazgo a trabajo usara `trabajos.revision_hallazgo_origen_id` como hallazgo origen principal. No se requiere migracion inicial para ese alcance.
+
+La tabla puente `trabajo_hallazgos` no se crea en esta etapa. Queda como alternativa futura solo si se confirma una necesidad real muchos-a-muchos que no pueda resolverse con `revision_hallazgo_origen_id`, `trabajo_elementos.revision_hallazgo_id` o `trabajo_acciones.revision_hallazgo_id`.
+
+La implementacion funcional hallazgo a trabajo queda pendiente para una tarea futura, posterior a QA-002 y UI-012.
+
 ## BE-001 - Inventariar estructura backend y Supabase local
 
-**Estado:** Aprobada con observaciones  
-**Prioridad:** Alta  
-**Responsable:** Integracion Backend/Estructura  
-**Origen:** Control de desarrollo  
-**Fecha creacion:** 2026-06-11  
-**Fecha documentacion:** 2026-06-12  
-**Rama sugerida:** `docs/be-001-inventario-backend`  
-**Dependencias:** PEND-001  
+**Estado:** Integrada
+**Prioridad:** Alta
+**Responsable:** Integracion Backend/Estructura
+**Origen:** Control de desarrollo
+**Fecha creacion:** 2026-06-11
+**Fecha documentacion:** 2026-06-12
+**Rama sugerida:** `docs/be-001-inventario-backend`
+**Dependencias:** PEND-001
 
 ### Descripcion
 Revisar la estructura tecnica existente para identificar migraciones, tablas esperadas, tipos, servicios, hooks y consultas relevantes. Esta tarea es de auditoria documental y no debe ejecutar cambios.
@@ -92,14 +102,14 @@ No se corrigieron errores ni se modifico logica. Las desalineaciones detectadas 
 
 ## BE-002 - Comparar backend con flujo clinico aprobado
 
-**Estado:** Aprobada con observaciones  
-**Prioridad:** Alta  
-**Responsable:** Integracion Backend/Estructura  
-**Origen:** Control de desarrollo  
-**Fecha creacion:** 2026-06-11  
-**Fecha documentacion:** 2026-06-12  
-**Rama sugerida:** `docs/be-002-alineacion-backend-flujo-clinico`  
-**Dependencias:** RFC-001, BE-001, DEC-006, DEC-007, DEC-008, DEC-009, DEC-010, DEC-011, DEC-012  
+**Estado:** Aprobada con observaciones
+**Prioridad:** Alta
+**Responsable:** Integracion Backend/Estructura
+**Origen:** Control de desarrollo
+**Fecha creacion:** 2026-06-11
+**Fecha documentacion:** 2026-06-12
+**Rama sugerida:** `docs/be-002-alineacion-backend-flujo-clinico`
+**Dependencias:** RFC-001, BE-001, DEC-006, DEC-007, DEC-008, DEC-009, DEC-010, DEC-011, DEC-012
 
 ### Descripcion
 Comparar la estructura tecnica existente con las responsabilidades clinicas aprobadas para detectar campos, relaciones o servicios que requieran ajuste futuro.
@@ -145,14 +155,14 @@ BE-002 no implementa cambios. Habilita planificar tareas tecnicas posteriores de
 
 ## BE-003 - Preparar criterios para futuras migraciones
 
-**Estado:** Aprobada con observaciones  
-**Prioridad:** Media  
-**Responsable:** Integracion Backend/Estructura  
-**Origen:** Control de desarrollo  
-**Fecha creacion:** 2026-06-11  
-**Fecha documentacion:** 2026-06-12  
-**Rama sugerida:** `docs/be-003-criterios-migraciones`  
-**Dependencias:** BE-001, BE-002  
+**Estado:** Aprobada con observaciones
+**Prioridad:** Media
+**Responsable:** Integracion Backend/Estructura
+**Origen:** Control de desarrollo
+**Fecha creacion:** 2026-06-11
+**Fecha documentacion:** 2026-06-12
+**Rama sugerida:** `docs/be-003-criterios-migraciones`
+**Dependencias:** BE-001, BE-002
 
 ### Descripcion
 Definir criterios minimos para crear, revisar, probar y aprobar futuras migraciones de Supabase/PostgreSQL sin afectar `.env`, Supabase remoto ni `main`.
@@ -194,14 +204,14 @@ BE-003 no crea migraciones ni implementa cambios. Habilita planificar BE-010 a B
 
 ## BE-010 - Ajustar soporte operativo de hallazgos derivados de aspectos
 
-**Estado:** Aprobada con observaciones  
-**Prioridad:** Alta  
-**Responsable:** Integracion Backend/Estructura  
-**Origen:** BE-002 / Control de desarrollo  
-**Fecha creacion:** 2026-06-12  
-**Fecha documentacion:** 2026-06-13  
-**Rama sugerida:** `docs/be-010-plan-hallazgos-operativos`  
-**Dependencias:** DEC-006, DEC-007, DEC-008, DEC-009, DEC-010, BE-002, BE-003, UI-011  
+**Estado:** Aprobada con observaciones
+**Prioridad:** Alta
+**Responsable:** Integracion Backend/Estructura
+**Origen:** BE-002 / Control de desarrollo
+**Fecha creacion:** 2026-06-12
+**Fecha documentacion:** 2026-06-13
+**Rama sugerida:** `docs/be-010-plan-hallazgos-operativos`
+**Dependencias:** DEC-006, DEC-007, DEC-008, DEC-009, DEC-010, BE-002, BE-003, UI-011
 
 ### Descripcion
 Definir el soporte tecnico minimo para operar `revision_hallazgos` dentro del detalle de revision, respetando que los hallazgos nacen desde aspectos revisados y viven dentro del caso.
@@ -255,14 +265,14 @@ BE-010 no implementa cambios. No requiere migracion inicial para el soporte oper
 
 ## BE-011 - Trazabilidad hallazgo → trabajo
 
-**Estado:** Aprobada con observaciones  
-**Prioridad:** Alta  
-**Responsable:** Integracion Backend/Estructura  
-**Origen:** Control de desarrollo / BE-010  
-**Fecha creacion:** 2026-06-16  
-**Fecha documentacion:** 2026-06-16  
-**Rama sugerida:** `docs/be-011-trazabilidad-hallazgo-trabajo`  
-**Dependencias:** BE-010, UI-011, DEC-007, DEC-008, DEC-009, DEC-010, DEC-012  
+**Estado:** Aprobada con observaciones
+**Prioridad:** Alta
+**Responsable:** Integracion Backend/Estructura
+**Origen:** Control de desarrollo / BE-010
+**Fecha creacion:** 2026-06-16
+**Fecha documentacion:** 2026-06-16
+**Rama sugerida:** `docs/be-011-trazabilidad-hallazgo-trabajo`
+**Dependencias:** BE-010, UI-011, DEC-007, DEC-008, DEC-009, DEC-010, DEC-012
 
 ### Descripcion
 Diseñar la trazabilidad tecnica entre `revision_hallazgos` y `trabajos`, sin implementar cambios, migraciones ni codigo.
@@ -307,7 +317,7 @@ Diseñar la trazabilidad tecnica entre `revision_hallazgos` y `trabajos`, sin im
 - No fusionar a `main`.
 
 ### Resultado
-Aprobada con observaciones. Resultado registrado en `docs/control/auditorias/BE-011_TRAZABILIDAD_HALLAZGO_TRABAJO.md`.
+Integrada documentalmente por PR #18. Resultado registrado en `docs/control/auditorias/BE-011_TRAZABILIDAD_HALLAZGO_TRABAJO.md`.
 
 ### Observaciones
 La estructura actual permite vincular trabajos con hallazgos mediante `trabajos.revision_hallazgo_origen_id`, por lo que no se requiere migracion inicial. La primera version debe usar un hallazgo origen principal por trabajo. La tabla puente `trabajo_hallazgos` queda como alternativa futura si se confirma necesidad muchos-a-muchos.
