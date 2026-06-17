@@ -2,9 +2,32 @@
 
 ## caso_demo_integral.sql
 
-`caso_demo_integral.sql` crea datos ficticios para validar de punta a punta el módulo `Casos` en Supabase local.
+`caso_demo_integral.sql` crea datos ficticios para validar el flujo principal del módulo `Casos` en Supabase local.
 
-Seed listo para ejecución local manual.
+Estado de validación SQL local:
+
+- Ejecutado correctamente con `psql` contra `127.0.0.1:54322/postgres`.
+- Ejecutado dos veces contra la misma base local sin duplicar registros demo.
+- `supabase` CLI no estaba disponible en PATH durante esta validación; la ejecución se hizo directamente con `psql`.
+
+Resultado esperado tras dos ejecuciones:
+
+| Entidad | Conteo |
+| --- | ---: |
+| `pacientes` | 1 |
+| `consultas` | 1 |
+| `evaluaciones` | 1 |
+| `casos` | 1 |
+| `elementos_caso` | 5 |
+| `revisiones` | 2 |
+| `revision_elementos` | 6 |
+| `revision_aspectos` | 6 |
+| `revision_hallazgos` | 1 |
+| `trabajos` | 1 |
+| `cobros` | 1 |
+| `pagos` | 1 |
+
+La vista `vista_cobros_estado` queda con un cobro parcial: total `40000.00`, pagado `20000.00`, saldo `20000.00`, estado calculado `Parcial`.
 
 ## Advertencia de uso
 
@@ -49,6 +72,24 @@ El script deja:
 - un trabajo mínimo asociado al caso;
 - un cobro con pago parcial para validar el panel de pagos.
 
+## Pruebas que permite
+
+- Buscar el paciente demo desde `Pacientes`.
+- Abrir el caso demo desde `Casos`.
+- Navegar el detalle del caso con paciente, consulta y evaluación asociadas.
+- Revisar elementos del caso, revisiones, vínculos `revision_elementos`, aspectos y hallazgos.
+- Validar un aspecto con hallazgo existente y aspectos sin hallazgo para creación manual desde la UI.
+- Ver un trabajo base en el panel de trabajos del caso.
+- Ver un cobro parcial y su pago asociado en el panel de pagos.
+
+## Pruebas que no permite todavía
+
+- Validar sesiones operativas de trabajo.
+- Validar acciones ejecutadas dentro de un trabajo.
+- Validar elementos específicos de trabajo asociados a sesiones y acciones.
+- Validar flujos de creación automática de trabajo desde hallazgos.
+- Validar cierre completo del trabajo con revisiones posteriores y acciones de detalle.
+
 ## Tablas no cubiertas
 
 - `trabajo_elementos`: no se inserta porque el panel actual del caso consume solo `trabajos`.
@@ -62,7 +103,7 @@ Notas de modelado:
 - El linaje demo se registra como `tipo_elemento = 'Otro'`, porque `elementos_caso.tipo_elemento` no incluye `Linaje`.
 - Los aspectos sí usan las áreas reales `Vínculo` y `Linaje` de `revision_aspectos.area_revision`.
 
-## Ejecución local sugerida
+## Ejecución local
 
 Desde la raíz del proyecto:
 
