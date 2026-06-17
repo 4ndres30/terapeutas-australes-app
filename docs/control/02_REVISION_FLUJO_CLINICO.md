@@ -43,23 +43,54 @@ Casos no guarda todo.
 Casos conecta todo.
 ```
 
-## Estado post IMP-001 / DATA-001
+## Estado post IMP-001 / DATA-001 / QA-002
 
-El caso demo `DATA-001 - Caso Demo Integral` permite validar el flujo clinico de hallazgos dentro del detalle de revision.
+El caso demo `DATA-001 - Caso Demo Integral` permitio validar el flujo clinico de hallazgos dentro del detalle de revision.
 
-Validacion visual ya realizada por el usuario:
+Validacion funcional local realizada por el usuario en WebStorm + Supabase local:
 
+- Caso demo visible correctamente.
+- Campos del modulo Casos cargados correctamente.
 - Hallazgo precargado visible como `Hallazgo registrado`.
 - Modal `Ver hallazgo` funcional.
 - Modal `Crear hallazgo desde aspecto revisado` abre correctamente.
 - El modal de creacion hereda revision, elemento, area y aspecto desde el aspecto revisado.
-
-Pendiente funcional:
-
-- QA-002 debe validar el guardado real de un hallazgo nuevo desde la UI.
-- QA-002 debe confirmar persistencia, recarga visible y ausencia de duplicidad no deseada.
+- Se creo y guardo manualmente un hallazgo nuevo desde un aspecto sin hallazgo.
+- El hallazgo nuevo quedo visible correctamente.
+- El aspecto paso a mostrar `Hallazgo registrado`.
+- El boton `Ver hallazgo` quedo disponible.
+- El hallazgo aparecio en `Hallazgos de esta revision`.
+- Al refrescar la pagina, el hallazgo persistio.
+- No se permitio duplicar el hallazgo desde el mismo aspecto.
+- `Evaluar trabajo proximamente` sigue deshabilitado.
 
 Esta validacion mantiene el criterio clinico definido: el hallazgo nace desde un aspecto revisado, vive dentro del detalle de revision y no crea trabajo automaticamente.
+
+## QA-002 - Validacion funcional de hallazgos operativos con caso demo
+
+**Estado:** Aprobada
+**Prioridad:** Alta
+**Responsable:** Control de desarrollo / Revision de flujo clinico
+**Origen:** IMP-001 + DATA-001 + BE-011
+**Fecha validacion:** 2026-06-17
+**Rama revisada:** `main`
+**Dependencias:** IMP-001, DATA-001, BE-011
+
+### Descripcion
+
+Validar funcionalmente el guardado real de un hallazgo nuevo desde la UI usando el caso demo `DATA-001 - Caso Demo Integral`.
+
+### Informe detallado
+
+- [`QA-002_VALIDACION_HALLAZGOS_OPERATIVOS.md`](auditorias/QA-002_VALIDACION_HALLAZGOS_OPERATIVOS.md)
+
+### Resultado
+
+Aprobada funcionalmente en ambiente local. El flujo de hallazgos operativos queda listo para pasar a UI-012, diseno del flujo `Evaluar trabajo`.
+
+### Observaciones
+
+No se implemento conversion hallazgo -> trabajo. `Evaluar trabajo proximamente` permanece deshabilitado y debe mantenerse asi hasta contar con diseno UI-012 y una tarea de implementacion posterior.
 
 ## Preguntas de revision
 
