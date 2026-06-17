@@ -1,14 +1,16 @@
 # Estado general del proyecto
 
-Fecha de corte: `2026-06-13`  
-Responsable del documento: Control de desarrollo  
+Fecha de corte: `2026-06-17`
+Responsable del documento: Control de desarrollo
 Estado general documental: En control activo
 
 ## Resumen
 
 El proyecto cuenta con una estructura documental de control en `docs/control/`. Esta estructura ordena responsabilidades, pendientes, decisiones, bitacora, auditorias y flujo de trabajo sin modificar codigo, migraciones ni base de datos.
 
-Al corte actual ya quedaron integradas las auditorias iniciales de control, backend, flujo clinico y UI/UX. Tambien quedaron registrados BE-003 y las decisiones clinicas/operativas clave que permiten iniciar planificacion tecnica real sin romper el flujo definido.
+Al corte actual ya quedaron integradas las auditorias iniciales de control, backend, flujo clinico y UI/UX. Tambien quedaron registrados BE-003, BE-010, UI-011, IMP-001, DATA-001 y BE-011, junto con las decisiones clinicas/operativas clave que permiten avanzar sin romper el flujo definido.
+
+IMP-001 dejo disponible una implementacion funcional minima de hallazgos operativos dentro de `DetalleRevisionesPanel`. DATA-001 dejo un seed local demo integral ejecutado correctamente en Supabase local. BE-011 confirmo que la primera version de trazabilidad hallazgo a trabajo puede usar `trabajos.revision_hallazgo_origen_id` sin migracion inicial.
 
 El proyecto se mantiene alineado con el metodo acordado: primero documentar, auditar y decidir; luego implementar por tareas aprobadas.
 
@@ -31,20 +33,28 @@ El proyecto se mantiene alineado con el metodo acordado: primero documentar, aud
 - BE-002: alineacion backend con flujo clinico aprobado integrada.
 - UI-001 + UI-002: auditoria visual y revision de formularios del flujo clinico integradas.
 - BE-003: criterios para futuras migraciones integrada.
+- BE-010: plan tecnico de hallazgos operativos integrado.
+- UI-011: diseno del panel operativo de hallazgos integrado y llevado a implementacion funcional minima por IMP-001.
+- IMP-001: hallazgos operativos en `DetalleRevisionesPanel` integrado por PR #16.
+- DATA-001: seed local de caso demo integral integrado por PR #17 y ejecutado correctamente en Supabase local.
+- BE-011: trazabilidad hallazgo a trabajo integrada documentalmente por PR #18.
 
 ## En revision / planificacion
 
-- Siguiente bloque recomendado: BE-010 coordinado con UI-011 para soporte operativo de hallazgos dentro del detalle de revision.
-- BE-010: siguiente prioridad tecnica recomendada para hallazgos derivados de aspectos.
-- UI-010, UI-011, UI-012 y UI-015: prioridades de planificacion UI derivadas de UI-001 + UI-002.
+- QA-002: siguiente validacion funcional inmediata para guardar un hallazgo nuevo desde la UI usando el caso demo DATA-001.
+- UI-012: siguiente tarea UI posterior para disenar el flujo visual `Evaluar trabajo`.
+- Implementacion funcional hallazgo a trabajo: pendiente futura, posterior a QA-002 y UI-012.
+- UI-010, UI-012 y UI-015: prioridades de planificacion UI derivadas de UI-001 + UI-002 y del estado post IMP-001.
 - UI-013, UI-014, UI-016, UI-017, UI-018 y UI-019: pendientes UI derivados, aun sin activacion tecnica.
-- BE-011 a BE-017: tareas backend sugeridas por BE-002 para trabajos, agenda, cobros, vistas, RLS y reportes.
+- BE-012 a BE-017: tareas backend sugeridas por BE-002 para agenda, cobros, vistas, RLS y reportes.
 - RFC-002: deteccion de duplicidades entre entidades clinicas.
 
 ## Pendiente operativo
 
-- Planificar BE-010 coordinado con UI-011 como siguiente bloque operativo recomendado.
-- Mantener BE-010, UI-010, UI-011, UI-012 y UI-015 como prioridades de planificacion.
+- Ejecutar QA-002 para validar guardado real de un hallazgo nuevo desde `DetalleRevisionesPanel`.
+- Mantener UI-012 como siguiente diseno UI para el flujo `Evaluar trabajo`.
+- Mantener la implementacion funcional hallazgo a trabajo como pendiente futura; no crear trabajo automaticamente.
+- Mantener UI-010, UI-012 y UI-015 como prioridades de planificacion.
 - Sincronizar periodicamente `01_PENDIENTES_PROYECTO.md` cuando una tarea cambie de estado.
 - Mantener `06_BITACORA_CAMBIOS.md` actualizado despues de cada bloque documental o tecnico relevante.
 - Validar runtime local de RLS por roles antes de avanzar a reportes mixtos o vistas sensibles.
@@ -69,13 +79,13 @@ El proyecto se mantiene alineado con el metodo acordado: primero documentar, aud
 
 ## CTRL-001 - Mantener centro de mando documental
 
-**Estado:** En proceso  
-**Prioridad:** Alta  
-**Responsable:** Control de desarrollo  
-**Origen:** Javier  
-**Fecha creacion:** 2026-06-11  
-**Rama sugerida:** `docs/control-proyecto`  
-**Dependencias:** Ninguna  
+**Estado:** En proceso
+**Prioridad:** Alta
+**Responsable:** Control de desarrollo
+**Origen:** Javier
+**Fecha creacion:** 2026-06-11
+**Rama sugerida:** `docs/control-proyecto`
+**Dependencias:** Ninguna
 
 ### Descripcion
 Mantener actualizado el estado general, los pendientes, las decisiones y la bitacora del proyecto para evitar duplicidades y perdida de contexto.
@@ -103,13 +113,13 @@ Esta tarea es continua durante el desarrollo del proyecto.
 
 ## CTRL-002 - Sincronizar documentacion maestra tras BE-002
 
-**Estado:** Integrada  
-**Prioridad:** Alta  
-**Responsable:** Control de desarrollo  
-**Origen:** Control de desarrollo  
-**Fecha creacion:** 2026-06-12  
-**Rama sugerida:** `docs/control-sync-be002`  
-**Dependencias:** QA-001, BE-001, RFC-001, DEC-007, DEC-008, DEC-009, DEC-010, DEC-011, DEC-012, BE-002  
+**Estado:** Integrada
+**Prioridad:** Alta
+**Responsable:** Control de desarrollo
+**Origen:** Control de desarrollo
+**Fecha creacion:** 2026-06-12
+**Rama sugerida:** `docs/control-sync-be002`
+**Dependencias:** QA-001, BE-001, RFC-001, DEC-007, DEC-008, DEC-009, DEC-010, DEC-011, DEC-012, BE-002
 
 ### Descripcion
 Actualizar estado general, pendientes y bitacora para reflejar que QA-001, BE-001, RFC-001, DEC-007 a DEC-012 y BE-002 ya fueron integradas.
@@ -136,13 +146,13 @@ Despues de esta sincronizacion, el siguiente bloque debe priorizar implementacio
 
 ## CTRL-003 - Sincronizar documentacion maestra tras UI-001/UI-002 y BE-003
 
-**Estado:** Integrada  
-**Prioridad:** Alta  
-**Responsable:** Control de desarrollo  
-**Origen:** Control de desarrollo  
-**Fecha creacion:** 2026-06-13  
-**Rama sugerida:** `docs/ctrl-003-sincronizacion-final`  
-**Dependencias:** UI-001, UI-002, BE-003  
+**Estado:** Integrada
+**Prioridad:** Alta
+**Responsable:** Control de desarrollo
+**Origen:** Control de desarrollo
+**Fecha creacion:** 2026-06-13
+**Rama sugerida:** `docs/ctrl-003-sincronizacion-final`
+**Dependencias:** UI-001, UI-002, BE-003
 
 ### Descripcion
 Actualizar estado general, pendientes y bitacora para reflejar que UI-001, UI-002 y BE-003 ya fueron integradas.
@@ -172,15 +182,58 @@ Sincronizacion documental preparada para integracion mediante PR.
 ### Observaciones
 El siguiente bloque recomendado queda como BE-010 coordinado con UI-011, manteniendo BE-010, UI-010, UI-011, UI-012 y UI-015 como prioridades de planificacion.
 
+## CTRL-004 - Sincronizar control post IMP-001, DATA-001 y BE-011
+
+**Estado:** En proceso
+**Prioridad:** Alta
+**Responsable:** Control de desarrollo
+**Origen:** Control de desarrollo
+**Fecha creacion:** 2026-06-17
+**Rama sugerida:** `docs/ctrl-004-sync-post-imp-data-be011`
+**Dependencias:** IMP-001, DATA-001, BE-011
+
+### Descripcion
+Sincronizar documentos maestros de control despues de integrar hallazgos operativos, seed local demo integral y trazabilidad documental hallazgo a trabajo.
+
+### Archivos relacionados
+- `docs/control/00_ESTADO_GENERAL_PROYECTO.md`
+- `docs/control/01_PENDIENTES_PROYECTO.md`
+- `docs/control/02_REVISION_FLUJO_CLINICO.md`
+- `docs/control/03_INTEGRACION_BACKEND_ESTRUCTURA.md`
+- `docs/control/04_UI_UX_PULIDO_VISUAL.md`
+- `docs/control/05_DECISIONES_PROYECTO.md`
+- `docs/control/06_BITACORA_CAMBIOS.md`
+- `docs/control/auditorias/CTRL-004_SINCRONIZACION_POST_IMP_DATA_BE011.md`
+
+### Criterios de aceptacion
+- Registrar IMP-001, DATA-001 y BE-011 como integrados.
+- Registrar QA-002 como siguiente validacion funcional.
+- Registrar UI-012 como siguiente tarea UI.
+- Confirmar decisiones sobre `trabajos.revision_hallazgo_origen_id`, ausencia de tabla puente inicial y no automatizacion de trabajos/cobros/sesiones/acciones.
+- No modificar codigo fuente.
+- No modificar migraciones.
+- No tocar `.env`.
+- No ejecutar Supabase.
+- No ejecutar `supabase db push`.
+- No tocar Supabase remoto.
+- No modificar datos reales.
+- No hacer merge a `main`.
+
+### Resultado
+Sincronizacion documental preparada para revision mediante PR draft.
+
+### Observaciones
+QA-002 queda como cierre funcional pendiente porque aun falta validar el guardado real de un hallazgo nuevo desde la UI.
+
 ## QA-001 - Auditoria inicial del proyecto
 
-**Estado:** Integrada  
-**Prioridad:** Alta  
-**Responsable:** Control de desarrollo  
-**Origen:** Control de desarrollo  
-**Fecha creacion:** 2026-06-11  
-**Rama sugerida:** `docs/auditoria-control-proyecto`  
-**Dependencias:** CTRL-001  
+**Estado:** Integrada
+**Prioridad:** Alta
+**Responsable:** Control de desarrollo
+**Origen:** Control de desarrollo
+**Fecha creacion:** 2026-06-11
+**Rama sugerida:** `docs/auditoria-control-proyecto`
+**Dependencias:** CTRL-001
 
 ### Descripcion
 Auditar el estado tecnico inicial del proyecto sin modificar codigo, migraciones, base de datos ni configuracion sensible.

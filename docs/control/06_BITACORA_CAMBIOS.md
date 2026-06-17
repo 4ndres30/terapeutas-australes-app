@@ -1,6 +1,6 @@
 # Bitacora de cambios
 
-Responsable del documento: Control de desarrollo  
+Responsable del documento: Control de desarrollo
 Fecha creacion: `2026-06-11`
 
 Esta bitacora registra cambios relevantes del control del proyecto. Debe ser breve y verificable.
@@ -20,13 +20,13 @@ Cada entrada debe indicar:
 
 ## LOG-001 - Creacion de estructura documental de control
 
-**Estado:** Integrada  
-**Prioridad:** Alta  
-**Responsable:** Control de desarrollo  
-**Origen:** Javier  
-**Fecha creacion:** 2026-06-11  
-**Rama sugerida:** `docs/control-proyecto`  
-**Dependencias:** Ninguna  
+**Estado:** Integrada
+**Prioridad:** Alta
+**Responsable:** Control de desarrollo
+**Origen:** Javier
+**Fecha creacion:** 2026-06-11
+**Rama sugerida:** `docs/control-proyecto`
+**Dependencias:** Ninguna
 
 ### Descripcion
 Se crea la carpeta `docs/control/` con documentos de estado, pendientes, revision clinica, backend, UI/UX, decisiones y bitacora.
@@ -56,13 +56,13 @@ Base del sistema de control documental del proyecto.
 
 ## LOG-002 - Integracion de QA-001
 
-**Estado:** Integrada  
-**Prioridad:** Alta  
-**Responsable:** Control de desarrollo  
-**Origen:** QA-001  
-**Fecha creacion:** 2026-06-12  
-**Rama sugerida:** `docs/control-proyecto`  
-**Dependencias:** LOG-001  
+**Estado:** Integrada
+**Prioridad:** Alta
+**Responsable:** Control de desarrollo
+**Origen:** QA-001
+**Fecha creacion:** 2026-06-12
+**Rama sugerida:** `docs/control-proyecto`
+**Dependencias:** LOG-001
 
 ### Descripcion
 Se registra la auditoria inicial QA-001 del proyecto.
@@ -85,13 +85,13 @@ QA-001 queda reservada como validacion inicial y no debe reutilizarse como codig
 
 ## LOG-003 - Integracion de BE-001
 
-**Estado:** Integrada  
-**Prioridad:** Alta  
-**Responsable:** Integracion Backend/Estructura  
-**Origen:** BE-001  
-**Fecha creacion:** 2026-06-12  
-**Rama sugerida:** `docs/be-001-inventario-backend`  
-**Dependencias:** QA-001  
+**Estado:** Integrada
+**Prioridad:** Alta
+**Responsable:** Integracion Backend/Estructura
+**Origen:** BE-001
+**Fecha creacion:** 2026-06-12
+**Rama sugerida:** `docs/be-001-inventario-backend`
+**Dependencias:** QA-001
 
 ### Descripcion
 Se documenta el inventario backend y Supabase local.
@@ -115,13 +115,13 @@ Detecto tablas, vistas, triggers, RLS, formularios y brechas funcionales pendien
 
 ## LOG-004 - Integracion de RFC-001
 
-**Estado:** Integrada  
-**Prioridad:** Alta  
-**Responsable:** Revision de flujo clinico  
-**Origen:** RFC-001  
-**Fecha creacion:** 2026-06-12  
-**Rama sugerida:** `docs/rfc-001-revision-flujo-clinico`  
-**Dependencias:** QA-001, BE-001, DEC-006  
+**Estado:** Integrada
+**Prioridad:** Alta
+**Responsable:** Revision de flujo clinico
+**Origen:** RFC-001
+**Fecha creacion:** 2026-06-12
+**Rama sugerida:** `docs/rfc-001-revision-flujo-clinico`
+**Dependencias:** QA-001, BE-001, DEC-006
 
 ### Descripcion
 Se documenta la revision del flujo clinico completo.
@@ -145,13 +145,13 @@ Valida el flujo `Paciente -> Caso -> Revision -> Detalle -> Hallazgo -> Trabajo`
 
 ## LOG-005 - Registro de DEC-007 a DEC-012
 
-**Estado:** Integrada  
-**Prioridad:** Alta  
-**Responsable:** Control de desarrollo  
-**Origen:** RFC-001 / BE-001  
-**Fecha creacion:** 2026-06-12  
-**Rama sugerida:** `docs/decisiones-rfc-001`  
-**Dependencias:** RFC-001, BE-001  
+**Estado:** Integrada
+**Prioridad:** Alta
+**Responsable:** Control de desarrollo
+**Origen:** RFC-001 / BE-001
+**Fecha creacion:** 2026-06-12
+**Rama sugerida:** `docs/decisiones-rfc-001`
+**Dependencias:** RFC-001, BE-001
 
 ### Descripcion
 Se registran decisiones clinicas y operativas derivadas de BE-001 y RFC-001.
@@ -174,13 +174,13 @@ Estas decisiones fijan responsabilidad de hallazgos, criterio hallazgo a trabajo
 
 ## LOG-006 - Integracion de BE-002
 
-**Estado:** Integrada  
-**Prioridad:** Alta  
-**Responsable:** Integracion Backend/Estructura  
-**Origen:** BE-002  
-**Fecha creacion:** 2026-06-12  
-**Rama sugerida:** `docs/be-002-alineacion-backend-flujo-clinico`  
-**Dependencias:** BE-001, RFC-001, DEC-006, DEC-007, DEC-008, DEC-009, DEC-010, DEC-011, DEC-012  
+**Estado:** Integrada
+**Prioridad:** Alta
+**Responsable:** Integracion Backend/Estructura
+**Origen:** BE-002
+**Fecha creacion:** 2026-06-12
+**Rama sugerida:** `docs/be-002-alineacion-backend-flujo-clinico`
+**Dependencias:** BE-001, RFC-001, DEC-006, DEC-007, DEC-008, DEC-009, DEC-010, DEC-011, DEC-012
 
 ### Descripcion
 Se documenta la alineacion backend con el flujo clinico aprobado.
@@ -205,13 +205,13 @@ BE-002 habilita planificar BE-010 a BE-017 antes de implementar cambios tecnicos
 
 ## LOG-007 - Sincronizacion de documentos maestros tras BE-002
 
-**Estado:** Integrada  
-**Prioridad:** Alta  
-**Responsable:** Control de desarrollo  
-**Origen:** Control de desarrollo  
-**Fecha creacion:** 2026-06-12  
-**Rama sugerida:** `docs/control-sync-be002`  
-**Dependencias:** QA-001, BE-001, RFC-001, DEC-007, DEC-008, DEC-009, DEC-010, DEC-011, DEC-012, BE-002  
+**Estado:** Integrada
+**Prioridad:** Alta
+**Responsable:** Control de desarrollo
+**Origen:** Control de desarrollo
+**Fecha creacion:** 2026-06-12
+**Rama sugerida:** `docs/control-sync-be002`
+**Dependencias:** QA-001, BE-001, RFC-001, DEC-007, DEC-008, DEC-009, DEC-010, DEC-011, DEC-012, BE-002
 
 ### Descripcion
 Se sincronizan documentos maestros para reflejar el estado real del proyecto luego de integrar BE-002.
@@ -237,13 +237,13 @@ Luego de esta sincronizacion se debe priorizar el siguiente bloque: BE-010, UI-0
 
 ## LOG-008 - Integracion de UI-001 + UI-002
 
-**Estado:** Integrada  
-**Prioridad:** Alta  
-**Responsable:** UI / UX / Pulido visual  
-**Origen:** UI-001 + UI-002  
-**Fecha creacion:** 2026-06-13  
-**Rama sugerida:** `docs/auditoria-ui-ux`  
-**Dependencias:** QA-001, RFC-001, BE-001, BE-002  
+**Estado:** Integrada
+**Prioridad:** Alta
+**Responsable:** UI / UX / Pulido visual
+**Origen:** UI-001 + UI-002
+**Fecha creacion:** 2026-06-13
+**Rama sugerida:** `docs/auditoria-ui-ux`
+**Dependencias:** QA-001, RFC-001, BE-001, BE-002
 
 ### Descripcion
 Se integra la auditoria visual y revision de formularios del flujo clinico.
@@ -269,13 +269,13 @@ La auditoria deriva UI-010 a UI-019 como tareas de planificacion visual y operat
 
 ## LOG-009 - Integracion de BE-003
 
-**Estado:** Integrada  
-**Prioridad:** Alta  
-**Responsable:** Integracion Backend/Estructura  
-**Origen:** BE-003  
-**Fecha creacion:** 2026-06-13  
-**Rama sugerida:** `docs/be-003-criterios-migraciones`  
-**Dependencias:** BE-001, BE-002  
+**Estado:** Integrada
+**Prioridad:** Alta
+**Responsable:** Integracion Backend/Estructura
+**Origen:** BE-003
+**Fecha creacion:** 2026-06-13
+**Rama sugerida:** `docs/be-003-criterios-migraciones`
+**Dependencias:** BE-001, BE-002
 
 ### Descripcion
 Se integran los criterios para futuras migraciones de Supabase/PostgreSQL.
@@ -301,13 +301,13 @@ BE-018 a BE-021 quedan solo como tareas sugeridas posteriores, no activas.
 
 ## LOG-010 - Sincronizacion documental CTRL-003
 
-**Estado:** Integrada  
-**Prioridad:** Alta  
-**Responsable:** Control de desarrollo  
-**Origen:** CTRL-003  
-**Fecha creacion:** 2026-06-13  
-**Rama sugerida:** `docs/ctrl-003-sincronizacion-final`  
-**Dependencias:** UI-001, UI-002, BE-003  
+**Estado:** Integrada
+**Prioridad:** Alta
+**Responsable:** Control de desarrollo
+**Origen:** CTRL-003
+**Fecha creacion:** 2026-06-13
+**Rama sugerida:** `docs/ctrl-003-sincronizacion-final`
+**Dependencias:** UI-001, UI-002, BE-003
 
 ### Descripcion
 Se sincronizan documentos maestros posterior a la integracion de UI-001/UI-002 y BE-003.
@@ -332,3 +332,53 @@ Documentacion maestra sincronizada para revision de Control de desarrollo.
 
 ### Observaciones
 El siguiente bloque recomendado queda como BE-010 coordinado con UI-011, manteniendo BE-010, UI-010, UI-011, UI-012 y UI-015 como prioridades de planificacion.
+
+## LOG-011 - Sincronizacion post IMP-001, DATA-001 y BE-011
+
+**Estado:** En proceso
+**Prioridad:** Alta
+**Responsable:** Control de desarrollo
+**Origen:** CTRL-004
+**Fecha creacion:** 2026-06-17
+**Rama sugerida:** `docs/ctrl-004-sync-post-imp-data-be011`
+**Dependencias:** IMP-001, DATA-001, BE-011
+
+### Descripcion
+Se sincroniza la documentacion de control despues de integrar hallazgos operativos, seed local demo integral y trazabilidad documental hallazgo a trabajo.
+
+### Cambios registrados
+- PR #16: IMP-001 integrado. Hallazgos operativos quedaron disponibles en `DetalleRevisionesPanel`.
+- PR #17: DATA-001 integrado. Seed local de caso demo integral incorporado.
+- PR #18: BE-011 integrado documentalmente. Trazabilidad hallazgo a trabajo definida sin migracion inicial.
+- El seed local `supabase/dev-seeds/caso_demo_integral.sql` fue ejecutado correctamente por el usuario en Supabase local.
+- El caso demo `DATA-001 - Caso Demo Integral` se visualiza en la app.
+- El hallazgo precargado se visualiza correctamente.
+- El modal `Ver hallazgo` funciona.
+- El modal `Crear hallazgo desde aspecto revisado` abre correctamente y hereda revision, elemento, area y aspecto.
+- QA-002 queda pendiente para validar guardado real de un hallazgo nuevo desde la UI.
+
+### Archivos relacionados
+- `docs/control/00_ESTADO_GENERAL_PROYECTO.md`
+- `docs/control/01_PENDIENTES_PROYECTO.md`
+- `docs/control/02_REVISION_FLUJO_CLINICO.md`
+- `docs/control/03_INTEGRACION_BACKEND_ESTRUCTURA.md`
+- `docs/control/04_UI_UX_PULIDO_VISUAL.md`
+- `docs/control/05_DECISIONES_PROYECTO.md`
+- `docs/control/06_BITACORA_CAMBIOS.md`
+- `docs/control/auditorias/CTRL-004_SINCRONIZACION_POST_IMP_DATA_BE011.md`
+
+### Restricciones respetadas
+- No se modifico codigo fuente.
+- No se modificaron migraciones.
+- No se crearon migraciones.
+- No se toco `.env`.
+- No se ejecuto `supabase db push`.
+- No se toco Supabase remoto.
+- No se modificaron datos reales.
+- No se hizo merge a `main`.
+
+### Resultado
+Documentacion de control sincronizada para revision mediante PR draft.
+
+### Observaciones
+El pendiente inmediato es QA-002. UI-012 queda como siguiente tarea UI posterior. La implementacion funcional hallazgo a trabajo queda como pendiente futuro.
