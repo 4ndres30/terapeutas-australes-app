@@ -8,9 +8,9 @@ Estado general documental: En control activo
 
 El proyecto cuenta con una estructura documental de control en `docs/control/`. Esta estructura ordena responsabilidades, pendientes, decisiones, bitacora, auditorias y flujo de trabajo sin modificar codigo, migraciones ni base de datos.
 
-Al corte actual ya quedaron integradas las auditorias iniciales de control, backend, flujo clinico y UI/UX. Tambien quedaron registrados BE-003, BE-010, UI-011, IMP-001, DATA-001 y BE-011, junto con las decisiones clinicas/operativas clave que permiten avanzar sin romper el flujo definido.
+Al corte actual ya quedaron integradas las auditorias iniciales de control, backend, flujo clinico y UI/UX. Tambien quedaron registrados BE-003, BE-010, UI-011, IMP-001, DATA-001, BE-011 y QA-002, junto con las decisiones clinicas/operativas clave que permiten avanzar sin romper el flujo definido.
 
-IMP-001 dejo disponible una implementacion funcional minima de hallazgos operativos dentro de `DetalleRevisionesPanel`. DATA-001 dejo un seed local demo integral ejecutado correctamente en Supabase local. BE-011 confirmo que la primera version de trazabilidad hallazgo a trabajo puede usar `trabajos.revision_hallazgo_origen_id` sin migracion inicial.
+IMP-001 dejo disponible una implementacion funcional minima de hallazgos operativos dentro de `DetalleRevisionesPanel`. DATA-001 dejo un seed local demo integral ejecutado correctamente en Supabase local. BE-011 confirmo que la primera version de trazabilidad hallazgo a trabajo puede usar `trabajos.revision_hallazgo_origen_id` sin migracion inicial. QA-002 valido funcionalmente el flujo de hallazgos operativos con el caso demo DATA-001 en ambiente local.
 
 El proyecto se mantiene alineado con el metodo acordado: primero documentar, auditar y decidir; luego implementar por tareas aprobadas.
 
@@ -38,10 +38,10 @@ El proyecto se mantiene alineado con el metodo acordado: primero documentar, aud
 - IMP-001: hallazgos operativos en `DetalleRevisionesPanel` integrado por PR #16.
 - DATA-001: seed local de caso demo integral integrado por PR #17 y ejecutado correctamente en Supabase local.
 - BE-011: trazabilidad hallazgo a trabajo integrada documentalmente por PR #18.
+- QA-002: validacion funcional local de hallazgos operativos con caso demo DATA-001 aprobada.
 
 ## En revision / planificacion
 
-- QA-002: siguiente validacion funcional inmediata para guardar un hallazgo nuevo desde la UI usando el caso demo DATA-001.
 - UI-012: siguiente tarea UI posterior para disenar el flujo visual `Evaluar trabajo`.
 - Implementacion funcional hallazgo a trabajo: pendiente futura, posterior a QA-002 y UI-012.
 - UI-010, UI-012 y UI-015: prioridades de planificacion UI derivadas de UI-001 + UI-002 y del estado post IMP-001.
@@ -51,7 +51,6 @@ El proyecto se mantiene alineado con el metodo acordado: primero documentar, aud
 
 ## Pendiente operativo
 
-- Ejecutar QA-002 para validar guardado real de un hallazgo nuevo desde `DetalleRevisionesPanel`.
 - Mantener UI-012 como siguiente diseno UI para el flujo `Evaluar trabajo`.
 - Mantener la implementacion funcional hallazgo a trabajo como pendiente futura; no crear trabajo automaticamente.
 - Mantener UI-010, UI-012 y UI-015 como prioridades de planificacion.
@@ -184,7 +183,7 @@ El siguiente bloque recomendado queda como BE-010 coordinado con UI-011, manteni
 
 ## CTRL-004 - Sincronizar control post IMP-001, DATA-001 y BE-011
 
-**Estado:** En proceso
+**Estado:** Integrada
 **Prioridad:** Alta
 **Responsable:** Control de desarrollo
 **Origen:** Control de desarrollo
@@ -220,10 +219,10 @@ Sincronizar documentos maestros de control despues de integrar hallazgos operati
 - No hacer merge a `main`.
 
 ### Resultado
-Sincronizacion documental preparada para revision mediante PR draft.
+Sincronizacion documental integrada. QA-002 ya cerro la validacion funcional local de hallazgos operativos con el caso demo DATA-001.
 
 ### Observaciones
-QA-002 queda como cierre funcional pendiente porque aun falta validar el guardado real de un hallazgo nuevo desde la UI.
+UI-012 queda como siguiente tarea UI posterior. La implementacion funcional hallazgo a trabajo queda como pendiente futuro.
 
 ## QA-001 - Auditoria inicial del proyecto
 
@@ -257,3 +256,27 @@ Integrada. Resultado registrado en `docs/control/auditorias/QA-001_AUDITORIA_INI
 
 ### Observaciones
 QA-001 queda reservada como auditoria inicial, no como implementacion ni tarea pendiente reutilizable.
+
+## QA-002 - Validacion funcional de hallazgos operativos con caso demo
+
+**Estado:** Aprobada
+**Prioridad:** Alta
+**Responsable:** Control de desarrollo / Revision de flujo clinico
+**Origen:** IMP-001 + DATA-001 + BE-011
+**Fecha validacion:** 2026-06-17
+**Rama revisada:** `main`
+**Dependencias:** IMP-001, DATA-001, BE-011
+
+### Descripcion
+Validar funcionalmente el guardado real de un hallazgo nuevo desde la UI usando el caso demo `DATA-001 - Caso Demo Integral`.
+
+### Archivos relacionados
+- `docs/control/auditorias/QA-002_VALIDACION_HALLAZGOS_OPERATIVOS.md`
+- `docs/control/02_REVISION_FLUJO_CLINICO.md`
+- `docs/control/01_PENDIENTES_PROYECTO.md`
+
+### Resultado
+Aprobada funcionalmente en ambiente local. Se valido visualizacion del caso demo, hallazgo precargado, modales, herencia de contexto, creacion manual de nuevo hallazgo, persistencia tras recarga, visibilidad en `Hallazgos de esta revision`, prevencion de duplicado visual y boton `Evaluar trabajo proximamente` deshabilitado.
+
+### Observaciones
+QA-002 habilita avanzar a UI-012. No se implemento conversion hallazgo -> trabajo.
