@@ -382,3 +382,68 @@ Documentacion de control sincronizada para revision mediante PR draft.
 
 ### Observaciones
 El pendiente inmediato es QA-002. UI-012 queda como siguiente tarea UI posterior. La implementacion funcional hallazgo a trabajo queda como pendiente futuro.
+
+## LOG-012 - Integración de QA-002
+
+**Estado:** Integrada
+**Prioridad:** Alta
+**Responsable:** Control de desarrollo
+**Origen:** QA-002
+**Fecha creación:** 2026-06-17
+**Rama sugerida:** `docs/qa-002-validacion-hallazgos-operativos`
+**Dependencias:** IMP-001, DATA-001, BE-011
+
+### Descripción
+Se registra la validación funcional local del flujo de hallazgos operativos con el caso demo DATA-001.
+
+### Archivos relacionados
+- `docs/control/auditorias/QA-002_VALIDACION_HALLAZGOS_OPERATIVOS.md`
+- `docs/control/00_ESTADO_GENERAL_PROYECTO.md`
+- `docs/control/02_REVISION_FLUJO_CLINICO.md`
+
+### Restricciones respetadas
+- No se modificó código fuente.
+- No se modificaron migraciones.
+- No se tocó `.env`.
+- No se ejecutó `supabase db push`.
+- No se tocó Supabase remoto.
+- No se modificaron datos reales.
+
+### Resultado
+QA-002 queda integrada y aprobada funcionalmente.
+
+### Observaciones
+El flujo validó creación manual de hallazgo, persistencia tras recarga, prevención visual de duplicado y botón `Evaluar trabajo próximamente` deshabilitado.
+
+## LOG-013 - Integración de UI-012
+
+**Estado:** Integrada
+**Prioridad:** Alta
+**Responsable:** UI / UX / Pulido visual
+**Origen:** UI-012
+**Fecha creación:** 2026-06-17
+**Rama sugerida:** `docs/ui-012-evaluar-trabajo`
+**Dependencias:** QA-002, BE-011, DEC-009, DEC-013, DEC-014, DEC-015
+
+### Descripción
+Se integra el diseño UI/UX del flujo `Evaluar trabajo` desde hallazgo operativo.
+
+### Archivos relacionados
+- `docs/control/04_UI_UX_PULIDO_VISUAL.md`
+- `docs/control/auditorias/UI-012_FLUJO_EVALUAR_TRABAJO.md`
+
+### Restricciones respetadas
+- No se modificó código fuente.
+- No se modificó CSS.
+- No se modificaron migraciones.
+- No se tocó `.env`.
+- No se ejecutó Supabase.
+- No se ejecutó `supabase db push`.
+- No se tocó Supabase remoto.
+- No se modificaron datos reales.
+
+### Resultado
+UI-012 queda integrada como diseño aprobado con observaciones.
+
+### Observaciones
+El siguiente paso recomendado es IMP-002: implementación funcional controlada de `Evaluar trabajo`, sin crear cobros, sesiones ni acciones automáticamente.
