@@ -21,11 +21,11 @@ Este documento es la lista maestra de pendientes. Cada pendiente debe tener un c
 | CTRL-001 | Mantener centro de mando documental. | En proceso | Alta | Control de desarrollo |
 | CTRL-002 | Sincronizar documentacion maestra tras BE-002. | Integrada | Alta | Control de desarrollo |
 | CTRL-003 | Sincronizar documentacion maestra tras UI-001/UI-002 y BE-003. | Integrada | Alta | Control de desarrollo |
-| CTRL-004 | Sincronizar control post IMP-001, DATA-001 y BE-011. | En proceso | Alta | Control de desarrollo |
+| CTRL-004 | Sincronizar control post IMP-001, DATA-001 y BE-011. | Integrada | Alta | Control de desarrollo |
 | PEND-001 | Levantar inventario real del proyecto desde `main`. | Integrada | Alta | Control de desarrollo |
 | PEND-002 | Clasificar pendientes por chat responsable. | Integrada | Alta | Control de desarrollo |
 | QA-001 | Auditoria inicial del proyecto. | Integrada | Alta | Control de desarrollo |
-| QA-002 | Validacion funcional de hallazgos operativos con caso demo. | Pendiente | Alta | Control de desarrollo |
+| QA-002 | Validacion funcional de hallazgos operativos con caso demo. | Integrada | Alta | Control de desarrollo |
 | BE-001 | Inventariar estructura backend y Supabase local. | Integrada | Alta | Integracion Backend/Estructura |
 | RFC-001 | Auditar flujo clinico completo. | Integrada | Alta | Revision de flujo clinico |
 | BE-002 | Comparar backend con flujo clinico aprobado. | Integrada | Alta | Integracion Backend/Estructura |
@@ -38,7 +38,7 @@ Este documento es la lista maestra de pendientes. Cada pendiente debe tener un c
 | DATA-001 | Agregar seed local de caso demo integral. | Integrada | Alta | Control de desarrollo |
 | UI-010 | Redisenar navegacion del detalle de caso. | Pendiente | Alta | UI / UX / Pulido visual |
 | UI-011 | Disenar panel operativo de hallazgos dentro del detalle de revision. | Integrada | Alta | UI / UX / Pulido visual |
-| UI-012 | Disenar flujo visual Evaluar trabajo. | Pendiente | Alta | UI / UX / Pulido visual |
+| UI-012 | Disenar flujo visual Evaluar trabajo. | Integrada | Alta | UI / UX / Pulido visual |
 | UI-013 | Disenar experiencia de trabajos, sesiones y acciones. | Pendiente | Alta | UI / UX / Pulido visual |
 | UI-014 | Disenar agenda tipificada. | Pendiente | Media-alta | UI / UX / Pulido visual |
 | UI-015 | Mejorar experiencia de finanzas por unidad cobrable. | Pendiente | Alta | UI / UX / Pulido visual |
@@ -248,37 +248,41 @@ Integrada por PR #17. El seed local `supabase/dev-seeds/caso_demo_integral.sql` 
 #### Resultado
 Integrada documentalmente por PR #18. La primera version usara `trabajos.revision_hallazgo_origen_id`; no se requiere migracion inicial y `trabajo_hallazgos` queda como alternativa futura si se confirma necesidad muchos-a-muchos.
 
-## Pendientes activos
-
-El pendiente inmediato es QA-002: validar funcionalmente el guardado real de un hallazgo nuevo desde la UI usando el caso demo DATA-001.
-
-Despues de QA-002, la siguiente tarea UI recomendada es UI-012: disenar el flujo visual `Evaluar trabajo`.
-
 ### QA-002 - Validacion funcional de hallazgos operativos con caso demo
 
-**Estado:** Pendiente
+**Estado:** Integrada
 **Prioridad:** Alta
 **Responsable:** Control de desarrollo
 **Origen:** IMP-001 + DATA-001
 **Fecha creacion:** 2026-06-17
-**Rama sugerida:** `qa/qa-002-validacion-hallazgos-demo`
+**Fecha integracion:** 2026-06-17
+**PR:** #20
+**Rama sugerida:** `docs/qa-002-validacion-hallazgos-operativos`
 **Dependencias:** IMP-001, DATA-001, BE-011
 
-#### Descripcion
-Validar funcionalmente el guardado real de un hallazgo nuevo desde la UI usando el caso demo `DATA-001 - Caso Demo Integral`.
+#### Resultado
+Integrada por PR #20. QA-002 validó correctamente en ambiente local el flujo de hallazgos operativos con DATA-001: creación manual de hallazgo, persistencia tras recarga, visualización en revisión, prevención visual de duplicado y botón `Evaluar trabajo próximamente` deshabilitado.
 
-#### Criterios de aceptacion
-- Abrir el caso demo en la app.
-- Confirmar hallazgo precargado visible.
-- Confirmar modal `Ver hallazgo`.
-- Abrir `Crear hallazgo` desde un aspecto sin hallazgo.
-- Confirmar herencia de revision, elemento, area y aspecto.
-- Guardar un hallazgo nuevo desde la UI.
-- Verificar que el hallazgo queda persistido y visible sin duplicidad no deseada.
-- No tocar `.env`.
-- No ejecutar `supabase db push`.
-- No tocar Supabase remoto.
-- No modificar datos reales.
+### UI-012 - Disenar flujo visual Evaluar trabajo
+
+**Estado:** Integrada
+**Prioridad:** Alta
+**Responsable:** UI / UX / Pulido visual
+**Origen:** UI-001 + UI-002
+**Fecha creacion:** 2026-06-13
+**Fecha integracion:** 2026-06-17
+**PR:** #21
+**Rama sugerida:** `docs/ui-012-evaluar-trabajo`
+**Dependencias:** UI-011, BE-010, BE-011, DEC-009, DEC-013, DEC-014, DEC-015
+
+#### Resultado
+Integrada por PR #21. UI-012 definió el diseño del flujo `Evaluar trabajo`: evaluación manual desde hallazgo, prevención de automatismos, uso futuro de `trabajos.revision_hallazgo_origen_id` y no creación automática de cobros, sesiones ni acciones.
+
+## Pendientes activos
+
+El siguiente paso operativo es IMP-002: implementacion funcional controlada del flujo `Evaluar trabajo` desde hallazgo operativo.
+
+QA-002 y UI-012 ya fueron integradas por PR #20 y PR #21, respectivamente, y no quedan como pendientes activos.
 
 ### RFC-002 - Detectar duplicidades entre entidades clinicas
 
@@ -317,30 +321,6 @@ Convertir la ficha de caso en una experiencia operativa clara, con navegacion in
 #### Criterios de aceptacion
 - Proponer estructura de navegacion interna para detalle de caso.
 - Mantener el caso como contenedor central del flujo clinico.
-- No modificar codigo fuente.
-- No modificar base de datos.
-- No tocar `.env`.
-
-### UI-012 - Disenar flujo visual Evaluar trabajo
-
-**Estado:** Pendiente
-**Prioridad:** Alta
-**Responsable:** UI / UX / Pulido visual
-**Origen:** UI-001 + UI-002
-**Fecha creacion:** 2026-06-13
-**Rama sugerida:** `docs/ui-012-evaluar-trabajo`
-**Dependencias:** UI-011, BE-010, BE-011, DEC-009, DEC-013, DEC-014, DEC-015
-
-#### Descripcion
-Disenar la decision contextual `Evaluar trabajo` para que el terapeuta revise un hallazgo antes de crear un trabajo. El flujo debe evitar automatismos y preparar una futura implementacion funcional hallazgo a trabajo.
-
-#### Criterios de aceptacion
-- Proponer flujo visual desde hallazgo hacia evaluacion de trabajo.
-- Diferenciar hallazgo observado de trabajo abierto.
-- Mostrar que no todo hallazgo requiere trabajo.
-- No crear trabajo automaticamente.
-- No crear cobro, sesiones ni acciones automaticamente.
-- No cambiar reglas clinicas sin decision registrada.
 - No modificar codigo fuente.
 - No modificar base de datos.
 - No tocar `.env`.
@@ -618,11 +598,10 @@ Definir si `vista_agenda_operativa` combinara `agenda_eventos`, consultas, evalu
 **Dependencias:** QA-002, UI-012, BE-011, DEC-013, DEC-014, DEC-015
 
 #### Descripcion
-Implementar en una tarea futura el flujo funcional para evaluar un hallazgo y crear un trabajo con `trabajos.revision_hallazgo_origen_id`.
+IMP-002 queda como la siguiente implementación funcional. Debe partir desde UI-012, QA-002 y BE-011, respetando que `Evaluar trabajo` no crea trabajos automáticamente y que la creación del trabajo requiere confirmación manual del terapeuta.
 
 #### Criterios de aceptacion preliminares
-- Esperar cierre de QA-002.
-- Esperar diseno UI-012.
+- Partir desde QA-002, UI-012 y BE-011.
 - Usar `trabajos.revision_hallazgo_origen_id` como hallazgo origen principal.
 - No crear tabla puente `trabajo_hallazgos` en esta primera version.
 - No crear trabajo automaticamente desde un hallazgo.
