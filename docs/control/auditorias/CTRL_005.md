@@ -1,3 +1,3 @@
 # CTRL-005
 
-Registro minimo.
+Sincronizacion post QA-002 y UI-012.
