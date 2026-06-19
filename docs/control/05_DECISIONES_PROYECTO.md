@@ -31,6 +31,7 @@ Este documento registra decisiones estables. No reemplaza la conversacion, pero 
 | DEC-013 | Hallazgo origen principal de trabajo. | Validada | 2026-06-17 |
 | DEC-014 | No crear tabla puente `trabajo_hallazgos` en esta etapa. | Validada | 2026-06-17 |
 | DEC-015 | Crear trabajo no crea derivados automaticos. | Validada | 2026-06-17 |
+| DEC-016 | Finanzas no accede a datos clinicos sensibles. | Aprobada documentalmente | 2026-06-19 |
 
 ## DEC-001 - Repositorio oficial del proyecto
 
@@ -400,3 +401,21 @@ Un trabajo representa una decision clinica y un plan operativo. Las sesiones, ac
 
 ### Observaciones
 Esta decision protege DEC-009, DEC-010 y DEC-012, y debe quedar visible en UI-012 e IMP-002.
+
+## DEC-016 - Finanzas no accede a datos clínicos sensibles
+
+**Estado:** Aprobada documentalmente
+**Origen:** SEC-002
+**Fecha:** 2026-06-19
+
+### Decisión
+
+El rol Finanzas debe operar cobros, pagos y reportes financieros con datos administrativos mínimos, pero no debe acceder a datos clínicos sensibles.
+
+### Alcance
+
+Finanzas no debe leer evaluaciones, elementos del caso, aspectos revisados, hallazgos, notas clínicas, información canalizada, acciones terapéuticas ni resultados de sesiones.
+
+### Consecuencia
+
+Las vistas financieras futuras deben exponer solo datos mínimos administrativos o unidades cobrables. Esta decisión debe guiar SEC-001, SEC-004, BE-016 y UI-016.

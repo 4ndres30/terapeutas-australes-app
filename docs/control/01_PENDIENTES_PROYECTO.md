@@ -54,7 +54,7 @@ Este documento es la lista maestra de pendientes. Cada pendiente debe tener un c
 | BE-016 | Disenar vista financiera por unidad cobrable. | Pendiente | Media | Integracion Backend/Estructura |
 | BE-017 | Definir estrategia SQL de agenda operativa. | Pendiente | Media | Integracion Backend/Estructura |
 | SEC-001 | Validar RLS runtime por roles. | Pendiente | Alta | Integracion Backend / Seguridad |
-| SEC-002 | Crear matriz de permisos por tabla y rol. | Pendiente | Alta | Integracion Backend / Seguridad |
+| SEC-002 | Crear matriz de permisos por tabla y rol. | Aprobada obs. / pend. SEC-001 | Alta | Integracion Backend / Seguridad |
 | SEC-003 | Hardening Auth para produccion. | Pendiente | Alta | Integracion Backend / Seguridad |
 | SEC-004 | Definir alcance del rol Finanzas. | Pendiente | Alta | Control de desarrollo / Integracion Backend |
 | SEC-005 | Disenar bitacora/auditoria de cambios sensibles. | Pendiente | Alta | Integracion Backend |
@@ -398,23 +398,30 @@ Probar con usuarios reales de prueba `admin`, `terapeuta` y `finanzas` que cada 
 - Documentar resultados por tabla.
 - No tocar Supabase remoto sin autorizacion expresa.
 
+#### Observaciones
+
+SEC-001 debe usar la matriz SEC-002 como criterio esperado de pruebas runtime.
+
 ### SEC-002 - Crear matriz de permisos por tabla y rol
 
-**Estado:** Pendiente
+**Estado:** Aprobada con observaciones / pendiente SEC-001
 **Prioridad:** Alta
 **Responsable:** Integracion Backend / Seguridad
 **Origen:** Auditoria PROD-001 / SEC-001
 **Fecha creacion:** 2026-06-19
+**Fecha validacion documental:** 2026-06-19
+**Dependencias:** SEC-001, SEC-004, SEC-005, BE-016, BE-021, UI-016, PROD-001
 
 #### Descripcion
-Definir una matriz documental de permisos esperados para tablas clinicas, financieras y administrativas por rol interno.
+Disenar una matriz documental de permisos esperados para `admin`, `terapeuta` y `finanzas` antes de ejecutar pruebas runtime de RLS en SEC-001.
 
-#### Criterios de aceptacion preliminares
-- Incluir roles admin, terapeuta y finanzas.
-- Cubrir permisos de lectura, creacion, actualizacion y anulacion/eliminacion.
-- Identificar tablas clinicas y financieras sensibles.
-- Registrar excepciones o permisos pendientes de decision.
-- No crear ni modificar policies durante esta tarea documental.
+#### Resultado
+
+Aprobada con observaciones como diseno documental. Informe registrado en `docs/control/auditorias/SEC-002_MATRIZ_PERMISOS_ROLES.md`.
+
+#### Observaciones
+
+No se implementaron policies, migraciones, tablas ni cambios de codigo. La matriz queda como insumo obligatorio para SEC-001 y SEC-004.
 
 ### SEC-003 - Hardening Auth para produccion
 
@@ -452,6 +459,10 @@ Precisar que datos clinicos o administrativos puede leer el rol Finanzas y que a
 - Documentar restricciones por tabla o vista.
 - No modificar datos reales ni datos demo.
 
+#### Observaciones
+
+SEC-004 debe cerrar el alcance exacto del rol Finanzas, especialmente si puede ver nombre completo, alias administrativo o identificador minimo del paciente.
+
 ### SEC-005 - Disenar bitacora/auditoria de cambios sensibles
 
 **Estado:** Pendiente
@@ -469,6 +480,10 @@ Disenar una bitacora de auditoria para cambios sensibles en datos clinicos, fina
 - Definir alcance inicial sin crear tablas todavia.
 - Considerar trazabilidad para anulaciones y correcciones.
 - No crear migraciones ni policies durante esta tarea.
+
+#### Observaciones
+
+SEC-005 debe considerar los riesgos detectados por SEC-002 sobre acciones sensibles, anulacion logica y cambios financieros/clinicos.
 
 ### BE-018 - Separacion tecnica de ambientes
 
@@ -541,6 +556,10 @@ Definir cuando corresponde anular, corregir o eliminar informacion clinica, fina
 - Considerar trazabilidad y auditoria de cambios.
 - Documentar casos permitidos y prohibidos.
 - No modificar base de datos ni datos existentes.
+
+#### Observaciones
+
+BE-021 debe definir la politica transversal de anulacion logica vs delete fisico, considerando que SEC-002 recomienda prohibir delete fisico clinico/financiero en produccion.
 
 ### UI-020 - Indicador visual de ambiente activo
 
@@ -712,6 +731,10 @@ Separar reportes para terapeuta, finanzas y admin segun necesidades operativas y
 - No modificar base de datos.
 - No tocar `.env`.
 
+#### Observaciones
+
+UI-016 debe considerar reportes diferenciados por rol: admin completo, terapeuta clinico sin finanzas detalladas y finanzas financiero sin clinica sensible.
+
 ### UI-017 - Definir checklist responsive de pantallas clinicas
 
 **Estado:** Pendiente
@@ -871,6 +894,10 @@ Disenar `vista_finanzas_por_unidad_cobrable` para reportar claramente si el cobr
 - No tocar `.env`.
 - No hacer `supabase db push`.
 - No tocar Supabase remoto.
+
+#### Observaciones
+
+BE-016 debe considerar una vista financiera minima por unidad cobrable, evitando exposicion de datos clinicos sensibles a Finanzas.
 
 ### BE-017 - Definir estrategia SQL de agenda operativa
 

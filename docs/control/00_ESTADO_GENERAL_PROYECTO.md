@@ -78,6 +78,20 @@ Antes de cargar pacientes reales deben cerrarse las tareas mínimas de PROD-001 
 
 **Decisión:** No cargar datos reales todavía.
 
+### Avance SEC-002
+
+SEC-002 ya cuenta con matriz documental de permisos esperados por tabla y rol. La matriz define permisos para `admin`, `terapeuta` y `finanzas`, y queda como insumo obligatorio para SEC-001.
+
+Siguen pendientes:
+
+- SEC-001: validar runtime RLS por rol.
+- SEC-004: definir alcance exacto de Finanzas.
+- SEC-005: diseñar bitácora/auditoría de cambios sensibles.
+- BE-021: definir anulación lógica vs eliminación física.
+- UI-016: revisar reportes por rol.
+
+El proyecto sigue no listo para datos reales como sistema oficial.
+
 ## No debe tocarse sin instruccion expresa
 
 - `.env`.

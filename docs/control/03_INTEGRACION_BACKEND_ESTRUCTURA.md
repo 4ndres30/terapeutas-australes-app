@@ -321,3 +321,22 @@ Integrada documentalmente por PR #18. Resultado registrado en `docs/control/audi
 
 ### Observaciones
 La estructura actual permite vincular trabajos con hallazgos mediante `trabajos.revision_hallazgo_origen_id`, por lo que no se requiere migracion inicial. La primera version debe usar un hallazgo origen principal por trabajo. La tabla puente `trabajo_hallazgos` queda como alternativa futura si se confirma necesidad muchos-a-muchos.
+
+## SEC-002 - Matriz de permisos por tabla y rol
+
+**Estado:** Aprobada con observaciones como diseño documental.
+
+Se documenta la matriz esperada de permisos para `admin`, `terapeuta` y `finanzas`. Esta matriz debe usarse como referencia para SEC-001, donde se probará runtime que RLS y policies se comporten según lo esperado.
+
+### Decisiones relevantes
+
+- Finanzas debe operar cobros/pagos y solo datos mínimos administrativos.
+- Finanzas no debe acceder a datos clínicos sensibles.
+- Terapeuta opera flujo clínico y trabajos, pero no administra cobros/pagos.
+- Admin mantiene acceso transversal, preferentemente con anulación lógica antes que delete físico.
+- Delete físico debe prohibirse en producción para datos clínicos y financieros.
+- Reportes debe separarse por rol.
+
+### Informe relacionado
+
+`docs/control/auditorias/SEC-002_MATRIZ_PERMISOS_ROLES.md`

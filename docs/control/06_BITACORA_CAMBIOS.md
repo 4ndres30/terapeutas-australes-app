@@ -533,3 +533,23 @@ El proyecto queda declarado como no listo para datos reales como sistema oficial
 ### Observaciones
 
 PROD-001 se mantiene como bloqueo operativo. No se deben cargar datos reales hasta cerrar separación de ambientes, RLS runtime, backups, consentimiento y auditoría de cambios sensibles.
+
+## LOG-018 - Integración documental SEC-002
+
+**Estado:** Registrado documentalmente
+**Prioridad:** Alta
+**Responsable:** Control de Desarrollo
+**Origen:** SEC-002 / Integración Backend
+**Fecha creación:** 2026-06-19
+
+### Descripción
+
+Se integra la matriz documental de permisos esperados por tabla y rol para `admin`, `terapeuta` y `finanzas`.
+
+### Resultado
+
+SEC-002 queda aprobada con observaciones como diseño documental. La matriz queda como insumo obligatorio para SEC-001.
+
+### Observaciones
+
+No se implementaron policies, migraciones ni cambios de código. Las decisiones sobre alcance exacto de Finanzas quedan vinculadas a SEC-004. Reportes por rol queda vinculado a UI-016 y la vista financiera mínima a BE-016.
