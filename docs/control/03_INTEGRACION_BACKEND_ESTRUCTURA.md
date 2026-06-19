@@ -359,3 +359,27 @@ Se define que el rol Finanzas debe operar con alias administrativo, identificado
 ### Informe relacionado
 
 `docs/control/auditorias/SEC-004_ALCANCE_ROL_FINANZAS.md`
+
+## BE-022 - Soporte de fotos para elementos del caso
+
+**Estado:** Implementada local / pendiente QA.
+
+Se agrega soporte backend/local para fotos de elementos del caso usando Supabase Storage privado y tabla relacional de metadatos.
+
+### Decisiones técnicas
+
+- Bucket privado: `elementos-caso`.
+- Tabla: `public.fotos_elementos_caso`.
+- La columna `elementos_caso.foto_url` queda deprecada para uso operativo principal.
+- No se habilita delete fisico para fotos en esta etapa.
+- RLS y Storage policies se limitan a `admin` y `terapeuta`.
+- Finanzas no accede a fotos de elementos ni rutas de Storage.
+- La validacion relacional exige que paciente, caso y elemento coincidan.
+
+### Migración relacionada
+
+`supabase/migrations/20260619183000_crear_fotos_elementos_caso.sql`
+
+### Informe relacionado
+
+`docs/control/auditorias/BE-022_UI-022_FOTOS_ELEMENTOS_CASO.md`

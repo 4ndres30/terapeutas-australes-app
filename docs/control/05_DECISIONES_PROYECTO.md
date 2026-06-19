@@ -33,6 +33,7 @@ Este documento registra decisiones estables. No reemplaza la conversacion, pero 
 | DEC-015 | Crear trabajo no crea derivados automaticos. | Validada | 2026-06-17 |
 | DEC-016 | Finanzas no accede a datos clinicos sensibles. | Aprobada documentalmente | 2026-06-19 |
 | DEC-017 | Finanzas opera con alias administrativo y datos financieros mínimos. | Aprobada documentalmente | 2026-06-19 |
+| DEC-018 | Fotos de elementos con Storage privado y tabla relacional. | Aprobada documentalmente | 2026-06-19 |
 
 ## DEC-001 - Repositorio oficial del proyecto
 
@@ -438,3 +439,23 @@ Finanzas puede ver datos necesarios para cobranza, pagos, saldos, conciliación 
 ### Consecuencia
 
 BE-016 debe diseñar una vista financiera mínima por unidad cobrable. UI-016 debe separar reportes por rol. SEC-001 debe probar runtime que Finanzas no acceda a clínica sensible ni archivos clínicos asociados. BE-021 debe definir anulación lógica y prohibición de delete físico financiero en producción.
+
+## DEC-018 - Fotos de elementos con Storage privado y tabla relacional
+
+**Estado:** Aprobada documentalmente
+**Origen:** BE-022 / UI-022
+**Fecha:** 2026-06-19
+
+### Decisión
+
+Las fotos de elementos del caso se gestionan mediante Supabase Storage privado y la tabla `public.fotos_elementos_caso`.
+
+### Alcance
+
+La columna `elementos_caso.foto_url` queda deprecada para uso operativo principal y no debe usarse como solucion de almacenamiento documental.
+
+Las fotos de elementos del caso son archivos clinicos sensibles. Finanzas no debe ver fotos ni rutas de Storage asociadas.
+
+### Consecuencia
+
+Las fotos pueden existir en multiples registros por elemento, con metadatos, estado logico, tipo de foto, principalidad y RLS. Cualquier uso con datos reales requiere cerrar PROD-001, validar Storage/RLS runtime y definir auditoria de accesos o cambios sensibles.

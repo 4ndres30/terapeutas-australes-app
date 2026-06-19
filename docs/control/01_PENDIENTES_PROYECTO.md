@@ -62,11 +62,14 @@ Este documento es la lista maestra de pendientes. Cada pendiente debe tener un c
 | BE-019 | Estrategia de backup/restauracion. | Pendiente | Alta | Integracion Backend / Produccion |
 | BE-020 | Consentimiento informado y tratamiento de datos. | Pendiente | Alta | Control de desarrollo / Revision Clinica / Backend |
 | BE-021 | Politica de anulacion vs eliminacion. | Pendiente | Media-alta | Control de desarrollo / Backend |
+| BE-022 | Soporte de fotos para elementos del caso con Supabase Storage. | Implementada local / pend. QA | Alta | Integracion Backend/Estructura |
 | UI-020 | Indicador visual de ambiente activo. | Pendiente | Alta | UI / UX |
 | UI-021 | Bloqueo visual de produccion no habilitada. | Pendiente | Alta | UI / UX |
+| UI-022 | Integracion visual minima de fotos dentro de Elementos del caso. | Implementada local / pend. QA | Alta | UI / UX / Pulido visual |
 | DOC-001 | Manual de ambientes. | Pendiente | Alta | Control de desarrollo |
 | DOC-002 | Procedimiento de backup/restauracion. | Pendiente | Alta | Control de desarrollo / Integracion Backend |
 | DOC-003 | Politica de carga de datos reales. | Pendiente | Alta | Control de desarrollo |
+| QA-003 | Validacion funcional local de fotos de elementos del caso. | Pendiente | Alta | Control de desarrollo |
 | IMP-002 | Implementacion funcional hallazgo a trabajo. | Pendiente | Alta | Implementacion |
 | PROD-001 | Preparacion para uso real con datos sensibles. | Mantener pendiente / bloqueante | Alta | Control de desarrollo / Integracion Backend |
 
@@ -667,6 +670,87 @@ Definir politica operativa para autorizar, ejecutar y controlar la primera carga
 - Prohibir seeds demo en produccion.
 - Definir checklist pre-produccion.
 - Documentar responsable de autorizacion y evidencia.
+
+### BE-022 - Soporte de fotos para elementos del caso con Supabase Storage
+
+**Estado:** Implementada local / pendiente QA
+**Prioridad:** Alta
+**Responsable:** Integracion Backend/Estructura
+**Origen:** Control de desarrollo
+**Fecha creacion:** 2026-06-19
+**Rama sugerida:** `feature/fotos-elementos-caso`
+**Dependencias:** DEC-018, SEC-001, SEC-004, PROD-001
+
+#### Descripcion
+Crear soporte backend/local para asociar fotos a elementos del caso usando bucket privado `elementos-caso` y tabla relacional `public.fotos_elementos_caso`.
+
+#### Criterios de aceptacion
+- Crear migracion nueva sin reescribir migraciones existentes.
+- Crear bucket privado idempotente.
+- Crear tabla de metadatos con RLS.
+- Crear policies para tabla y Storage sin delete fisico.
+- Validar relacion paciente, caso y elemento.
+- Documentar `elementos_caso.foto_url` como deprecada para uso principal.
+- Confirmar que Finanzas no accede a fotos ni rutas de Storage.
+- No tocar `.env`.
+- No ejecutar `supabase db push`.
+- No tocar Supabase remoto.
+- No cargar datos reales ni imagenes reales.
+
+#### Resultado
+Implementacion local preparada en esta rama. Informe relacionado en `docs/control/auditorias/BE-022_UI-022_FOTOS_ELEMENTOS_CASO.md`.
+
+### UI-022 - Integracion visual minima de fotos dentro de Elementos del caso
+
+**Estado:** Implementada local / pendiente QA
+**Prioridad:** Alta
+**Responsable:** UI / UX / Pulido visual
+**Origen:** Control de desarrollo / BE-022
+**Fecha creacion:** 2026-06-19
+**Rama sugerida:** `feature/fotos-elementos-caso`
+**Dependencias:** BE-022, SEC-004, QA-003
+
+#### Descripcion
+Integrar carga, listado y visualizacion basica de fotos dentro de `ElementosCasoPanel`, manteniendo el flujo dentro de la ficha del caso.
+
+#### Criterios de aceptacion
+- Mostrar cantidad de fotos por elemento.
+- Permitir seleccionar elemento existente.
+- Validar JPG, PNG o WebP.
+- Validar tamaño maximo de 5 MB.
+- Subir primero a Storage y luego registrar metadatos.
+- Usar `createSignedUrl` para visualizacion temporal.
+- No exponer rutas internas de Storage.
+- No mostrar fotos al rol Finanzas.
+- No crear modulo principal independiente.
+- No modificar datos reales ni datos demo.
+
+#### Resultado
+Implementacion local preparada en esta rama. Queda pendiente QA-003 para validacion funcional manual local.
+
+### QA-003 - Validacion funcional local de fotos de elementos del caso
+
+**Estado:** Pendiente
+**Prioridad:** Alta
+**Responsable:** Control de desarrollo
+**Origen:** BE-022 / UI-022
+**Fecha creacion:** 2026-06-19
+**Rama sugerida:** `feature/fotos-elementos-caso`
+**Dependencias:** BE-022, UI-022, Supabase local
+
+#### Descripcion
+Validar localmente que las fotos se cargan, registran y muestran asociadas al elemento correcto del caso.
+
+#### Criterios de aceptacion
+- Abrir un caso demo existente.
+- Confirmar que los elementos cargan igual que antes.
+- Crear un elemento demo como `Perro`, `Casa` o `Consultante`.
+- Subir una foto ficticia valida.
+- Confirmar que aparece asociada al elemento correcto.
+- Confirmar que no aparece en otros casos.
+- Confirmar que Finanzas no accede a fotos ni rutas de Storage.
+- Confirmar que no se rompen revisiones, detalle de revisiones, trabajos ni pagos.
+- No usar datos reales ni imagenes reales.
 
 ### UI-013 - Disenar experiencia de trabajos, sesiones y acciones
 
