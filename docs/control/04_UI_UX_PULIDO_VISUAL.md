@@ -280,3 +280,20 @@ Aprobada con observaciones. Informe oficial consolidado en `docs/control/auditor
 
 ### Observaciones
 El boton debe llamarse `Evaluar trabajo` y vivir junto al hallazgo operativo dentro de `DetalleRevisionesPanel`. La creacion futura debe requerir confirmacion manual del terapeuta, usar `trabajos.revision_hallazgo_origen_id` como hallazgo origen principal y no crear cobros, sesiones ni acciones automaticamente.
+
+## UI-016 - Mejorar reportes por rol
+
+**Estado:** Pendiente
+**Prioridad:** Media-alta
+**Responsable:** UI / UX / Pulido visual
+**Origen:** UI-001 + UI-002 / SEC-002
+
+### Relación con SEC-002
+
+SEC-002 define que los reportes deben separarse por rol:
+
+- admin: visión completa según permisos aprobados;
+- terapeuta: vista clínica sin finanzas detalladas;
+- finanzas: vista financiera sin información clínica sensible.
+
+UI-016 debe considerar estas restricciones antes de diseñar reportes o dashboards compartidos.
