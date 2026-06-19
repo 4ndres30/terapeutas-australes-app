@@ -1,6 +1,6 @@
 # Estado general del proyecto
 
-Fecha de corte: `2026-06-17`
+Fecha de corte: `2026-06-19`
 Responsable del documento: Control de desarrollo
 Estado general documental: En control activo
 
@@ -57,6 +57,26 @@ El proyecto se mantiene alineado con el metodo acordado: primero documentar, aud
 - Sincronizar periodicamente `01_PENDIENTES_PROYECTO.md` cuando una tarea cambie de estado.
 - Mantener `06_BITACORA_CAMBIOS.md` actualizado despues de cada bloque documental o tecnico relevante.
 - Validar runtime local de RLS por roles antes de avanzar a reportes mixtos o vistas sensibles.
+
+## Estado para uso real con datos sensibles
+
+**Estado:** No listo para datos reales como sistema oficial.
+
+El proyecto está habilitado solo para pruebas locales/demo con datos ficticios.
+
+Antes de cargar pacientes reales deben cerrarse las tareas mínimas de PROD-001 / SEC-001:
+
+- separación de ambientes;
+- validación runtime de RLS por rol;
+- matriz de permisos;
+- hardening Auth;
+- backup/restauración probado;
+- consentimiento informado;
+- auditoría de cambios sensibles;
+- política de datos demo vs reales;
+- checklist pre-producción.
+
+**Decisión:** No cargar datos reales todavía.
 
 ## No debe tocarse sin instruccion expresa
 
@@ -165,7 +185,7 @@ Actualizar estado general, pendientes y bitacora para reflejar que UI-001, UI-00
 - Reflejar UI-001, UI-002 y BE-003 como integradas.
 - Registrar UI-010 a UI-019 como pendientes derivados.
 - Mantener BE-010 como siguiente prioridad tecnica recomendada.
-- Mantener BE-018 a BE-021 solo como sugeridas/no activas.
+- Registrar las tareas sugeridas por BE-003 como no activas al momento de CTRL-003.
 - No modificar codigo fuente.
 - No modificar migraciones.
 - No tocar `.env`.

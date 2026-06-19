@@ -1,7 +1,7 @@
 # Pendientes del proyecto
 
 Fecha de apertura: `2026-06-11`
-Ultima actualizacion: `2026-06-18`
+Ultima actualizacion: `2026-06-19`
 Responsable del documento: Control de desarrollo
 
 Este documento es la lista maestra de pendientes. Cada pendiente debe tener un codigo, un responsable y un estado permitido. Los detalles tecnicos o clinicos pueden vivir en los documentos especializados, pero este archivo debe permitir ver rapidamente que falta.
@@ -53,8 +53,22 @@ Este documento es la lista maestra de pendientes. Cada pendiente debe tener un c
 | BE-015 | Validar RLS por roles para modulos nuevos. | Pendiente | Alta | Integracion Backend/Estructura |
 | BE-016 | Disenar vista financiera por unidad cobrable. | Pendiente | Media | Integracion Backend/Estructura |
 | BE-017 | Definir estrategia SQL de agenda operativa. | Pendiente | Media | Integracion Backend/Estructura |
+| SEC-001 | Validar RLS runtime por roles. | Pendiente | Alta | Integracion Backend / Seguridad |
+| SEC-002 | Crear matriz de permisos por tabla y rol. | Pendiente | Alta | Integracion Backend / Seguridad |
+| SEC-003 | Hardening Auth para produccion. | Pendiente | Alta | Integracion Backend / Seguridad |
+| SEC-004 | Definir alcance del rol Finanzas. | Pendiente | Alta | Control de desarrollo / Integracion Backend |
+| SEC-005 | Disenar bitacora/auditoria de cambios sensibles. | Pendiente | Alta | Integracion Backend |
+| BE-018 | Separacion tecnica de ambientes. | Pendiente | Alta | Integracion Backend |
+| BE-019 | Estrategia de backup/restauracion. | Pendiente | Alta | Integracion Backend / Produccion |
+| BE-020 | Consentimiento informado y tratamiento de datos. | Pendiente | Alta | Control de desarrollo / Revision Clinica / Backend |
+| BE-021 | Politica de anulacion vs eliminacion. | Pendiente | Media-alta | Control de desarrollo / Backend |
+| UI-020 | Indicador visual de ambiente activo. | Pendiente | Alta | UI / UX |
+| UI-021 | Bloqueo visual de produccion no habilitada. | Pendiente | Alta | UI / UX |
+| DOC-001 | Manual de ambientes. | Pendiente | Alta | Control de desarrollo |
+| DOC-002 | Procedimiento de backup/restauracion. | Pendiente | Alta | Control de desarrollo / Integracion Backend |
+| DOC-003 | Politica de carga de datos reales. | Pendiente | Alta | Control de desarrollo |
 | IMP-002 | Implementacion funcional hallazgo a trabajo. | Pendiente | Alta | Implementacion |
-| PROD-001 | Preparacion para uso real con datos sensibles. | Pendiente | Alta | Control de desarrollo / Integracion Backend |
+| PROD-001 | Preparacion para uso real con datos sensibles. | Mantener pendiente / bloqueante | Alta | Control de desarrollo / Integracion Backend |
 
 ## Pendientes integrados
 
@@ -337,30 +351,286 @@ Aprobada con observaciones como diseno UI/UX y validada clinicamente con observa
 
 ### PROD-001 - Preparacion para uso real con datos sensibles
 
-**Estado:** Pendiente
+**Estado:** Mantener pendiente / bloqueante
 **Prioridad:** Alta
 **Responsable:** Control de desarrollo / Integracion Backend
-**Origen:** Control de desarrollo
+**Origen:** Control de desarrollo / Auditoria PROD-001 / SEC-001
 **Fecha creacion:** 2026-06-18
-**Rama sugerida:** `docs/prod-001-preparacion-datos-sensibles`
-**Dependencias:** RLS, roles, backups, consentimiento, Supabase produccion
+**Fecha actualizacion:** 2026-06-19
+**Rama sugerida:** `docs/prod-001-sec-001-tareas-datos-reales`
+**Dependencias:** SEC-001, SEC-002, SEC-003, SEC-004, SEC-005, BE-018, BE-019, BE-020, BE-021, UI-020, UI-021, DOC-001, DOC-002, DOC-003
 
 #### Descripcion
-Definir las condiciones minimas antes de ingresar datos reales de pacientes al sistema. La aplicacion no debe usarse como sistema oficial con datos reales hasta revisar seguridad, permisos, respaldos, consentimiento y separacion de ambientes.
+Definir y cerrar las condiciones minimas antes de ingresar datos reales de pacientes al sistema. No se habilita uso oficial con datos reales hasta cerrar separacion de ambientes, seguridad, backups, consentimiento y auditoria.
 
 #### Criterios de aceptacion
 - Separar ambientes local, demo, staging y produccion.
 - Confirmar que datos demo no se mezclen con datos reales.
-- Revisar RLS y policies tabla por tabla.
-- Validar roles internos: admin, terapeuta y finanzas.
+- Validar runtime de RLS por rol con usuarios de prueba.
+- Crear matriz de permisos por tabla y rol.
 - Definir y probar respaldo y restauracion.
 - Definir consentimiento informado o autorizacion de tratamiento de datos.
-- Auditar seguridad antes de produccion.
+- Definir bitacora/auditoria de cambios sensibles.
+- Aprobar checklist pre-produccion por Control de desarrollo.
+- Contar con aprobacion explicita de Javier antes del primer paciente real.
 - No modificar datos reales.
 - No tocar Supabase remoto sin autorizacion expresa.
 
 #### Resultado
-Pendiente. Informe inicial en `docs/control/auditorias/PROD-001_PREPARACION_USO_REAL_DATOS_SENSIBLES.md`.
+Pendiente y bloqueante. Informes relacionados en `docs/control/auditorias/PROD-001_PREPARACION_USO_REAL_DATOS_SENSIBLES.md` y `docs/control/auditorias/PROD-001_SEC-001_PREPARACION_DATOS_REALES.md`.
+
+### SEC-001 - Validar RLS runtime por roles
+
+**Estado:** Pendiente
+**Prioridad:** Alta
+**Responsable:** Integracion Backend / Seguridad
+**Origen:** Auditoria PROD-001 / SEC-001
+**Fecha creacion:** 2026-06-19
+
+#### Descripcion
+Probar con usuarios reales de prueba `admin`, `terapeuta` y `finanzas` que cada rol ve y modifica solo lo permitido tabla por tabla.
+
+#### Criterios de aceptacion preliminares
+- Ejecutar pruebas con usuario admin.
+- Ejecutar pruebas con usuario terapeuta.
+- Ejecutar pruebas con usuario finanzas.
+- Validar select, insert, update y delete/anulacion cuando corresponda.
+- Documentar resultados por tabla.
+- No tocar Supabase remoto sin autorizacion expresa.
+
+### SEC-002 - Crear matriz de permisos por tabla y rol
+
+**Estado:** Pendiente
+**Prioridad:** Alta
+**Responsable:** Integracion Backend / Seguridad
+**Origen:** Auditoria PROD-001 / SEC-001
+**Fecha creacion:** 2026-06-19
+
+#### Descripcion
+Definir una matriz documental de permisos esperados para tablas clinicas, financieras y administrativas por rol interno.
+
+#### Criterios de aceptacion preliminares
+- Incluir roles admin, terapeuta y finanzas.
+- Cubrir permisos de lectura, creacion, actualizacion y anulacion/eliminacion.
+- Identificar tablas clinicas y financieras sensibles.
+- Registrar excepciones o permisos pendientes de decision.
+- No crear ni modificar policies durante esta tarea documental.
+
+### SEC-003 - Hardening Auth para produccion
+
+**Estado:** Pendiente
+**Prioridad:** Alta
+**Responsable:** Integracion Backend / Seguridad
+**Origen:** Auditoria PROD-001 / SEC-001
+**Fecha creacion:** 2026-06-19
+
+#### Descripcion
+Definir medidas de endurecimiento de Supabase Auth antes de habilitar produccion con datos sensibles.
+
+#### Criterios de aceptacion preliminares
+- Revisar configuracion esperada de sesiones y redirecciones.
+- Definir politica de altas, bajas y recuperacion de cuentas.
+- Evaluar requisitos de MFA o controles equivalentes.
+- Documentar controles minimos para usuarios internos.
+- No tocar Supabase remoto sin autorizacion expresa.
+
+### SEC-004 - Definir alcance del rol Finanzas
+
+**Estado:** Pendiente
+**Prioridad:** Alta
+**Responsable:** Control de desarrollo / Integracion Backend
+**Origen:** Auditoria PROD-001 / SEC-001
+**Fecha creacion:** 2026-06-19
+
+#### Descripcion
+Precisar que datos clinicos o administrativos puede leer el rol Finanzas y que acciones financieras puede ejecutar.
+
+#### Criterios de aceptacion preliminares
+- Definir datos minimos necesarios para cobranza y pagos.
+- Separar informacion financiera de informacion clinica sensible.
+- Revisar reportes visibles para finanzas.
+- Documentar restricciones por tabla o vista.
+- No modificar datos reales ni datos demo.
+
+### SEC-005 - Disenar bitacora/auditoria de cambios sensibles
+
+**Estado:** Pendiente
+**Prioridad:** Alta
+**Responsable:** Integracion Backend
+**Origen:** Auditoria PROD-001 / SEC-001
+**Fecha creacion:** 2026-06-19
+
+#### Descripcion
+Disenar una bitacora de auditoria para cambios sensibles en datos clinicos, financieros y de acceso.
+
+#### Criterios de aceptacion preliminares
+- Identificar eventos sensibles que deben auditarse.
+- Definir actor, fecha, entidad afectada y tipo de cambio.
+- Definir alcance inicial sin crear tablas todavia.
+- Considerar trazabilidad para anulaciones y correcciones.
+- No crear migraciones ni policies durante esta tarea.
+
+### BE-018 - Separacion tecnica de ambientes
+
+**Estado:** Pendiente
+**Prioridad:** Alta
+**Responsable:** Integracion Backend
+**Origen:** Auditoria PROD-001 / SEC-001
+**Fecha creacion:** 2026-06-19
+
+#### Descripcion
+Definir separacion tecnica entre local, demo, staging y produccion, evitando mezcla de configuraciones y datos.
+
+#### Criterios de aceptacion preliminares
+- Documentar ambientes requeridos y proposito de cada uno.
+- Definir variables de ambiente por contexto.
+- Identificar barreras para evitar uso de seeds demo en produccion.
+- Definir criterio de habilitacion de staging y produccion.
+- No tocar `.env` ni Supabase remoto sin autorizacion expresa.
+
+### BE-019 - Estrategia de backup/restauracion
+
+**Estado:** Pendiente
+**Prioridad:** Alta
+**Responsable:** Integracion Backend / Produccion
+**Origen:** Auditoria PROD-001 / SEC-001
+**Fecha creacion:** 2026-06-19
+
+#### Descripcion
+Definir estrategia de respaldo y restauracion antes de operar con datos reales.
+
+#### Criterios de aceptacion preliminares
+- Definir frecuencia, responsable y alcance de backups.
+- Definir procedimiento de restauracion.
+- Probar restauracion antes de produccion.
+- Documentar resultado de prueba de restauracion.
+- No tocar Supabase remoto sin autorizacion expresa.
+
+### BE-020 - Consentimiento informado y tratamiento de datos
+
+**Estado:** Pendiente
+**Prioridad:** Alta
+**Responsable:** Control de desarrollo / Revision Clinica / Backend
+**Origen:** Auditoria PROD-001 / SEC-001
+**Fecha creacion:** 2026-06-19
+
+#### Descripcion
+Definir el consentimiento informado o autorizacion de tratamiento de datos requerida antes de registrar pacientes reales.
+
+#### Criterios de aceptacion preliminares
+- Definir texto o referencia del consentimiento informado.
+- Validar alcance con Revision Clinica.
+- Definir donde se registra la aceptacion o autorizacion.
+- Revisar implicancias de privacidad y confidencialidad.
+- No cargar datos reales antes de aprobacion explicita.
+
+### BE-021 - Politica de anulacion vs eliminacion
+
+**Estado:** Pendiente
+**Prioridad:** Media-alta
+**Responsable:** Control de desarrollo / Backend
+**Origen:** Auditoria PROD-001 / SEC-001
+**Fecha creacion:** 2026-06-19
+
+#### Descripcion
+Definir cuando corresponde anular, corregir o eliminar informacion clinica, financiera o administrativa.
+
+#### Criterios de aceptacion preliminares
+- Separar anulacion operativa de eliminacion fisica.
+- Definir criterios por tipo de dato sensible.
+- Considerar trazabilidad y auditoria de cambios.
+- Documentar casos permitidos y prohibidos.
+- No modificar base de datos ni datos existentes.
+
+### UI-020 - Indicador visual de ambiente activo
+
+**Estado:** Pendiente
+**Prioridad:** Alta
+**Responsable:** UI / UX
+**Origen:** Auditoria PROD-001 / SEC-001
+**Fecha creacion:** 2026-06-19
+
+#### Descripcion
+Disenar un indicador visible del ambiente activo para reducir el riesgo de operar en el contexto equivocado.
+
+#### Criterios de aceptacion preliminares
+- Definir estados visuales para local, demo, staging y produccion.
+- Evitar que el indicador tape informacion clinica.
+- Considerar version mobile y desktop.
+- Documentar comportamiento esperado antes de implementar.
+- No modificar codigo fuente ni CSS en esta tarea documental.
+
+### UI-021 - Bloqueo visual de produccion no habilitada
+
+**Estado:** Pendiente
+**Prioridad:** Alta
+**Responsable:** UI / UX
+**Origen:** Auditoria PROD-001 / SEC-001
+**Fecha creacion:** 2026-06-19
+
+#### Descripcion
+Disenar una advertencia o bloqueo visual para impedir uso productivo cuando PROD-001 siga abierto.
+
+#### Criterios de aceptacion preliminares
+- Definir mensaje de produccion no habilitada.
+- Definir condiciones para mostrar advertencia o bloqueo.
+- Considerar rutas clinicas, financieras y administrativas.
+- Asegurar que no se confunda demo con produccion.
+- No modificar codigo fuente ni CSS en esta tarea documental.
+
+### DOC-001 - Manual de ambientes
+
+**Estado:** Pendiente
+**Prioridad:** Alta
+**Responsable:** Control de desarrollo
+**Origen:** Auditoria PROD-001 / SEC-001
+**Fecha creacion:** 2026-06-19
+
+#### Descripcion
+Crear manual documental para uso y administracion de ambientes local, demo, staging y produccion.
+
+#### Criterios de aceptacion preliminares
+- Describir proposito y restricciones de cada ambiente.
+- Documentar responsable operativo por ambiente.
+- Registrar reglas para variables de entorno sin exponer secretos.
+- Incluir regla de no mezclar datos demo con datos reales.
+- No tocar `.env`.
+
+### DOC-002 - Procedimiento de backup/restauracion
+
+**Estado:** Pendiente
+**Prioridad:** Alta
+**Responsable:** Control de desarrollo / Integracion Backend
+**Origen:** Auditoria PROD-001 / SEC-001
+**Fecha creacion:** 2026-06-19
+
+#### Descripcion
+Documentar el procedimiento de respaldo y restauracion que debe probarse antes de produccion.
+
+#### Criterios de aceptacion preliminares
+- Describir pasos de respaldo.
+- Describir pasos de restauracion.
+- Definir responsable y evidencia requerida.
+- Registrar resultado esperado de prueba.
+- No tocar Supabase remoto sin autorizacion expresa.
+
+### DOC-003 - Politica de carga de datos reales
+
+**Estado:** Pendiente
+**Prioridad:** Alta
+**Responsable:** Control de desarrollo
+**Origen:** Auditoria PROD-001 / SEC-001
+**Fecha creacion:** 2026-06-19
+
+#### Descripcion
+Definir politica operativa para autorizar, ejecutar y controlar la primera carga de datos reales.
+
+#### Criterios de aceptacion preliminares
+- Exigir cierre de PROD-001 antes de cargar pacientes reales.
+- Definir aprobacion explicita de Javier como condicion.
+- Prohibir seeds demo en produccion.
+- Definir checklist pre-produccion.
+- Documentar responsable de autorizacion y evidencia.
 
 ### UI-013 - Disenar experiencia de trabajos, sesiones y acciones
 
@@ -653,9 +923,6 @@ No usar datos reales todavia. Antes de produccion debe cerrarse PROD-001.
 
 ## Tareas sugeridas no activas
 
-Las siguientes tareas provienen de BE-003 y quedan solo como sugeridas. No se registran como pendientes activos ni deben ejecutarse sin activacion expresa de Control de desarrollo.
+Este bloque se mantiene para futuras propuestas no activas.
 
-- BE-018 - Crear plantilla de PR para migraciones.
-- BE-019 - Crear matriz de validacion local para migraciones.
-- BE-020 - Crear pauta de rollback conceptual.
-- BE-021 - Crear checklist RLS para tablas nuevas.
+Las propuestas anteriores de BE-003 fueron reemplazadas por tareas activas derivadas de la auditoria PROD-001 / SEC-001. No quedan tareas sugeridas no activas en este bloque.
