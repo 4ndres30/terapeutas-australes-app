@@ -32,6 +32,7 @@ Este documento registra decisiones estables. No reemplaza la conversacion, pero 
 | DEC-014 | No crear tabla puente `trabajo_hallazgos` en esta etapa. | Validada | 2026-06-17 |
 | DEC-015 | Crear trabajo no crea derivados automaticos. | Validada | 2026-06-17 |
 | DEC-016 | Finanzas no accede a datos clinicos sensibles. | Aprobada documentalmente | 2026-06-19 |
+| DEC-017 | Finanzas opera con alias administrativo y datos financieros mínimos. | Aprobada documentalmente | 2026-06-19 |
 
 ## DEC-001 - Repositorio oficial del proyecto
 
@@ -419,3 +420,21 @@ Finanzas no debe leer evaluaciones, elementos del caso, aspectos revisados, hall
 ### Consecuencia
 
 Las vistas financieras futuras deben exponer solo datos mínimos administrativos o unidades cobrables. Esta decisión debe guiar SEC-001, SEC-004, BE-016 y UI-016.
+
+## DEC-017 - Finanzas opera con alias administrativo y datos financieros mínimos
+
+**Estado:** Aprobada documentalmente
+**Origen:** SEC-004
+**Fecha:** 2026-06-19
+
+### Decisión
+
+El rol Finanzas debe operar con alias administrativo, identificador interno y datos financieros mínimos. No debe ver por defecto nombre completo, teléfono, email ni ficha completa del paciente.
+
+### Alcance
+
+Finanzas puede ver datos necesarios para cobranza, pagos, saldos, conciliación y reportes financieros. El nombre completo, teléfono o email solo podrán exponerse con aprobación expresa de Control de Desarrollo y consentimiento/autorización suficiente definido en BE-020.
+
+### Consecuencia
+
+BE-016 debe diseñar una vista financiera mínima por unidad cobrable. UI-016 debe separar reportes por rol. SEC-001 debe probar runtime que Finanzas no acceda a clínica sensible ni archivos clínicos asociados. BE-021 debe definir anulación lógica y prohibición de delete físico financiero en producción.

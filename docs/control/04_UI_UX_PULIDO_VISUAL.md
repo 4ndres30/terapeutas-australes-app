@@ -297,3 +297,23 @@ SEC-002 define que los reportes deben separarse por rol:
 - finanzas: vista financiera sin información clínica sensible.
 
 UI-016 debe considerar estas restricciones antes de diseñar reportes o dashboards compartidos.
+
+### Relación con SEC-004
+
+SEC-004 define que Finanzas debe ver reportes financieros con alias administrativo, código financiero o identificador interno, no ficha completa del paciente.
+
+Para Finanzas, UI-016 no debe mostrar por defecto:
+
+- nombre completo;
+- teléfono;
+- email;
+- motivo de consulta;
+- evaluaciones;
+- elementos del caso;
+- hallazgos;
+- notas clínicas;
+- sesiones o acciones terapéuticas;
+- fotos de elementos del caso;
+- rutas o miniaturas de archivos clínicos.
+
+Nombre completo, teléfono o email solo deben considerarse si Control de Desarrollo lo aprueba expresamente y BE-020 define consentimiento suficiente.
