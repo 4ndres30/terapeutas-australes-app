@@ -36,7 +36,7 @@ Este documento es la lista maestra de pendientes. Cada pendiente debe tener un c
 | BE-010 | Ajustar soporte operativo de hallazgos derivados de aspectos. | Integrada | Alta | Integracion Backend/Estructura |
 | IMP-001 | Implementar hallazgos operativos en `DetalleRevisionesPanel`. | Integrada | Alta | Implementacion |
 | DATA-001 | Agregar seed local de caso demo integral. | Integrada | Alta | Control de desarrollo |
-| UI-010 | Redisenar navegacion del detalle de caso. | Aprobada obs. / pend. validacion clinica | Alta | UI / UX / Pulido visual |
+| UI-010 | Redisenar navegacion del detalle de caso. | Aprobada obs. / pend. implementacion | Alta | UI / UX / Pulido visual |
 | UI-011 | Disenar panel operativo de hallazgos dentro del detalle de revision. | Integrada | Alta | UI / UX / Pulido visual |
 | UI-012 | Disenar flujo visual Evaluar trabajo. | Integrada | Alta | UI / UX / Pulido visual |
 | UI-013 | Disenar experiencia de trabajos, sesiones y acciones. | Pendiente | Alta | UI / UX / Pulido visual |
@@ -310,7 +310,7 @@ Revisar si existen campos repetidos o responsabilidades solapadas entre consulta
 
 ### UI-010 - Redisenar navegacion del detalle de caso
 
-**Estado:** Aprobada con observaciones / Pendiente validacion clinica
+**Estado:** Aprobada con observaciones / Pendiente implementacion
 **Prioridad:** Alta
 **Responsable:** UI / UX / Pulido visual
 **Origen:** UI-001 + UI-002
@@ -327,13 +327,13 @@ Convertir la ficha de caso en una vista resumen navegable por secciones, evitand
 - Mantener tarjetas o modulos para elementos, revisiones, detalle de revision, hallazgos, trabajos, pagos y seguimiento.
 - Mantener el caso como contenedor central del flujo clinico.
 - Conservar trazabilidad entre caso, revision, elemento, aspecto, hallazgo y trabajo.
-- Validar con Revision de flujo clinico las alertas criticas y los riesgos de ocultar informacion clinica antes de implementar.
+- Considerar como obligatorias las observaciones de Revision de flujo clinico antes de implementar.
 - No modificar codigo fuente.
 - No modificar base de datos.
 - No tocar `.env`.
 
 #### Resultado
-Aprobada con observaciones como diseno UI/UX. Implementacion futura pendiente de validacion clinica. Informe detallado en `docs/control/auditorias/UI-010_DISENO_RESUMEN_DETALLE_CASO.md`.
+Aprobada con observaciones como diseno UI/UX y validada clinicamente con observaciones. No debe implementarse hasta considerar los criterios clinicos obligatorios. PR #24 puede integrarse documentalmente. Informe detallado en `docs/control/auditorias/UI-010_DISENO_RESUMEN_DETALLE_CASO.md`.
 
 ### PROD-001 - Preparacion para uso real con datos sensibles
 

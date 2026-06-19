@@ -165,7 +165,7 @@ Esta tarea es documental hasta que Javier apruebe cambios visuales concretos.
 
 ## UI-010 - Redisenar navegacion del detalle de caso
 
-**Estado:** Aprobada con observaciones / pendiente de validacion clinica
+**Estado:** Aprobada con observaciones / pendiente implementacion
 **Prioridad:** Alta
 **Responsable:** UI / UX / Pulido visual
 **Origen:** UI-001 + UI-002
@@ -188,10 +188,14 @@ UI-010 ya cuenta con diseno detallado para transformar el detalle de caso desde 
 - No implementar codigo todavia.
 - No modificar CSS.
 - No modificar base de datos.
-- Requerir revision de flujo clinico antes de implementar.
+- Considerar las observaciones clinicas obligatorias antes de implementar.
+
+### Validación clínica
+
+Revisión de flujo clínico aprueba UI-010 con observaciones. Antes de implementar, deben considerarse como obligatorias las alertas clínicas visibles, la separación entre Detalle de revisión y Hallazgos, la visibilidad de trabajos transversales, la separación visual de Pagos y la trazabilidad completa entre paciente, caso, consulta/evaluación, elemento, revisión, aspecto, hallazgo, trabajo, pago y seguimiento.
 
 ### Resultado
-Aprobada con observaciones como diseno UI/UX. La implementacion futura queda pendiente de validacion clinica, especialmente sobre alertas criticas y riesgos de ocultar informacion clinica.
+Aprobada con observaciones como diseno UI/UX y validada clinicamente con observaciones. La implementacion futura queda pendiente de considerar alertas criticas, trabajos transversales, pagos separados y riesgos de ocultar informacion clinica.
 
 ### Observaciones
 La recomendacion principal es una vista resumen general por secciones. La vista organizada por elemento del caso queda como exploracion secundaria o fase posterior.

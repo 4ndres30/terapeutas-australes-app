@@ -2,7 +2,7 @@
 
 ## Estado
 
-Aprobada con observaciones para revisión de flujo clínico.
+Aprobada con observaciones clínicas / pendiente implementación.
 
 ## Fecha
 
@@ -213,3 +213,137 @@ Revisión de flujo clínico debe validar:
 ## Resultado
 
 UI-010 queda con recomendación aprobada con observaciones. La implementación futura debe iniciar con la vista resumen general por secciones y dejar la línea por elemento como exploración secundaria.
+
+## Validación de revisión de flujo clínico
+
+**Estado clínico:** Aprobado con observaciones.
+
+Revisión de flujo clínico valida la vista resumen general por secciones como pantalla principal, siempre que no reemplace el detalle profundo y que mantenga alertas, conteos, último evento relevante y vínculo al detalle completo.
+
+### Alertas obligatorias en la vista principal
+
+La vista principal del caso debe mostrar, cuando corresponda:
+
+- Hallazgo de alta prioridad o urgente.
+- Hallazgo pendiente de trabajo.
+- Hallazgo activo con seguimiento requerido.
+- Trabajo abierto.
+- Trabajo pendiente de validación o cierre.
+- Revisión pendiente o caso sin revisión inicial.
+- Aspectos revisados pendientes o incompletos.
+- Seguimiento requerido.
+- Pago pendiente, separado visualmente del flujo clínico.
+- Caso sin elementos registrados.
+- Caso sin trazabilidad de origen cuando corresponda.
+- Advertencia de uso de datos reales no autorizado mientras PROD-001 siga pendiente.
+
+### Detalle de revisión y hallazgos
+
+`Detalle de revisión` y `Hallazgos` deben mantenerse como tarjetas separadas, pero conectadas visualmente.
+
+Definición clínica:
+
+- Detalle de revisión: lo observado, medido o revisado.
+- Hallazgo: lo clínicamente relevante que requiere atención, prioridad, seguimiento o posible trabajo.
+
+Cada hallazgo destacado debe mostrar origen mínimo:
+
+```text
+Revisión → Elemento → Aspecto revisado → Hallazgo
+```
+
+### Información que no debe quedar oculta solo en detalle profundo
+
+No deben quedar escondidos exclusivamente dentro de “Ver detalle”:
+
+- Hallazgos activos.
+- Hallazgos urgentes o de alta prioridad.
+- Hallazgos pendientes de trabajo.
+- Trabajos abiertos.
+- Seguimientos requeridos.
+- Última revisión.
+- Próxima acción clínica.
+- Elementos con hallazgos activos.
+- Aspectos pendientes.
+- Estado y prioridad del caso.
+- Resultado o cierre si el caso está cerrado.
+- Advertencia de datos reales no autorizados mientras PROD-001 esté pendiente.
+
+### Trabajos transversales
+
+Los trabajos transversales deben mostrarse en la tarjeta `Trabajos` a nivel de caso, indicando:
+
+- nombre del trabajo;
+- estado;
+- prioridad;
+- origen;
+- elementos afectados;
+- si afecta al caso completo;
+- próxima acción;
+- si requiere revisión posterior.
+
+En una futura vista por elemento, el trabajo transversal puede aparecer dentro de cada elemento afectado, pero siempre con etiqueta clara:
+
+```text
+Trabajo transversal vinculado a este elemento
+```
+
+### Pagos
+
+`Pagos` debe existir como tarjeta o bloque visible, pero separado visualmente del flujo clínico.
+
+Regla clínica:
+
+```text
+El estado financiero nunca debe condicionar visualmente una decisión terapéutica.
+```
+
+Ubicación recomendada:
+
+```text
+Bloque clínico:
+Elementos → Revisiones → Detalle → Hallazgos → Trabajos → Seguimiento
+
+Bloque administrativo:
+Pagos / Cobros
+```
+
+### Vista por elemento
+
+La vista por elemento queda como modo secundario opcional, pero recomendable para casos complejos con:
+
+- múltiples personas;
+- vínculos familiares;
+- hogar o espacio;
+- linaje;
+- entidades o presencias;
+- trabajos transversales;
+- más de una revisión activa;
+- varios hallazgos por elemento.
+
+### Trazabilidad clínica completa
+
+La implementación futura debe conservar trazabilidad mínima:
+
+```text
+Paciente
+→ Caso
+→ Consulta / Evaluación de origen
+→ Elemento del caso
+→ Revisión
+→ Aspecto revisado
+→ Hallazgo
+→ Trabajo
+→ Pago / Cobro
+→ Seguimiento
+```
+
+Cada tarjeta debe responder:
+
+```text
+De dónde viene, qué afecta y qué acción sigue.
+```
+
+### Conclusión clínica
+
+UI-010 puede integrarse documentalmente como aprobada con observaciones clínicas. No debe implementarse código hasta que estas observaciones queden consideradas como criterios de aceptación de la futura tarea de implementación.

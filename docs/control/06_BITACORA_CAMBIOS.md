@@ -493,3 +493,23 @@ No se autoriza carga real oficial de pacientes hasta revisar RLS, roles, backups
 
 ### Observaciones
 PROD-001 debe cerrarse antes de usar la aplicación como sistema oficial con datos reales.
+
+## LOG-016 - Validación clínica UI-010
+
+**Estado:** Validada clínicamente con observaciones
+**Prioridad:** Alta
+**Responsable:** Revisión de flujo clínico
+**Origen:** UI-010
+**Fecha creación:** 2026-06-18
+
+### Descripción
+
+Revisión de flujo clínico valida UI-010 como vista resumen general por secciones, siempre que no reemplace el detalle profundo y mantenga alertas clínicas visibles.
+
+### Resultado
+
+UI-010 puede integrarse documentalmente como aprobada con observaciones clínicas.
+
+### Observaciones
+
+Antes de implementar código, deben considerarse como obligatorias las alertas clínicas principales, la separación entre Detalle de revisión y Hallazgos, la visibilidad de trabajos transversales, la separación administrativa de Pagos y la trazabilidad clínica completa.
