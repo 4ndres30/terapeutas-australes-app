@@ -513,3 +513,23 @@ UI-010 puede integrarse documentalmente como aprobada con observaciones clínica
 ### Observaciones
 
 Antes de implementar código, deben considerarse como obligatorias las alertas clínicas principales, la separación entre Detalle de revisión y Hallazgos, la visibilidad de trabajos transversales, la separación administrativa de Pagos y la trazabilidad clínica completa.
+
+## LOG-017 - Registro tareas PROD-001 / SEC-001
+
+**Estado:** Registrado documentalmente
+**Prioridad:** Alta
+**Responsable:** Control de Desarrollo
+**Origen:** Auditoría PROD-001 / SEC-001
+**Fecha creación:** 2026-06-19
+
+### Descripción
+
+Se registran las tareas derivadas de la auditoría de preparación para uso real con datos sensibles.
+
+### Resultado
+
+El proyecto queda declarado como no listo para datos reales como sistema oficial. Se crean tareas SEC, BE, UI, DOC y PROD para cerrar las brechas detectadas antes de producción.
+
+### Observaciones
+
+PROD-001 se mantiene como bloqueo operativo. No se deben cargar datos reales hasta cerrar separación de ambientes, RLS runtime, backups, consentimiento y auditoría de cambios sensibles.
