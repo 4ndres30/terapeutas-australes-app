@@ -447,3 +447,69 @@ UI-012 queda integrada como diseño aprobado con observaciones.
 
 ### Observaciones
 El siguiente paso recomendado es IMP-002: implementación funcional controlada de `Evaluar trabajo`, sin crear cobros, sesiones ni acciones automáticamente.
+
+## LOG-014 - Integración diseño UI-010
+
+**Estado:** Integrada documentalmente
+**Prioridad:** Alta
+**Responsable:** UI / UX / Pulido visual
+**Origen:** UI-010
+**Fecha creación:** 2026-06-18
+**Rama sugerida:** `docs/ui-010-diseno-resumen-detalle-caso`
+**Dependencias:** UI-001, UI-002, RFC-001
+
+### Descripción
+Se integra el diseño detallado UI-010 para rediseñar el detalle de caso como vista resumen navegable.
+
+### Archivos relacionados
+- `docs/control/04_UI_UX_PULIDO_VISUAL.md`
+- `docs/control/auditorias/UI-010_DISENO_RESUMEN_DETALLE_CASO.md`
+
+### Resultado
+La recomendación principal queda como vista resumen general por secciones. La vista por elemento queda como modo secundario o fase posterior.
+
+### Observaciones
+Revisión de flujo clínico debe validar alertas obligatorias, datos críticos que no pueden quedar ocultos y tratamiento de trabajos transversales antes de implementar.
+
+## LOG-015 - Registro PROD-001
+
+**Estado:** Registrada
+**Prioridad:** Alta
+**Responsable:** Control de desarrollo / Integración Backend
+**Origen:** Control de desarrollo
+**Fecha creación:** 2026-06-18
+**Rama sugerida:** `docs/ui-010-diseno-resumen-detalle-caso`
+**Dependencias:** RLS, roles, backups, consentimiento, Supabase producción
+
+### Descripción
+Se agrega tarea de preparación para uso real con datos sensibles.
+
+### Archivos relacionados
+- `docs/control/01_PENDIENTES_PROYECTO.md`
+- `docs/control/auditorias/PROD-001_PREPARACION_USO_REAL_DATOS_SENSIBLES.md`
+
+### Resultado
+No se autoriza carga real oficial de pacientes hasta revisar RLS, roles, backups, consentimiento y separación de ambientes.
+
+### Observaciones
+PROD-001 debe cerrarse antes de usar la aplicación como sistema oficial con datos reales.
+
+## LOG-016 - Validación clínica UI-010
+
+**Estado:** Validada clínicamente con observaciones
+**Prioridad:** Alta
+**Responsable:** Revisión de flujo clínico
+**Origen:** UI-010
+**Fecha creación:** 2026-06-18
+
+### Descripción
+
+Revisión de flujo clínico valida UI-010 como vista resumen general por secciones, siempre que no reemplace el detalle profundo y mantenga alertas clínicas visibles.
+
+### Resultado
+
+UI-010 puede integrarse documentalmente como aprobada con observaciones clínicas.
+
+### Observaciones
+
+Antes de implementar código, deben considerarse como obligatorias las alertas clínicas principales, la separación entre Detalle de revisión y Hallazgos, la visibilidad de trabajos transversales, la separación administrativa de Pagos y la trazabilidad clínica completa.
