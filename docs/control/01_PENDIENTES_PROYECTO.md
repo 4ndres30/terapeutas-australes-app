@@ -56,7 +56,7 @@ Este documento es la lista maestra de pendientes. Cada pendiente debe tener un c
 | SEC-001 | Validar RLS runtime por roles. | Pendiente | Alta | Integracion Backend / Seguridad |
 | SEC-002 | Crear matriz de permisos por tabla y rol. | Aprobada obs. / pend. SEC-001 | Alta | Integracion Backend / Seguridad |
 | SEC-003 | Hardening Auth para produccion. | Pendiente | Alta | Integracion Backend / Seguridad |
-| SEC-004 | Definir alcance del rol Finanzas. | Pendiente | Alta | Control de desarrollo / Integracion Backend |
+| SEC-004 | Definir alcance del rol Finanzas. | Aprobada obs. / pend. SEC-001 | Alta | Control de desarrollo / Integracion Backend |
 | SEC-005 | Disenar bitacora/auditoria de cambios sensibles. | Pendiente | Alta | Integracion Backend |
 | BE-018 | Separacion tecnica de ambientes. | Pendiente | Alta | Integracion Backend |
 | BE-019 | Estrategia de backup/restauracion. | Pendiente | Alta | Integracion Backend / Produccion |
@@ -443,25 +443,36 @@ Definir medidas de endurecimiento de Supabase Auth antes de habilitar produccion
 
 ### SEC-004 - Definir alcance del rol Finanzas
 
-**Estado:** Pendiente
+**Estado:** Aprobada con observaciones / pendiente SEC-001
 **Prioridad:** Alta
 **Responsable:** Control de desarrollo / Integracion Backend
 **Origen:** Auditoria PROD-001 / SEC-001
 **Fecha creacion:** 2026-06-19
+**Fecha validacion documental:** 2026-06-19
+**Dependencias:** SEC-001, SEC-002, BE-016, BE-020, BE-021, UI-016, PROD-001
 
 #### Descripcion
-Precisar que datos clinicos o administrativos puede leer el rol Finanzas y que acciones financieras puede ejecutar.
+Definir el alcance documental del rol Finanzas para que opere cobros, pagos y reportes financieros con alias administrativo, identificador interno y datos financieros minimos, sin acceder a ficha completa del paciente ni datos clinicos sensibles.
 
-#### Criterios de aceptacion preliminares
+#### Criterios de aceptacion
 - Definir datos minimos necesarios para cobranza y pagos.
+- Establecer alias administrativo e identificador interno como identidad visible por defecto.
+- Dejar nombre completo, telefono y email prohibidos por defecto o pendientes de aprobacion expresa.
 - Separar informacion financiera de informacion clinica sensible.
-- Revisar reportes visibles para finanzas.
-- Documentar restricciones por tabla o vista.
+- Prohibir acceso de Finanzas a fotos o archivos clinicos asociados.
+- Documentar restricciones por tabla, vista o feature futuro.
+- Mantener PROD-001 como bloqueo antes de uso real.
 - No modificar datos reales ni datos demo.
+
+#### Resultado
+
+SEC-004 queda aprobada con observaciones como diseño documental. Informe relacionado en `docs/control/auditorias/SEC-004_ALCANCE_ROL_FINANZAS.md`.
 
 #### Observaciones
 
-SEC-004 debe cerrar el alcance exacto del rol Finanzas, especialmente si puede ver nombre completo, alias administrativo o identificador minimo del paciente.
+Finanzas ve alias administrativo, identificador interno y datos financieros minimos por defecto. Nombre completo, telefono y email quedan prohibidos por defecto o pendientes de aprobacion expresa y consentimiento suficiente en BE-020.
+
+Finanzas no accede a clinica sensible, elementos del caso, hallazgos, revisiones, sesiones, acciones terapeuticas, fotos ni archivos clinicos. SEC-001 debe probar runtime esta definicion. BE-016 debe diseñar vista financiera minima; UI-016 debe separar reportes por rol; BE-021 debe definir anulacion logica vs delete fisico.
 
 ### SEC-005 - Disenar bitacora/auditoria de cambios sensibles
 
@@ -539,6 +550,10 @@ Definir el consentimiento informado o autorizacion de tratamiento de datos reque
 - Revisar implicancias de privacidad y confidencialidad.
 - No cargar datos reales antes de aprobacion explicita.
 
+#### Observaciones
+
+SEC-004 deja nombre completo, telefono y email prohibidos por defecto para Finanzas. BE-020 debe definir consentimiento o autorizacion especifica si Control de Desarrollo decide exponer alguno de esos datos para cobranza directa.
+
 ### BE-021 - Politica de anulacion vs eliminacion
 
 **Estado:** Pendiente
@@ -560,6 +575,8 @@ Definir cuando corresponde anular, corregir o eliminar informacion clinica, fina
 #### Observaciones
 
 BE-021 debe definir la politica transversal de anulacion logica vs delete fisico, considerando que SEC-002 recomienda prohibir delete fisico clinico/financiero en produccion.
+
+SEC-004 agrega que cobros y pagos deben operar con anulacion logica y que el delete fisico financiero debe quedar prohibido en produccion para mantener trazabilidad.
 
 ### UI-020 - Indicador visual de ambiente activo
 
@@ -735,6 +752,8 @@ Separar reportes para terapeuta, finanzas y admin segun necesidades operativas y
 
 UI-016 debe considerar reportes diferenciados por rol: admin completo, terapeuta clinico sin finanzas detalladas y finanzas financiero sin clinica sensible.
 
+SEC-004 agrega que los reportes para Finanzas deben usar alias administrativo, codigo financiero o identificador interno, sin nombre completo, telefono, email, ficha clinica ni archivos clinicos salvo aprobacion expresa y consentimiento aplicable.
+
 ### UI-017 - Definir checklist responsive de pantallas clinicas
 
 **Estado:** Pendiente
@@ -883,7 +902,7 @@ Validar runtime local para perfiles `admin`, `terapeuta` y `finanzas`, especialm
 **Origen:** BE-002
 **Fecha creacion:** 2026-06-12
 **Rama sugerida:** `docs/be-016-vista-financiera-unidad-cobrable`
-**Dependencias:** BE-013
+**Dependencias:** BE-013, SEC-004
 
 #### Descripcion
 Disenar `vista_finanzas_por_unidad_cobrable` para reportar claramente si el cobro corresponde a consulta, evaluacion, revision, trabajo o paquete de caso.
@@ -898,6 +917,8 @@ Disenar `vista_finanzas_por_unidad_cobrable` para reportar claramente si el cobr
 #### Observaciones
 
 BE-016 debe considerar una vista financiera minima por unidad cobrable, evitando exposicion de datos clinicos sensibles a Finanzas.
+
+SEC-004 define que esta vista debe priorizar alias administrativo, codigo financiero, identificador interno y datos financieros minimos. No debe exponer ficha clinica, elementos del caso, hallazgos, notas, rutas de Storage, fotos ni archivos clinicos.
 
 ### BE-017 - Definir estrategia SQL de agenda operativa
 

@@ -340,3 +340,22 @@ Se documenta la matriz esperada de permisos para `admin`, `terapeuta` y `finanza
 ### Informe relacionado
 
 `docs/control/auditorias/SEC-002_MATRIZ_PERMISOS_ROLES.md`
+
+## SEC-004 - Alcance del rol Finanzas
+
+**Estado:** Aprobada con observaciones como diseño documental.
+
+Se define que el rol Finanzas debe operar con alias administrativo, identificador interno y datos financieros mínimos. No debe acceder a ficha completa del paciente, datos clínicos sensibles, elementos del caso, hallazgos, sesiones, acciones terapéuticas, fotos ni archivos clínicos asociados.
+
+### Decisiones relevantes
+
+- Finanzas debe operar cobros, pagos y reportes financieros.
+- Finanzas debe usar alias administrativo o código financiero por defecto.
+- Nombre completo, teléfono y email quedan prohibidos por defecto o pendientes de aprobación expresa y consentimiento suficiente.
+- BE-016 debe diseñar una vista financiera mínima por unidad cobrable.
+- SEC-001 debe probar runtime que RLS bloquee acceso financiero a datos clínicos.
+- BE-021 debe definir anulación lógica y prohibición de delete físico financiero en producción.
+
+### Informe relacionado
+
+`docs/control/auditorias/SEC-004_ALCANCE_ROL_FINANZAS.md`

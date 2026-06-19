@@ -553,3 +553,23 @@ SEC-002 queda aprobada con observaciones como diseño documental. La matriz qued
 ### Observaciones
 
 No se implementaron policies, migraciones ni cambios de código. Las decisiones sobre alcance exacto de Finanzas quedan vinculadas a SEC-004. Reportes por rol queda vinculado a UI-016 y la vista financiera mínima a BE-016.
+
+## LOG-019 - Integración documental SEC-004
+
+**Estado:** Registrado documentalmente
+**Prioridad:** Alta
+**Responsable:** Control de Desarrollo
+**Origen:** SEC-004 / Control de Desarrollo
+**Fecha creación:** 2026-06-19
+
+### Descripción
+
+Se integra la definición documental del alcance del rol Finanzas, tomando como base la matriz SEC-002 y las restricciones PROD-001 para uso real con datos sensibles.
+
+### Resultado
+
+SEC-004 queda aprobada con observaciones como diseño documental. Finanzas debe operar con alias administrativo, identificador interno y datos financieros mínimos, sin acceso a ficha completa del paciente, clínica sensible ni archivos clínicos asociados.
+
+### Observaciones
+
+No se implementaron policies, migraciones, vistas ni cambios de código. SEC-001 debe probar runtime esta definición. BE-016 debe diseñar vista financiera mínima, UI-016 debe separar reportes por rol, BE-020 debe resolver consentimiento si se expone contacto financiero y BE-021 debe definir anulación lógica vs delete físico.

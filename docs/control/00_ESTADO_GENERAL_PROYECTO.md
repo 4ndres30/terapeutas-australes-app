@@ -92,6 +92,14 @@ Siguen pendientes:
 
 El proyecto sigue no listo para datos reales como sistema oficial.
 
+### Avance SEC-004
+
+SEC-004 define que Finanzas debe operar con alias administrativo, identificador interno y datos financieros mínimos. Finanzas no debe ver ficha completa del paciente, datos clínicos sensibles ni archivos clínicos asociados.
+
+El nombre completo, teléfono y email quedan prohibidos por defecto o pendientes de aprobación expresa y consentimiento.
+
+El proyecto sigue no listo para datos reales como sistema oficial.
+
 ## No debe tocarse sin instruccion expresa
 
 - `.env`.
