@@ -1,7 +1,7 @@
 # Pendientes del proyecto
 
 Fecha de apertura: `2026-06-11`
-Ultima actualizacion: `2026-06-17`
+Ultima actualizacion: `2026-06-18`
 Responsable del documento: Control de desarrollo
 
 Este documento es la lista maestra de pendientes. Cada pendiente debe tener un codigo, un responsable y un estado permitido. Los detalles tecnicos o clinicos pueden vivir en los documentos especializados, pero este archivo debe permitir ver rapidamente que falta.
@@ -36,7 +36,7 @@ Este documento es la lista maestra de pendientes. Cada pendiente debe tener un c
 | BE-010 | Ajustar soporte operativo de hallazgos derivados de aspectos. | Integrada | Alta | Integracion Backend/Estructura |
 | IMP-001 | Implementar hallazgos operativos en `DetalleRevisionesPanel`. | Integrada | Alta | Implementacion |
 | DATA-001 | Agregar seed local de caso demo integral. | Integrada | Alta | Control de desarrollo |
-| UI-010 | Redisenar navegacion del detalle de caso. | Pendiente | Alta | UI / UX / Pulido visual |
+| UI-010 | Redisenar navegacion del detalle de caso. | Aprobada obs. / pend. validacion clinica | Alta | UI / UX / Pulido visual |
 | UI-011 | Disenar panel operativo de hallazgos dentro del detalle de revision. | Integrada | Alta | UI / UX / Pulido visual |
 | UI-012 | Disenar flujo visual Evaluar trabajo. | Integrada | Alta | UI / UX / Pulido visual |
 | UI-013 | Disenar experiencia de trabajos, sesiones y acciones. | Pendiente | Alta | UI / UX / Pulido visual |
@@ -54,6 +54,7 @@ Este documento es la lista maestra de pendientes. Cada pendiente debe tener un c
 | BE-016 | Disenar vista financiera por unidad cobrable. | Pendiente | Media | Integracion Backend/Estructura |
 | BE-017 | Definir estrategia SQL de agenda operativa. | Pendiente | Media | Integracion Backend/Estructura |
 | IMP-002 | Implementacion funcional hallazgo a trabajo. | Pendiente | Alta | Implementacion |
+| PROD-001 | Preparacion para uso real con datos sensibles. | Pendiente | Alta | Control de desarrollo / Integracion Backend |
 
 ## Pendientes integrados
 
@@ -280,9 +281,11 @@ Integrada por PR #21. UI-012 definió el diseño del flujo `Evaluar trabajo`: ev
 
 ## Pendientes activos
 
-El siguiente paso operativo es IMP-002: implementacion funcional controlada del flujo `Evaluar trabajo` desde hallazgo operativo.
+El siguiente paso operativo sigue siendo IMP-002: implementacion funcional controlada del flujo `Evaluar trabajo` desde hallazgo operativo.
 
 QA-002 y UI-012 ya fueron integradas por PR #20 y PR #21, respectivamente, y no quedan como pendientes activos.
+
+No se deben cargar datos reales como uso oficial todavia. Antes de produccion debe cerrarse PROD-001.
 
 ### RFC-002 - Detectar duplicidades entre entidades clinicas
 
@@ -307,23 +310,57 @@ Revisar si existen campos repetidos o responsabilidades solapadas entre consulta
 
 ### UI-010 - Redisenar navegacion del detalle de caso
 
-**Estado:** Pendiente
+**Estado:** Aprobada con observaciones / Pendiente validacion clinica
 **Prioridad:** Alta
 **Responsable:** UI / UX / Pulido visual
 **Origen:** UI-001 + UI-002
 **Fecha creacion:** 2026-06-13
-**Rama sugerida:** `docs/ui-010-navegacion-detalle-caso`
+**Fecha documentacion:** 2026-06-18
+**Rama sugerida:** `docs/ui-010-diseno-resumen-detalle-caso`
 **Dependencias:** UI-001, UI-002, RFC-001
 
 #### Descripcion
-Convertir la ficha de caso en una experiencia operativa clara, con navegacion interna mas usable para elementos, revisiones, detalle, trabajos y pagos.
+Convertir la ficha de caso en una vista resumen navegable por secciones, evitando depender de una lista vertical extensa. La vista por elemento queda como modo secundario o fase posterior.
 
 #### Criterios de aceptacion
-- Proponer estructura de navegacion interna para detalle de caso.
+- Usar vista resumen general por secciones como recomendacion principal.
+- Mantener tarjetas o modulos para elementos, revisiones, detalle de revision, hallazgos, trabajos, pagos y seguimiento.
 - Mantener el caso como contenedor central del flujo clinico.
+- Conservar trazabilidad entre caso, revision, elemento, aspecto, hallazgo y trabajo.
+- Validar con Revision de flujo clinico las alertas criticas y los riesgos de ocultar informacion clinica antes de implementar.
 - No modificar codigo fuente.
 - No modificar base de datos.
 - No tocar `.env`.
+
+#### Resultado
+Aprobada con observaciones como diseno UI/UX. Implementacion futura pendiente de validacion clinica. Informe detallado en `docs/control/auditorias/UI-010_DISENO_RESUMEN_DETALLE_CASO.md`.
+
+### PROD-001 - Preparacion para uso real con datos sensibles
+
+**Estado:** Pendiente
+**Prioridad:** Alta
+**Responsable:** Control de desarrollo / Integracion Backend
+**Origen:** Control de desarrollo
+**Fecha creacion:** 2026-06-18
+**Rama sugerida:** `docs/prod-001-preparacion-datos-sensibles`
+**Dependencias:** RLS, roles, backups, consentimiento, Supabase produccion
+
+#### Descripcion
+Definir las condiciones minimas antes de ingresar datos reales de pacientes al sistema. La aplicacion no debe usarse como sistema oficial con datos reales hasta revisar seguridad, permisos, respaldos, consentimiento y separacion de ambientes.
+
+#### Criterios de aceptacion
+- Separar ambientes local, demo, staging y produccion.
+- Confirmar que datos demo no se mezclen con datos reales.
+- Revisar RLS y policies tabla por tabla.
+- Validar roles internos: admin, terapeuta y finanzas.
+- Definir y probar respaldo y restauracion.
+- Definir consentimiento informado o autorizacion de tratamiento de datos.
+- Auditar seguridad antes de produccion.
+- No modificar datos reales.
+- No tocar Supabase remoto sin autorizacion expresa.
+
+#### Resultado
+Pendiente. Informe inicial en `docs/control/auditorias/PROD-001_PREPARACION_USO_REAL_DATOS_SENSIBLES.md`.
 
 ### UI-013 - Disenar experiencia de trabajos, sesiones y acciones
 
@@ -600,6 +637,8 @@ Definir si `vista_agenda_operativa` combinara `agenda_eventos`, consultas, evalu
 #### Descripcion
 IMP-002 queda como la siguiente implementación funcional. Debe partir desde UI-012, QA-002 y BE-011, respetando que `Evaluar trabajo` no crea trabajos automáticamente y que la creación del trabajo requiere confirmación manual del terapeuta.
 
+No usar datos reales todavia. Antes de produccion debe cerrarse PROD-001.
+
 #### Criterios de aceptacion preliminares
 - Partir desde QA-002, UI-012 y BE-011.
 - Usar `trabajos.revision_hallazgo_origen_id` como hallazgo origen principal.
@@ -610,6 +649,7 @@ IMP-002 queda como la siguiente implementación funcional. Debe partir desde UI-
 - No tocar `.env`.
 - No ejecutar `supabase db push`.
 - No tocar Supabase remoto.
+- No usar datos reales hasta cerrar PROD-001.
 
 ## Tareas sugeridas no activas
 

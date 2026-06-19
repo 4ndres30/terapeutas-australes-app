@@ -3,7 +3,7 @@
 Responsable: UI / UX / Pulido visual
 Estado del documento: En analisis
 Fecha creacion: `2026-06-11`
-Ultima actualizacion: `2026-06-17`
+Ultima actualizacion: `2026-06-18`
 
 Este documento controla tareas de experiencia de usuario, formularios, responsive y pulido visual. El objetivo es que la aplicacion sea clara, sobria, profesional y facil de usar para el flujo terapeutico.
 
@@ -162,6 +162,39 @@ Pendiente.
 
 ### Observaciones
 Esta tarea es documental hasta que Javier apruebe cambios visuales concretos.
+
+## UI-010 - Redisenar navegacion del detalle de caso
+
+**Estado:** Aprobada con observaciones / pendiente de validacion clinica
+**Prioridad:** Alta
+**Responsable:** UI / UX / Pulido visual
+**Origen:** UI-001 + UI-002
+**Fecha creacion:** 2026-06-13
+**Fecha documentacion:** 2026-06-18
+**Rama sugerida:** `docs/ui-010-diseno-resumen-detalle-caso`
+**Dependencias:** UI-001, UI-002, RFC-001
+
+### Descripcion
+UI-010 ya cuenta con diseno detallado para transformar el detalle de caso desde una lista vertical extensa hacia una vista resumen general por secciones. La vista por elemento queda como modo secundario o fase posterior.
+
+### Archivos relacionados
+- `docs/control/auditorias/UI-010_AMPLIACION_RESUMEN_DETALLE_CASO.md`
+- `docs/control/auditorias/UI-010_DISENO_RESUMEN_DETALLE_CASO.md`
+
+### Criterios de aceptacion
+- Usar como vista principal un resumen general por secciones.
+- Mantener tarjetas o modulos para elementos, revisiones, detalle de revision, hallazgos, trabajos, pagos y seguimiento.
+- Conservar trazabilidad entre caso, revision, elemento, aspecto, hallazgo y trabajo.
+- No implementar codigo todavia.
+- No modificar CSS.
+- No modificar base de datos.
+- Requerir revision de flujo clinico antes de implementar.
+
+### Resultado
+Aprobada con observaciones como diseno UI/UX. La implementacion futura queda pendiente de validacion clinica, especialmente sobre alertas criticas y riesgos de ocultar informacion clinica.
+
+### Observaciones
+La recomendacion principal es una vista resumen general por secciones. La vista organizada por elemento del caso queda como exploracion secundaria o fase posterior.
 
 ## UI-011 - Disenar panel operativo de hallazgos dentro del detalle de revision
 
