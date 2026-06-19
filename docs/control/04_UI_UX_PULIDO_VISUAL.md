@@ -317,3 +317,23 @@ Para Finanzas, UI-016 no debe mostrar por defecto:
 - rutas o miniaturas de archivos clínicos.
 
 Nombre completo, teléfono o email solo deben considerarse si Control de Desarrollo lo aprueba expresamente y BE-020 define consentimiento suficiente.
+
+## UI-022 - Fotos dentro de Elementos del caso
+
+**Estado:** Implementada local / pendiente QA.
+
+Se integra una primera experiencia visual dentro de `ElementosCasoPanel` para cargar, listar y visualizar fotos asociadas a elementos existentes del caso.
+
+### Criterios visuales
+
+- Mantener la funcionalidad dentro de la ficha del caso.
+- No crear modulo principal independiente.
+- Mostrar conteo de fotos por elemento.
+- Mostrar miniaturas mediante URLs temporales firmadas.
+- No exponer rutas internas de Storage en pantalla.
+- No mostrar fotos ni rutas de Storage al rol Finanzas.
+- Mantener clases visuales existentes del sistema clínico.
+
+### Informe relacionado
+
+`docs/control/auditorias/BE-022_UI-022_FOTOS_ELEMENTOS_CASO.md`

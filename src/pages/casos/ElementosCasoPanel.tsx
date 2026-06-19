@@ -23,6 +23,7 @@ type PrioridadElemento = 'Baja' | 'Media' | 'Alta' | 'Urgente'
 type FuenteInformacion = 'Consultante' | 'Evaluación' | 'Consulta' | 'Revisión previa' | 'Documento externo' | 'Observación interna' | 'Otro'
 type NivelConfirmacion = 'Declarado por consultante' | 'Confirmado' | 'Por confirmar' | 'Referencial'
 type EstadoElemento = 'Activo' | 'En observación' | 'Descartado' | 'Cerrado'
+type TipoFotoElemento = 'Principal' | 'Referencia' | 'Evidencia' | 'Antes' | 'Después' | 'Seguimiento' | 'Otro'
 
 type ElementoCaso = {
   id_elemento_caso: string
@@ -45,6 +46,24 @@ type ElementoCaso = {
   created_at: string
 }
 
+type FotoElementoCaso = {
+  id_foto_elemento_caso: string
+  paciente_id: string
+  caso_id: string
+  elemento_caso_id: string
+  bucket_id: string
+  storage_path: string
+  nombre_archivo: string
+  mime_type: string
+  tamano_bytes: number | null
+  descripcion: string | null
+  tipo_foto: TipoFotoElemento
+  es_principal: boolean
+  estado_foto: string
+  created_at: string
+  signedUrl?: string
+}
+
 type FormularioElemento = {
   tipo_elemento: TipoElemento
   nombre_elemento: string
@@ -60,6 +79,14 @@ type FormularioElemento = {
   nivel_confirmacion: NivelConfirmacion
   estado_elemento: EstadoElemento
   notas_internas: string
+}
+
+type FormularioFoto = {
+  elemento_caso_id: string
+  descripcion: string
+  tipo_foto: TipoFotoElemento
+  es_principal: boolean
+  archivo: File | null
 }
 
 const ELEMENTO_SELECT = [
@@ -83,6 +110,27 @@ const ELEMENTO_SELECT = [
   'created_at',
 ].join(', ')
 
+const FOTO_SELECT = [
+  'id_foto_elemento_caso',
+  'paciente_id',
+  'caso_id',
+  'elemento_caso_id',
+  'bucket_id',
+  'storage_path',
+  'nombre_archivo',
+  'mime_type',
+  'tamano_bytes',
+  'descripcion',
+  'tipo_foto',
+  'es_principal',
+  'estado_foto',
+  'created_at',
+].join(', ')
+
+const FOTOS_BUCKET = 'elementos-caso'
+const FOTO_MAX_BYTES = 5 * 1024 * 1024
+const FOTO_SIGNED_URL_SECONDS = 60 * 10
+const mimeTypesFotosPermitidos = ['image/jpeg', 'image/png', 'image/webp']
 const tiposElemento: TipoElemento[] = ['Persona', 'Hogar', 'Negocio', 'Lugar', 'Objeto', 'Mascota/Animal', 'Organización', 'Otro']
 const rolesElemento: RolElemento[] = [
   'Consultante',
@@ -98,6 +146,7 @@ const prioridadesElemento: PrioridadElemento[] = ['Baja', 'Media', 'Alta', 'Urge
 const fuentesInformacion: FuenteInformacion[] = ['Consultante', 'Evaluación', 'Consulta', 'Revisión previa', 'Documento externo', 'Observación interna', 'Otro']
 const nivelesConfirmacion: NivelConfirmacion[] = ['Declarado por consultante', 'Confirmado', 'Por confirmar', 'Referencial']
 const estadosElemento: EstadoElemento[] = ['Activo', 'En observación', 'Descartado', 'Cerrado']
+const tiposFotoElemento: TipoFotoElemento[] = ['Principal', 'Referencia', 'Evidencia', 'Antes', 'Después', 'Seguimiento', 'Otro']
 
 function crearFormularioInicial(): FormularioElemento {
   return {
@@ -118,8 +167,27 @@ function crearFormularioInicial(): FormularioElemento {
   }
 }
 
+function crearFormularioFotoInicial(elemento_caso_id = ''): FormularioFoto {
+  return {
+    elemento_caso_id,
+    descripcion: '',
+    tipo_foto: 'Referencia',
+    es_principal: false,
+    archivo: null,
+  }
+}
+
 function normalizarTexto(texto: string) {
   return texto.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+}
+
+function normalizarNombreArchivo(nombreArchivo: string) {
+  const limpio = normalizarTexto(nombreArchivo)
+    .replace(/[^a-z0-9._-]+/g, '-')
+    .replace(/-+/g, '-')
+    .replace(/^-|-$/g, '')
+
+  return limpio || 'foto-elemento'
 }
 
 function formatearFecha(fecha: string | null) {
@@ -162,13 +230,34 @@ function validarFormulario(formulario: FormularioElemento, casoId: string, pacie
   return ''
 }
 
+function validarArchivoFoto(archivo: File | null) {
+  if (!archivo) {
+    return 'Selecciona una imagen para subir.'
+  }
+
+  if (!mimeTypesFotosPermitidos.includes(archivo.type)) {
+    return 'La imagen debe ser JPG, PNG o WebP.'
+  }
+
+  if (archivo.size > FOTO_MAX_BYTES) {
+    return 'La imagen no puede superar 5 MB.'
+  }
+
+  return ''
+}
+
 function ElementosCasoPanel({ casoId, pacienteId, pacienteNombre }: ElementosCasoPanelProps) {
   const [elementos, setElementos] = useState<ElementoCaso[]>([])
+  const [fotos, setFotos] = useState<FotoElementoCaso[]>([])
   const [formulario, setFormulario] = useState<FormularioElemento>(() => crearFormularioInicial())
+  const [formularioFoto, setFormularioFoto] = useState<FormularioFoto>(() => crearFormularioFotoInicial())
   const [busqueda, setBusqueda] = useState('')
   const [mensaje, setMensaje] = useState('')
+  const [mensajeFoto, setMensajeFoto] = useState('')
   const [cargando, setCargando] = useState(true)
   const [guardando, setGuardando] = useState(false)
+  const [subiendoFoto, setSubiendoFoto] = useState(false)
+  const [fotoInputKey, setFotoInputKey] = useState(0)
 
   const elementosFiltrados = useMemo(() => {
     if (!busqueda.trim()) {
@@ -193,16 +282,90 @@ function ElementosCasoPanel({ casoId, pacienteId, pacienteNombre }: ElementosCas
     })
   }, [busqueda, elementos])
 
+  const fotosPorElemento = useMemo(() => {
+    return fotos.reduce<Record<string, FotoElementoCaso[]>>((acumulador, foto) => {
+      const actuales = acumulador[foto.elemento_caso_id] || []
+      acumulador[foto.elemento_caso_id] = [...actuales, foto]
+      return acumulador
+    }, {})
+  }, [fotos])
+
   const metricas = [
     { etiqueta: 'Total', valor: elementos.length, detalle: 'Elementos de este caso' },
     { etiqueta: 'Activos', valor: elementos.filter((elemento) => elemento.estado_elemento === 'Activo').length, detalle: 'Disponibles para revisión' },
     { etiqueta: 'Alta/Urgente', valor: elementos.filter((elemento) => elemento.prioridad_elemento === 'Alta' || elemento.prioridad_elemento === 'Urgente').length, detalle: 'Priorizados' },
     { etiqueta: 'Por confirmar', valor: elementos.filter((elemento) => elemento.nivel_confirmacion === 'Por confirmar').length, detalle: 'Requieren validación' },
+    { etiqueta: 'Fotos', valor: fotos.length, detalle: 'Asociadas a elementos' },
   ]
 
   function actualizarFormulario(campo: keyof FormularioElemento, valor: string) {
     setFormulario((actual) => ({ ...actual, [campo]: valor }))
   }
+
+  function actualizarFormularioFoto(campo: 'elemento_caso_id' | 'descripcion' | 'tipo_foto', valor: string) {
+    setFormularioFoto((actual) => {
+      if (campo === 'tipo_foto') {
+        return { ...actual, tipo_foto: valor as TipoFotoElemento }
+      }
+
+      return { ...actual, [campo]: valor }
+    })
+  }
+
+  const cargarFotosElementos = useCallback(async () => {
+    if (!casoId || !pacienteId) {
+      setFotos([])
+      return
+    }
+
+    const { data, error } = await supabase
+      .from('fotos_elementos_caso')
+      .select(FOTO_SELECT)
+      .eq('caso_id', casoId)
+      .eq('paciente_id', pacienteId)
+      .eq('estado_foto', 'Activa')
+      .order('created_at', { ascending: false })
+
+    if (error) {
+      setMensajeFoto(`Error al cargar fotos de elementos: ${error.message}`)
+      setFotos([])
+      return
+    }
+
+    let erroresFirmas = 0
+
+    const fotosConUrl = await Promise.all(
+      ((data || []) as unknown as FotoElementoCaso[]).map(async (foto) => {
+        const { data: signedUrlData, error: signedUrlError } = await supabase.storage
+          .from(FOTOS_BUCKET)
+          .createSignedUrl(foto.storage_path, FOTO_SIGNED_URL_SECONDS)
+
+        if (signedUrlError) {
+          erroresFirmas += 1
+          return foto
+        }
+
+        return {
+          ...foto,
+          signedUrl: signedUrlData.signedUrl,
+        }
+      }),
+    )
+
+    if (erroresFirmas > 0) {
+      setMensajeFoto('Algunas fotos no pudieron preparar vista temporal. Intenta recargar el caso.')
+    } else {
+      setMensajeFoto((actual) => {
+        if (actual.startsWith('Error al cargar fotos') || actual.includes('vista temporal')) {
+          return ''
+        }
+
+        return actual
+      })
+    }
+
+    setFotos(fotosConUrl)
+  }, [casoId, pacienteId])
 
   const cargarElementos = useCallback(async () => {
     setCargando(true)
@@ -221,9 +384,18 @@ function ElementosCasoPanel({ casoId, pacienteId, pacienteNombre }: ElementosCas
       return
     }
 
-    setElementos((data || []) as unknown as ElementoCaso[])
+    const elementosCargados = (data || []) as unknown as ElementoCaso[]
+    setElementos(elementosCargados)
+    setFormularioFoto((actual) => {
+      if (actual.elemento_caso_id || elementosCargados.length === 0) {
+        return actual
+      }
+
+      return { ...actual, elemento_caso_id: elementosCargados[0].id_elemento_caso }
+    })
+    await cargarFotosElementos()
     setCargando(false)
-  }, [casoId, pacienteId])
+  }, [casoId, cargarFotosElementos, pacienteId])
 
   async function guardarElemento(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
@@ -270,9 +442,87 @@ function ElementosCasoPanel({ casoId, pacienteId, pacienteNombre }: ElementosCas
     }
 
     setElementos((actuales) => [data as unknown as ElementoCaso, ...actuales])
+    setFormularioFoto((actual) => actual.elemento_caso_id ? actual : { ...actual, elemento_caso_id: (data as unknown as ElementoCaso).id_elemento_caso })
     setFormulario(crearFormularioInicial())
     setMensaje('Elemento guardado correctamente en este caso')
     setGuardando(false)
+  }
+
+  async function subirFotoElemento(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault()
+
+    if (!formularioFoto.elemento_caso_id) {
+      setMensajeFoto('Error: selecciona un elemento existente para asociar la foto.')
+      return
+    }
+
+    const elemento = elementos.find((item) => item.id_elemento_caso === formularioFoto.elemento_caso_id)
+
+    if (!elemento) {
+      setMensajeFoto('Error: el elemento seleccionado ya no está disponible en este caso.')
+      return
+    }
+
+    const errorArchivo = validarArchivoFoto(formularioFoto.archivo)
+
+    if (errorArchivo) {
+      setMensajeFoto(`Error: ${errorArchivo}`)
+      return
+    }
+
+    const archivo = formularioFoto.archivo as File
+    const nombreArchivo = normalizarNombreArchivo(archivo.name)
+    const storagePath = `casos/${casoId}/elementos/${elemento.id_elemento_caso}/${Date.now()}-${nombreArchivo}`
+
+    setSubiendoFoto(true)
+    setMensajeFoto('Subiendo imagen...')
+
+    const { error: uploadError } = await supabase.storage
+      .from(FOTOS_BUCKET)
+      .upload(storagePath, archivo, {
+        cacheControl: '3600',
+        contentType: archivo.type,
+        upsert: false,
+      })
+
+    if (uploadError) {
+      setMensajeFoto(`Error al subir imagen: ${uploadError.message}`)
+      setSubiendoFoto(false)
+      return
+    }
+
+    setMensajeFoto('Imagen subida. Registrando metadatos...')
+
+    const payload = {
+      paciente_id: pacienteId,
+      caso_id: casoId,
+      elemento_caso_id: elemento.id_elemento_caso,
+      bucket_id: FOTOS_BUCKET,
+      storage_path: storagePath,
+      nombre_archivo: archivo.name,
+      mime_type: archivo.type,
+      tamano_bytes: archivo.size,
+      descripcion: formularioFoto.descripcion.trim() || null,
+      tipo_foto: formularioFoto.es_principal ? 'Principal' : formularioFoto.tipo_foto,
+      es_principal: formularioFoto.es_principal,
+      estado_foto: 'Activa',
+    }
+
+    const { error: insertError } = await supabase
+      .from('fotos_elementos_caso')
+      .insert(payload)
+
+    if (insertError) {
+      setMensajeFoto(`Error al registrar metadatos: ${insertError.message}. La imagen quedó en Storage y debe revisarse manualmente.`)
+      setSubiendoFoto(false)
+      return
+    }
+
+    setFormularioFoto(crearFormularioFotoInicial(elemento.id_elemento_caso))
+    setFotoInputKey((actual) => actual + 1)
+    setMensajeFoto('Foto guardada correctamente.')
+    await cargarFotosElementos()
+    setSubiendoFoto(false)
   }
 
   useEffect(() => {
@@ -333,32 +583,66 @@ function ElementosCasoPanel({ casoId, pacienteId, pacienteNombre }: ElementosCas
             </div>
           ) : (
             <div className="clinical-list">
-              {elementosFiltrados.map((elemento) => (
-                <article className="clinical-card" key={elemento.id_elemento_caso}>
-                  <div className="clinical-card__top">
-                    <div>
-                      <h3>{elemento.nombre_elemento}</h3>
-                      <small>{elemento.tipo_elemento} · {elemento.rol_en_caso}</small>
+              {elementosFiltrados.map((elemento) => {
+                const fotosElemento = fotosPorElemento[elemento.id_elemento_caso] || []
+
+                return (
+                  <article className="clinical-card" key={elemento.id_elemento_caso}>
+                    <div className="clinical-card__top">
+                      <div>
+                        <h3>{elemento.nombre_elemento}</h3>
+                        <small>{elemento.tipo_elemento} · {elemento.rol_en_caso}</small>
+                      </div>
+                      <span className="clinical-badge">{elemento.estado_elemento}</span>
                     </div>
-                    <span className="clinical-badge">{elemento.estado_elemento}</span>
-                  </div>
-                  <p>{textoCorto(elemento.descripcion_referencia || elemento.motivo_inclusion || 'Sin descripción registrada.')}</p>
-                  <dl className="clinical-details">
-                    <div>
-                      <dt>Prioridad</dt>
-                      <dd>{elemento.prioridad_elemento}</dd>
-                    </div>
-                    <div>
-                      <dt>Confirmación</dt>
-                      <dd>{elemento.nivel_confirmacion}</dd>
-                    </div>
-                    <div>
-                      <dt>Nacimiento</dt>
-                      <dd>{formatearFecha(elemento.fecha_nacimiento)}</dd>
-                    </div>
-                  </dl>
-                </article>
-              ))}
+                    <p>{textoCorto(elemento.descripcion_referencia || elemento.motivo_inclusion || 'Sin descripción registrada.')}</p>
+                    <dl className="clinical-details">
+                      <div>
+                        <dt>Prioridad</dt>
+                        <dd>{elemento.prioridad_elemento}</dd>
+                      </div>
+                      <div>
+                        <dt>Confirmación</dt>
+                        <dd>{elemento.nivel_confirmacion}</dd>
+                      </div>
+                      <div>
+                        <dt>Nacimiento</dt>
+                        <dd>{formatearFecha(elemento.fecha_nacimiento)}</dd>
+                      </div>
+                      <div>
+                        <dt>Fotos</dt>
+                        <dd>{fotosElemento.length}</dd>
+                      </div>
+                    </dl>
+
+                    {fotosElemento.length > 0 ? (
+                      <div className="clinical-grid" aria-label={`Fotos asociadas a ${elemento.nombre_elemento}`}>
+                        {fotosElemento.map((foto) => (
+                          <div className="clinical-field" key={foto.id_foto_elemento_caso}>
+                            {foto.signedUrl ? (
+                              <a href={foto.signedUrl} rel="noreferrer" target="_blank" aria-label={`Abrir foto ${foto.nombre_archivo}`}>
+                                <img
+                                  alt={foto.descripcion || `Foto de ${elemento.nombre_elemento}`}
+                                  src={foto.signedUrl}
+                                  style={{ aspectRatio: '4 / 3', borderRadius: 8, objectFit: 'cover', width: '100%' }}
+                                />
+                              </a>
+                            ) : (
+                              <div className="clinical-empty">
+                                <strong>Vista temporal no disponible</strong>
+                              </div>
+                            )}
+                            <small>{foto.es_principal ? 'Principal' : foto.tipo_foto} · {formatearFecha(foto.created_at)}</small>
+                            {foto.descripcion && <p>{textoCorto(foto.descripcion, 90)}</p>}
+                          </div>
+                        ))}
+                      </div>
+                    ) : (
+                      <p className="clinical-note">Sin fotos asociadas.</p>
+                    )}
+                  </article>
+                )
+              })}
             </div>
           )}
         </section>
@@ -474,6 +758,87 @@ function ElementosCasoPanel({ casoId, pacienteId, pacienteNombre }: ElementosCas
 
           <p className="clinical-note">Preview: {formulario.nombre_elemento || 'Nuevo elemento'} · {formulario.tipo_elemento} · nacimiento {formatearFecha(formulario.fecha_nacimiento || null)}</p>
           {mensaje && <p className={mensaje.startsWith('Error') ? 'clinical-message clinical-message--error' : 'clinical-message'}>{mensaje}</p>}
+
+          <div className="clinical-form-panel__header">
+            <div>
+              <span className="clinical-kicker">Fotos</span>
+              <h2>Foto de elemento</h2>
+              <p>Sube imágenes demo asociadas a elementos existentes del caso.</p>
+            </div>
+          </div>
+
+          <form className="clinical-form" onSubmit={subirFotoElemento}>
+            <label className="clinical-field">
+              <span>Elemento del caso *</span>
+              <select
+                className="clinical-select"
+                disabled={subiendoFoto || elementos.length === 0}
+                value={formularioFoto.elemento_caso_id}
+                onChange={(event) => actualizarFormularioFoto('elemento_caso_id', event.target.value)}
+                required
+              >
+                <option value="">Selecciona un elemento</option>
+                {elementos.map((elemento) => (
+                  <option key={elemento.id_elemento_caso} value={elemento.id_elemento_caso}>
+                    {elemento.nombre_elemento} · {elemento.tipo_elemento}
+                  </option>
+                ))}
+              </select>
+            </label>
+
+            <label className="clinical-field">
+              <span>Imagen JPG, PNG o WebP *</span>
+              <input
+                key={fotoInputKey}
+                accept="image/jpeg,image/png,image/webp"
+                className="clinical-input"
+                disabled={subiendoFoto || elementos.length === 0}
+                type="file"
+                onChange={(event) => setFormularioFoto((actual) => ({ ...actual, archivo: event.target.files?.[0] || null }))}
+                required
+              />
+            </label>
+
+            <div className="clinical-grid">
+              <label className="clinical-field">
+                <span>Tipo de foto</span>
+                <select
+                  className="clinical-select"
+                  disabled={subiendoFoto}
+                  value={formularioFoto.tipo_foto}
+                  onChange={(event) => actualizarFormularioFoto('tipo_foto', event.target.value)}
+                >
+                  {tiposFotoElemento.map((tipo) => <option key={tipo} value={tipo}>{tipo}</option>)}
+                </select>
+              </label>
+
+              <label className="clinical-field">
+                <span>Principal</span>
+                <input
+                  checked={formularioFoto.es_principal}
+                  disabled={subiendoFoto}
+                  type="checkbox"
+                  onChange={(event) => setFormularioFoto((actual) => ({ ...actual, es_principal: event.target.checked }))}
+                />
+              </label>
+            </div>
+
+            <label className="clinical-field">
+              <span>Descripción opcional</span>
+              <textarea
+                className="clinical-textarea"
+                disabled={subiendoFoto}
+                value={formularioFoto.descripcion}
+                onChange={(event) => actualizarFormularioFoto('descripcion', event.target.value)}
+              />
+            </label>
+
+            <button className="clinical-button" disabled={subiendoFoto || elementos.length === 0} type="submit">
+              {subiendoFoto ? 'Subiendo imagen...' : 'Subir foto'}
+            </button>
+          </form>
+
+          {mensajeFoto && <p className={mensajeFoto.startsWith('Error') ? 'clinical-message clinical-message--error' : 'clinical-message'}>{mensajeFoto}</p>}
         </section>
       </section>
     </section>

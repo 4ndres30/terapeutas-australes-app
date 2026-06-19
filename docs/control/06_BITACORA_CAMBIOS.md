@@ -573,3 +573,23 @@ SEC-004 queda aprobada con observaciones como diseño documental. Finanzas debe 
 ### Observaciones
 
 No se implementaron policies, migraciones, vistas ni cambios de código. SEC-001 debe probar runtime esta definición. BE-016 debe diseñar vista financiera mínima, UI-016 debe separar reportes por rol, BE-020 debe resolver consentimiento si se expone contacto financiero y BE-021 debe definir anulación lógica vs delete físico.
+
+## LOG-020 - Implementación fotos de elementos del caso
+
+**Estado:** Registrado documentalmente
+**Prioridad:** Alta
+**Responsable:** Integración Backend / UI UX
+**Origen:** BE-022 / UI-022
+**Fecha creación:** 2026-06-19
+
+### Descripción
+
+Se implementa una primera versión local/demo para asociar fotos a elementos del caso mediante Supabase Storage privado, tabla relacional de metadatos e integración visual en `ElementosCasoPanel`.
+
+### Resultado
+
+Se crea migración, tabla `public.fotos_elementos_caso`, bucket `elementos-caso`, policies/RLS y formulario de carga/listado de fotos dentro de la ficha del caso.
+
+### Observaciones
+
+No se debe usar con datos reales. Las fotos de elementos son archivos clinicos sensibles y Finanzas no debe acceder a fotos ni rutas de Storage. Queda pendiente QA-003, validación local de migración, validación runtime RLS/Storage y definición futura de archivado, auditoría y eliminación física controlada.

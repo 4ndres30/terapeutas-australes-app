@@ -100,6 +100,16 @@ El nombre completo, teléfono y email quedan prohibidos por defecto o pendientes
 
 El proyecto sigue no listo para datos reales como sistema oficial.
 
+### Avance fotos de elementos del caso
+
+BE-022 / UI-022 incorpora una primera version local/demo para asociar fotos a elementos del caso mediante Supabase Storage privado y `public.fotos_elementos_caso`.
+
+La columna antigua `elementos_caso.foto_url` queda deprecada para uso operativo principal.
+
+Las fotos de elementos del caso se consideran archivos clinicos sensibles. Finanzas no debe ver fotos ni rutas de Storage asociadas.
+
+Este avance no cambia el bloqueo PROD-001: la funcionalidad requiere QA-003, validacion runtime RLS/Storage y politicas de auditoria antes de cualquier uso con datos reales.
+
 ## No debe tocarse sin instruccion expresa
 
 - `.env`.
