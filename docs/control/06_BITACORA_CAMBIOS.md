@@ -593,3 +593,44 @@ Se crea migración, tabla `public.fotos_elementos_caso`, bucket `elementos-caso`
 ### Observaciones
 
 No se debe usar con datos reales. Las fotos de elementos son archivos clinicos sensibles y Finanzas no debe acceder a fotos ni rutas de Storage. Queda pendiente QA-003, validación local de migración, validación runtime RLS/Storage y definición futura de archivado, auditoría y eliminación física controlada.
+
+## LOG-021 - Validacion runtime SEC-001
+
+**Estado:** Registrado documentalmente
+**Prioridad:** Alta
+**Responsable:** Integracion Backend / Seguridad
+**Origen:** SEC-001
+**Fecha creacion:** 2026-06-27
+**Rama sugerida:** `codex/sec-001-validacion-rls-roles`
+
+### Descripcion
+
+Se ejecuta auditoria runtime local de roles, RLS y Storage para `admin`, `terapeuta` y `finanzas`, incluyendo `public.fotos_elementos_caso` y bucket privado `elementos-caso`.
+
+### Archivos relacionados
+
+- `docs/control/auditorias/SEC-001_VALIDACION_RUNTIME_RLS_ROLES.md`
+- `docs/control/00_ESTADO_GENERAL_PROYECTO.md`
+- `docs/control/01_PENDIENTES_PROYECTO.md`
+- `docs/control/03_INTEGRACION_BACKEND_ESTRUCTURA.md`
+- `docs/control/05_DECISIONES_PROYECTO.md`
+- `docs/control/06_BITACORA_CAMBIOS.md`
+
+### Restricciones respetadas
+
+- No se modifico codigo fuente.
+- No se modificaron migraciones.
+- No se toco `.env`.
+- No se ejecuto `supabase db push`.
+- No se toco Supabase remoto.
+- No se usaron datos reales.
+- No se usaron imagenes reales.
+- Las pruebas SQL usaron Supabase local y transacciones revertidas con `ROLLBACK`.
+
+### Resultado
+
+SEC-001 queda aprobada con observaciones. RLS bloquea a Finanzas frente a clinica sensible, fotos y Storage; Admin y Terapeuta acceden a clinica/fotos segun lo esperado; Admin y Finanzas acceden a cobros/pagos.
+
+### Observaciones
+
+PROD-001 sigue bloqueante. Antes de datos reales deben atenderse hardening de grants, vista financiera minima, reportes por rol, auditoria sensible y anulacion logica vs delete fisico.

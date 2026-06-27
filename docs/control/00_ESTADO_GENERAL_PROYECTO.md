@@ -1,6 +1,6 @@
 # Estado general del proyecto
 
-Fecha de corte: `2026-06-19`
+Fecha de corte: `2026-06-27`
 Responsable del documento: Control de desarrollo
 Estado general documental: En control activo
 
@@ -56,7 +56,7 @@ El proyecto se mantiene alineado con el metodo acordado: primero documentar, aud
 - Mantener UI-010, UI-012 y UI-015 como prioridades de planificacion.
 - Sincronizar periodicamente `01_PENDIENTES_PROYECTO.md` cuando una tarea cambie de estado.
 - Mantener `06_BITACORA_CAMBIOS.md` actualizado despues de cada bloque documental o tecnico relevante.
-- Validar runtime local de RLS por roles antes de avanzar a reportes mixtos o vistas sensibles.
+- Atender observaciones de SEC-001 antes de avanzar a reportes mixtos, vistas financieras minimas o datos reales.
 
 ## Estado para uso real con datos sensibles
 
@@ -64,7 +64,7 @@ El proyecto se mantiene alineado con el metodo acordado: primero documentar, aud
 
 El proyecto está habilitado solo para pruebas locales/demo con datos ficticios.
 
-Antes de cargar pacientes reales deben cerrarse las tareas mínimas de PROD-001 / SEC-001:
+Antes de cargar pacientes reales deben cerrarse las tareas minimas de PROD-001 y las observaciones derivadas de SEC-001:
 
 - separación de ambientes;
 - validación runtime de RLS por rol;
@@ -82,13 +82,13 @@ Antes de cargar pacientes reales deben cerrarse las tareas mínimas de PROD-001 
 
 SEC-002 ya cuenta con matriz documental de permisos esperados por tabla y rol. La matriz define permisos para `admin`, `terapeuta` y `finanzas`, y queda como insumo obligatorio para SEC-001.
 
-Siguen pendientes:
+SEC-001 ya fue ejecutada en local y quedo aprobada con observaciones. Siguen pendientes:
 
-- SEC-001: validar runtime RLS por rol.
-- SEC-004: definir alcance exacto de Finanzas.
 - SEC-005: diseñar bitácora/auditoría de cambios sensibles.
+- BE-016: diseñar vista financiera mínima.
 - BE-021: definir anulación lógica vs eliminación física.
 - UI-016: revisar reportes por rol.
+- Hardening posterior de grants para fotos/Storage antes de datos reales.
 
 El proyecto sigue no listo para datos reales como sistema oficial.
 
@@ -108,7 +108,25 @@ La columna antigua `elementos_caso.foto_url` queda deprecada para uso operativo 
 
 Las fotos de elementos del caso se consideran archivos clinicos sensibles. Finanzas no debe ver fotos ni rutas de Storage asociadas.
 
-Este avance no cambia el bloqueo PROD-001: la funcionalidad requiere QA-003, validacion runtime RLS/Storage y politicas de auditoria antes de cualquier uso con datos reales.
+Este avance no cambia el bloqueo PROD-001: la funcionalidad requiere QA-003, atender observaciones SEC-001 y definir politicas de auditoria antes de cualquier uso con datos reales.
+
+### Avance SEC-001
+
+SEC-001 valida runtime local de roles, RLS y Storage con datos ficticios y transacciones revertidas.
+
+Resultado: aprobado con observaciones. La matriz runtime confirma que `admin` y `terapeuta` acceden a clinica, fotos y Storage privado; `finanzas` queda limitado a cobros/pagos y no accede a fotos, rutas Storage, elementos clinicos, revisiones, hallazgos ni trabajos sensibles.
+
+Observaciones pendientes antes de datos reales:
+
+- endurecer grants amplios en `public.fotos_elementos_caso` y revisar defaults de Storage;
+- disenar vista financiera minima sin referencias clinicas innecesarias;
+- separar reportes por rol;
+- definir auditoria de accesos/cambios sensibles;
+- cerrar politica de anulacion logica vs delete fisico.
+
+Informe: `docs/control/auditorias/SEC-001_VALIDACION_RUNTIME_RLS_ROLES.md`.
+
+El proyecto sigue no listo para datos reales como sistema oficial.
 
 ## No debe tocarse sin instruccion expresa
 

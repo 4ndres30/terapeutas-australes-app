@@ -34,6 +34,7 @@ Este documento registra decisiones estables. No reemplaza la conversacion, pero 
 | DEC-016 | Finanzas no accede a datos clinicos sensibles. | Aprobada documentalmente | 2026-06-19 |
 | DEC-017 | Finanzas opera con alias administrativo y datos financieros mínimos. | Aprobada documentalmente | 2026-06-19 |
 | DEC-018 | Fotos de elementos con Storage privado y tabla relacional. | Aprobada documentalmente | 2026-06-19 |
+| DEC-019 | SEC-001 valida RLS local pero no habilita datos reales. | Validada | 2026-06-27 |
 
 ## DEC-001 - Repositorio oficial del proyecto
 
@@ -459,3 +460,31 @@ Las fotos de elementos del caso son archivos clinicos sensibles. Finanzas no deb
 ### Consecuencia
 
 Las fotos pueden existir en multiples registros por elemento, con metadatos, estado logico, tipo de foto, principalidad y RLS. Cualquier uso con datos reales requiere cerrar PROD-001, validar Storage/RLS runtime y definir auditoria de accesos o cambios sensibles.
+
+## DEC-019 - SEC-001 valida RLS local pero no habilita datos reales
+
+**Estado:** Validada
+**Origen:** SEC-001
+**Fecha:** 2026-06-27
+
+### Decision
+
+La validacion runtime local de SEC-001 se considera aprobada con observaciones, pero no habilita produccion ni carga de datos reales.
+
+### Razon
+
+RLS se comporta correctamente por rol en Supabase local, incluyendo fotos y Storage privado, pero quedan pendientes de hardening y gobierno de datos antes de operar informacion sensible real.
+
+### Impacto
+
+- PROD-001 sigue bloqueante.
+- Finanzas permanece sin acceso a clinica sensible, fotos ni rutas Storage.
+- BE-016 debe disenar una vista financiera minima.
+- UI-016 debe separar reportes por rol.
+- SEC-005 debe definir auditoria de accesos/cambios sensibles.
+- BE-021 debe definir anulacion logica vs delete fisico.
+- Un hardening posterior debe revisar grants amplios de `fotos_elementos_caso` y Storage.
+
+### Observaciones
+
+Informe relacionado: `docs/control/auditorias/SEC-001_VALIDACION_RUNTIME_RLS_ROLES.md`.
