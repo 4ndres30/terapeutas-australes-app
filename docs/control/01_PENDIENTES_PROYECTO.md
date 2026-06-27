@@ -1,7 +1,7 @@
 # Pendientes del proyecto
 
 Fecha de apertura: `2026-06-11`
-Ultima actualizacion: `2026-06-19`
+Ultima actualizacion: `2026-06-27`
 Responsable del documento: Control de desarrollo
 
 Este documento es la lista maestra de pendientes. Cada pendiente debe tener un codigo, un responsable y un estado permitido. Los detalles tecnicos o clinicos pueden vivir en los documentos especializados, pero este archivo debe permitir ver rapidamente que falta.
@@ -53,10 +53,10 @@ Este documento es la lista maestra de pendientes. Cada pendiente debe tener un c
 | BE-015 | Validar RLS por roles para modulos nuevos. | Pendiente | Alta | Integracion Backend/Estructura |
 | BE-016 | Disenar vista financiera por unidad cobrable. | Pendiente | Media | Integracion Backend/Estructura |
 | BE-017 | Definir estrategia SQL de agenda operativa. | Pendiente | Media | Integracion Backend/Estructura |
-| SEC-001 | Validar RLS runtime por roles. | Pendiente | Alta | Integracion Backend / Seguridad |
-| SEC-002 | Crear matriz de permisos por tabla y rol. | Aprobada obs. / pend. SEC-001 | Alta | Integracion Backend / Seguridad |
+| SEC-001 | Validar RLS runtime por roles. | Aprobada con observaciones | Alta | Integracion Backend / Seguridad |
+| SEC-002 | Crear matriz de permisos por tabla y rol. | Validada runtime / obs. | Alta | Integracion Backend / Seguridad |
 | SEC-003 | Hardening Auth para produccion. | Pendiente | Alta | Integracion Backend / Seguridad |
-| SEC-004 | Definir alcance del rol Finanzas. | Aprobada obs. / pend. SEC-001 | Alta | Control de desarrollo / Integracion Backend |
+| SEC-004 | Definir alcance del rol Finanzas. | Validada runtime / obs. | Alta | Control de desarrollo / Integracion Backend |
 | SEC-005 | Disenar bitacora/auditoria de cambios sensibles. | Pendiente | Alta | Integracion Backend |
 | BE-018 | Separacion tecnica de ambientes. | Pendiente | Alta | Integracion Backend |
 | BE-019 | Estrategia de backup/restauracion. | Pendiente | Alta | Integracion Backend / Produccion |
@@ -384,11 +384,13 @@ Pendiente y bloqueante. Informes relacionados en `docs/control/auditorias/PROD-0
 
 ### SEC-001 - Validar RLS runtime por roles
 
-**Estado:** Pendiente
+**Estado:** Aprobada con observaciones
 **Prioridad:** Alta
 **Responsable:** Integracion Backend / Seguridad
 **Origen:** Auditoria PROD-001 / SEC-001
 **Fecha creacion:** 2026-06-19
+**Fecha validacion runtime:** 2026-06-27
+**Informe:** `docs/control/auditorias/SEC-001_VALIDACION_RUNTIME_RLS_ROLES.md`
 
 #### Descripcion
 Probar con usuarios reales de prueba `admin`, `terapeuta` y `finanzas` que cada rol ve y modifica solo lo permitido tabla por tabla.
@@ -401,13 +403,19 @@ Probar con usuarios reales de prueba `admin`, `terapeuta` y `finanzas` que cada 
 - Documentar resultados por tabla.
 - No tocar Supabase remoto sin autorizacion expresa.
 
+#### Resultado
+
+Aprobada con observaciones en Supabase local. Se validaron roles, helpers, RLS, tablas clinicas, tablas financieras, `public.fotos_elementos_caso`, bucket privado `elementos-caso`, `storage.objects`, `vista_cobros_estado` y rutas frontend por rol.
+
+La matriz runtime confirma que Finanzas queda bloqueado frente a clinica sensible, fotos y Storage; Admin y Terapeuta acceden a clinica/fotos segun lo esperado; Admin y Finanzas acceden a cobros/pagos; Terapeuta queda bloqueado frente a cobros/pagos.
+
 #### Observaciones
 
-SEC-001 debe usar la matriz SEC-002 como criterio esperado de pruebas runtime.
+SEC-001 uso la matriz SEC-002 y el alcance SEC-004 como criterio esperado. No habilita datos reales: quedan observaciones de hardening de grants, vista financiera minima, reportes por rol, auditoria sensible y anulacion logica.
 
 ### SEC-002 - Crear matriz de permisos por tabla y rol
 
-**Estado:** Aprobada con observaciones / pendiente SEC-001
+**Estado:** Validada runtime / observaciones
 **Prioridad:** Alta
 **Responsable:** Integracion Backend / Seguridad
 **Origen:** Auditoria PROD-001 / SEC-001
@@ -424,7 +432,7 @@ Aprobada con observaciones como diseno documental. Informe registrado en `docs/c
 
 #### Observaciones
 
-No se implementaron policies, migraciones, tablas ni cambios de codigo. La matriz queda como insumo obligatorio para SEC-001 y SEC-004.
+No se implementaron policies, migraciones, tablas ni cambios de codigo. SEC-001 valido runtime esta matriz en Supabase local y dejo observaciones de hardening, vistas financieras minimas, reportes por rol, auditoria sensible y anulacion logica.
 
 ### SEC-003 - Hardening Auth para produccion
 
@@ -446,7 +454,7 @@ Definir medidas de endurecimiento de Supabase Auth antes de habilitar produccion
 
 ### SEC-004 - Definir alcance del rol Finanzas
 
-**Estado:** Aprobada con observaciones / pendiente SEC-001
+**Estado:** Validada runtime / observaciones
 **Prioridad:** Alta
 **Responsable:** Control de desarrollo / Integracion Backend
 **Origen:** Auditoria PROD-001 / SEC-001
@@ -475,7 +483,7 @@ SEC-004 queda aprobada con observaciones como diseño documental. Informe relaci
 
 Finanzas ve alias administrativo, identificador interno y datos financieros minimos por defecto. Nombre completo, telefono y email quedan prohibidos por defecto o pendientes de aprobacion expresa y consentimiento suficiente en BE-020.
 
-Finanzas no accede a clinica sensible, elementos del caso, hallazgos, revisiones, sesiones, acciones terapeuticas, fotos ni archivos clinicos. SEC-001 debe probar runtime esta definicion. BE-016 debe diseñar vista financiera minima; UI-016 debe separar reportes por rol; BE-021 debe definir anulacion logica vs delete fisico.
+SEC-001 valido runtime que Finanzas no accede a clinica sensible, elementos del caso, hallazgos, revisiones, sesiones, acciones terapeuticas, fotos ni archivos clinicos. BE-016 debe disenar vista financiera minima; UI-016 debe separar reportes por rol; BE-021 debe definir anulacion logica vs delete fisico.
 
 ### SEC-005 - Disenar bitacora/auditoria de cambios sensibles
 

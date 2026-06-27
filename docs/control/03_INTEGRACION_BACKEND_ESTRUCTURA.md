@@ -383,3 +383,29 @@ Se agrega soporte backend/local para fotos de elementos del caso usando Supabase
 ### Informe relacionado
 
 `docs/control/auditorias/BE-022_UI-022_FOTOS_ELEMENTOS_CASO.md`
+
+## SEC-001 - Validacion runtime RLS / roles
+
+**Estado:** Aprobada con observaciones.
+
+SEC-001 ejecuto validacion runtime local de roles, RLS y Storage usando datos ficticios dentro de transacciones revertidas con `ROLLBACK`.
+
+### Resultado tecnico
+
+- `admin` accede a clinica, finanzas, fotos y Storage segun matriz esperada.
+- `terapeuta` accede a clinica, fotos y Storage; queda bloqueado frente a `cobros`, `pagos` y `vista_cobros_estado`.
+- `finanzas` accede a `cobros`, `pagos` y `vista_cobros_estado`; queda bloqueado frente a tablas clinicas, `fotos_elementos_caso` y bucket `elementos-caso`.
+- `public.fotos_elementos_caso` cumple RLS runtime para `select`, `insert`, `update` y no permite delete fisico.
+- `storage.objects` cumple RLS runtime para bucket `elementos-caso`; delete directo queda bloqueado por `storage.protect_delete()`.
+- `vista_cobros_estado` usa `security_invoker=true`.
+
+### Observaciones tecnicas
+
+- `public.fotos_elementos_caso` mantiene grants amplios a `anon` y `authenticated`; RLS bloquea runtime, pero se recomienda hardening antes de datos reales.
+- `storage.objects` mantiene grants amplios propios de Storage; RLS y trigger protegen, pero debe mantenerse bajo revision antes de produccion.
+- `vista_cobros_estado` expone IDs de origen clinico a Finanzas; BE-016 debe disenar una vista financiera minima.
+- `cobros` permite a Finanzas leer columnas completas de la tabla; debe evitarse registrar informacion clinica en `descripcion_cobro`, `observaciones` o `notas_internas`.
+
+### Informe relacionado
+
+`docs/control/auditorias/SEC-001_VALIDACION_RUNTIME_RLS_ROLES.md`
