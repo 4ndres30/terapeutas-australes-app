@@ -409,3 +409,39 @@ SEC-001 ejecuto validacion runtime local de roles, RLS y Storage usando datos fi
 ### Informe relacionado
 
 `docs/control/auditorias/SEC-001_VALIDACION_RUNTIME_RLS_ROLES.md`
+
+## BE-016 - Vista financiera minima por unidad cobrable
+
+**Estado:** Implementada localmente / pendiente PR.
+
+Se crea `public.vista_finanzas_unidades_cobrables` como superficie minima para el rol Finanzas.
+
+### Migracion relacionada
+
+`supabase/migrations/20260627231000_crear_vista_finanzas_unidades_cobrables.sql`
+
+### Resultado tecnico
+
+- La nueva vista usa `security_invoker = true`.
+- La nueva vista concede solo `select` a `authenticated`.
+- Finanzas puede leer `vista_finanzas_unidades_cobrables`.
+- Terapeuta no puede leer filas de la nueva vista porque RLS de `cobros`/`pagos` lo bloquea.
+- Admin puede leer la nueva vista.
+- `vista_cobros_estado` se mantiene para compatibilidad, pero ahora filtra con `public.es_admin()` y deja de devolver filas a Finanzas.
+- `FinanzasPage` deja de consultar `pacientes`, `pagos` directo y `vista_cobros_estado`; consume solo `vista_finanzas_unidades_cobrables`.
+
+### Campos expuestos
+
+La vista expone identificadores y datos financieros minimos: `id_cobro`, `id_pago`, `paciente_id`, `codigo_paciente`, `alias_administrativo_paciente`, tipo/referencia administrativa de unidad cobrable, concepto administrativo, fechas, montos, moneda, estado de cobro y datos del ultimo pago.
+
+### Campos excluidos
+
+No expone nombre completo, telefono, email, IDs clinicos directos, motivo/resumen de consulta, relato/sintomas/hechos/personas, motivo o descripcion clinica de caso, elementos, hallazgos, notas internas clinicas, acciones terapeuticas, resultados, fotos, miniaturas ni `storage_path`.
+
+### Validacion
+
+Se valido localmente con datos ficticios en transaccion revertida con `ROLLBACK`. Todos los checks runtime por rol devolvieron OK.
+
+### Informe relacionado
+
+`docs/control/auditorias/BE-016_VISTA_FINANCIERA_MINIMA.md`

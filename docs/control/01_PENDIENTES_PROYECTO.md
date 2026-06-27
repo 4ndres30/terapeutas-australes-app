@@ -51,7 +51,7 @@ Este documento es la lista maestra de pendientes. Cada pendiente debe tener un c
 | BE-013 | Ajustar reglas de cobros por unidad cobrable. | Pendiente | Alta | Integracion Backend/Estructura |
 | BE-014 | Crear vistas clinicas agregadas. | Pendiente | Media-alta | Integracion Backend/Estructura |
 | BE-015 | Validar RLS por roles para modulos nuevos. | Pendiente | Alta | Integracion Backend/Estructura |
-| BE-016 | Disenar vista financiera por unidad cobrable. | Pendiente | Media | Integracion Backend/Estructura |
+| BE-016 | Disenar vista financiera por unidad cobrable. | Implementada local / pend. PR | Media | Integracion Backend/Estructura |
 | BE-017 | Definir estrategia SQL de agenda operativa. | Pendiente | Media | Integracion Backend/Estructura |
 | SEC-001 | Validar RLS runtime por roles. | Aprobada con observaciones | Alta | Integracion Backend / Seguridad |
 | SEC-002 | Crear matriz de permisos por tabla y rol. | Validada runtime / obs. | Alta | Integracion Backend / Seguridad |
@@ -988,16 +988,18 @@ Validar runtime local para perfiles `admin`, `terapeuta` y `finanzas`, especialm
 
 ### BE-016 - Disenar vista financiera por unidad cobrable
 
-**Estado:** Pendiente
+**Estado:** Implementada local / pendiente PR
 **Prioridad:** Media
 **Responsable:** Integracion Backend/Estructura
 **Origen:** BE-002
 **Fecha creacion:** 2026-06-12
-**Rama sugerida:** `docs/be-016-vista-financiera-unidad-cobrable`
-**Dependencias:** BE-013, SEC-004
+**Fecha implementacion local:** 2026-06-27
+**Rama usada:** `codex/be-016-vista-financiera-minima`
+**Dependencias:** BE-013, SEC-001, SEC-002, SEC-004, DEC-019
+**Informe:** `docs/control/auditorias/BE-016_VISTA_FINANCIERA_MINIMA.md`
 
 #### Descripcion
-Disenar `vista_finanzas_por_unidad_cobrable` para reportar claramente si el cobro corresponde a consulta, evaluacion, revision, trabajo o paquete de caso.
+Disenar e implementar `vista_finanzas_unidades_cobrables` para reportar claramente si el cobro corresponde a consulta, evaluacion, revision, trabajo, caso o cobro administrativo sin exponer clinica sensible.
 
 #### Criterios de aceptacion
 - No reemplazar `vista_cobros_estado` sin analisis.
@@ -1008,9 +1010,9 @@ Disenar `vista_finanzas_por_unidad_cobrable` para reportar claramente si el cobr
 
 #### Observaciones
 
-BE-016 debe considerar una vista financiera minima por unidad cobrable, evitando exposicion de datos clinicos sensibles a Finanzas.
+BE-016 implementa `public.vista_finanzas_unidades_cobrables` como vista minima para Finanzas y ajusta `FinanzasPage` para usar solo esa vista. La vista no expone nombres completos, telefono, email, IDs clinicos directos, datos clinicos, fotos, miniaturas ni `storage_path`.
 
-SEC-004 define que esta vista debe priorizar alias administrativo, codigo financiero, identificador interno y datos financieros minimos. No debe exponer ficha clinica, elementos del caso, hallazgos, notas, rutas de Storage, fotos ni archivos clinicos.
+`vista_cobros_estado` se mantiene para compatibilidad interna/admin, pero deja de devolver filas a Finanzas. UI-016 sigue pendiente para separar reportes por rol. BE-021 y SEC-005 siguen pendientes antes de datos reales.
 
 ### BE-017 - Definir estrategia SQL de agenda operativa
 

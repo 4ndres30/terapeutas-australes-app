@@ -35,6 +35,7 @@ Este documento registra decisiones estables. No reemplaza la conversacion, pero 
 | DEC-017 | Finanzas opera con alias administrativo y datos financieros mínimos. | Aprobada documentalmente | 2026-06-19 |
 | DEC-018 | Fotos de elementos con Storage privado y tabla relacional. | Aprobada documentalmente | 2026-06-19 |
 | DEC-019 | SEC-001 valida RLS local pero no habilita datos reales. | Validada | 2026-06-27 |
+| DEC-020 | Finanzas usa vista financiera minima dedicada. | Validada localmente | 2026-06-27 |
 
 ## DEC-001 - Repositorio oficial del proyecto
 
@@ -488,3 +489,31 @@ RLS se comporta correctamente por rol en Supabase local, incluyendo fotos y Stor
 ### Observaciones
 
 Informe relacionado: `docs/control/auditorias/SEC-001_VALIDACION_RUNTIME_RLS_ROLES.md`.
+
+## DEC-020 - Finanzas usa vista financiera minima dedicada
+
+**Estado:** Validada localmente
+**Origen:** BE-016 / SEC-001 / SEC-004
+**Fecha:** 2026-06-27
+
+### Decision
+
+El rol Finanzas debe consumir `public.vista_finanzas_unidades_cobrables` como superficie financiera minima por unidad cobrable.
+
+`public.vista_cobros_estado` se mantiene por compatibilidad interna/admin, pero no debe usarse como vista autorizada para Finanzas.
+
+### Razon
+
+SEC-001 confirmo que `vista_cobros_estado` exponia referencias tecnicas a unidades clinicas. Aunque no contenia contenido clinico, BE-016 reduce la superficie a datos financieros y administrativos minimos.
+
+### Impacto
+
+- `FinanzasPage` usa `vista_finanzas_unidades_cobrables`.
+- Finanzas no recibe filas desde `vista_cobros_estado`.
+- La vista nueva no expone nombre completo, telefono, email, IDs clinicos directos, datos clinicos, fotos, miniaturas ni `storage_path`.
+- UI-016 sigue pendiente para separar `ReportesPage` por rol.
+- BE-021 y SEC-005 siguen pendientes antes de datos reales.
+
+### Observaciones
+
+Informe relacionado: `docs/control/auditorias/BE-016_VISTA_FINANCIERA_MINIMA.md`.
