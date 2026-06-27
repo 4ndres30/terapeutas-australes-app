@@ -634,3 +634,45 @@ SEC-001 queda aprobada con observaciones. RLS bloquea a Finanzas frente a clinic
 ### Observaciones
 
 PROD-001 sigue bloqueante. Antes de datos reales deben atenderse hardening de grants, vista financiera minima, reportes por rol, auditoria sensible y anulacion logica vs delete fisico.
+
+## LOG-022 - Implementacion BE-016 vista financiera minima
+
+**Estado:** Registrado
+**Prioridad:** Media
+**Responsable:** Integracion Backend / Seguridad / Finanzas
+**Origen:** BE-016 / SEC-001 / SEC-004
+**Fecha creacion:** 2026-06-27
+**Rama usada:** `codex/be-016-vista-financiera-minima`
+
+### Descripcion
+
+Se implementa una vista financiera minima por unidad cobrable para el rol Finanzas y se ajusta `FinanzasPage` para consumir esa vista en lugar de consultar `pacientes`, `pagos` directo y `vista_cobros_estado`.
+
+### Archivos relacionados
+
+- `supabase/migrations/20260627231000_crear_vista_finanzas_unidades_cobrables.sql`
+- `src/pages/FinanzasPage.tsx`
+- `docs/control/auditorias/BE-016_VISTA_FINANCIERA_MINIMA.md`
+- `docs/control/01_PENDIENTES_PROYECTO.md`
+- `docs/control/03_INTEGRACION_BACKEND_ESTRUCTURA.md`
+- `docs/control/05_DECISIONES_PROYECTO.md`
+- `docs/control/06_BITACORA_CAMBIOS.md`
+
+### Resultado
+
+La nueva vista `public.vista_finanzas_unidades_cobrables` expone solo datos financieros y administrativos minimos. Finanzas puede leerla, pero no recibe filas desde `vista_cobros_estado` ni desde tablas clinicas/fotos en la validacion runtime local.
+
+### Restricciones respetadas
+
+- No se toco `.env`.
+- No se ejecuto `supabase db push`.
+- No se toco Supabase remoto.
+- No se usaron datos reales.
+- No se usaron imagenes reales.
+- No se modificaron migraciones existentes.
+- Se creo una migracion nueva.
+- Las pruebas SQL usaron Supabase local y transacciones revertidas con `ROLLBACK`.
+
+### Observaciones
+
+PROD-001 sigue bloqueante. Quedan pendientes UI-016 para reportes por rol, SEC-005 para auditoria sensible y BE-021 para anulacion logica vs delete fisico financiero.

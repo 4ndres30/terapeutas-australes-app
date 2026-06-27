@@ -2,18 +2,17 @@ import { useEffect, useMemo, useState } from 'react'
 import { supabase } from '../lib/supabase'
 import './ClinicalModuleBase.css'
 
-type Paciente = {
-  id: string
-  nombres: string
-  apellidos: string
-}
-
-type CobroEstado = {
+type UnidadCobrableFinanzas = {
   id_cobro: string
+  id_pago: string | null
   paciente_id: string
+  codigo_paciente: string | null
+  alias_administrativo_paciente: string | null
+  tipo_unidad_cobrable: string | null
+  referencia_unidad_administrativa: string | null
+  concepto_cobro_administrativo: string | null
   fecha_cobro: string | null
   fecha_vencimiento: string | null
-  concepto_cobro: string | null
   tipo_cobro: string | null
   monto_cobro: number | string | null
   monto_descuento: number | string | null
@@ -22,29 +21,23 @@ type CobroEstado = {
   estado_cobro: string | null
   monto_pagado: number | string | null
   saldo_pendiente: number | string | null
-  estado_calculado: string | null
-}
-
-type Pago = {
-  id_pago: string
-  cobro_id: string
-  paciente_id: string
-  fecha_pago: string
-  monto_pago: number | string
-  moneda: string
-  metodo_pago: string
-  estado_pago: string
+  estado_pago: string | null
+  fecha_ultimo_pago: string | null
+  metodo_ultimo_pago: string | null
   referencia_pago: string | null
-  observaciones: string | null
-  created_at: string
 }
 
-const COBRO_SELECT = [
+const UNIDAD_COBRABLE_SELECT = [
   'id_cobro',
+  'id_pago',
   'paciente_id',
+  'codigo_paciente',
+  'alias_administrativo_paciente',
+  'tipo_unidad_cobrable',
+  'referencia_unidad_administrativa',
+  'concepto_cobro_administrativo',
   'fecha_cobro',
   'fecha_vencimiento',
-  'concepto_cobro',
   'tipo_cobro',
   'monto_cobro',
   'monto_descuento',
@@ -53,33 +46,14 @@ const COBRO_SELECT = [
   'estado_cobro',
   'monto_pagado',
   'saldo_pendiente',
-  'estado_calculado',
-].join(', ')
-
-const PAGO_SELECT = [
-  'id_pago',
-  'cobro_id',
-  'paciente_id',
-  'fecha_pago',
-  'monto_pago',
-  'moneda',
-  'metodo_pago',
   'estado_pago',
+  'fecha_ultimo_pago',
+  'metodo_ultimo_pago',
   'referencia_pago',
-  'observaciones',
-  'created_at',
 ].join(', ')
 
 function normalizarTexto(texto: string) {
   return texto.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '')
-}
-
-function nombrePaciente(paciente?: Paciente) {
-  if (!paciente) {
-    return 'Paciente no encontrado'
-  }
-
-  return `${paciente.nombres} ${paciente.apellidos}`.trim() || 'Paciente sin nombre'
 }
 
 function formatearFecha(fecha: string | null) {
@@ -124,62 +98,45 @@ function textoCorto(texto: string, largo = 110) {
 }
 
 function FinanzasPage() {
-  const [pacientes, setPacientes] = useState<Paciente[]>([])
-  const [cobros, setCobros] = useState<CobroEstado[]>([])
-  const [pagos, setPagos] = useState<Pago[]>([])
+  const [unidadesCobrables, setUnidadesCobrables] = useState<UnidadCobrableFinanzas[]>([])
   const [busqueda, setBusqueda] = useState('')
   const [mensaje, setMensaje] = useState('')
   const [cargando, setCargando] = useState(true)
 
-  const pacientesPorId = useMemo(() => new Map(pacientes.map((paciente) => [paciente.id, paciente])), [pacientes])
-
-  const cobrosFiltrados = useMemo(() => {
+  const unidadesFiltradas = useMemo(() => {
     if (!busqueda.trim()) {
-      return cobros
+      return unidadesCobrables
     }
 
     const filtro = normalizarTexto(busqueda.trim())
 
-    return cobros.filter((cobro) => {
+    return unidadesCobrables.filter((unidad) => {
       const texto = [
-        cobro.concepto_cobro || '',
-        cobro.tipo_cobro || '',
-        cobro.estado_cobro || '',
-        cobro.estado_calculado || '',
-        cobro.moneda || '',
-        nombrePaciente(pacientesPorId.get(cobro.paciente_id)),
+        unidad.alias_administrativo_paciente || '',
+        unidad.codigo_paciente || '',
+        unidad.concepto_cobro_administrativo || '',
+        unidad.tipo_unidad_cobrable || '',
+        unidad.referencia_unidad_administrativa || '',
+        unidad.tipo_cobro || '',
+        unidad.estado_cobro || '',
+        unidad.estado_pago || '',
+        unidad.metodo_ultimo_pago || '',
+        unidad.referencia_pago || '',
+        unidad.moneda || '',
       ].join(' ')
 
       return normalizarTexto(texto).includes(filtro)
     })
-  }, [busqueda, cobros, pacientesPorId])
+  }, [busqueda, unidadesCobrables])
 
-  const pagosFiltrados = useMemo(() => {
-    if (!busqueda.trim()) {
-      return pagos
-    }
+  const unidadesConPago = unidadesFiltradas.filter((unidad) => unidad.id_pago)
 
-    const filtro = normalizarTexto(busqueda.trim())
-
-    return pagos.filter((pago) => {
-      const texto = [
-        pago.metodo_pago,
-        pago.estado_pago,
-        pago.referencia_pago || '',
-        pago.observaciones || '',
-        nombrePaciente(pacientesPorId.get(pago.paciente_id)),
-      ].join(' ')
-
-      return normalizarTexto(texto).includes(filtro)
-    })
-  }, [busqueda, pagos, pacientesPorId])
-
-  const totalCobrado = cobros.reduce((total, cobro) => total + aNumero(cobro.monto_total ?? cobro.monto_cobro), 0)
-  const totalPagado = cobros.reduce((total, cobro) => total + aNumero(cobro.monto_pagado), 0)
-  const saldoPendiente = cobros.reduce((total, cobro) => total + aNumero(cobro.saldo_pendiente), 0)
+  const totalCobrado = unidadesCobrables.reduce((total, unidad) => total + aNumero(unidad.monto_total ?? unidad.monto_cobro), 0)
+  const totalPagado = unidadesCobrables.reduce((total, unidad) => total + aNumero(unidad.monto_pagado), 0)
+  const saldoPendiente = unidadesCobrables.reduce((total, unidad) => total + aNumero(unidad.saldo_pendiente), 0)
 
   const metricas = [
-    { etiqueta: 'Cobros', valor: String(cobros.length), detalle: 'Registros reales' },
+    { etiqueta: 'Cobros', valor: String(unidadesCobrables.length), detalle: 'Unidades visibles' },
     { etiqueta: 'Total', valor: formatearMoneda(totalCobrado), detalle: 'Monto emitido' },
     { etiqueta: 'Pagado', valor: formatearMoneda(totalPagado), detalle: 'Pagos aplicados' },
     { etiqueta: 'Saldo', valor: formatearMoneda(saldoPendiente), detalle: 'Pendiente' },
@@ -189,43 +146,18 @@ function FinanzasPage() {
     setCargando(true)
     setMensaje('')
 
-    const { data: pacientesData, error: pacientesError } = await supabase
-      .from('pacientes')
-      .select('id, nombres, apellidos')
-      .order('created_at', { ascending: false })
-
-    if (pacientesError) {
-      setMensaje(`Error al cargar pacientes: ${pacientesError.message}`)
-      setCargando(false)
-      return
-    }
-
-    const { data: cobrosData, error: cobrosError } = await supabase
-      .from('vista_cobros_estado')
-      .select(COBRO_SELECT)
+    const { data: unidadesData, error: unidadesError } = await supabase
+      .from('vista_finanzas_unidades_cobrables')
+      .select(UNIDAD_COBRABLE_SELECT)
       .order('fecha_cobro', { ascending: false })
 
-    if (cobrosError) {
-      setMensaje(`Error al cargar cobros: ${cobrosError.message}`)
+    if (unidadesError) {
+      setMensaje(`Error al cargar unidades cobrables: ${unidadesError.message}`)
       setCargando(false)
       return
     }
 
-    const { data: pagosData, error: pagosError } = await supabase
-      .from('pagos')
-      .select(PAGO_SELECT)
-      .order('fecha_pago', { ascending: false })
-      .order('created_at', { ascending: false })
-
-    if (pagosError) {
-      setMensaje(`Error al cargar pagos: ${pagosError.message}`)
-      setCargando(false)
-      return
-    }
-
-    setPacientes((pacientesData || []) as Paciente[])
-    setCobros((cobrosData || []) as unknown as CobroEstado[])
-    setPagos((pagosData || []) as unknown as Pago[])
+    setUnidadesCobrables((unidadesData || []) as unknown as UnidadCobrableFinanzas[])
     setCargando(false)
   }
 
@@ -243,7 +175,7 @@ function FinanzasPage() {
         <div className="clinical-hero__copy">
           <span className="clinical-kicker">Módulo financiero</span>
           <h1>Cobros y Pagos</h1>
-          <p>Vista base de lectura conectada a cobros, pagos y vista_cobros_estado.</p>
+          <p>Cobros, saldos y pagos con identificadores administrativos.</p>
         </div>
 
         <section className="clinical-metrics" aria-label="Métricas financieras">
@@ -263,51 +195,51 @@ function FinanzasPage() {
             <div>
               <span className="clinical-kicker">Cobros</span>
               <h2>Estado de cobros</h2>
-              <p>Usa la vista calculada real de Supabase local.</p>
+              <p>Seguimiento operativo de cobros y saldos.</p>
             </div>
-            <span className="clinical-count">{cobrosFiltrados.length}</span>
+            <span className="clinical-count">{unidadesFiltradas.length}</span>
           </div>
 
           <label className="clinical-search">
             <span>Buscar</span>
             <input
               className="clinical-input"
-              placeholder="Paciente, concepto, tipo o estado"
+              placeholder="Alias, código, referencia, tipo o estado"
               type="search"
               value={busqueda}
               onChange={(event) => setBusqueda(event.target.value)}
             />
           </label>
 
-          {cobrosFiltrados.length === 0 ? (
+          {unidadesFiltradas.length === 0 ? (
             <div className="clinical-empty">
               <strong>{cargando ? 'Cargando cobros' : 'Sin cobros registrados'}</strong>
-              <p>{cargando ? 'Consultando vista financiera.' : 'No hay cobros visibles para este filtro.'}</p>
+              <p>{cargando ? 'Preparando información financiera.' : 'No hay unidades visibles para este filtro.'}</p>
             </div>
           ) : (
             <div className="clinical-list">
-              {cobrosFiltrados.map((cobro) => (
-                <article className="clinical-card" key={cobro.id_cobro}>
+              {unidadesFiltradas.map((unidad) => (
+                <article className="clinical-card" key={unidad.id_cobro}>
                   <div className="clinical-card__top">
                     <div>
-                      <h3>{cobro.concepto_cobro || 'Cobro sin concepto'}</h3>
-                      <small>{nombrePaciente(pacientesPorId.get(cobro.paciente_id))} · {formatearFecha(cobro.fecha_cobro)}</small>
+                      <h3>{unidad.concepto_cobro_administrativo || 'Cobro administrativo'}</h3>
+                      <small>{unidad.alias_administrativo_paciente || unidad.codigo_paciente || 'Paciente administrativo'} · {formatearFecha(unidad.fecha_cobro)}</small>
                     </div>
-                    <span className="clinical-badge">{cobro.estado_calculado || cobro.estado_cobro || 'Sin estado'}</span>
+                    <span className="clinical-badge">{unidad.estado_cobro || 'Sin estado'}</span>
                   </div>
-                  <p>{textoCorto(cobro.tipo_cobro || 'Sin tipo registrado')}</p>
+                  <p>{textoCorto([unidad.tipo_unidad_cobrable, unidad.referencia_unidad_administrativa].filter(Boolean).join(' · ') || 'Sin referencia administrativa')}</p>
                   <dl className="clinical-details">
                     <div>
                       <dt>Total</dt>
-                      <dd>{formatearMoneda(aNumero(cobro.monto_total ?? cobro.monto_cobro))}</dd>
+                      <dd>{formatearMoneda(aNumero(unidad.monto_total ?? unidad.monto_cobro))}</dd>
                     </div>
                     <div>
                       <dt>Pagado</dt>
-                      <dd>{formatearMoneda(aNumero(cobro.monto_pagado))}</dd>
+                      <dd>{formatearMoneda(aNumero(unidad.monto_pagado))}</dd>
                     </div>
                     <div>
                       <dt>Saldo</dt>
-                      <dd>{formatearMoneda(aNumero(cobro.saldo_pendiente))}</dd>
+                      <dd>{formatearMoneda(aNumero(unidad.saldo_pendiente))}</dd>
                     </div>
                   </dl>
                 </article>
@@ -321,39 +253,39 @@ function FinanzasPage() {
             <div>
               <span className="clinical-kicker">Pagos</span>
               <h2>Movimientos registrados</h2>
-              <p>Lectura directa desde public.pagos.</p>
+              <p>Referencia del pago más reciente asociado a cada cobro.</p>
             </div>
-            <span className="clinical-count">{pagosFiltrados.length}</span>
+            <span className="clinical-count">{unidadesConPago.length}</span>
           </div>
 
-          {pagosFiltrados.length === 0 ? (
+          {unidadesConPago.length === 0 ? (
             <div className="clinical-empty">
               <strong>{cargando ? 'Cargando pagos' : 'Sin pagos registrados'}</strong>
               <p>{cargando ? 'Consultando movimientos.' : 'No hay pagos visibles para este filtro.'}</p>
             </div>
           ) : (
             <div className="clinical-list">
-              {pagosFiltrados.map((pago) => (
-                <article className="clinical-card" key={pago.id_pago}>
+              {unidadesConPago.map((unidad) => (
+                <article className="clinical-card" key={unidad.id_pago || unidad.id_cobro}>
                   <div className="clinical-card__top">
                     <div>
-                      <h3>{formatearMoneda(aNumero(pago.monto_pago))}</h3>
-                      <small>{nombrePaciente(pacientesPorId.get(pago.paciente_id))} · {formatearFecha(pago.fecha_pago)}</small>
+                      <h3>{formatearMoneda(aNumero(unidad.monto_pagado))}</h3>
+                      <small>{unidad.alias_administrativo_paciente || unidad.codigo_paciente || 'Paciente administrativo'} · {formatearFecha(unidad.fecha_ultimo_pago)}</small>
                     </div>
-                    <span className="clinical-badge clinical-badge--muted">{pago.estado_pago}</span>
+                    <span className="clinical-badge clinical-badge--muted">{unidad.estado_pago || 'Sin estado'}</span>
                   </div>
                   <dl className="clinical-details">
                     <div>
                       <dt>Método</dt>
-                      <dd>{pago.metodo_pago}</dd>
+                      <dd>{unidad.metodo_ultimo_pago || 'Sin método'}</dd>
                     </div>
                     <div>
                       <dt>Moneda</dt>
-                      <dd>{pago.moneda}</dd>
+                      <dd>{unidad.moneda || 'Sin moneda'}</dd>
                     </div>
                     <div>
                       <dt>Referencia</dt>
-                      <dd>{pago.referencia_pago || 'Sin referencia'}</dd>
+                      <dd>{unidad.referencia_pago || 'Sin referencia'}</dd>
                     </div>
                   </dl>
                 </article>
