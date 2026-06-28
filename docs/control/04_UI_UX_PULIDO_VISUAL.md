@@ -3,7 +3,7 @@
 Responsable: UI / UX / Pulido visual
 Estado del documento: En analisis
 Fecha creacion: `2026-06-11`
-Ultima actualizacion: `2026-06-18`
+Ultima actualizacion: `2026-06-28`
 
 Este documento controla tareas de experiencia de usuario, formularios, responsive y pulido visual. El objetivo es que la aplicacion sea clara, sobria, profesional y facil de usar para el flujo terapeutico.
 
@@ -283,10 +283,12 @@ El boton debe llamarse `Evaluar trabajo` y vivir junto al hallazgo operativo den
 
 ## UI-016 - Mejorar reportes por rol
 
-**Estado:** Pendiente
+**Estado:** Implementada local / pendiente PR
 **Prioridad:** Media-alta
 **Responsable:** UI / UX / Pulido visual
 **Origen:** UI-001 + UI-002 / SEC-002
+**Fecha implementacion local:** 2026-06-28
+**Rama usada:** `ui-016-reportes-por-rol`
 
 ### Relación con SEC-002
 
@@ -317,6 +319,16 @@ Para Finanzas, UI-016 no debe mostrar por defecto:
 - rutas o miniaturas de archivos clínicos.
 
 Nombre completo, teléfono o email solo deben considerarse si Control de Desarrollo lo aprueba expresamente y BE-020 define consentimiento suficiente.
+
+### Resultado local
+
+`ReportesPage` queda separada en superficies por rol:
+
+- Admin: panel general con indicadores clinicos, financieros y operativos autorizados.
+- Terapeuta: panel clinico con casos, revisiones, hallazgos, trabajos y seguimiento, sin detalle financiero completo.
+- Finanzas: panel financiero exclusivo desde `vista_finanzas_unidades_cobrables`, sin secciones clinicas vacias ni mensajes tecnicos.
+
+Informe relacionado: `auditorias/UI-016_REPORTES_POR_ROL.md`
 
 ## UI-022 - Fotos dentro de Elementos del caso
 
