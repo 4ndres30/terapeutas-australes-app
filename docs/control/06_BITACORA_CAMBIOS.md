@@ -843,7 +843,6 @@ Finanzas no ve:
 - No se usaron fotos reales.
 - No se usaron pagos reales.
 - No se hizo merge a `main`.
-
 ### Observaciones
 
 QA-005 no habilita datos reales, fotos reales, pagos reales ni produccion.
@@ -915,6 +914,68 @@ PROD-001 sigue bloqueante.
 - No se modifico codigo fuente.
 - No se modificaron migraciones.
 - No se toco `supabase/config.toml`.
+- No se toco Supabase remoto.
+- No se ejecuto `supabase db push`.
+- No se ejecuto `supabase db pull`.
+- No se modificaron `package.json`, `package-lock.json` ni `public/`.
+- No se usaron datos reales.
+- No se usaron fotos reales.
+- No se usaron pagos reales.
+- No se hizo merge a `main`.
+
+## LOG-027 - SEC-003 hardening Auth diseno documental
+
+**Estado:** Registrado
+**Prioridad:** Alta
+**Responsable:** Integracion Backend / Seguridad
+**Origen:** CTRL-008 / DEC-029 / DEC-030 / DEC-031
+**Fecha creacion:** 2026-06-29
+**Rama usada:** `sec-003-hardening-auth-diseno`
+
+### Descripcion
+
+Se registra SEC-003 como diseno documental de hardening Auth antes de datos reales o produccion.
+
+La tarea analiza la configuracion local de Supabase Auth, el flujo de login, la relacion `auth.users` / `usuarios_internos`, las decisiones vigentes y los bloqueos de PROD-001.
+
+### Archivos relacionados
+
+- `docs/control/auditorias/SEC-003_HARDENING_AUTH.md`
+- `docs/control/01_PENDIENTES_PROYECTO.md`
+- `docs/control/03_INTEGRACION_BACKEND_ESTRUCTURA.md`
+- `docs/control/05_DECISIONES_PROYECTO.md`
+- `docs/control/06_BITACORA_CAMBIOS.md`
+
+### Riesgos documentados
+
+- Signup abierto no es aceptable para staging/produccion.
+- Password minimo local es debil para datos sensibles.
+- Confirmacion de email y MFA no estan habilitados.
+- Redirects actuales son locales.
+- No hay politica activa de inactividad/timebox de sesion.
+- No existe recuperacion de cuenta documentada.
+- Eventos Auth y cambios de rol deben conectarse con SEC-005.
+- Scripts manuales Auth siguen prohibidos como practica productiva.
+
+### Decisiones y tareas derivadas
+
+- Se refuerzan DEC-029, DEC-030 y DEC-031.
+- Se agrega DEC-032 como propuesta pendiente: Auth productivo por invitacion/provisioning y MFA por rol.
+- Se registra `SEC-008` como tarea separada para implementacion controlada de hardening Auth.
+- `QA-006` debe incluir casos Auth minimos por rol y estado.
+
+### Observaciones
+
+SEC-003 no implementa cambios tecnicos. La configuracion actual sigue siendo local/demo.
+
+PROD-001 sigue bloqueante. No se autorizan datos reales, fotos reales, pagos reales ni produccion.
+
+### Restricciones respetadas
+
+- No se toco `.env`.
+- No se modifico codigo fuente.
+- No se modifico `supabase/config.toml`.
+- No se modificaron migraciones.
 - No se toco Supabase remoto.
 - No se ejecuto `supabase db push`.
 - No se ejecuto `supabase db pull`.

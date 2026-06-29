@@ -51,7 +51,7 @@ La implementacion funcional hallazgo a trabajo queda pendiente para una tarea fu
 
 ## CTRL-008 - Decisiones backend derivadas post auditoria
 
-**Estado:** Propuesta documental / pendiente integracion
+**Estado:** Integrada
 **Origen:** CTRL-008 / Auditoria integral post PR #35
 **Fecha:** 2026-06-29
 
@@ -83,6 +83,51 @@ CTRL-008 registra decisiones criticas que deben resolverse antes de nuevas migra
 CTRL-008 no crea migraciones, no modifica SQL existente, no toca `supabase/config.toml`, no toca `.env`, no ejecuta `supabase db push` y no toca Supabase remoto.
 
 Informe relacionado: `docs/control/auditorias/CTRL-008_DECISIONES_CRITICAS_POST_AUDITORIA.md`
+
+## SEC-003 - Hardening Auth / diseno documental
+
+**Estado:** Diseno documental / pendiente implementacion tecnica
+**Origen:** CTRL-008 / DEC-029 / DEC-030 / DEC-031
+**Fecha:** 2026-06-29
+
+SEC-003 analiza la configuracion local de Supabase Auth y define la politica objetivo antes de cualquier uso real.
+
+### Estado tecnico observado
+
+- `supabase/config.toml` mantiene Auth habilitado para entorno local/demo.
+- Signup global y signup por email estan habilitados en configuracion local.
+- Confirmacion de email esta deshabilitada.
+- Password minimo actual es de 6 caracteres y sin complejidad.
+- MFA TOTP/phone esta deshabilitado.
+- `site_url` y redirects apuntan a entorno local.
+- JWT expira en una hora y refresh token rotation esta habilitado.
+- No hay `timebox` ni `inactivity_timeout` activos.
+- `src/App.tsx` bloquea usuarios Auth sin `usuarios_internos`, usuarios inactivos y roles no validos.
+- `src/pages/LoginPage.tsx` usa login por email/password y no implementa signup ni recuperacion operativa.
+
+### Politica backend objetivo
+
+- Staging/produccion no deben usar signup publico abierto.
+- Altas deben realizarse por invitacion/provisioning administrado.
+- Todo usuario Auth productivo debe tener registro activo en `usuarios_internos` y rol explicito.
+- Password policy, email confirm, MFA, redirects y recuperacion deben definirse por ambiente.
+- Scripts manuales sobre `auth.users` quedan prohibidos como practica normal en produccion.
+- Eventos Auth y cambios de rol deben conectarse con SEC-005.
+
+### Tareas tecnicas derivadas
+
+- `SEC-008` - Implementacion controlada Hardening Auth.
+- `SEC-005` - Auditoria sensible para eventos Auth y cambios de rol.
+- `SEC-007` - Procedimiento de scripts manuales locales/demo.
+- `BE-018` - Separacion tecnica de ambientes.
+- `DOC-001` - Manual de ambientes.
+- `QA-006` - Validaciones minimas por rol y estados Auth.
+
+### Restricciones
+
+SEC-003 no modifica `supabase/config.toml`, no crea migraciones, no modifica codigo fuente, no toca `.env`, no ejecuta `supabase db push` y no toca Supabase remoto.
+
+Informe relacionado: `docs/control/auditorias/SEC-003_HARDENING_AUTH.md`
 
 ## BE-001 - Inventariar estructura backend y Supabase local
 

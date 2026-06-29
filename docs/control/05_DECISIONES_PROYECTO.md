@@ -47,6 +47,7 @@ Este documento registra decisiones estables. No reemplaza la conversacion, pero 
 | DEC-029 | Scripts manuales sobre Auth solo local/demo y prohibidos en produccion. | Propuesta pendiente aprobacion | 2026-06-29 |
 | DEC-030 | El proyecto debe reconocer LOCAL, DEMO, STAGING y PRODUCCION. | Propuesta pendiente aprobacion | 2026-06-29 |
 | DEC-031 | Carga real requiere aprobacion explicita y checklist. | Pregunta abierta bloqueante | 2026-06-29 |
+| DEC-032 | Auth productivo por invitacion/provisioning y MFA por rol. | Propuesta pendiente aprobacion | 2026-06-29 |
 
 ## DEC-001 - Repositorio oficial del proyecto
 
@@ -821,7 +822,8 @@ La carga real requiere aprobacion explicita de Javier / Control de Desarrollo y 
 
 ### Checklist preliminar
 
-- SEC-003 cerrado.
+- SEC-003 aprobado como diseno.
+- SEC-008 implementado y validado.
 - SEC-005 cerrado.
 - BE-021 cerrado.
 - BE-018 cerrado.
@@ -850,3 +852,42 @@ PROD-001 sigue bloqueante.
 ### Observaciones
 
 Informe relacionado: `docs/control/auditorias/CTRL-008_DECISIONES_CRITICAS_POST_AUDITORIA.md`.
+
+## DEC-032 - Auth productivo por invitacion/provisioning y MFA por rol
+
+**Estado:** Propuesta pendiente aprobacion
+**Origen:** SEC-003 / CTRL-008 / DEC-029 / DEC-030 / DEC-031
+**Fecha:** 2026-06-29
+
+### Decision propuesta
+
+En staging y produccion, Supabase Auth no debe operar con signup publico abierto.
+
+El alta de usuarios debe realizarse por invitacion o provisioning administrado, con:
+
+- usuario Auth creado por procedimiento aprobado;
+- registro activo en `public.usuarios_internos`;
+- rol explicito y valido;
+- email confirmado;
+- password policy fuerte;
+- MFA obligatorio para Admin, Finanzas y Terapeuta antes de produccion;
+- auditoria de alta, cambio de rol, desactivacion, reactivacion y recuperacion.
+
+### Razon
+
+El proyecto maneja informacion clinica, financiera y fotos potencialmente sensibles. La configuracion local actual de Auth es util para demo/desarrollo, pero no es suficiente para uso real.
+
+Mantener signup abierto o alta manual sin trazabilidad puede generar usuarios huerfanos, roles inconsistentes, recuperaciones inseguras y escalamiento de privilegios.
+
+### Impacto
+
+- `SEC-008` debe implementar hardening Auth en tarea separada.
+- `SEC-005` debe incorporar eventos Auth y cambios de rol.
+- `SEC-007` debe limitar scripts manuales a local/demo.
+- `BE-018` y `DOC-001` deben separar URLs y callbacks por ambiente.
+- `QA-006` debe validar casos Auth minimos por rol y estado.
+- PROD-001 sigue bloqueante.
+
+### Observaciones
+
+Esta decision no modifica configuracion tecnica. El diseno queda registrado en `docs/control/auditorias/SEC-003_HARDENING_AUTH.md`.
