@@ -330,6 +330,20 @@ Nombre completo, teléfono o email solo deben considerarse si Control de Desarro
 
 Informe relacionado: `auditorias/UI-016_REPORTES_POR_ROL.md`
 
+### Validacion funcional local
+
+QA-005 registra validacion funcional local de `/reportes` con Admin, Terapeuta y Finanzas.
+
+Resultado:
+
+- Admin ve reportes generales, clinicos, financieros y operativos autorizados.
+- Terapeuta ve reportes clinicos sin panel financiero completo.
+- Finanzas ve solo reportes financieros desde `public.vista_finanzas_unidades_cobrables`.
+- Finanzas no ve clinica sensible, fotos, miniaturas, rutas internas ni `storage_path`.
+- La UI no muestra secciones clinicas vacias ni mensajes tecnicos de RLS para Finanzas.
+
+Informe relacionado: `auditorias/QA-005_VALIDACION_UI016_REPORTES_POR_ROL.md`
+
 Este avance no habilita datos reales, fotos reales, pagos reales ni produccion. PROD-001 sigue bloqueante.
 
 ## UI-022 - Fotos dentro de Elementos del caso

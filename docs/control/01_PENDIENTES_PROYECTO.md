@@ -28,6 +28,7 @@ Este documento es la lista maestra de pendientes. Cada pendiente debe tener un c
 | QA-001 | Auditoria inicial del proyecto. | Integrada | Alta | Control de desarrollo |
 | QA-002 | Validacion funcional de hallazgos operativos con caso demo. | Integrada | Alta | Control de desarrollo |
 | QA-004 | Validacion funcional local de BE-016 / Finanzas. | Integrada | Alta | Control de desarrollo |
+| QA-005 | Validacion funcional local UI-016 / Reportes por rol. | Aprobada local / pend. PR | Alta | Control de desarrollo |
 | BE-001 | Inventariar estructura backend y Supabase local. | Integrada | Alta | Integracion Backend/Estructura |
 | RFC-001 | Auditar flujo clinico completo. | Integrada | Alta | Revision de flujo clinico |
 | BE-002 | Comparar backend con flujo clinico aprobado. | Integrada | Alta | Integracion Backend/Estructura |
@@ -321,6 +322,30 @@ Integrada por PR #32. QA-004 valido localmente que el rol Finanzas inicia sesion
 La validacion confirmo que Finanzas no ve nombre completo, telefono, email, motivo de consulta, evaluaciones, elementos del caso, hallazgos, trabajos clinicos sensibles, fotos, miniaturas ni `storage_path`.
 
 QA-004 no habilita datos reales, fotos reales, pagos reales ni produccion. PROD-001 sigue bloqueante.
+
+### QA-005 - Validacion funcional local UI-016 / Reportes por rol
+
+**Estado:** Aprobada local / pendiente PR
+**Prioridad:** Alta
+**Responsable:** Control de desarrollo
+**Origen:** UI-016 / PR #33 / CTRL-007
+**Fecha creacion:** 2026-06-29
+**Rama usada:** `qa-005-validacion-ui016-reportes`
+**Informe:** `docs/control/auditorias/QA-005_VALIDACION_UI016_REPORTES_POR_ROL.md`
+**Dependencias:** UI-016, BE-016, QA-004, CTRL-007
+
+#### Resultado
+QA-005 registra validacion funcional local de `/reportes` para Admin, Terapeuta y Finanzas.
+
+La validacion confirma:
+
+- Admin ve reportes generales, clinicos, financieros y operativos autorizados.
+- Terapeuta ve reportes clinicos sin panel financiero completo.
+- Finanzas ve solo reportes financieros desde `public.vista_finanzas_unidades_cobrables`.
+- Finanzas no ve reportes clinicos, pacientes clinicos, consultas, evaluaciones, casos, elementos, revisiones, hallazgos, trabajos clinicos sensibles, fotos, miniaturas, rutas internas, `storage_path`, nombre completo, telefono, email ni motivo de consulta.
+- La UI no muestra secciones clinicas vacias ni mensajes tecnicos de RLS para Finanzas.
+
+QA-005 no habilita datos reales, fotos reales, pagos reales ni produccion. PROD-001 sigue bloqueante.
 
 ### UI-012 - Disenar flujo visual Evaluar trabajo
 
