@@ -572,7 +572,7 @@ SEC-004 queda aprobada con observaciones como diseño documental. Finanzas debe 
 
 ### Observaciones
 
-No se implementaron policies, migraciones, vistas ni cambios de código. SEC-001 debe probar runtime esta definición. BE-016 debe diseñar vista financiera mínima, UI-016 debe separar reportes por rol, BE-020 debe resolver consentimiento si se expone contacto financiero y BE-021 debe definir anulación lógica vs delete físico.
+No se implementaron policies, migraciones, vistas ni cambios de código. En ese momento, SEC-001 debía probar runtime esta definición, BE-016 debía diseñar vista financiera mínima y UI-016 debía separar reportes por rol. En el estado vigente, SEC-001, BE-016 y UI-016 ya fueron integradas; BE-020 debe resolver consentimiento si se expone contacto financiero y BE-021 debe definir anulación lógica vs delete físico.
 
 ## LOG-020 - Implementación fotos de elementos del caso
 
@@ -675,7 +675,7 @@ La nueva vista `public.vista_finanzas_unidades_cobrables` expone solo datos fina
 
 ### Observaciones
 
-PROD-001 sigue bloqueante. Quedan pendientes UI-016 para reportes por rol, SEC-005 para auditoria sensible y BE-021 para anulacion logica vs delete fisico financiero.
+PROD-001 sigue bloqueante. UI-016 fue integrada posteriormente por PR #33. Quedan pendientes SEC-005 para auditoria sensible y BE-021 para anulacion logica vs delete fisico financiero.
 
 ## LOG-023 - Implementacion UI-016 reportes por rol
 
@@ -717,3 +717,61 @@ Admin ve reportes generales, clinicos, financieros y operativos autorizados. Ter
 ### Observaciones
 
 La validacion `npx supabase migration list --local` no pudo conectar a Postgres local en `127.0.0.1:54322`; no se intento iniciar ni modificar Supabase remoto. PROD-001 sigue bloqueante antes de datos reales.
+
+## LOG-024 - CTRL-007 sincronizacion documental post PR #33
+
+**Estado:** Registrado
+**Prioridad:** Alta
+**Responsable:** Control de desarrollo
+**Origen:** Auditoria integral post PR #33
+**Fecha creacion:** 2026-06-29
+**Rama usada:** `ctrl-007-sync-docs-post-pr33`
+
+### Descripcion
+
+Se sincroniza la documentacion maestra para reflejar el estado real de `main` despues de integrar:
+
+- PR #31 - BE-016 vista financiera minima;
+- PR #32 - QA-004 validacion funcional local BE-016 / Finanzas;
+- PR #33 - UI-016 reportes separados por rol.
+
+### Archivos relacionados
+
+- `README.md`
+- `docs/control/00_ESTADO_GENERAL_PROYECTO.md`
+- `docs/control/01_PENDIENTES_PROYECTO.md`
+- `docs/control/03_INTEGRACION_BACKEND_ESTRUCTURA.md`
+- `docs/control/04_UI_UX_PULIDO_VISUAL.md`
+- `docs/control/05_DECISIONES_PROYECTO.md`
+- `docs/control/06_BITACORA_CAMBIOS.md`
+- `docs/control/auditorias/BE-016_VISTA_FINANCIERA_MINIMA.md`
+- `docs/control/auditorias/QA-004_VALIDACION_BE016_FINANZAS.md`
+- `docs/control/auditorias/UI-016_REPORTES_POR_ROL.md`
+
+### Resultado
+
+La documentacion deja de marcar BE-016 y UI-016 como `Implementada local / pendiente PR`. Queda explicito que:
+
+- BE-016 esta integrada;
+- QA-004 esta integrada;
+- UI-016 esta integrada;
+- `FinanzasPage` usa `public.vista_finanzas_unidades_cobrables`;
+- `ReportesPage` esta separada por rol;
+- PROD-001 sigue bloqueante;
+- no se autoriza uso con datos reales, fotos reales ni pagos reales.
+
+### Restricciones respetadas
+
+- No se toco `.env`.
+- No se modifico codigo fuente.
+- No se modificaron migraciones.
+- No se modifico Supabase local ni remoto.
+- No se ejecuto `supabase db push`.
+- No se modificaron `package.json`, `package-lock.json` ni `public/`.
+- No se usaron datos reales.
+- No se usaron fotos reales.
+- No se usaron pagos reales.
+
+### Observaciones
+
+CTRL-007 corrige estado documental. No valida funcionalmente UI-016; esa tarea queda separada como QA-005.

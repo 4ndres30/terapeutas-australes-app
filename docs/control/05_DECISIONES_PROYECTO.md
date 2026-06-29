@@ -36,6 +36,7 @@ Este documento registra decisiones estables. No reemplaza la conversacion, pero 
 | DEC-018 | Fotos de elementos con Storage privado y tabla relacional. | Aprobada documentalmente | 2026-06-19 |
 | DEC-019 | SEC-001 valida RLS local pero no habilita datos reales. | Validada | 2026-06-27 |
 | DEC-020 | Finanzas usa vista financiera minima dedicada. | Validada localmente | 2026-06-27 |
+| DEC-021 | Reportes se separan por rol y Finanzas no consulta clinica. | Integrada | 2026-06-29 |
 
 ## DEC-001 - Repositorio oficial del proyecto
 
@@ -440,7 +441,7 @@ Finanzas puede ver datos necesarios para cobranza, pagos, saldos, conciliación 
 
 ### Consecuencia
 
-BE-016 debe diseñar una vista financiera mínima por unidad cobrable. UI-016 debe separar reportes por rol. SEC-001 debe probar runtime que Finanzas no acceda a clínica sensible ni archivos clínicos asociados. BE-021 debe definir anulación lógica y prohibición de delete físico financiero en producción.
+BE-016 ya diseño e integro una vista financiera minima por unidad cobrable. UI-016 ya separo reportes por rol. SEC-001 probo runtime que Finanzas no acceda a clinica sensible ni archivos clinicos asociados. BE-021 debe definir anulacion logica y prohibicion de delete fisico financiero en produccion.
 
 ## DEC-018 - Fotos de elementos con Storage privado y tabla relacional
 
@@ -480,8 +481,8 @@ RLS se comporta correctamente por rol en Supabase local, incluyendo fotos y Stor
 
 - PROD-001 sigue bloqueante.
 - Finanzas permanece sin acceso a clinica sensible, fotos ni rutas Storage.
-- BE-016 debe disenar una vista financiera minima.
-- UI-016 debe separar reportes por rol.
+- BE-016 ya integro la vista financiera minima.
+- UI-016 ya separo reportes por rol.
 - SEC-005 debe definir auditoria de accesos/cambios sensibles.
 - BE-021 debe definir anulacion logica vs delete fisico.
 - Un hardening posterior debe revisar grants amplios de `fotos_elementos_caso` y Storage.
@@ -511,9 +512,42 @@ SEC-001 confirmo que `vista_cobros_estado` exponia referencias tecnicas a unidad
 - `FinanzasPage` usa `vista_finanzas_unidades_cobrables`.
 - Finanzas no recibe filas desde `vista_cobros_estado`.
 - La vista nueva no expone nombre completo, telefono, email, IDs clinicos directos, datos clinicos, fotos, miniaturas ni `storage_path`.
-- UI-016 sigue pendiente para separar `ReportesPage` por rol.
+- QA-004 valido funcionalmente el alcance de BE-016 en local.
+- UI-016 ya separo `ReportesPage` por rol.
 - BE-021 y SEC-005 siguen pendientes antes de datos reales.
 
 ### Observaciones
 
 Informe relacionado: `docs/control/auditorias/BE-016_VISTA_FINANCIERA_MINIMA.md`.
+
+## DEC-021 - Reportes se separan por rol y Finanzas no consulta clinica
+
+**Estado:** Integrada
+**Origen:** UI-016 / SEC-002 / SEC-004 / BE-016
+**Fecha:** 2026-06-29
+
+### Decision
+
+`ReportesPage` debe renderizar superficies distintas por rol activo:
+
+- Admin: reportes generales, clinicos, financieros y operativos autorizados.
+- Terapeuta: reportes clinicos sin panel financiero completo.
+- Finanzas: reportes financieros desde `public.vista_finanzas_unidades_cobrables`.
+
+Finanzas no debe consultar ni mostrar datos clinicos desde reportes.
+
+### Razon
+
+La seguridad visual no debe depender de que RLS devuelva cero filas despues de intentar consultar tablas clinicas. El frontend debe evitar la consulta clinica cuando el rol activo es Finanzas.
+
+### Impacto
+
+- `ReportesPage` detecta rol activo antes de cargar datos.
+- Finanzas solo carga `public.vista_finanzas_unidades_cobrables`.
+- Finanzas no ve pacientes clinicos, consultas, evaluaciones, casos, elementos, hallazgos, trabajos clinicos sensibles, fotos, miniaturas ni `storage_path`.
+- Este avance no habilita datos reales, fotos reales, pagos reales ni produccion.
+- QA-005 debe registrar validacion funcional local de UI-016.
+
+### Observaciones
+
+Informe relacionado: `docs/control/auditorias/UI-016_REPORTES_POR_ROL.md`.

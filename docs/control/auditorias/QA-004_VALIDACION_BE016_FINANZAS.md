@@ -102,12 +102,16 @@ La pantalla financiera queda alineada con SEC-004 y DEC-020: Finanzas opera sobr
 - La validacion fue realizada en ambiente local.
 - No habilita uso con datos reales.
 - PROD-001 sigue bloqueante.
-- UI-016 sigue pendiente para separar `ReportesPage` por rol.
+- UI-016 fue integrada posteriormente por PR #33 para separar `ReportesPage` por rol.
 - SEC-005 sigue pendiente para auditoria de accesos/cambios sensibles.
 - BE-021 sigue pendiente para anulacion logica vs delete fisico.
 
 ## Siguiente accion recomendada
 
-Iniciar UI-016 - Reportes separados por rol.
+Registrar QA-005 - Validacion funcional local UI-016 Reportes por rol.
 
-Objetivo: evitar que `ReportesPage` siga siendo una pantalla compartida que dependa solo de RLS para entregar vistas parciales por rol.
+Objetivo: evitar regresiones donde `ReportesPage` vuelva a depender solo de RLS para entregar vistas parciales por rol.
+
+## Estado posterior
+
+Despues de PR #33, `ReportesPage` ya separa Admin, Terapeuta y Finanzas. Esta validacion no se reemplaza: QA-004 conserva el resultado de BE-016 / Finanzas y deja QA-005 como validacion separada para UI-016.

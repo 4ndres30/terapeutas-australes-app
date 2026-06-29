@@ -1,7 +1,7 @@
 # Pendientes del proyecto
 
 Fecha de apertura: `2026-06-11`
-Ultima actualizacion: `2026-06-28`
+Ultima actualizacion: `2026-06-29`
 Responsable del documento: Control de desarrollo
 
 Este documento es la lista maestra de pendientes. Cada pendiente debe tener un codigo, un responsable y un estado permitido. Los detalles tecnicos o clinicos pueden vivir en los documentos especializados, pero este archivo debe permitir ver rapidamente que falta.
@@ -22,10 +22,12 @@ Este documento es la lista maestra de pendientes. Cada pendiente debe tener un c
 | CTRL-002 | Sincronizar documentacion maestra tras BE-002. | Integrada | Alta | Control de desarrollo |
 | CTRL-003 | Sincronizar documentacion maestra tras UI-001/UI-002 y BE-003. | Integrada | Alta | Control de desarrollo |
 | CTRL-004 | Sincronizar control post IMP-001, DATA-001 y BE-011. | Integrada | Alta | Control de desarrollo |
+| CTRL-007 | Sincronizar documentacion maestra post BE-016, QA-004 y UI-016. | Integrada | Alta | Control de desarrollo |
 | PEND-001 | Levantar inventario real del proyecto desde `main`. | Integrada | Alta | Control de desarrollo |
 | PEND-002 | Clasificar pendientes por chat responsable. | Integrada | Alta | Control de desarrollo |
 | QA-001 | Auditoria inicial del proyecto. | Integrada | Alta | Control de desarrollo |
 | QA-002 | Validacion funcional de hallazgos operativos con caso demo. | Integrada | Alta | Control de desarrollo |
+| QA-004 | Validacion funcional local de BE-016 / Finanzas. | Integrada | Alta | Control de desarrollo |
 | BE-001 | Inventariar estructura backend y Supabase local. | Integrada | Alta | Integracion Backend/Estructura |
 | RFC-001 | Auditar flujo clinico completo. | Integrada | Alta | Revision de flujo clinico |
 | BE-002 | Comparar backend con flujo clinico aprobado. | Integrada | Alta | Integracion Backend/Estructura |
@@ -42,7 +44,7 @@ Este documento es la lista maestra de pendientes. Cada pendiente debe tener un c
 | UI-013 | Disenar experiencia de trabajos, sesiones y acciones. | Pendiente | Alta | UI / UX / Pulido visual |
 | UI-014 | Disenar agenda tipificada. | Pendiente | Media-alta | UI / UX / Pulido visual |
 | UI-015 | Mejorar experiencia de finanzas por unidad cobrable. | Pendiente | Alta | UI / UX / Pulido visual |
-| UI-016 | Mejorar reportes por rol. | Implementada local / pend. PR | Media-alta | UI / UX / Pulido visual |
+| UI-016 | Mejorar reportes por rol. | Integrada | Media-alta | UI / UX / Pulido visual |
 | UI-017 | Definir checklist responsive de pantallas clinicas. | Pendiente | Media | UI / UX / Pulido visual |
 | UI-018 | Normalizar microcopy clinica y retirar textos tecnicos visibles. | Pendiente | Media | UI / UX / Pulido visual |
 | UI-019 | Definir patron comun de formularios clinicos largos. | Pendiente | Media-alta | UI / UX / Pulido visual |
@@ -51,7 +53,7 @@ Este documento es la lista maestra de pendientes. Cada pendiente debe tener un c
 | BE-013 | Ajustar reglas de cobros por unidad cobrable. | Pendiente | Alta | Integracion Backend/Estructura |
 | BE-014 | Crear vistas clinicas agregadas. | Pendiente | Media-alta | Integracion Backend/Estructura |
 | BE-015 | Validar RLS por roles para modulos nuevos. | Pendiente | Alta | Integracion Backend/Estructura |
-| BE-016 | Disenar vista financiera por unidad cobrable. | Implementada local / pend. PR | Media | Integracion Backend/Estructura |
+| BE-016 | Disenar vista financiera por unidad cobrable. | Integrada | Media | Integracion Backend/Estructura |
 | BE-017 | Definir estrategia SQL de agenda operativa. | Pendiente | Media | Integracion Backend/Estructura |
 | SEC-001 | Validar RLS runtime por roles. | Aprobada con observaciones | Alta | Integracion Backend / Seguridad |
 | SEC-002 | Crear matriz de permisos por tabla y rol. | Validada runtime / obs. | Alta | Integracion Backend / Seguridad |
@@ -74,6 +76,27 @@ Este documento es la lista maestra de pendientes. Cada pendiente debe tener un c
 | PROD-001 | Preparacion para uso real con datos sensibles. | Mantener pendiente / bloqueante | Alta | Control de desarrollo / Integracion Backend |
 
 ## Pendientes integrados
+
+### CTRL-007 - Sincronizar documentacion maestra post BE-016, QA-004 y UI-016
+
+**Estado:** Integrada
+**Prioridad:** Alta
+**Responsable:** Control de desarrollo
+**Origen:** Auditoria integral post PR #33
+**Fecha creacion:** 2026-06-29
+**Rama usada:** `ctrl-007-sync-docs-post-pr33`
+**Dependencias:** BE-016, QA-004, UI-016
+
+#### Resultado
+Sincroniza la documentacion maestra para reflejar que BE-016, QA-004 y UI-016 ya estan integradas en `main`.
+
+Corrige estados obsoletos que indicaban `Implementada local / pendiente PR` para BE-016 y UI-016, y deja explicito que:
+
+- `FinanzasPage` usa `public.vista_finanzas_unidades_cobrables`;
+- `ReportesPage` esta separado por rol;
+- PR #31, PR #32 y PR #33 ya estan integrados;
+- PROD-001 sigue bloqueante;
+- no se autoriza uso con datos reales, fotos reales ni pagos reales.
 
 ### PEND-001 - Levantar inventario real del proyecto desde main
 
@@ -281,6 +304,24 @@ Integrada documentalmente por PR #18. La primera version usara `trabajos.revisio
 #### Resultado
 Integrada por PR #20. QA-002 validó correctamente en ambiente local el flujo de hallazgos operativos con DATA-001: creación manual de hallazgo, persistencia tras recarga, visualización en revisión, prevención visual de duplicado y botón `Evaluar trabajo próximamente` deshabilitado.
 
+### QA-004 - Validacion funcional local BE-016 / Finanzas
+
+**Estado:** Integrada
+**Prioridad:** Alta
+**Responsable:** Control de desarrollo
+**Origen:** BE-016 / SEC-001 / SEC-004
+**Fecha creacion:** 2026-06-28
+**PR:** #32
+**Informe:** `docs/control/auditorias/QA-004_VALIDACION_BE016_FINANZAS.md`
+**Dependencias:** BE-016
+
+#### Resultado
+Integrada por PR #32. QA-004 valido localmente que el rol Finanzas inicia sesion, accede a `Finanzas / Pagos`, opera con alias/codigos administrativos y consume informacion financiera minima.
+
+La validacion confirmo que Finanzas no ve nombre completo, telefono, email, motivo de consulta, evaluaciones, elementos del caso, hallazgos, trabajos clinicos sensibles, fotos, miniaturas ni `storage_path`.
+
+QA-004 no habilita datos reales, fotos reales, pagos reales ni produccion. PROD-001 sigue bloqueante.
+
 ### UI-012 - Disenar flujo visual Evaluar trabajo
 
 **Estado:** Integrada
@@ -483,7 +524,7 @@ SEC-004 queda aprobada con observaciones como diseño documental. Informe relaci
 
 Finanzas ve alias administrativo, identificador interno y datos financieros minimos por defecto. Nombre completo, telefono y email quedan prohibidos por defecto o pendientes de aprobacion expresa y consentimiento suficiente en BE-020.
 
-SEC-001 valido runtime que Finanzas no accede a clinica sensible, elementos del caso, hallazgos, revisiones, sesiones, acciones terapeuticas, fotos ni archivos clinicos. BE-016 debe disenar vista financiera minima; UI-016 debe separar reportes por rol; BE-021 debe definir anulacion logica vs delete fisico.
+SEC-001 valido runtime que Finanzas no accede a clinica sensible, elementos del caso, hallazgos, revisiones, sesiones, acciones terapeuticas, fotos ni archivos clinicos. BE-016 ya implemento la vista financiera minima y UI-016 ya separo reportes por rol. BE-021 sigue pendiente para definir anulacion logica vs delete fisico.
 
 ### SEC-005 - Disenar bitacora/auditoria de cambios sensibles
 
@@ -822,13 +863,14 @@ Disenar cobros y pagos con unidad cobrable clara, saldo visible y origen entendi
 
 ### UI-016 - Mejorar reportes por rol
 
-**Estado:** Implementada local / pendiente PR
+**Estado:** Integrada
 **Prioridad:** Media-alta
 **Responsable:** UI / UX / Pulido visual
 **Origen:** UI-001 + UI-002
 **Fecha creacion:** 2026-06-13
 **Fecha implementacion local:** 2026-06-28
 **Rama usada:** `ui-016-reportes-por-rol`
+**PR:** #33
 **Dependencias:** SEC-001, SEC-002, SEC-004, BE-016
 
 #### Descripcion
@@ -849,7 +891,7 @@ Separar reportes para terapeuta, finanzas y admin segun necesidades operativas y
 
 #### Resultado
 
-Implementada localmente en `src/pages/ReportesPage.tsx`.
+Integrada por PR #33 en `src/pages/ReportesPage.tsx`.
 
 `ReportesPage` detecta el rol activo y separa la pantalla en `ReportesAdmin`, `ReportesTerapeuta` y `ReportesFinanzas`. Admin mantiene panel general con indicadores clinicos y financieros autorizados. Terapeuta ve indicadores clinicos, seguimiento, hallazgos y trabajos sin finanzas completas. Finanzas ve solo metricas financieras desde `public.vista_finanzas_unidades_cobrables`.
 
@@ -857,7 +899,7 @@ Informe relacionado: `docs/control/auditorias/UI-016_REPORTES_POR_ROL.md`
 
 #### Observaciones
 
-UI-016 debe considerar reportes diferenciados por rol: admin completo, terapeuta clinico sin finanzas detalladas y finanzas financiero sin clinica sensible.
+UI-016 deja reportes diferenciados por rol: admin completo, terapeuta clinico sin finanzas detalladas y finanzas financiero sin clinica sensible.
 
 SEC-004 agrega que los reportes para Finanzas deben usar alias administrativo, codigo financiero o identificador interno, sin nombre completo, telefono, email, ficha clinica ni archivos clinicos salvo aprobacion expresa y consentimiento aplicable.
 
@@ -1003,13 +1045,15 @@ Validar runtime local para perfiles `admin`, `terapeuta` y `finanzas`, especialm
 
 ### BE-016 - Disenar vista financiera por unidad cobrable
 
-**Estado:** Implementada local / pendiente PR
+**Estado:** Integrada
 **Prioridad:** Media
 **Responsable:** Integracion Backend/Estructura
 **Origen:** BE-002
 **Fecha creacion:** 2026-06-12
 **Fecha implementacion local:** 2026-06-27
 **Rama usada:** `codex/be-016-vista-financiera-minima`
+**PR:** #31
+**QA:** QA-004 integrada por PR #32
 **Dependencias:** BE-013, SEC-001, SEC-002, SEC-004, DEC-019
 **Informe:** `docs/control/auditorias/BE-016_VISTA_FINANCIERA_MINIMA.md`
 
@@ -1027,7 +1071,7 @@ Disenar e implementar `vista_finanzas_unidades_cobrables` para reportar claramen
 
 BE-016 implementa `public.vista_finanzas_unidades_cobrables` como vista minima para Finanzas y ajusta `FinanzasPage` para usar solo esa vista. La vista no expone nombres completos, telefono, email, IDs clinicos directos, datos clinicos, fotos, miniaturas ni `storage_path`.
 
-`vista_cobros_estado` se mantiene para compatibilidad interna/admin, pero deja de devolver filas a Finanzas. UI-016 sigue pendiente para separar reportes por rol. BE-021 y SEC-005 siguen pendientes antes de datos reales.
+`vista_cobros_estado` se mantiene para compatibilidad interna/admin, pero deja de devolver filas a Finanzas. UI-016 ya separo reportes por rol. BE-021 y SEC-005 siguen pendientes antes de datos reales.
 
 ### BE-017 - Definir estrategia SQL de agenda operativa
 
