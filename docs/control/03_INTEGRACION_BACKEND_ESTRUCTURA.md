@@ -49,6 +49,41 @@ La tabla puente `trabajo_hallazgos` no se crea en esta etapa. Queda como alterna
 
 La implementacion funcional hallazgo a trabajo queda pendiente para una tarea futura, posterior a QA-002 y UI-012.
 
+## CTRL-008 - Decisiones backend derivadas post auditoria
+
+**Estado:** Propuesta documental / pendiente integracion
+**Origen:** CTRL-008 / Auditoria integral post PR #35
+**Fecha:** 2026-06-29
+
+CTRL-008 registra decisiones criticas que deben resolverse antes de nuevas migraciones de seguridad/backend o antes de uso con datos reales.
+
+### Decisiones backend relevantes
+
+- Finanzas no deberia ver `paciente_id` real por defecto. BE-023 debe definir alias/codigo administrativo persistente o identificador financiero no clinico antes de datos reales.
+- Terapeuta no deberia administrar cobros/pagos desde ficha clinica. Si Control aprueba visibilidad, debe ser estado minimo y no detalle financiero.
+- La primera version debe tratar un aspecto revisado como origen de maximo un hallazgo activo, salvo decision clinica distinta. BE-024 debe resolver si esto requiere constraint DB o ajuste UI.
+- IMP-002 mantiene `trabajos.revision_hallazgo_origen_id` como hallazgo origen principal y no crea tabla puente en la primera version.
+- BE-021 debe definir anulacion logica transversal. Produccion no debe depender de delete fisico operativo para datos clinicos, financieros, fotos o usuarios internos.
+- BE-025 debe definir campos financieros permitidos/prohibidos para evitar que `concepto_cobro`, `descripcion_cobro`, `observaciones`, `notas_internas` o `referencia_pago` filtren clinica.
+- SEC-006 debe resolver politica de fotos, retencion y objetos huerfanos antes de fotos reales.
+- SEC-007 debe prohibir scripts manuales sobre Auth como practica normal de produccion.
+
+### Tareas backend derivadas
+
+- `BE-023` - Alias/codigo administrativo persistente para Finanzas.
+- `BE-024` - Regla de hallazgo unico/multiple por aspecto revisado.
+- `BE-025` - Campos financieros permitidos/prohibidos para Finanzas.
+- `BE-021` - Anulacion logica transversal.
+- `BE-018` - Separacion tecnica de ambientes.
+- `BE-019` - Backup/restauracion.
+- `BE-020` - Consentimiento informado y tratamiento de datos.
+
+### Restricciones
+
+CTRL-008 no crea migraciones, no modifica SQL existente, no toca `supabase/config.toml`, no toca `.env`, no ejecuta `supabase db push` y no toca Supabase remoto.
+
+Informe relacionado: `docs/control/auditorias/CTRL-008_DECISIONES_CRITICAS_POST_AUDITORIA.md`
+
 ## BE-001 - Inventariar estructura backend y Supabase local
 
 **Estado:** Integrada

@@ -3,7 +3,7 @@
 Responsable: UI / UX / Pulido visual
 Estado del documento: En analisis
 Fecha creacion: `2026-06-11`
-Ultima actualizacion: `2026-06-28`
+Ultima actualizacion: `2026-06-29`
 
 Este documento controla tareas de experiencia de usuario, formularios, responsive y pulido visual. El objetivo es que la aplicacion sea clara, sobria, profesional y facil de usar para el flujo terapeutico.
 
@@ -345,6 +345,34 @@ Resultado:
 Informe relacionado: `auditorias/QA-005_VALIDACION_UI016_REPORTES_POR_ROL.md`
 
 Este avance no habilita datos reales, fotos reales, pagos reales ni produccion. PROD-001 sigue bloqueante.
+
+## CTRL-008 - Decisiones UI derivadas post auditoria
+
+**Estado:** Propuesta documental / pendiente integracion
+**Origen:** CTRL-008 / Auditoria integral post PR #35
+**Fecha:** 2026-06-29
+
+CTRL-008 deja nuevas decisiones UI que deben resolverse antes de avanzar con produccion, finanzas, navegacion por rol o implementaciones clinicas sensibles.
+
+### Decisiones UI relevantes
+
+- Finanzas debe operar con superficies financieras minimas y no debe ver `paciente_id` real por defecto en UI o reportes cuando se cierre BE-023.
+- Terapeuta no debe administrar pagos desde ficha clinica. Si se aprueba visibilidad, debe ser estado minimo, sin gestion ni detalle financiero completo.
+- `PagosCasoPanel` debe revisarse como superficie sensible dentro de la ficha de caso.
+- La navegacion debe filtrar modulos por rol. No basta con que la ruta bloquee; la UI no debe ofrecer entradas clinicas a Finanzas.
+- UI debe mostrar ambiente activo y advertir que local/demo no autoriza datos reales mientras PROD-001 siga abierto.
+- IMP-002 debe conservar el flujo manual `Evaluar trabajo` y no promover multiples trabajos desde el mismo hallazgo sin aprobacion clinica.
+
+### Tareas UI derivadas
+
+- `UI-023` - Navegacion y superficies filtradas por rol.
+- `UI-020` - Indicador visual de ambiente activo.
+- `UI-021` - Bloqueo visual de produccion no habilitada.
+- `UI-015` - Finanzas por unidad cobrable con microcopy administrativa.
+
+Nota de control: `UI-017` ya existe como checklist responsive de pantallas clinicas. La navegacion por rol se registra como `UI-023` para no reutilizar un codigo con otro alcance.
+
+Informe relacionado: `auditorias/CTRL-008_DECISIONES_CRITICAS_POST_AUDITORIA.md`
 
 ## UI-022 - Fotos dentro de Elementos del caso
 
