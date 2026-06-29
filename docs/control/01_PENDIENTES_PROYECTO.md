@@ -23,12 +23,14 @@ Este documento es la lista maestra de pendientes. Cada pendiente debe tener un c
 | CTRL-003 | Sincronizar documentacion maestra tras UI-001/UI-002 y BE-003. | Integrada | Alta | Control de desarrollo |
 | CTRL-004 | Sincronizar control post IMP-001, DATA-001 y BE-011. | Integrada | Alta | Control de desarrollo |
 | CTRL-007 | Sincronizar documentacion maestra post BE-016, QA-004 y UI-016. | Integrada | Alta | Control de desarrollo |
+| CTRL-008 | Registrar decisiones criticas post auditoria. | Propuesta documental / pend. PR | Alta | Control de desarrollo |
 | PEND-001 | Levantar inventario real del proyecto desde `main`. | Integrada | Alta | Control de desarrollo |
 | PEND-002 | Clasificar pendientes por chat responsable. | Integrada | Alta | Control de desarrollo |
 | QA-001 | Auditoria inicial del proyecto. | Integrada | Alta | Control de desarrollo |
 | QA-002 | Validacion funcional de hallazgos operativos con caso demo. | Integrada | Alta | Control de desarrollo |
 | QA-004 | Validacion funcional local de BE-016 / Finanzas. | Integrada | Alta | Control de desarrollo |
-| QA-005 | Validacion funcional local UI-016 / Reportes por rol. | Aprobada local / pend. PR | Alta | Control de desarrollo |
+| QA-005 | Validacion funcional local UI-016 / Reportes por rol. | Integrada | Alta | Control de desarrollo |
+| QA-006 | Base minima de pruebas por rol y no exposicion sensible. | Pendiente | Alta | Control de desarrollo / QA |
 | BE-001 | Inventariar estructura backend y Supabase local. | Integrada | Alta | Integracion Backend/Estructura |
 | RFC-001 | Auditar flujo clinico completo. | Integrada | Alta | Revision de flujo clinico |
 | BE-002 | Comparar backend con flujo clinico aprobado. | Integrada | Alta | Integracion Backend/Estructura |
@@ -61,14 +63,20 @@ Este documento es la lista maestra de pendientes. Cada pendiente debe tener un c
 | SEC-003 | Hardening Auth para produccion. | Pendiente | Alta | Integracion Backend / Seguridad |
 | SEC-004 | Definir alcance del rol Finanzas. | Validada runtime / obs. | Alta | Control de desarrollo / Integracion Backend |
 | SEC-005 | Disenar bitacora/auditoria de cambios sensibles. | Pendiente | Alta | Integracion Backend |
+| SEC-006 | Politica de fotos, retencion y objetos huerfanos. | Pendiente | Alta | Integracion Backend / Seguridad |
+| SEC-007 | Procedimiento de scripts manuales locales/demo y prohibicion en produccion. | Pendiente | Alta | Integracion Backend / Seguridad |
 | BE-018 | Separacion tecnica de ambientes. | Pendiente | Alta | Integracion Backend |
 | BE-019 | Estrategia de backup/restauracion. | Pendiente | Alta | Integracion Backend / Produccion |
 | BE-020 | Consentimiento informado y tratamiento de datos. | Pendiente | Alta | Control de desarrollo / Revision Clinica / Backend |
 | BE-021 | Politica de anulacion vs eliminacion. | Pendiente | Media-alta | Control de desarrollo / Backend |
 | BE-022 | Soporte de fotos para elementos del caso con Supabase Storage. | Implementada local / pend. QA | Alta | Integracion Backend/Estructura |
+| BE-023 | Alias/codigo administrativo persistente para Finanzas. | Pendiente | Alta | Integracion Backend/Estructura |
+| BE-024 | Regla de hallazgo unico/multiple por aspecto revisado. | Pendiente | Alta | Integracion Backend/Estructura |
+| BE-025 | Campos financieros permitidos/prohibidos para Finanzas. | Pendiente | Alta | Integracion Backend/Estructura |
 | UI-020 | Indicador visual de ambiente activo. | Pendiente | Alta | UI / UX |
 | UI-021 | Bloqueo visual de produccion no habilitada. | Pendiente | Alta | UI / UX |
 | UI-022 | Integracion visual minima de fotos dentro de Elementos del caso. | Implementada local / pend. QA | Alta | UI / UX / Pulido visual |
+| UI-023 | Navegacion y superficies filtradas por rol. | Pendiente | Alta | UI / UX |
 | DOC-001 | Manual de ambientes. | Pendiente | Alta | Control de desarrollo |
 | DOC-002 | Procedimiento de backup/restauracion. | Pendiente | Alta | Control de desarrollo / Integracion Backend |
 | DOC-003 | Politica de carga de datos reales. | Pendiente | Alta | Control de desarrollo |
@@ -98,6 +106,33 @@ Corrige estados obsoletos que indicaban `Implementada local / pendiente PR` para
 - PR #31, PR #32 y PR #33 ya estan integrados;
 - PROD-001 sigue bloqueante;
 - no se autoriza uso con datos reales, fotos reales ni pagos reales.
+
+### CTRL-008 - Registrar decisiones criticas post auditoria
+
+**Estado:** Propuesta documental / pendiente PR
+**Prioridad:** Alta
+**Responsable:** Control de desarrollo
+**Origen:** Auditoria integral post PR #35
+**Fecha creacion:** 2026-06-29
+**Rama usada:** `ctrl-008-decisiones-criticas-post-auditoria`
+**Informe:** `docs/control/auditorias/CTRL-008_DECISIONES_CRITICAS_POST_AUDITORIA.md`
+**Dependencias:** CTRL-007, QA-005, SEC-001, SEC-002, SEC-004, BE-016, UI-016
+
+#### Resultado esperado
+
+Registrar decisiones o propuestas criticas antes de avanzar a seguridad, backend, UI o produccion.
+
+CTRL-008 debe distinguir:
+
+- decisiones estables;
+- decisiones propuestas pendientes de aprobacion;
+- preguntas abiertas bloqueantes;
+- riesgos detectados;
+- tareas derivadas requeridas.
+
+#### Observaciones
+
+CTRL-008 no implementa seguridad, backend, UI ni migraciones. PROD-001 sigue bloqueante.
 
 ### PEND-001 - Levantar inventario real del proyecto desde main
 
@@ -325,12 +360,13 @@ QA-004 no habilita datos reales, fotos reales, pagos reales ni produccion. PROD-
 
 ### QA-005 - Validacion funcional local UI-016 / Reportes por rol
 
-**Estado:** Aprobada local / pendiente PR
+**Estado:** Integrada
 **Prioridad:** Alta
 **Responsable:** Control de desarrollo
 **Origen:** UI-016 / PR #33 / CTRL-007
 **Fecha creacion:** 2026-06-29
 **Rama usada:** `qa-005-validacion-ui016-reportes`
+**PR:** #35
 **Informe:** `docs/control/auditorias/QA-005_VALIDACION_UI016_REPORTES_POR_ROL.md`
 **Dependencias:** UI-016, BE-016, QA-004, CTRL-007
 
@@ -364,7 +400,9 @@ Integrada por PR #21. UI-012 definió el diseño del flujo `Evaluar trabajo`: ev
 
 ## Pendientes activos
 
-El siguiente paso operativo sigue siendo IMP-002: implementacion funcional controlada del flujo `Evaluar trabajo` desde hallazgo operativo.
+El siguiente paso de control es integrar CTRL-008 y resolver sus decisiones criticas antes de avanzar a seguridad, backend, UI o produccion.
+
+IMP-002 sigue siendo la siguiente implementacion funcional clinica relevante, pero no debe ejecutarse antes de cerrar las decisiones criticas aplicables, especialmente hallazgo unico/multiple por aspecto, relacion hallazgo -> trabajo, anulacion logica y no automatizacion de cobros/sesiones/acciones.
 
 QA-002 y UI-012 ya fueron integradas por PR #20 y PR #21, respectivamente, y no quedan como pendientes activos.
 
@@ -573,6 +611,49 @@ Disenar una bitacora de auditoria para cambios sensibles en datos clinicos, fina
 
 SEC-005 debe considerar los riesgos detectados por SEC-002 sobre acciones sensibles, anulacion logica y cambios financieros/clinicos.
 
+CTRL-008 agrega que SEC-005 debe cubrir, al menos, cambios sobre pacientes, consultas, evaluaciones, casos, elementos, revisiones, hallazgos, trabajos, cobros, pagos, fotos, cambios de rol, anulaciones e intentos criticos.
+
+### SEC-006 - Politica de fotos, retencion y objetos huerfanos
+
+**Estado:** Pendiente
+**Prioridad:** Alta
+**Responsable:** Integracion Backend / Seguridad
+**Origen:** CTRL-008 / DEC-028 / SEC-001
+**Fecha creacion:** 2026-06-29
+**Dependencias:** BE-022, UI-022, QA-003, SEC-005, BE-021, PROD-001
+
+#### Descripcion
+Definir politica operativa y tecnica para fotos de elementos del caso antes de cualquier uso con fotos reales.
+
+#### Criterios de aceptacion preliminares
+- Confirmar que fotos reales siguen bloqueadas mientras PROD-001 este abierto.
+- Definir quien puede subir, ver, anular, archivar o descartar fotos.
+- Definir retencion y eliminacion excepcional.
+- Definir manejo de objetos huerfanos entre Storage y `fotos_elementos_caso`.
+- Definir auditoria minima de cambios y accesos sensibles.
+- Confirmar que Finanzas no ve fotos, miniaturas, rutas ni `storage_path`.
+- No tocar Storage remoto ni usar fotos reales.
+
+### SEC-007 - Procedimiento de scripts manuales locales/demo y prohibicion en produccion
+
+**Estado:** Pendiente
+**Prioridad:** Alta
+**Responsable:** Integracion Backend / Seguridad
+**Origen:** CTRL-008 / DEC-029 / SEC-003
+**Fecha creacion:** 2026-06-29
+**Dependencias:** SEC-003, DOC-001, PROD-001
+
+#### Descripcion
+Definir procedimiento seguro para scripts manuales de usuarios demo/local y prohibir su uso como practica normal en produccion.
+
+#### Criterios de aceptacion preliminares
+- Permitir scripts manuales solo en local/demo.
+- Prohibir scripts manuales sobre `auth.users` en produccion.
+- Exigir scripts idempotentes, documentados y sin secretos.
+- Definir alta, baja y cambio de rol por procedimiento aprobado.
+- Evitar convertir archivos tipo `console.sql` en practica operativa normal.
+- No tocar `.env`, Supabase remoto ni datos reales.
+
 ### BE-018 - Separacion tecnica de ambientes
 
 **Estado:** Pendiente
@@ -774,6 +855,64 @@ Crear soporte backend/local para asociar fotos a elementos del caso usando bucke
 #### Resultado
 Implementacion local preparada en esta rama. Informe relacionado en `docs/control/auditorias/BE-022_UI-022_FOTOS_ELEMENTOS_CASO.md`.
 
+### BE-023 - Alias/codigo administrativo persistente para Finanzas
+
+**Estado:** Pendiente
+**Prioridad:** Alta
+**Responsable:** Integracion Backend/Estructura
+**Origen:** CTRL-008 / DEC-022 / BE-016
+**Fecha creacion:** 2026-06-29
+**Dependencias:** BE-016, SEC-004, QA-004, QA-005
+
+#### Descripcion
+Definir si Finanzas debe dejar de recibir `paciente_id` real y operar solo con alias/codigo administrativo persistente o identificador financiero no clinico.
+
+#### Criterios de aceptacion preliminares
+- Revisar `public.vista_finanzas_unidades_cobrables`.
+- Revisar consumo de `FinanzasPage` y `ReportesPage`.
+- Proponer alternativa sin exponer `paciente_id` en contratos visibles para Finanzas.
+- Definir si el alias/codigo vive en `pacientes` o tabla administrativa separada.
+- No crear migracion sin aprobacion posterior.
+- No tocar Supabase remoto.
+
+### BE-024 - Regla de hallazgo unico/multiple por aspecto revisado
+
+**Estado:** Pendiente
+**Prioridad:** Alta
+**Responsable:** Integracion Backend/Estructura
+**Origen:** CTRL-008 / DEC-024 / QA-002
+**Fecha creacion:** 2026-06-29
+**Dependencias:** BE-010, BE-011, IMP-001, QA-002
+
+#### Descripcion
+Definir si `revision_hallazgos` debe permitir un hallazgo activo por aspecto o multiples hallazgos por aspecto, y como debe sostenerse la regla en DB/UI.
+
+#### Criterios de aceptacion preliminares
+- Contrastar regla clinica con Revision de flujo clinico.
+- Revisar bloqueo actual de `useRevisionHallazgos`.
+- Revisar ausencia de constraint unico en `revision_hallazgos.revision_aspecto_id`.
+- Proponer constraint parcial o ajuste UI solo si Control aprueba.
+- No crear migracion en esta tarea documental.
+
+### BE-025 - Campos financieros permitidos/prohibidos para Finanzas
+
+**Estado:** Pendiente
+**Prioridad:** Alta
+**Responsable:** Integracion Backend/Estructura
+**Origen:** CTRL-008 / DEC-027 / SEC-001
+**Fecha creacion:** 2026-06-29
+**Dependencias:** BE-016, SEC-004, BE-020, UI-015
+
+#### Descripcion
+Definir contrato de campos financieros visibles para Finanzas y prohibir contenido clinico en campos libres de cobros/pagos.
+
+#### Criterios de aceptacion preliminares
+- Clasificar campos permitidos y prohibidos en `cobros` y `pagos`.
+- Definir microcopy para evitar texto clinico en finanzas.
+- Evaluar si se requieren checks, vistas o campos administrativos separados.
+- Considerar `concepto_cobro`, `descripcion_cobro`, `observaciones`, `notas_internas` y `referencia_pago`.
+- No crear migracion sin tarea posterior aprobada.
+
 ### UI-022 - Integracion visual minima de fotos dentro de Elementos del caso
 
 **Estado:** Implementada local / pendiente QA
@@ -802,6 +941,28 @@ Integrar carga, listado y visualizacion basica de fotos dentro de `ElementosCaso
 #### Resultado
 Implementacion local preparada en esta rama. Queda pendiente QA-003 para validacion funcional manual local.
 
+### UI-023 - Navegacion y superficies filtradas por rol
+
+**Estado:** Pendiente
+**Prioridad:** Alta
+**Responsable:** UI / UX
+**Origen:** CTRL-008 / DEC-023 / UI-016 / QA-005
+**Fecha creacion:** 2026-06-29
+**Dependencias:** SEC-002, SEC-004, UI-016, QA-005
+
+#### Descripcion
+Definir e implementar posteriormente navegacion coherente por rol y revisar superficies visibles dentro de cada modulo.
+
+#### Criterios de aceptacion preliminares
+- No reutilizar `UI-017`, porque ya existe como checklist responsive clinico.
+- Admin ve modulos autorizados de forma transversal.
+- Terapeuta ve modulos clinicos autorizados.
+- Finanzas ve Finanzas/Pagos y Reportes financieros.
+- Finanzas no ve entradas clinicas en navegacion.
+- Revisar `PagosCasoPanel` dentro de ficha clinica para definir si Terapeuta ve estado minimo o nada.
+- No modificar codigo en esta tarea documental.
+- No tocar `.env`, migraciones ni Supabase remoto.
+
 ### QA-003 - Validacion funcional local de fotos de elementos del caso
 
 **Estado:** Pendiente
@@ -825,6 +986,29 @@ Validar localmente que las fotos se cargan, registran y muestran asociadas al el
 - Confirmar que Finanzas no accede a fotos ni rutas de Storage.
 - Confirmar que no se rompen revisiones, detalle de revisiones, trabajos ni pagos.
 - No usar datos reales ni imagenes reales.
+
+### QA-006 - Base minima de pruebas por rol y no exposicion sensible
+
+**Estado:** Pendiente
+**Prioridad:** Alta
+**Responsable:** Control de desarrollo / QA
+**Origen:** CTRL-008 / SEC-001 / QA-004 / QA-005
+**Fecha creacion:** 2026-06-29
+**Dependencias:** SEC-003, SEC-005, BE-021, UI-023, BE-023, BE-025
+
+#### Descripcion
+Definir e implementar progresivamente una base minima de pruebas para roles, navegacion, reportes, finanzas y no exposicion de datos sensibles.
+
+#### Criterios de aceptacion preliminares
+- Cubrir rutas protegidas por rol.
+- Cubrir navegacion filtrada por rol.
+- Cubrir Reportes por rol.
+- Cubrir FinanzasPage.
+- Confirmar que Finanzas no ve clinica ni `storage_path`.
+- Confirmar que Finanzas no recibe identificadores clinicos visibles cuando se cierre BE-023.
+- Confirmar que Terapeuta no administra pagos desde Reportes ni ficha clinica.
+- Evaluar pruebas RLS/Storage locales sin tocar remoto.
+- No intentar cubrir todo en un solo PR.
 
 ### UI-013 - Disenar experiencia de trabajos, sesiones y acciones
 
@@ -1128,10 +1312,10 @@ Definir si `vista_agenda_operativa` combinara `agenda_eventos`, consultas, evalu
 **Origen:** BE-011
 **Fecha creacion:** 2026-06-17
 **Rama sugerida:** `feature/hallazgo-a-trabajo`
-**Dependencias:** QA-002, UI-012, BE-011, DEC-013, DEC-014, DEC-015
+**Dependencias:** QA-002, UI-012, BE-011, CTRL-008, DEC-013, DEC-014, DEC-015, DEC-024, DEC-025, BE-024
 
 #### Descripcion
-IMP-002 queda como la siguiente implementación funcional. Debe partir desde UI-012, QA-002 y BE-011, respetando que `Evaluar trabajo` no crea trabajos automáticamente y que la creación del trabajo requiere confirmación manual del terapeuta.
+IMP-002 queda como la siguiente implementacion funcional clinica relevante. Debe partir desde UI-012, QA-002, BE-011 y CTRL-008, respetando que `Evaluar trabajo` no crea trabajos automaticamente y que la creacion del trabajo requiere confirmacion manual del terapeuta.
 
 No usar datos reales todavia. Antes de produccion debe cerrarse PROD-001.
 
@@ -1142,6 +1326,8 @@ No usar datos reales todavia. Antes de produccion debe cerrarse PROD-001.
 - No crear trabajo automaticamente desde un hallazgo.
 - No crear cobros, sesiones ni acciones automaticamente.
 - Validar si ya existe trabajo asociado al hallazgo antes de crear uno nuevo.
+- No promover multiples trabajos desde el mismo hallazgo como camino principal sin aprobacion clinica.
+- No avanzar si BE-024 cambia la regla de hallazgo unico/multiple por aspecto.
 - No tocar `.env`.
 - No ejecutar `supabase db push`.
 - No tocar Supabase remoto.

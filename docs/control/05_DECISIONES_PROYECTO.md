@@ -7,7 +7,7 @@ Este documento registra decisiones estables. No reemplaza la conversacion, pero 
 
 ## Reglas
 
-- Registrar solo decisiones tomadas, no ideas.
+- Registrar decisiones tomadas y, cuando Control lo solicite, propuestas de decision o preguntas bloqueantes con estado explicito.
 - Si una decision cambia, crear una nueva entrada y marcar la anterior como reemplazada en observaciones.
 - Toda decision que implique cambios tecnicos debe generar una tarea relacionada.
 - Toda decision clinica debe poder ser entendida por Revision de flujo clinico.
@@ -37,6 +37,16 @@ Este documento registra decisiones estables. No reemplaza la conversacion, pero 
 | DEC-019 | SEC-001 valida RLS local pero no habilita datos reales. | Validada | 2026-06-27 |
 | DEC-020 | Finanzas usa vista financiera minima dedicada. | Validada localmente | 2026-06-27 |
 | DEC-021 | Reportes se separan por rol y Finanzas no consulta clinica. | Integrada | 2026-06-29 |
+| DEC-022 | Finanzas no debe ver `paciente_id` real por defecto. | Propuesta pendiente aprobacion | 2026-06-29 |
+| DEC-023 | Terapeuta no administra pagos desde ficha clinica. | Propuesta pendiente aprobacion | 2026-06-29 |
+| DEC-024 | Un aspecto revisado debe tener maximo un hallazgo activo en v1. | Propuesta pendiente aprobacion clinica | 2026-06-29 |
+| DEC-025 | Hallazgo a trabajo mantiene origen principal sin automatismos. | Estable v1 / abierta evolucion | 2026-06-29 |
+| DEC-026 | Produccion debe usar anulacion logica, no delete fisico operativo. | Propuesta bloqueante | 2026-06-29 |
+| DEC-027 | Finanzas solo debe ver textos administrativos financieros. | Propuesta pendiente aprobacion | 2026-06-29 |
+| DEC-028 | Fotos reales quedan bloqueadas hasta politica, QA, auditoria y anulacion. | Propuesta bloqueante | 2026-06-29 |
+| DEC-029 | Scripts manuales sobre Auth solo local/demo y prohibidos en produccion. | Propuesta pendiente aprobacion | 2026-06-29 |
+| DEC-030 | El proyecto debe reconocer LOCAL, DEMO, STAGING y PRODUCCION. | Propuesta pendiente aprobacion | 2026-06-29 |
+| DEC-031 | Carga real requiere aprobacion explicita y checklist. | Pregunta abierta bloqueante | 2026-06-29 |
 
 ## DEC-001 - Repositorio oficial del proyecto
 
@@ -551,3 +561,292 @@ La seguridad visual no debe depender de que RLS devuelva cero filas despues de i
 ### Observaciones
 
 Informe relacionado: `docs/control/auditorias/UI-016_REPORTES_POR_ROL.md`.
+
+## DEC-022 - Finanzas no debe ver `paciente_id` real por defecto
+
+**Estado:** Propuesta pendiente aprobacion
+**Origen:** CTRL-008
+**Fecha:** 2026-06-29
+
+### Decision propuesta
+
+Finanzas no debe ver ni consumir `paciente_id` real por defecto en pantallas, reportes o exportaciones.
+
+El `paciente_id` puede seguir existiendo como clave tecnica interna para joins, RLS y conciliacion backend, pero la superficie visible de Finanzas debe usar alias/codigo administrativo persistente o identificador financiero no clinico.
+
+### Razon
+
+`public.vista_finanzas_unidades_cobrables` reduce correctamente datos clinicos, pero aun expone `paciente_id` y deriva alias/codigo desde ese UUID. En datos reales, ese identificador estable puede facilitar correlacion con tablas clinicas si existe otro canal de acceso.
+
+### Impacto
+
+- BE-016 sigue valido para local/demo.
+- BE-023 debe definir alias/codigo administrativo persistente y evaluar ocultar `paciente_id` en la vista financiera.
+- QA-006 debe validar no exposicion de identificadores clinicos al rol Finanzas.
+
+### Observaciones
+
+Informe relacionado: `docs/control/auditorias/CTRL-008_DECISIONES_CRITICAS_POST_AUDITORIA.md`.
+
+## DEC-023 - Terapeuta no administra pagos desde ficha clinica
+
+**Estado:** Propuesta pendiente aprobacion
+**Origen:** CTRL-008
+**Fecha:** 2026-06-29
+
+### Decision propuesta
+
+Terapeuta no debe administrar cobros ni pagos dentro de la ficha clinica.
+
+Si Control aprueba visibilidad financiera para Terapeuta, esta debe limitarse a estado minimo administrativo, sin montos detallados, metodos, referencias, notas ni acciones de gestion.
+
+### Razon
+
+`PagosCasoPanel` vive dentro de la ficha de caso y consulta `vista_cobros_estado` y `pagos`. Aunque RLS limite accesos, la UI mezcla superficie clinica con detalle financiero.
+
+### Impacto
+
+- UI-023 debe revisar superficies por rol, incluido el panel financiero de ficha clinica.
+- BE-025 debe definir contrato minimo si se aprueba estado financiero para Terapeuta.
+- Finanzas mantiene la administracion detallada desde `FinanzasPage`.
+
+### Observaciones
+
+Informe relacionado: `docs/control/auditorias/CTRL-008_DECISIONES_CRITICAS_POST_AUDITORIA.md`.
+
+## DEC-024 - Un aspecto revisado debe tener maximo un hallazgo activo en v1
+
+**Estado:** Propuesta pendiente aprobacion clinica
+**Origen:** CTRL-008 / QA-002 / IMP-001
+**Fecha:** 2026-06-29
+
+### Decision propuesta
+
+Para la primera version operativa, un aspecto revisado debe tener maximo un hallazgo activo.
+
+Si se requiere registrar multiples hallazgos asociados al mismo aspecto, debe aprobarse una regla clinica especifica antes de crear migracion o modificar UI.
+
+### Razon
+
+La UI ya previene duplicados por `revision_aspecto_id`, pero la base de datos no tiene constraint unico equivalente. La regla no debe depender solo del frontend.
+
+### Impacto
+
+- BE-024 debe definir si corresponde constraint parcial, validacion SQL o ajuste UI.
+- QA-006 debe validar duplicados por rol y por intento tecnico local si se implementa DB.
+
+### Observaciones
+
+Informe relacionado: `docs/control/auditorias/CTRL-008_DECISIONES_CRITICAS_POST_AUDITORIA.md`.
+
+## DEC-025 - Hallazgo a trabajo mantiene origen principal sin automatismos
+
+**Estado:** Estable v1 / abierta evolucion
+**Origen:** CTRL-008 / DEC-013 / DEC-014 / DEC-015
+**Fecha:** 2026-06-29
+
+### Decision
+
+La primera version de IMP-002 debe mantener:
+
+- `trabajos.revision_hallazgo_origen_id` como hallazgo origen principal;
+- decision manual del terapeuta;
+- boton/flujo `Evaluar trabajo`;
+- validacion de trabajo existente asociado al mismo hallazgo;
+- no crear cobros, sesiones ni acciones automaticamente;
+- no crear tabla puente `trabajo_hallazgos` en esta etapa.
+
+### Pregunta abierta
+
+El equipo clinico debe confirmar si un hallazgo puede originar mas de un trabajo formal. Mientras no exista esa aprobacion, varios trabajos desde un mismo hallazgo no deben ser camino principal.
+
+### Impacto
+
+- IMP-002 debe depender de CTRL-008.
+- Cualquier relacion muchos-a-muchos futura requiere tarea backend separada.
+
+### Observaciones
+
+Informe relacionado: `docs/control/auditorias/CTRL-008_DECISIONES_CRITICAS_POST_AUDITORIA.md`.
+
+## DEC-026 - Produccion debe usar anulacion logica, no delete fisico operativo
+
+**Estado:** Propuesta bloqueante
+**Origen:** CTRL-008 / SEC-001 / SEC-002 / SEC-004
+**Fecha:** 2026-06-29
+
+### Decision propuesta
+
+Para produccion y datos reales, el sistema debe usar anulacion logica transversal y no delete fisico operativo para datos clinicos, financieros, fotos ni usuarios internos.
+
+Delete fisico debe quedar reservado a mantenimiento tecnico excepcional, aprobado y auditado.
+
+### Razon
+
+No existe politica transversal de anulacion logica. Hay grants amplios con `delete`, una policy `usuarios_internos_delete_admin` y varias FK con cascadas. Esto es riesgoso para informacion sensible real.
+
+### Impacto
+
+- BE-021 pasa a ser bloqueante para datos reales.
+- SEC-005 debe registrar auditoria de anulaciones y cambios sensibles.
+- PROD-001 sigue bloqueante.
+
+### Observaciones
+
+Informe relacionado: `docs/control/auditorias/CTRL-008_DECISIONES_CRITICAS_POST_AUDITORIA.md`.
+
+## DEC-027 - Finanzas solo debe ver textos administrativos financieros
+
+**Estado:** Propuesta pendiente aprobacion
+**Origen:** CTRL-008 / SEC-001 / BE-016
+**Fecha:** 2026-06-29
+
+### Decision propuesta
+
+Finanzas debe ver conceptos y referencias administrativas, no textos clinicos.
+
+Campos libres como `descripcion_cobro`, `observaciones`, `notas_internas` y referencias de pago no deben contener ni exponer informacion clinica.
+
+### Razon
+
+Aunque BE-016 usa una vista minima, `cobros` y `pagos` tienen campos libres que pueden filtrar clinica si se usan mal o si una vista/pantalla futura los expone.
+
+### Impacto
+
+- BE-025 debe definir campos permitidos/prohibidos.
+- UI-015 debe ajustar microcopy para evitar contenido clinico en finanzas.
+- QA-006 debe incluir validacion de textos sensibles.
+
+### Observaciones
+
+Informe relacionado: `docs/control/auditorias/CTRL-008_DECISIONES_CRITICAS_POST_AUDITORIA.md`.
+
+## DEC-028 - Fotos reales quedan bloqueadas hasta politica, QA, auditoria y anulacion
+
+**Estado:** Propuesta bloqueante
+**Origen:** CTRL-008 / DEC-018 / SEC-001
+**Fecha:** 2026-06-29
+
+### Decision propuesta
+
+Fotos reales siguen prohibidas hasta cerrar:
+
+- QA-003;
+- SEC-005;
+- BE-021;
+- SEC-006;
+- PROD-001.
+
+Admin y Terapeuta pueden operar fotos solo en local/demo con imagenes ficticias. Finanzas no debe ver fotos, miniaturas, rutas ni `storage_path`.
+
+### Razon
+
+Las fotos son archivos clinicos sensibles y requieren retencion, anulacion, auditoria, control de objetos huerfanos y hardening de Storage antes de uso real.
+
+### Impacto
+
+- SEC-006 debe definir politica de fotos, retencion y objetos huerfanos.
+- QA-003 debe validar funcionalidad local con imagen ficticia.
+- No se habilitan fotos reales.
+
+### Observaciones
+
+Informe relacionado: `docs/control/auditorias/CTRL-008_DECISIONES_CRITICAS_POST_AUDITORIA.md`.
+
+## DEC-029 - Scripts manuales sobre Auth solo local/demo y prohibidos en produccion
+
+**Estado:** Propuesta pendiente aprobacion
+**Origen:** CTRL-008 / SEC-003
+**Fecha:** 2026-06-29
+
+### Decision propuesta
+
+Scripts manuales sobre `auth.users` o usuarios demo solo pueden usarse en local/demo, de forma idempotente, documentada y sin secretos.
+
+Quedan prohibidos como practica normal en produccion.
+
+### Razon
+
+Manipular Auth manualmente puede dejar usuarios huerfanos, roles inconsistentes, confirmaciones saltadas o practicas inseguras que luego se copian a produccion.
+
+### Impacto
+
+- SEC-007 debe definir procedimiento de usuarios demo/local.
+- SEC-003 debe cubrir alta/baja/cambio de rol, signup, confirmacion, MFA y usuarios invitados.
+
+### Observaciones
+
+Informe relacionado: `docs/control/auditorias/CTRL-008_DECISIONES_CRITICAS_POST_AUDITORIA.md`.
+
+## DEC-030 - El proyecto debe reconocer LOCAL, DEMO, STAGING y PRODUCCION
+
+**Estado:** Propuesta pendiente aprobacion
+**Origen:** CTRL-008 / PROD-001
+**Fecha:** 2026-06-29
+
+### Decision propuesta
+
+El proyecto debe reconocer formalmente cuatro ambientes:
+
+- `LOCAL`;
+- `DEMO`;
+- `STAGING`;
+- `PRODUCCION`.
+
+Mientras PROD-001 siga abierto, la UI debe indicar que no se deben usar datos reales.
+
+### Razon
+
+Sin separacion visual, documental y tecnica de ambientes, existe riesgo de cargar informacion sensible en entornos equivocados.
+
+### Impacto
+
+- BE-018 y DOC-001 deben definir ambientes.
+- UI-020 debe mostrar ambiente activo.
+- UI-021 debe advertir/bloquear produccion no habilitada.
+
+### Observaciones
+
+Informe relacionado: `docs/control/auditorias/CTRL-008_DECISIONES_CRITICAS_POST_AUDITORIA.md`.
+
+## DEC-031 - Carga real requiere aprobacion explicita y checklist
+
+**Estado:** Pregunta abierta bloqueante
+**Origen:** CTRL-008 / PROD-001
+**Fecha:** 2026-06-29
+
+### Decision propuesta
+
+La carga real requiere aprobacion explicita de Javier / Control de Desarrollo y checklist documentado antes de usar pacientes, fotos o pagos reales.
+
+### Checklist preliminar
+
+- SEC-003 cerrado.
+- SEC-005 cerrado.
+- BE-021 cerrado.
+- BE-018 cerrado.
+- BE-019 cerrado.
+- BE-020 cerrado.
+- QA-006 cerrado.
+- QA-003 cerrado si habra fotos reales.
+- BE-023 cerrado si Finanzas no debe ver `paciente_id`.
+- BE-025 cerrado si Finanzas operara textos financieros.
+- UI-020 y UI-021 cerrados.
+- Matriz de permisos vigente y validada.
+- Procedimiento de carga real documentado.
+- Prohibicion de seeds demo en produccion confirmada.
+
+### Preguntas abiertas
+
+- Quien aprueba formalmente el primer uso con datos reales?
+- Que evidencia minima debe adjuntarse?
+- Se permitira staging con datos reales anonimizados o solo ficticios?
+- Fotos y pagos reales entran en primera fase o fases posteriores?
+
+### Impacto
+
+PROD-001 sigue bloqueante.
+
+### Observaciones
+
+Informe relacionado: `docs/control/auditorias/CTRL-008_DECISIONES_CRITICAS_POST_AUDITORIA.md`.

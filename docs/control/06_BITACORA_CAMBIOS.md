@@ -851,3 +851,75 @@ QA-005 no habilita datos reales, fotos reales, pagos reales ni produccion.
 PROD-001 sigue bloqueante.
 
 Proxima tarea sugerida: decisiones criticas post auditoria o SEC-003/SEC-005 segun planificacion.
+
+## LOG-026 - CTRL-008 decisiones criticas post auditoria
+
+**Estado:** Registrado
+**Prioridad:** Alta
+**Responsable:** Control de desarrollo
+**Origen:** Auditoria integral post PR #35
+**Fecha creacion:** 2026-06-29
+**Rama usada:** `ctrl-008-decisiones-criticas-post-auditoria`
+
+### Descripcion
+
+Se registra CTRL-008 para ordenar decisiones criticas antes de avanzar con seguridad, backend, UI o produccion.
+
+La tarea contrasta documentacion, codigo y migraciones en modo lectura, sin implementar cambios funcionales.
+
+### Archivos relacionados
+
+- `docs/control/auditorias/CTRL-008_DECISIONES_CRITICAS_POST_AUDITORIA.md`
+- `docs/control/01_PENDIENTES_PROYECTO.md`
+- `docs/control/03_INTEGRACION_BACKEND_ESTRUCTURA.md`
+- `docs/control/04_UI_UX_PULIDO_VISUAL.md`
+- `docs/control/05_DECISIONES_PROYECTO.md`
+- `docs/control/06_BITACORA_CAMBIOS.md`
+
+### Decisiones registradas
+
+- DEC-022: Finanzas no debe ver `paciente_id` real por defecto.
+- DEC-023: Terapeuta no administra pagos desde ficha clinica.
+- DEC-024: un aspecto revisado debe tener maximo un hallazgo activo en v1.
+- DEC-025: hallazgo a trabajo mantiene origen principal sin automatismos.
+- DEC-026: produccion debe usar anulacion logica, no delete fisico operativo.
+- DEC-027: Finanzas solo debe ver textos administrativos financieros.
+- DEC-028: fotos reales quedan bloqueadas hasta politica, QA, auditoria y anulacion.
+- DEC-029: scripts manuales sobre Auth solo local/demo y prohibidos en produccion.
+- DEC-030: el proyecto debe reconocer LOCAL, DEMO, STAGING y PRODUCCION.
+- DEC-031: carga real requiere aprobacion explicita y checklist.
+
+### Tareas derivadas
+
+- `BE-023` - Alias/codigo administrativo persistente para Finanzas.
+- `BE-024` - Regla de hallazgo unico/multiple por aspecto revisado.
+- `BE-025` - Campos financieros permitidos/prohibidos para Finanzas.
+- `SEC-006` - Politica de fotos, retencion y objetos huerfanos.
+- `SEC-007` - Procedimiento de scripts manuales locales/demo y prohibicion en produccion.
+- `UI-023` - Navegacion y superficies filtradas por rol.
+- `QA-006` - Base minima de pruebas por rol y no exposicion sensible.
+
+### Observaciones
+
+Se detecta que `UI-017` ya existe como checklist responsive de pantallas clinicas. Para no reutilizar codigo con otro alcance, la navegacion filtrada por rol queda registrada como `UI-023`.
+
+QA-005 ya esta integrada por PR #35 y se corrige su estado en pendientes.
+
+CTRL-008 no habilita datos reales, fotos reales, pagos reales ni produccion.
+
+PROD-001 sigue bloqueante.
+
+### Restricciones respetadas
+
+- No se toco `.env`.
+- No se modifico codigo fuente.
+- No se modificaron migraciones.
+- No se toco `supabase/config.toml`.
+- No se toco Supabase remoto.
+- No se ejecuto `supabase db push`.
+- No se ejecuto `supabase db pull`.
+- No se modificaron `package.json`, `package-lock.json` ni `public/`.
+- No se usaron datos reales.
+- No se usaron fotos reales.
+- No se usaron pagos reales.
+- No se hizo merge a `main`.
