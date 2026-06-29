@@ -1,6 +1,6 @@
 # Estado general del proyecto
 
-Fecha de corte: `2026-06-27`
+Fecha de corte: `2026-06-29`
 Responsable del documento: Control de desarrollo
 Estado general documental: En control activo
 
@@ -8,9 +8,9 @@ Estado general documental: En control activo
 
 El proyecto cuenta con una estructura documental de control en `docs/control/`. Esta estructura ordena responsabilidades, pendientes, decisiones, bitacora, auditorias y flujo de trabajo sin modificar codigo, migraciones ni base de datos.
 
-Al corte actual ya quedaron integradas las auditorias iniciales de control, backend, flujo clinico y UI/UX. Tambien quedaron registrados BE-003, BE-010, UI-011, IMP-001, DATA-001, BE-011 y QA-002, junto con las decisiones clinicas/operativas clave que permiten avanzar sin romper el flujo definido.
+Al corte actual ya quedaron integradas las auditorias iniciales de control, backend, flujo clinico y UI/UX. Tambien quedaron registrados BE-003, BE-010, UI-011, IMP-001, DATA-001, BE-011, QA-002, SEC-001, BE-016, QA-004 y UI-016, junto con las decisiones clinicas/operativas clave que permiten avanzar sin romper el flujo definido.
 
-IMP-001 dejo disponible una implementacion funcional minima de hallazgos operativos dentro de `DetalleRevisionesPanel`. DATA-001 dejo un seed local demo integral ejecutado correctamente en Supabase local. BE-011 confirmo que la primera version de trazabilidad hallazgo a trabajo puede usar `trabajos.revision_hallazgo_origen_id` sin migracion inicial. QA-002 valido funcionalmente el flujo de hallazgos operativos con el caso demo DATA-001 en ambiente local.
+IMP-001 dejo disponible una implementacion funcional minima de hallazgos operativos dentro de `DetalleRevisionesPanel`. DATA-001 dejo un seed local demo integral ejecutado correctamente en Supabase local. BE-011 confirmo que la primera version de trazabilidad hallazgo a trabajo puede usar `trabajos.revision_hallazgo_origen_id` sin migracion inicial. QA-002 valido funcionalmente el flujo de hallazgos operativos con el caso demo DATA-001 en ambiente local. BE-016 incorporo la vista financiera minima para Finanzas, QA-004 la valido localmente y UI-016 separo `ReportesPage` por rol en main mediante PR #33.
 
 El proyecto se mantiene alineado con el metodo acordado: primero documentar, auditar y decidir; luego implementar por tareas aprobadas.
 
@@ -39,24 +39,26 @@ El proyecto se mantiene alineado con el metodo acordado: primero documentar, aud
 - DATA-001: seed local de caso demo integral integrado por PR #17 y ejecutado correctamente en Supabase local.
 - BE-011: trazabilidad hallazgo a trabajo integrada documentalmente por PR #18.
 - QA-002: validacion funcional local de hallazgos operativos con caso demo DATA-001 aprobada.
+- SEC-001: validacion runtime local de roles, RLS y Storage integrada por PR #30 con observaciones.
+- BE-016: vista financiera minima `public.vista_finanzas_unidades_cobrables` integrada por PR #31.
+- QA-004: validacion funcional local de BE-016 / Finanzas integrada por PR #32.
+- UI-016: reportes separados por rol integrados por PR #33.
 
 ## En revision / planificacion
 
-- UI-012: siguiente tarea UI posterior para disenar el flujo visual `Evaluar trabajo`.
 - Implementacion funcional hallazgo a trabajo: pendiente futura, posterior a QA-002 y UI-012.
 - UI-010, UI-012 y UI-015: prioridades de planificacion UI derivadas de UI-001 + UI-002 y del estado post IMP-001.
-- UI-013, UI-014, UI-016, UI-017, UI-018 y UI-019: pendientes UI derivados, aun sin activacion tecnica.
-- BE-012 a BE-017: tareas backend sugeridas por BE-002 para agenda, cobros, vistas, RLS y reportes.
+- UI-013, UI-014, UI-017, UI-018 y UI-019: pendientes UI derivados, aun sin activacion tecnica.
+- BE-012 a BE-015 y BE-017: tareas backend sugeridas por BE-002 para agenda, cobros, vistas, RLS y reportes.
 - RFC-002: deteccion de duplicidades entre entidades clinicas.
 
 ## Pendiente operativo
 
-- Mantener UI-012 como siguiente diseno UI para el flujo `Evaluar trabajo`.
 - Mantener la implementacion funcional hallazgo a trabajo como pendiente futura; no crear trabajo automaticamente.
 - Mantener UI-010, UI-012 y UI-015 como prioridades de planificacion.
 - Sincronizar periodicamente `01_PENDIENTES_PROYECTO.md` cuando una tarea cambie de estado.
 - Mantener `06_BITACORA_CAMBIOS.md` actualizado despues de cada bloque documental o tecnico relevante.
-- Atender observaciones de SEC-001 antes de avanzar a reportes mixtos, vistas financieras minimas o datos reales.
+- Atender observaciones de SEC-001 antes de avanzar a datos reales, fotos reales, pagos reales o produccion.
 
 ## Estado para uso real con datos sensibles
 
@@ -82,12 +84,10 @@ Antes de cargar pacientes reales deben cerrarse las tareas minimas de PROD-001 y
 
 SEC-002 ya cuenta con matriz documental de permisos esperados por tabla y rol. La matriz define permisos para `admin`, `terapeuta` y `finanzas`, y queda como insumo obligatorio para SEC-001.
 
-SEC-001 ya fue ejecutada en local y quedo aprobada con observaciones. Siguen pendientes:
+SEC-001 ya fue ejecutada en local y quedo aprobada con observaciones. BE-016 y UI-016 ya resolvieron la vista financiera minima y la separacion de reportes por rol en main. Siguen pendientes:
 
 - SEC-005: diseñar bitácora/auditoría de cambios sensibles.
-- BE-016: diseñar vista financiera mínima.
 - BE-021: definir anulación lógica vs eliminación física.
-- UI-016: revisar reportes por rol.
 - Hardening posterior de grants para fotos/Storage antes de datos reales.
 
 El proyecto sigue no listo para datos reales como sistema oficial.
@@ -99,6 +99,26 @@ SEC-004 define que Finanzas debe operar con alias administrativo, identificador 
 El nombre completo, teléfono y email quedan prohibidos por defecto o pendientes de aprobación expresa y consentimiento.
 
 El proyecto sigue no listo para datos reales como sistema oficial.
+
+### Avance BE-016 / QA-004
+
+BE-016 quedo integrado por PR #31. `FinanzasPage` consume `public.vista_finanzas_unidades_cobrables` y dejo de consultar `pacientes`, `pagos` directo y `vista_cobros_estado`.
+
+QA-004 quedo integrado por PR #32. La validacion funcional local confirmo que Finanzas opera sobre datos financieros minimos y no ve nombre completo, telefono, email, motivo de consulta, hallazgos, fotos, miniaturas ni `storage_path`.
+
+Este avance no habilita datos reales, fotos reales, pagos reales ni produccion.
+
+### Avance UI-016
+
+UI-016 quedo integrado por PR #33. `ReportesPage` separa superficies por rol:
+
+- Admin: reportes generales, clinicos, financieros y operativos autorizados.
+- Terapeuta: reportes clinicos sin panel financiero completo.
+- Finanzas: reportes financieros desde `public.vista_finanzas_unidades_cobrables`.
+
+Finanzas no debe ver reportes clinicos, pacientes clinicos, consultas, casos, hallazgos, trabajos clinicos sensibles, fotos, miniaturas ni `storage_path`.
+
+Este avance no habilita datos reales, fotos reales, pagos reales ni produccion.
 
 ### Avance fotos de elementos del caso
 
@@ -119,8 +139,8 @@ Resultado: aprobado con observaciones. La matriz runtime confirma que `admin` y 
 Observaciones pendientes antes de datos reales:
 
 - endurecer grants amplios en `public.fotos_elementos_caso` y revisar defaults de Storage;
-- disenar vista financiera minima sin referencias clinicas innecesarias;
-- separar reportes por rol;
+- mantener BE-016 como superficie financiera minima autorizada y revisar si `paciente_id` debe seguir visible para Finanzas;
+- validar funcionalmente reportes por rol mediante QA-005;
 - definir auditoria de accesos/cambios sensibles;
 - cerrar politica de anulacion logica vs delete fisico.
 

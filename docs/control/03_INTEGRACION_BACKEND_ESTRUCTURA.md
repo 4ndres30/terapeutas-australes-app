@@ -352,7 +352,7 @@ Se define que el rol Finanzas debe operar con alias administrativo, identificado
 - Finanzas debe operar cobros, pagos y reportes financieros.
 - Finanzas debe usar alias administrativo o código financiero por defecto.
 - Nombre completo, teléfono y email quedan prohibidos por defecto o pendientes de aprobación expresa y consentimiento suficiente.
-- BE-016 debe diseñar una vista financiera mínima por unidad cobrable.
+- BE-016 ya diseño e integro una vista financiera minima por unidad cobrable.
 - SEC-001 debe probar runtime que RLS bloquee acceso financiero a datos clínicos.
 - BE-021 debe definir anulación lógica y prohibición de delete físico financiero en producción.
 
@@ -403,7 +403,8 @@ SEC-001 ejecuto validacion runtime local de roles, RLS y Storage usando datos fi
 
 - `public.fotos_elementos_caso` mantiene grants amplios a `anon` y `authenticated`; RLS bloquea runtime, pero se recomienda hardening antes de datos reales.
 - `storage.objects` mantiene grants amplios propios de Storage; RLS y trigger protegen, pero debe mantenerse bajo revision antes de produccion.
-- `vista_cobros_estado` expone IDs de origen clinico a Finanzas; BE-016 debe disenar una vista financiera minima.
+- `vista_cobros_estado` exponia IDs de origen clinico a Finanzas antes de BE-016. Desde PR #31 se mantiene para compatibilidad interna/admin y filtra con `public.es_admin()`.
+- `public.vista_finanzas_unidades_cobrables` es la superficie minima autorizada para Finanzas.
 - `cobros` permite a Finanzas leer columnas completas de la tabla; debe evitarse registrar informacion clinica en `descripcion_cobro`, `observaciones` o `notas_internas`.
 
 ### Informe relacionado
@@ -412,7 +413,7 @@ SEC-001 ejecuto validacion runtime local de roles, RLS y Storage usando datos fi
 
 ## BE-016 - Vista financiera minima por unidad cobrable
 
-**Estado:** Implementada localmente / pendiente PR.
+**Estado:** Integrada por PR #31 / validada funcionalmente por QA-004 en PR #32.
 
 Se crea `public.vista_finanzas_unidades_cobrables` como superficie minima para el rol Finanzas.
 
@@ -441,6 +442,10 @@ No expone nombre completo, telefono, email, IDs clinicos directos, motivo/resume
 ### Validacion
 
 Se valido localmente con datos ficticios en transaccion revertida con `ROLLBACK`. Todos los checks runtime por rol devolvieron OK.
+
+QA-004 valido funcionalmente en local que Finanzas puede operar sobre la vista minima y no ve nombre completo, telefono, email, motivo de consulta, hallazgos, trabajos clinicos sensibles, fotos, miniaturas ni `storage_path`.
+
+UI-016 quedo integrado por PR #33 y separa `ReportesPage` por rol. Finanzas consume reportes financieros desde `public.vista_finanzas_unidades_cobrables`.
 
 ### Informe relacionado
 

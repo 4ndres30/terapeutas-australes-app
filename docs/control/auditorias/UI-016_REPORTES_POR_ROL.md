@@ -2,7 +2,7 @@
 
 ## Estado
 
-Implementada localmente / pendiente PR draft.
+Integrada por PR #33.
 
 ## Fecha
 
@@ -11,6 +11,10 @@ Implementada localmente / pendiente PR draft.
 ## Rama
 
 `ui-016-reportes-por-rol`
+
+## Integracion
+
+UI-016 quedo integrada en `main` mediante PR #33. Este informe conserva la preparacion y validacion tecnica de la rama original, pero el estado vigente ya no es `pendiente PR`.
 
 ## Objetivo
 
@@ -193,6 +197,8 @@ Finanzas no ve secciones clinicas vacias, parciales ni bloqueadas.
 ## Resultado
 
 UI-016 queda implementada localmente como separacion explicita de reportes por rol.
+
+En el estado vigente de `main`, UI-016 queda integrada por PR #33.
 
 La seguridad visual ya no depende de que RLS devuelva cero filas para Finanzas: la pantalla financiera se renderiza por una rama propia y solo carga la vista minima financiera.
 

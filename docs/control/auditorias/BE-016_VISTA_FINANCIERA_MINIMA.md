@@ -2,7 +2,7 @@
 
 ## Estado
 
-**Implementada localmente con validacion runtime.**
+**Integrada por PR #31 y validada funcionalmente por QA-004 en PR #32.**
 
 BE-016 crea una superficie financiera minima para el rol `finanzas`, sin exponer nombres completos, telefono, email, contenido clinico, fotos, miniaturas ni `storage_path`.
 
@@ -27,7 +27,7 @@ Se complementa, no se elimina, `vista_cobros_estado`.
 
 - `vista_finanzas_unidades_cobrables` queda como vista autorizada para Finanzas.
 - `vista_cobros_estado` se mantiene para compatibilidad de usos internos/admin existentes, pero deja de devolver filas a Finanzas.
-- `ReportesPage` no se modifica en esta tarea; UI-016 queda pendiente para separar reportes por rol.
+- `ReportesPage` no se modifico en esta tarea. UI-016 se integro posteriormente por PR #33 para separar reportes por rol.
 
 ## Migracion creada
 
@@ -188,11 +188,17 @@ Resultado:
 - `cobros` y `pagos` siguen siendo tablas administrables por Finanzas segun RLS actual; se debe evitar texto clinico en campos financieros libres.
 - BE-021 sigue pendiente para anulacion logica vs delete fisico financiero.
 - SEC-005 sigue pendiente para auditoria de accesos/cambios sensibles.
-- UI-016 sigue pendiente para separar `ReportesPage` por rol.
+- UI-016 ya separo `ReportesPage` por rol; QA-005 queda pendiente para registrar su validacion funcional local.
 - Si se requiere alias/codigo financiero persistente, debe agregarse una decision y migracion futura sobre `pacientes` o una tabla administrativa separada.
 
 ## Resultado
 
-BE-016 queda implementada localmente y validada en runtime local.
+BE-016 queda integrada y validada en runtime local. QA-004 valida funcionalmente el flujo de Finanzas sobre la vista minima.
 
 No se tocaron migraciones existentes, `.env`, Supabase remoto, `package.json`, `package-lock.json`, `public/`, datos reales ni imagenes reales.
+
+## Estado post PR #33
+
+Despues de UI-016, `ReportesPage` tambien consume la superficie financiera minima para el rol Finanzas. Finanzas no consulta reportes clinicos ni ve pacientes clinicos, consultas, casos, hallazgos, trabajos clinicos sensibles, fotos, miniaturas ni `storage_path`.
+
+Este resultado no habilita datos reales, fotos reales, pagos reales ni produccion. PROD-001 sigue bloqueante.

@@ -283,7 +283,7 @@ El boton debe llamarse `Evaluar trabajo` y vivir junto al hallazgo operativo den
 
 ## UI-016 - Mejorar reportes por rol
 
-**Estado:** Implementada local / pendiente PR
+**Estado:** Integrada por PR #33
 **Prioridad:** Media-alta
 **Responsable:** UI / UX / Pulido visual
 **Origen:** UI-001 + UI-002 / SEC-002
@@ -298,7 +298,7 @@ SEC-002 define que los reportes deben separarse por rol:
 - terapeuta: vista clínica sin finanzas detalladas;
 - finanzas: vista financiera sin información clínica sensible.
 
-UI-016 debe considerar estas restricciones antes de diseñar reportes o dashboards compartidos.
+UI-016 implementa estas restricciones en `ReportesPage` mediante superficies separadas por rol.
 
 ### Relación con SEC-004
 
@@ -320,7 +320,7 @@ Para Finanzas, UI-016 no debe mostrar por defecto:
 
 Nombre completo, teléfono o email solo deben considerarse si Control de Desarrollo lo aprueba expresamente y BE-020 define consentimiento suficiente.
 
-### Resultado local
+### Resultado integrado
 
 `ReportesPage` queda separada en superficies por rol:
 
@@ -329,6 +329,8 @@ Nombre completo, teléfono o email solo deben considerarse si Control de Desarro
 - Finanzas: panel financiero exclusivo desde `vista_finanzas_unidades_cobrables`, sin secciones clinicas vacias ni mensajes tecnicos.
 
 Informe relacionado: `auditorias/UI-016_REPORTES_POR_ROL.md`
+
+Este avance no habilita datos reales, fotos reales, pagos reales ni produccion. PROD-001 sigue bloqueante.
 
 ## UI-022 - Fotos dentro de Elementos del caso
 

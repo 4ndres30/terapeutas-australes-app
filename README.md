@@ -8,7 +8,9 @@ El proyecto se esta construyendo paso a paso, tabla por tabla y modulo por modul
 
 ## Estado actual del proyecto
 
-El proyecto se encuentra en etapa de construccion de base de datos y estructura tecnica. La estrategia actual es completar primero la base de datos, documentarla y validarla localmente antes de avanzar con formularios, pantallas y flujos visuales de la aplicacion.
+El proyecto se encuentra en etapa local/demo de saneamiento tecnico, seguridad y control documental. Ya cuenta con base de datos clinica principal, frontend funcional, Supabase Auth, RLS por roles, vista financiera minima para Finanzas y reportes separados por rol.
+
+El sistema no esta habilitado para datos reales, fotos reales, pagos reales ni uso productivo. PROD-001 sigue bloqueante hasta cerrar separacion de ambientes, hardening Auth, auditoria sensible, anulacion logica, backups, consentimiento y checklist preproduccion.
 
 Tablas trabajadas hasta ahora:
 
@@ -23,7 +25,9 @@ Tablas trabajadas hasta ahora:
 | `revision_elementos` | Integrada | Elementos del caso incluidos en una revision especifica. |
 | `revision_aspectos` | Integrada | Aspectos revisados por cada elemento, con medicion radiestesica, presencia, tipo detectado, observaciones y canalizacion. Incluye cuerpos sutiles, trauma energetico, separacion, retraimiento, aislamiento, secuestro, integracion, alineacion y localizacion. |
 | `revision_hallazgos` | Integrada | Hallazgos relevantes detectados durante la revision de un aspecto. Incluye cuerpos sutiles alterados, separados, retraidos, aislados, secuestrados, trauma localizado y desalineacion energetica. |
-| `trabajos` | Pendiente | Modulo futuro separado para registrar acciones realizadas, avances, intervenciones y resultados. |
+| `trabajos` | Integrada base / UI lectura | Modulo separado para registrar acciones realizadas, avances, intervenciones y resultados. La creacion operativa desde hallazgos sigue pendiente y debe ser manual. |
+| `cobros` / `pagos` | Integrada base | Modulo financiero con vista minima para Finanzas. No habilita pagos reales. |
+| `fotos_elementos_caso` | Local/demo / pend. QA | Metadatos de fotos con Storage privado. No habilita fotos reales. |
 
 ---
 
@@ -86,6 +90,7 @@ pacientes
           └── revision_elementos
                └── revision_aspectos
                     └── revision_hallazgos
+                         └── trabajos
 ```
 
 Regla principal del modelo:
@@ -99,7 +104,8 @@ Regla principal del modelo:
 - `revision_elementos` registra que elementos del caso fueron incluidos en una revision.
 - `revision_aspectos` registra que aspectos fueron revisados en cada elemento y permite almacenar porcentajes, presencia detectada, tipo detectado, observaciones e informacion canalizada.
 - `revision_hallazgos` registra hallazgos relevantes detectados durante la revision.
-- `trabajos` sera un modulo separado para registrar lo que se hizo, avances, intervenciones y resultados.
+- `trabajos` registra lo que se hizo, avanzo, intervino o cerro. Un hallazgo puede originar un trabajo solo por decision manual del terapeuta.
+- `cobros` y `pagos` registran informacion financiera. Finanzas debe operar sobre superficies minimas y no leer clinica sensible.
 
 Frases guia del modelo:
 
@@ -109,7 +115,7 @@ revisiones registra la sesion.
 revision_elementos registra a quien o que se reviso.
 revision_aspectos registra que se midio o reviso.
 revision_hallazgos registra lo relevante encontrado.
-trabajos registrara lo que se hizo.
+trabajos registra lo que se hizo.
 ```
 
 ---
@@ -584,9 +590,9 @@ Desalineacion energetica
 
 ---
 
-## Modulo futuro `trabajos`
+## Modulo `trabajos`
 
-El modulo `trabajos` queda pendiente como una linea separada de revisiones.
+El modulo `trabajos` ya existe como estructura base y se consulta desde la ficha del caso. La creacion operativa desde hallazgos sigue pendiente para IMP-002 y no debe automatizar cobros, sesiones ni acciones.
 
 Criterio definido:
 
@@ -595,7 +601,7 @@ revisiones registra lo observado, medido o detectado.
 trabajos registrara lo realizado, intervenido, avanzado o cerrado.
 ```
 
-El futuro modulo `trabajos` deberia conectarse al menos con:
+El modulo `trabajos` se conecta al menos con:
 
 ```text
 paciente_id
@@ -700,39 +706,44 @@ VITE_SUPABASE_ANON_KEY=
 
 Nunca subir la clave `service_role` de Supabase.
 
-Antes de usar la aplicacion con datos reales de pacientes, se debe revisar e integrar:
+Antes de usar la aplicacion con datos reales de pacientes, fotos reales o pagos reales, se debe cerrar PROD-001 y revisar e integrar:
 
 ```text
 Supabase Auth
 Row Level Security
 politicas de acceso
 control de usuarios
+separacion de ambientes
+backup y restauracion
+consentimiento informado
+auditoria sensible
+anulacion logica
 ```
 
 ---
 
 ## Proxima etapa
 
-La proxima etapa tecnica recomendada es seguir completando la base de datos antes de construir nuevos formularios.
+La proxima etapa recomendada es cerrar el saneamiento documental, seguridad operativa y QA antes de nuevas funcionalidades clinicas o migraciones grandes.
 
 Pendientes sugeridos:
 
 ```text
-1. Actualizar documento tecnico de avance.
-2. Definir modulo trabajos.
-3. Definir vistas SQL para ficha completa del paciente.
-4. Definir posibles plantillas de aspectos de revision.
-5. Luego construir formularios y pantallas.
+1. Mantener CTRL-007 sincronizado con main.
+2. Validar UI-016 con QA-005.
+3. Registrar decisiones criticas post auditoria.
+4. Cerrar hardening Auth, auditoria sensible, anulacion logica y ambientes.
+5. Luego avanzar en trabajos, agenda, QA automatizado y refactor frontend.
 ```
 
 Orden recomendado:
 
 ```text
-Base de datos completa
-→ documentacion tecnica actualizada
-→ vistas y consultas utiles
-→ formularios
-→ pantallas detalle
-→ navegacion completa
-→ seguridad/Auth/RLS antes de produccion
+Control documental actualizado
+→ decisiones criticas
+→ seguridad/Auth/RLS/auditoria
+→ QA por rol y Storage
+→ UI operativa por rol
+→ funcionalidades clinicas nuevas
+→ produccion solo despues de cerrar PROD-001
 ```
