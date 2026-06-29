@@ -676,3 +676,44 @@ La nueva vista `public.vista_finanzas_unidades_cobrables` expone solo datos fina
 ### Observaciones
 
 PROD-001 sigue bloqueante. Quedan pendientes UI-016 para reportes por rol, SEC-005 para auditoria sensible y BE-021 para anulacion logica vs delete fisico financiero.
+
+## LOG-023 - Implementacion UI-016 reportes por rol
+
+**Estado:** Registrado
+**Prioridad:** Media-alta
+**Responsable:** UI / UX / Pulido visual
+**Origen:** UI-016 / SEC-002 / SEC-004 / BE-016
+**Fecha creacion:** 2026-06-28
+**Rama usada:** `ui-016-reportes-por-rol`
+
+### Descripcion
+
+Se separa `ReportesPage` por rol activo para evitar que Admin, Terapeuta y Finanzas compartan la misma superficie de datos.
+
+### Archivos relacionados
+
+- `src/pages/ReportesPage.tsx`
+- `docs/control/auditorias/UI-016_REPORTES_POR_ROL.md`
+- `docs/control/01_PENDIENTES_PROYECTO.md`
+- `docs/control/04_UI_UX_PULIDO_VISUAL.md`
+- `docs/control/06_BITACORA_CAMBIOS.md`
+
+### Resultado
+
+Admin ve reportes generales, clinicos, financieros y operativos autorizados. Terapeuta ve reportes clinicos sin panel financiero completo ni gestion de cobros/pagos. Finanzas ve solo reportes financieros desde `public.vista_finanzas_unidades_cobrables`.
+
+### Restricciones respetadas
+
+- No se toco `.env`.
+- No se ejecuto `supabase db push`.
+- No se toco Supabase remoto.
+- No se usaron datos reales.
+- No se usaron imagenes reales.
+- No se modificaron migraciones existentes.
+- No se crearon migraciones.
+- No se modifico `FinanzasPage`.
+- No se modificaron `package.json`, `package-lock.json` ni `public/`.
+
+### Observaciones
+
+La validacion `npx supabase migration list --local` no pudo conectar a Postgres local en `127.0.0.1:54322`; no se intento iniciar ni modificar Supabase remoto. PROD-001 sigue bloqueante antes de datos reales.

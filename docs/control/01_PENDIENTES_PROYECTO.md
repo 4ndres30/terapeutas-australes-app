@@ -1,7 +1,7 @@
 # Pendientes del proyecto
 
 Fecha de apertura: `2026-06-11`
-Ultima actualizacion: `2026-06-27`
+Ultima actualizacion: `2026-06-28`
 Responsable del documento: Control de desarrollo
 
 Este documento es la lista maestra de pendientes. Cada pendiente debe tener un codigo, un responsable y un estado permitido. Los detalles tecnicos o clinicos pueden vivir en los documentos especializados, pero este archivo debe permitir ver rapidamente que falta.
@@ -42,7 +42,7 @@ Este documento es la lista maestra de pendientes. Cada pendiente debe tener un c
 | UI-013 | Disenar experiencia de trabajos, sesiones y acciones. | Pendiente | Alta | UI / UX / Pulido visual |
 | UI-014 | Disenar agenda tipificada. | Pendiente | Media-alta | UI / UX / Pulido visual |
 | UI-015 | Mejorar experiencia de finanzas por unidad cobrable. | Pendiente | Alta | UI / UX / Pulido visual |
-| UI-016 | Mejorar reportes por rol. | Pendiente | Media-alta | UI / UX / Pulido visual |
+| UI-016 | Mejorar reportes por rol. | Implementada local / pend. PR | Media-alta | UI / UX / Pulido visual |
 | UI-017 | Definir checklist responsive de pantallas clinicas. | Pendiente | Media | UI / UX / Pulido visual |
 | UI-018 | Normalizar microcopy clinica y retirar textos tecnicos visibles. | Pendiente | Media | UI / UX / Pulido visual |
 | UI-019 | Definir patron comun de formularios clinicos largos. | Pendiente | Media-alta | UI / UX / Pulido visual |
@@ -822,23 +822,38 @@ Disenar cobros y pagos con unidad cobrable clara, saldo visible y origen entendi
 
 ### UI-016 - Mejorar reportes por rol
 
-**Estado:** Pendiente
+**Estado:** Implementada local / pendiente PR
 **Prioridad:** Media-alta
 **Responsable:** UI / UX / Pulido visual
 **Origen:** UI-001 + UI-002
 **Fecha creacion:** 2026-06-13
-**Rama sugerida:** `docs/ui-016-reportes-por-rol`
-**Dependencias:** BE-014, BE-016, BE-017
+**Fecha implementacion local:** 2026-06-28
+**Rama usada:** `ui-016-reportes-por-rol`
+**Dependencias:** SEC-001, SEC-002, SEC-004, BE-016
 
 #### Descripcion
 Separar reportes para terapeuta, finanzas y admin segun necesidades operativas y permisos esperados.
 
 #### Criterios de aceptacion
-- Proponer vistas de reporte por rol.
+- Mantener la ruta `/reportes`.
+- Renderizar contenido distinto segun rol activo.
+- Admin ve panel general, clinico, financiero y operativo.
+- Terapeuta ve reportes clinicos sin gestion financiera.
+- Finanzas ve solo reportes financieros.
+- Finanzas usa `vista_finanzas_unidades_cobrables`.
+- Finanzas no consulta tablas clinicas desde Reportes.
 - Evitar mostrar informacion tecnica o sensible fuera de contexto.
-- No modificar codigo fuente.
+- No crear migraciones.
 - No modificar base de datos.
 - No tocar `.env`.
+
+#### Resultado
+
+Implementada localmente en `src/pages/ReportesPage.tsx`.
+
+`ReportesPage` detecta el rol activo y separa la pantalla en `ReportesAdmin`, `ReportesTerapeuta` y `ReportesFinanzas`. Admin mantiene panel general con indicadores clinicos y financieros autorizados. Terapeuta ve indicadores clinicos, seguimiento, hallazgos y trabajos sin finanzas completas. Finanzas ve solo metricas financieras desde `public.vista_finanzas_unidades_cobrables`.
+
+Informe relacionado: `docs/control/auditorias/UI-016_REPORTES_POR_ROL.md`
 
 #### Observaciones
 
