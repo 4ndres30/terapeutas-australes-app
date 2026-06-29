@@ -775,3 +775,79 @@ La documentacion deja de marcar BE-016 y UI-016 como `Implementada local / pendi
 ### Observaciones
 
 CTRL-007 corrige estado documental. No valida funcionalmente UI-016; esa tarea queda separada como QA-005.
+
+## LOG-025 - QA-005 validacion funcional local UI-016 reportes por rol
+
+**Estado:** Registrado
+**Prioridad:** Alta
+**Responsable:** Control de desarrollo
+**Origen:** UI-016 / PR #33 / CTRL-007
+**Fecha creacion:** 2026-06-29
+**Rama usada:** `qa-005-validacion-ui016-reportes`
+
+### Descripcion
+
+Se registra la validacion funcional local de `/reportes` despues de integrar UI-016.
+
+La validacion cubre los roles:
+
+- Admin;
+- Terapeuta;
+- Finanzas.
+
+### Archivos relacionados
+
+- `docs/control/auditorias/QA-005_VALIDACION_UI016_REPORTES_POR_ROL.md`
+- `docs/control/01_PENDIENTES_PROYECTO.md`
+- `docs/control/04_UI_UX_PULIDO_VISUAL.md`
+- `docs/control/06_BITACORA_CAMBIOS.md`
+
+### Resultado
+
+Admin ve reportes generales, clinicos, financieros y operativos autorizados.
+
+Terapeuta ve reportes clinicos de casos, revisiones, hallazgos, trabajos y seguimiento, sin panel financiero completo ni administracion de cobros/pagos desde Reportes.
+
+Finanzas ve solo reportes financieros desde `public.vista_finanzas_unidades_cobrables`.
+
+Finanzas no ve:
+
+- reportes clinicos;
+- pacientes clinicos;
+- consultas;
+- evaluaciones;
+- casos clinicos;
+- elementos del caso;
+- revisiones;
+- hallazgos;
+- trabajos clinicos sensibles;
+- fotos;
+- miniaturas;
+- rutas internas;
+- `storage_path`;
+- nombre completo;
+- telefono;
+- email;
+- motivo de consulta.
+
+### Restricciones respetadas
+
+- No se toco `.env`.
+- No se modifico codigo fuente.
+- No se modificaron migraciones.
+- No se toco Supabase remoto.
+- No se ejecuto `supabase db push`.
+- No se ejecuto `supabase db pull`.
+- No se modificaron `package.json`, `package-lock.json` ni `public/`.
+- No se usaron datos reales.
+- No se usaron fotos reales.
+- No se usaron pagos reales.
+- No se hizo merge a `main`.
+
+### Observaciones
+
+QA-005 no habilita datos reales, fotos reales, pagos reales ni produccion.
+
+PROD-001 sigue bloqueante.
+
+Proxima tarea sugerida: decisiones criticas post auditoria o SEC-003/SEC-005 segun planificacion.
