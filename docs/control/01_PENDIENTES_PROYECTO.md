@@ -23,7 +23,7 @@ Este documento es la lista maestra de pendientes. Cada pendiente debe tener un c
 | CTRL-003 | Sincronizar documentacion maestra tras UI-001/UI-002 y BE-003. | Integrada | Alta | Control de desarrollo |
 | CTRL-004 | Sincronizar control post IMP-001, DATA-001 y BE-011. | Integrada | Alta | Control de desarrollo |
 | CTRL-007 | Sincronizar documentacion maestra post BE-016, QA-004 y UI-016. | Integrada | Alta | Control de desarrollo |
-| CTRL-008 | Registrar decisiones criticas post auditoria. | Propuesta documental / pend. PR | Alta | Control de desarrollo |
+| CTRL-008 | Registrar decisiones criticas post auditoria. | Integrada | Alta | Control de desarrollo |
 | PEND-001 | Levantar inventario real del proyecto desde `main`. | Integrada | Alta | Control de desarrollo |
 | PEND-002 | Clasificar pendientes por chat responsable. | Integrada | Alta | Control de desarrollo |
 | QA-001 | Auditoria inicial del proyecto. | Integrada | Alta | Control de desarrollo |
@@ -60,11 +60,12 @@ Este documento es la lista maestra de pendientes. Cada pendiente debe tener un c
 | BE-017 | Definir estrategia SQL de agenda operativa. | Pendiente | Media | Integracion Backend/Estructura |
 | SEC-001 | Validar RLS runtime por roles. | Aprobada con observaciones | Alta | Integracion Backend / Seguridad |
 | SEC-002 | Crear matriz de permisos por tabla y rol. | Validada runtime / obs. | Alta | Integracion Backend / Seguridad |
-| SEC-003 | Hardening Auth para produccion. | Pendiente | Alta | Integracion Backend / Seguridad |
+| SEC-003 | Hardening Auth para produccion. | Diseno documental / pend. implementacion | Alta | Integracion Backend / Seguridad |
 | SEC-004 | Definir alcance del rol Finanzas. | Validada runtime / obs. | Alta | Control de desarrollo / Integracion Backend |
 | SEC-005 | Disenar bitacora/auditoria de cambios sensibles. | Pendiente | Alta | Integracion Backend |
 | SEC-006 | Politica de fotos, retencion y objetos huerfanos. | Pendiente | Alta | Integracion Backend / Seguridad |
 | SEC-007 | Procedimiento de scripts manuales locales/demo y prohibicion en produccion. | Pendiente | Alta | Integracion Backend / Seguridad |
+| SEC-008 | Implementacion controlada Hardening Auth. | Pendiente | Alta | Integracion Backend / Seguridad |
 | BE-018 | Separacion tecnica de ambientes. | Pendiente | Alta | Integracion Backend |
 | BE-019 | Estrategia de backup/restauracion. | Pendiente | Alta | Integracion Backend / Produccion |
 | BE-020 | Consentimiento informado y tratamiento de datos. | Pendiente | Alta | Control de desarrollo / Revision Clinica / Backend |
@@ -109,20 +110,21 @@ Corrige estados obsoletos que indicaban `Implementada local / pendiente PR` para
 
 ### CTRL-008 - Registrar decisiones criticas post auditoria
 
-**Estado:** Propuesta documental / pendiente PR
+**Estado:** Integrada
 **Prioridad:** Alta
 **Responsable:** Control de desarrollo
 **Origen:** Auditoria integral post PR #35
 **Fecha creacion:** 2026-06-29
 **Rama usada:** `ctrl-008-decisiones-criticas-post-auditoria`
+**PR:** #36
 **Informe:** `docs/control/auditorias/CTRL-008_DECISIONES_CRITICAS_POST_AUDITORIA.md`
 **Dependencias:** CTRL-007, QA-005, SEC-001, SEC-002, SEC-004, BE-016, UI-016
 
-#### Resultado esperado
+#### Resultado
 
-Registrar decisiones o propuestas criticas antes de avanzar a seguridad, backend, UI o produccion.
+Registra decisiones o propuestas criticas antes de avanzar a seguridad, backend, UI o produccion.
 
-CTRL-008 debe distinguir:
+CTRL-008 distingue:
 
 - decisiones estables;
 - decisiones propuestas pendientes de aprobacion;
@@ -132,7 +134,7 @@ CTRL-008 debe distinguir:
 
 #### Observaciones
 
-CTRL-008 no implementa seguridad, backend, UI ni migraciones. PROD-001 sigue bloqueante.
+CTRL-008 no implemento seguridad, backend, UI ni migraciones. PROD-001 sigue bloqueante.
 
 ### PEND-001 - Levantar inventario real del proyecto desde main
 
@@ -465,7 +467,7 @@ Aprobada con observaciones como diseno UI/UX y validada clinicamente con observa
 **Fecha creacion:** 2026-06-18
 **Fecha actualizacion:** 2026-06-19
 **Rama sugerida:** `docs/prod-001-sec-001-tareas-datos-reales`
-**Dependencias:** SEC-001, SEC-002, SEC-003, SEC-004, SEC-005, BE-018, BE-019, BE-020, BE-021, UI-020, UI-021, DOC-001, DOC-002, DOC-003
+**Dependencias:** SEC-001, SEC-002, SEC-003, SEC-004, SEC-005, SEC-008, BE-018, BE-019, BE-020, BE-021, UI-020, UI-021, DOC-001, DOC-002, DOC-003
 
 #### Descripcion
 Definir y cerrar las condiciones minimas antes de ingresar datos reales de pacientes al sistema. No se habilita uso oficial con datos reales hasta cerrar separacion de ambientes, seguridad, backups, consentimiento y auditoria.
@@ -540,21 +542,47 @@ No se implementaron policies, migraciones, tablas ni cambios de codigo. SEC-001 
 
 ### SEC-003 - Hardening Auth para produccion
 
-**Estado:** Pendiente
+**Estado:** Diseno documental / pendiente implementacion tecnica
 **Prioridad:** Alta
 **Responsable:** Integracion Backend / Seguridad
-**Origen:** Auditoria PROD-001 / SEC-001
+**Origen:** Auditoria PROD-001 / SEC-001 / CTRL-008
 **Fecha creacion:** 2026-06-19
+**Fecha diseno documental:** 2026-06-29
+**Rama usada:** `sec-003-hardening-auth-diseno`
+**Informe:** `docs/control/auditorias/SEC-003_HARDENING_AUTH.md`
+**Dependencias:** CTRL-008, DEC-029, DEC-030, DEC-031, PROD-001
 
 #### Descripcion
 Definir medidas de endurecimiento de Supabase Auth antes de habilitar produccion con datos sensibles.
 
-#### Criterios de aceptacion preliminares
-- Revisar configuracion esperada de sesiones y redirecciones.
-- Definir politica de altas, bajas y recuperacion de cuentas.
-- Evaluar requisitos de MFA o controles equivalentes.
-- Documentar controles minimos para usuarios internos.
+#### Resultado documental
+
+SEC-003 registra el diseno de politica Auth objetivo y confirma que la configuracion actual corresponde a local/demo:
+
+- signup abierto en config local;
+- password minimo debil para produccion;
+- email confirm deshabilitado;
+- MFA deshabilitado;
+- redirects locales;
+- sin timebox/inactividad de sesion activa;
+- alta real dependiente de `usuarios_internos`, rol valido y usuario activo.
+
+La politica propuesta exige signup cerrado/controlado, provisioning administrado, email confirmado, password fuerte, MFA por rol, redirects por ambiente, recuperacion controlada y auditoria Auth conectada con SEC-005.
+
+#### Criterios de aceptacion de implementacion posterior
+- Aprobar el diseno SEC-003 antes de modificar configuracion Auth.
+- Separar implementacion tecnica en `SEC-008`.
+- Definir configuracion por ambiente junto a BE-018/DOC-001.
+- Validar signup, password policy, email confirm, MFA, redirects, sesiones y recuperacion.
+- Conectar eventos Auth y cambios de rol con SEC-005.
+- Cubrir casos minimos en QA-006.
 - No tocar Supabase remoto sin autorizacion expresa.
+
+#### Observaciones
+
+SEC-003 no modifico `supabase/config.toml`, codigo fuente, migraciones, `.env` ni Supabase remoto.
+
+PROD-001 sigue bloqueante hasta implementar y validar hardening Auth.
 
 ### SEC-004 - Definir alcance del rol Finanzas
 
@@ -653,6 +681,35 @@ Definir procedimiento seguro para scripts manuales de usuarios demo/local y proh
 - Definir alta, baja y cambio de rol por procedimiento aprobado.
 - Evitar convertir archivos tipo `console.sql` en practica operativa normal.
 - No tocar `.env`, Supabase remoto ni datos reales.
+
+### SEC-008 - Implementacion controlada Hardening Auth
+
+**Estado:** Pendiente
+**Prioridad:** Alta
+**Responsable:** Integracion Backend / Seguridad
+**Origen:** SEC-003 / DEC-029 / DEC-030 / DEC-031 / DEC-032
+**Fecha creacion:** 2026-06-29
+**Dependencias:** SEC-003, SEC-005, SEC-007, BE-018, DOC-001, QA-006, PROD-001
+
+#### Descripcion
+Aplicar tecnicamente, en tarea separada y aprobada, la politica de hardening Auth definida por SEC-003.
+
+#### Criterios de aceptacion preliminares
+- No iniciar sin aprobacion de SEC-003.
+- Definir alcance por ambiente antes de cambiar `supabase/config.toml` o configuracion equivalente.
+- Cerrar o controlar signup en staging/produccion.
+- Aplicar password policy fuerte para ambientes reales.
+- Habilitar confirmacion de email segun politica aprobada.
+- Definir e implementar MFA por rol si el entorno Supabase lo permite.
+- Ajustar `site_url` y redirects por ambiente, sin dominios amplios.
+- Definir recuperacion de cuenta y expiracion/inactividad de sesion.
+- Validar que usuarios Auth sin `usuarios_internos`, usuarios inactivos y roles invalidos sigan bloqueados.
+- Registrar eventos Auth y cambios de rol en SEC-005 o procedimiento equivalente.
+- No tocar Supabase remoto, datos reales, fotos reales ni pagos reales sin autorizacion expresa.
+
+#### Observaciones
+
+SEC-008 no debe mezclar refactor visual, migraciones no relacionadas ni cambios de funcionalidad clinica.
 
 ### BE-018 - Separacion tecnica de ambientes
 
@@ -994,7 +1051,7 @@ Validar localmente que las fotos se cargan, registran y muestran asociadas al el
 **Responsable:** Control de desarrollo / QA
 **Origen:** CTRL-008 / SEC-001 / QA-004 / QA-005
 **Fecha creacion:** 2026-06-29
-**Dependencias:** SEC-003, SEC-005, BE-021, UI-023, BE-023, BE-025
+**Dependencias:** SEC-003, SEC-005, SEC-008, BE-021, UI-023, BE-023, BE-025
 
 #### Descripcion
 Definir e implementar progresivamente una base minima de pruebas para roles, navegacion, reportes, finanzas y no exposicion de datos sensibles.
@@ -1007,6 +1064,7 @@ Definir e implementar progresivamente una base minima de pruebas para roles, nav
 - Confirmar que Finanzas no ve clinica ni `storage_path`.
 - Confirmar que Finanzas no recibe identificadores clinicos visibles cuando se cierre BE-023.
 - Confirmar que Terapeuta no administra pagos desde Reportes ni ficha clinica.
+- Cubrir casos Auth minimos: usuario sin perfil interno, usuario inactivo, rol invalido y errores Auth no tecnicos.
 - Evaluar pruebas RLS/Storage locales sin tocar remoto.
 - No intentar cubrir todo en un solo PR.
 
