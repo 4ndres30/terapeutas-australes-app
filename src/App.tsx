@@ -43,6 +43,13 @@ type NavegacionLateral = {
 
 const rolesValidos: RolUsuario[] = ['admin', 'terapeuta', 'finanzas']
 
+const mensajeAccesoInternoNoHabilitado =
+  'Acceso interno no habilitado. Solicita revisión a un administrador.'
+const mensajeValidacionAcceso =
+  'No se pudo validar el acceso interno. Intenta nuevamente o contacta a un administrador.'
+const mensajeSesionNoValidada =
+  'No se pudo validar la sesión. Intenta iniciar sesión nuevamente.'
+
 const navegacionPrincipal: NavegacionLateral[] = [
   { etiqueta: 'Inicio', icono: '⌂', estado: 'pronto' },
   { etiqueta: 'Pacientes', icono: '♙', ruta: '/pacientes', estado: 'activo' },
@@ -264,14 +271,14 @@ function App() {
 
       if (error) {
         setUsuarioInterno(null)
-        setMensajeAuth(`Error al validar usuario interno: ${error.message}`)
+        setMensajeAuth(mensajeValidacionAcceso)
         setEstadoAuth('error')
         return
       }
 
       if (!data) {
         setUsuarioInterno(null)
-        setMensajeAuth('Usuario no autorizado. Solicita acceso a un administrador.')
+        setMensajeAuth(mensajeAccesoInternoNoHabilitado)
         setEstadoAuth('sin_autorizacion')
         return
       }
@@ -280,14 +287,14 @@ function App() {
 
       if (!esRolUsuario(usuario.rol)) {
         setUsuarioInterno(null)
-        setMensajeAuth('Usuario no autorizado. El rol interno no es válido.')
+        setMensajeAuth(mensajeAccesoInternoNoHabilitado)
         setEstadoAuth('sin_autorizacion')
         return
       }
 
       if (!usuario.activo) {
         setUsuarioInterno(null)
-        setMensajeAuth('Usuario desactivado. Contacta a un administrador.')
+        setMensajeAuth(mensajeAccesoInternoNoHabilitado)
         setEstadoAuth('inactivo')
         return
       }
@@ -307,7 +314,7 @@ function App() {
       if (error) {
         setSession(null)
         setUsuarioInterno(null)
-        setMensajeAuth(`Error al obtener sesión: ${error.message}`)
+        setMensajeAuth(mensajeSesionNoValidada)
         setEstadoAuth('error')
         return
       }

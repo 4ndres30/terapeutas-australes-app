@@ -984,3 +984,74 @@ PROD-001 sigue bloqueante. No se autorizan datos reales, fotos reales, pagos rea
 - No se usaron fotos reales.
 - No se usaron pagos reales.
 - No se hizo merge a `main`.
+
+## LOG-028 - SEC-008 implementacion controlada Hardening Auth
+
+**Estado:** Registrado
+**Prioridad:** Alta
+**Responsable:** Integracion Backend / Seguridad
+**Origen:** SEC-003 / DEC-029 / DEC-030 / DEC-031 / DEC-032
+**Fecha creacion:** 2026-06-30
+**Rama usada:** `sec-008-implementacion-hardening-auth`
+
+### Descripcion
+
+Se implementa una primera parte segura de hardening Auth para local/demo, sin tocar Supabase remoto ni romper el flujo actual.
+
+La tarea revisa SEC-003, CTRL-008, `supabase/config.toml`, login, `usuarios_internos`, roles, seeds demo y restricciones de scripts manuales.
+
+### Archivos relacionados
+
+- `supabase/config.toml`
+- `src/App.tsx`
+- `src/pages/LoginPage.tsx`
+- `docs/control/auditorias/SEC-008_IMPLEMENTACION_HARDENING_AUTH.md`
+- `docs/control/01_PENDIENTES_PROYECTO.md`
+- `docs/control/03_INTEGRACION_BACKEND_ESTRUCTURA.md`
+- `docs/control/06_BITACORA_CAMBIOS.md`
+
+### Cambios aplicados
+
+- Password local minimo sube a 8 caracteres.
+- Password local exige mayusculas, minusculas y numeros para nuevas altas/cambios.
+- Se habilitan `timebox = "24h"` e `inactivity_timeout = "8h"` en config local.
+- Login deja de mostrar errores crudos de Supabase.
+- Validacion de `usuarios_internos` deja de mostrar errores tecnicos de DB/RLS.
+- Se mantienen bloqueos por usuario sin perfil interno, usuario inactivo y rol invalido.
+
+### Cambios no aplicados
+
+- No se cerro signup local porque no hay provisioning Auth versionado suficiente.
+- No se habilito email confirm por riesgo de bloquear cuentas demo.
+- No se habilito MFA por falta de UI/flujo.
+- No se implemento recovery por falta de correo/SMTP/UI/procedimiento.
+- No se crearon migraciones.
+
+### Tareas derivadas
+
+- `SEC-008B` - Cierre de signup y provisioning Auth controlado.
+- `UI-024` - Recuperacion de cuenta, MFA y estados Auth no tecnicos.
+- `SEC-005`, `SEC-007`, `BE-018`, `DOC-001` y `QA-006` siguen necesarias.
+
+### Restricciones respetadas
+
+- No se toco `.env`.
+- No se modificaron migraciones.
+- No se ejecuto `supabase db push`.
+- No se ejecuto `supabase db pull`.
+- No se toco Supabase remoto.
+- No se modificaron `package.json`, `package-lock.json` ni `public/`.
+- No se usaron datos reales.
+- No se usaron fotos reales.
+- No se usaron pagos reales.
+- No se hizo merge a `main`.
+
+### Resultado
+
+SEC-008 queda implementada parcialmente y pendiente de PR. No habilita staging, produccion, datos reales, fotos reales ni pagos reales.
+
+### Observaciones
+
+Los cambios de `supabase/config.toml` requieren reiniciar Supabase local para que Auth cargue la nueva configuracion. En esta tarea no se reinicio el servicio para evitar interrumpir el entorno local.
+
+PROD-001 sigue bloqueante.
