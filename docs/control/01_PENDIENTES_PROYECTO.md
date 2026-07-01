@@ -79,8 +79,8 @@ Este documento es la lista maestra de pendientes. Cada pendiente debe tener un c
 | BE-025 | Campos financieros permitidos/prohibidos para Finanzas. | Pendiente | Alta | Integracion Backend/Estructura |
 | BE-026 | Disenar contrato de API publica de agendamiento. | Pendiente | Alta | Integracion Backend/Estructura |
 | BE-027 | Disenar integracion Google Calendar / Gmail / Workspace. | Pendiente | Alta | Integracion Backend/Estructura |
-| BE-028 | Implementar modelo DB de Agenda operativa. | Implementada local / pendiente PR | Alta | Integracion Backend/Estructura |
-| BE-029 | Validar runtime local de Agenda operativa. | Pendiente | Alta | Integracion Backend / Seguridad |
+| BE-028 | Implementar modelo DB de Agenda operativa. | Integrada por PR #41 | Alta | Integracion Backend/Estructura |
+| BE-029 | Validar runtime local de Agenda operativa. | Validada local / pendiente PR | Alta | Integracion Backend / Seguridad |
 | UI-020 | Indicador visual de ambiente activo. | Pendiente | Alta | UI / UX |
 | UI-021 | Bloqueo visual de produccion no habilitada. | Pendiente | Alta | UI / UX |
 | UI-022 | Integracion visual minima de fotos dentro de Elementos del caso. | Implementada local / pend. QA | Alta | UI / UX / Pulido visual |
@@ -1157,13 +1157,16 @@ La integracion Google no debe implementarse antes de cerrar ambientes, consentim
 
 ### BE-028 - Implementar modelo DB de Agenda operativa
 
-**Estado:** Implementada local / pendiente PR
+**Estado:** Integrada por PR #41
 **Prioridad:** Alta
 **Responsable:** Integracion Backend/Estructura
 **Origen:** BE-012 / BE-017 / DEC-034
 **Fecha creacion:** 2026-07-01
 **Fecha implementacion local:** 2026-07-01
+**Fecha integracion main:** 2026-07-01
 **Rama usada:** `be-028-modelo-db-agenda-operativa`
+**PR:** #41
+**Commit main:** `d0115c9`
 **Migracion:** `supabase/migrations/20260701040000_crear_modelo_agenda_operativa.sql`
 **Informe:** `docs/control/auditorias/BE-028_IMPLEMENTACION_MODELO_DB_AGENDA_OPERATIVA.md`
 **Dependencias:** BE-012, BE-017, DEC-034, BE-018, BE-020, SEC-005, SEC-009, QA-006, DOC-001, DOC-003, PROD-001
@@ -1186,34 +1189,42 @@ BE-028 crea la base estructural versionada, sin implementar API publica, UI func
 - Se valida la migracion en Supabase local con `psql` dentro de `BEGIN`/`ROLLBACK`, sin persistir cambios.
 
 #### Observaciones
-BE-028 no habilita uso real, pagina publica, API ni produccion. Queda pendiente validacion runtime local por rol en BE-029 y posterior integracion UI en UI-025.
+BE-028 no habilita uso real, pagina publica, API ni produccion. La validacion runtime local por rol queda abordada por BE-029 y la integracion UI sigue pendiente en UI-025.
 
 ### BE-029 - Validar runtime local de Agenda operativa
 
-**Estado:** Pendiente
+**Estado:** Validada local / pendiente PR
 **Prioridad:** Alta
 **Responsable:** Integracion Backend / Seguridad
 **Origen:** BE-028 / SEC-001 / DEC-034
 **Fecha creacion:** 2026-07-01
+**Fecha validacion local:** 2026-07-01
+**Rama usada:** `be-029-validacion-runtime-agenda-operativa`
+**Informe:** `docs/control/auditorias/BE-029_VALIDACION_RUNTIME_AGENDA_OPERATIVA.md`
 **Dependencias:** BE-028, SEC-001, SEC-002, QA-006, PROD-001
 
 #### Descripcion
 Validar en Supabase local, con datos ficticios y sin tocar remoto, que las tablas y vista de Agenda operativa respetan RLS, grants y roles esperados.
 
-#### Criterios de aceptacion preliminares
-- Confirmar que `admin` puede leer, insertar y actualizar `solicitudes_agenda` y `agenda_eventos`.
-- Confirmar que `terapeuta` puede leer, insertar y actualizar `solicitudes_agenda` y `agenda_eventos`.
-- Confirmar que `finanzas` no puede leer ni modificar Agenda operativa.
-- Confirmar que `anon` no tiene acceso directo.
-- Confirmar que `vista_agenda_operativa` respeta `security_invoker` y no expone datos clinicos profundos, fotos ni finanzas.
-- Confirmar que no existen creaciones automaticas de pacientes ni consultas.
-- Ejecutar pruebas solo con datos ficticios y transacciones revertidas cuando corresponda.
-- No tocar Supabase remoto.
-- No ejecutar `supabase db push`.
-- No usar datos reales.
+#### Resultado local
+- Supabase local activo.
+- Migracion `20260701040000_crear_modelo_agenda_operativa.sql` aplicada con `npx supabase migration up --local`.
+- Matriz de estructura, seguridad, roles y vista: 30/30 OK.
+- Matriz de checks, FKs y triggers: 17/17 OK.
+- Matriz especifica de `agenda_eventos` por rol: 11/11 OK.
+- `admin` y `terapeuta` pueden leer, insertar y actualizar Agenda operativa.
+- `finanzas` queda fuera por RLS.
+- `anon` queda fuera por ausencia de grants directos.
+- `vista_agenda_operativa` usa `security_invoker` y no expone hallazgos, fotos, Storage, pagos, cobros, montos, notas internas ni mensaje de contacto.
+- No se crean pacientes automaticamente.
+- No se crean consultas automaticamente.
+- Las pruebas usaron datos ficticios dentro de transacciones revertidas.
+- No se toco Supabase remoto.
+- No se ejecuto `supabase db push`.
+- No se usaron datos reales.
 
 #### Observaciones
-BE-029 debe cerrar la evidencia runtime antes de conectar UI operativa o contrato publico real.
+BE-029 valida Agenda en entorno local/demo. No habilita produccion, datos reales, API publica, Google Calendar/Gmail ni UI funcional.
 
 ### UI-022 - Integracion visual minima de fotos dentro de Elementos del caso
 
@@ -1299,7 +1310,7 @@ Definir e implementar el flujo visual de recuperacion de cuenta, enrolamiento/ve
 Integrar posteriormente `src/pages/AgendaPage.tsx` con `solicitudes_agenda`, `agenda_eventos` y `vista_agenda_operativa`, manteniendo la separacion entre solicitud inicial, evento interno y consulta confirmada.
 
 #### Criterios de aceptacion preliminares
-- Reemplazar el placeholder solo cuando BE-029 valide runtime local de RLS.
+- Reemplazar el placeholder solo despues de integrar BE-029 y revisar QA local.
 - Mostrar agenda operativa desde `vista_agenda_operativa` o consultas controladas.
 - Crear/editar eventos internos sin crear pacientes ni consultas automaticamente.
 - Distinguir solicitudes de agenda de eventos confirmados.
@@ -1559,7 +1570,7 @@ La recomendacion documentada separa:
 
 #### Resultado documental
 
-BE-012 queda documentado como diseno arquitectonico. BE-028 implementa el modelo DB inicial; quedan pendientes validacion runtime local e integracion UI.
+BE-012 queda documentado como diseno arquitectonico. BE-028 implementa el modelo DB inicial y BE-029 valida runtime local. Queda pendiente integracion UI.
 
 ### BE-013 - Ajustar reglas de cobros por unidad cobrable
 
@@ -1680,7 +1691,7 @@ La recomendacion documentada es usar `agenda_eventos` como fuente primaria y uni
 
 #### Resultado documental
 
-BE-017 queda documentado como estrategia SQL conceptual. BE-028 implementa `vista_agenda_operativa`; queda pendiente validacion runtime local por rol.
+BE-017 queda documentado como estrategia SQL conceptual. BE-028 implementa `vista_agenda_operativa` y BE-029 valida runtime local por rol.
 
 ## Pendientes futuros
 

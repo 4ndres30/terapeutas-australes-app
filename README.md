@@ -699,6 +699,8 @@ La arquitectura distingue `solicitudes_agenda` para solicitudes iniciales, `agen
 
 BE-028 deja implementado el modelo DB inicial versionado para Agenda operativa en `supabase/migrations/20260701040000_crear_modelo_agenda_operativa.sql`.
 
+BE-029 valida localmente ese modelo en Supabase local/demo: roles, RLS, checks, FKs, triggers y vista operativa quedan comprobados sin usar datos reales ni tocar Supabase remoto.
+
 Agenda todavia no tiene UI funcional conectada, API publica operativa, integracion Google Calendar/Gmail ni produccion habilitada.
 
 Antes de conectar una pagina publica real se debe cerrar Agenda operativa, consentimiento, ambientes, auditoria sensible, seguridad API y PROD-001.
