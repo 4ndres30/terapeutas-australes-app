@@ -49,6 +49,7 @@ Este documento registra decisiones estables. No reemplaza la conversacion, pero 
 | DEC-031 | Carga real requiere aprobacion explicita y checklist. | Pregunta abierta bloqueante | 2026-06-29 |
 | DEC-032 | Auth productivo por invitacion/provisioning y MFA por rol. | Propuesta pendiente aprobacion | 2026-06-29 |
 | DEC-033 | API segura como frontera entre pagina publica, sistema interno y servicios Google. | Propuesta arquitectonica / pendiente implementacion | 2026-06-30 |
+| DEC-034 | Agenda operativa separada de consulta clinica confirmada. | Propuesta arquitectonica / pendiente implementacion | 2026-07-01 |
 
 ## DEC-001 - Repositorio oficial del proyecto
 
@@ -951,3 +952,48 @@ Esta decision no implementa endpoints, no modifica codigo, no crea migraciones, 
 La API sera requisito para conectar agendamiento publico con datos reales. Mientras esta decision no este implementada y validada, cualquier pagina publica debe operar sin escribir directamente en el sistema interno.
 
 Informe relacionado: `docs/control/auditorias/API-001_DISENO_API_PUBLICA_GOOGLE_WORKSPACE.md`.
+
+## DEC-034 - Agenda operativa separada de consulta clinica confirmada
+
+**Estado:** Propuesta arquitectonica / pendiente implementacion
+**Origen:** BE-012 / BE-017 / API-001 / DEC-011 / DEC-033
+**Fecha:** 2026-07-01
+
+### Decision propuesta
+
+Agenda debe separar tres conceptos:
+
+- `solicitudes_agenda`: solicitud inicial de hora o contacto, publica o interna, con datos minimos y sin ficha clinica definitiva.
+- `agenda_eventos`: evento operativo interno tipificado.
+- `consultas`: registro clinico/operativo de una atencion, cita o contacto confirmado, asociado a un paciente real.
+
+### Se aprueba como criterio arquitectonico
+
+- La pagina publica futura debe crear solicitudes de agenda mediante API segura, no consultas.
+- `agenda_eventos` debe tener `tipo_evento` obligatorio.
+- `consultas` solo debe crearse o vincularse despues de revision interna, paciente validado y consentimiento suficiente.
+- La agenda interna puede vincular eventos a paciente, consulta, evaluacion, caso, revision, trabajo o sesion cuando corresponda.
+- `vista_agenda_operativa` debe usar `agenda_eventos` como fuente primaria y unir contexto clinico solo mediante relaciones existentes.
+
+### Se descarta para v1
+
+- Usar `consultas` como bandeja de solicitudes publicas.
+- Crear pacientes automaticamente desde pagina publica.
+- Crear evaluaciones, casos, elementos, revisiones, hallazgos o trabajos automaticamente desde Agenda.
+- Sincronizar Google Calendar al recibir una solicitud no revisada.
+- Integrar Google Calendar/Gmail desde frontend.
+
+### Queda pendiente
+
+- Crear migraciones futuras para `solicitudes_agenda`, `agenda_eventos` y `vista_agenda_operativa`.
+- Definir UI de Agenda tipificada.
+- Definir contrato real `BE-026`.
+- Definir consentimiento, auditoria, ambientes, seguridad API e integracion Google.
+
+### Impacto
+
+BE-012 y BE-017 quedan documentados como diseno arquitectonico. La implementacion tecnica debe quedar para tarea posterior y no debe habilitar produccion mientras PROD-001 siga abierto.
+
+### Observaciones
+
+Informe relacionado: `docs/control/auditorias/BE-012_BE-017_DISENO_AGENDA_OPERATIVA.md`.

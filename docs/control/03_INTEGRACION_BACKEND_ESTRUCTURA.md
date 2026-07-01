@@ -216,6 +216,49 @@ API-001 no crea backend, no crea endpoints, no instala dependencias, no crea mig
 
 Informe relacionado: `docs/control/auditorias/API-001_DISENO_API_PUBLICA_GOOGLE_WORKSPACE.md`
 
+## BE-012 / BE-017 - Diseno de Agenda Operativa
+
+**Estado:** Diseno documentado / pendiente implementacion
+**Origen:** BE-002 / DEC-011 / API-001 / DEC-034
+**Fecha:** 2026-07-01
+
+BE-012/BE-017 define Agenda como arquitectura operativa separada en tres niveles:
+
+- `solicitudes_agenda`: solicitud inicial de hora o contacto, publica o interna, sin crear ficha clinica definitiva.
+- `agenda_eventos`: evento interno tipificado, con `tipo_evento` obligatorio.
+- `consultas`: atencion, cita o contacto confirmado asociado a un paciente real.
+
+### Reglas backend
+
+- La pagina publica futura no debe escribir en `consultas`.
+- Una solicitud publica no debe crear automaticamente `pacientes`.
+- Una solicitud publica no debe crear evaluaciones, casos, elementos, revisiones, hallazgos ni trabajos.
+- La conversion a `consultas` requiere revision interna, paciente validado y consentimiento suficiente.
+- `agenda_eventos` puede vincularse opcionalmente a paciente, consulta, evaluacion, caso, revision, trabajo o sesion de trabajo.
+- Google Calendar y Gmail deben integrarse solo desde backend futuro, no desde frontend.
+
+### Estrategia SQL conceptual
+
+La futura `vista_agenda_operativa` debe usar `agenda_eventos` como fuente primaria y unir contexto desde entidades relacionadas.
+
+No se recomienda una vista que una automaticamente todas las consultas, evaluaciones, revisiones y sesiones de trabajo con `UNION`, porque puede duplicar eventos cuando tambien existan filas en `agenda_eventos`.
+
+### Relacion con API-001 y BE-026
+
+BE-026 debe disenar su contrato publico sobre `solicitudes_agenda`, no sobre `consultas`.
+
+Antes de implementar API publica real deben estar resueltos Agenda operativa, consentimiento, ambientes, auditoria sensible, seguridad de API y PROD-001.
+
+### Tarea tecnica derivada
+
+- `BE-028` - Implementar modelo DB de Agenda operativa con migracion futura para `solicitudes_agenda`, `agenda_eventos` y `vista_agenda_operativa`.
+
+### Restricciones
+
+BE-012/BE-017 no crea migraciones, no modifica codigo funcional, no toca RLS/Auth, no toca `.env`, no toca Supabase remoto y no habilita datos reales ni produccion.
+
+Informe relacionado: `docs/control/auditorias/BE-012_BE-017_DISENO_AGENDA_OPERATIVA.md`
+
 ## BE-001 - Inventariar estructura backend y Supabase local
 
 **Estado:** Integrada

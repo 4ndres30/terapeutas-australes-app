@@ -1119,3 +1119,69 @@ La integracion Google Calendar/Gmail/Workspace queda definida como backend segur
 ### Observaciones
 
 PROD-001 sigue bloqueante. La API publica no debe implementarse con datos reales hasta cerrar Agenda, consentimiento, ambientes, auditoria sensible, seguridad de API, backup/restauracion y checklist pre-produccion.
+
+## LOG-030 - BE-012 / BE-017 diseno Agenda Operativa
+
+**Estado:** Registrado
+**Prioridad:** Alta
+**Responsable:** Integracion Backend/Estructura
+**Origen:** API-001 / DEC-033 / BE-012 / BE-017
+**Fecha creacion:** 2026-07-01
+**Rama usada:** `be-012-be-017-diseno-agenda-operativa`
+
+### Descripcion
+
+Se registra el diseno arquitectonico de Agenda Operativa antes de avanzar con el contrato real `BE-026`.
+
+La tarea revisa documentacion de control, auditorias, `src/App.tsx`, `src/pages/AgendaPage.tsx`, `src/lib/supabase.ts`, `package.json` y migraciones existentes.
+
+### Archivos relacionados
+
+- `README.md`
+- `docs/control/auditorias/BE-012_BE-017_DISENO_AGENDA_OPERATIVA.md`
+- `docs/control/00_ESTADO_GENERAL_PROYECTO.md`
+- `docs/control/01_PENDIENTES_PROYECTO.md`
+- `docs/control/03_INTEGRACION_BACKEND_ESTRUCTURA.md`
+- `docs/control/05_DECISIONES_PROYECTO.md`
+- `docs/control/06_BITACORA_CAMBIOS.md`
+
+### Decision agregada
+
+- DEC-034: Agenda operativa separada de consulta clinica confirmada.
+
+### Pendientes actualizados o derivados
+
+- `BE-012` - Disenar backend de Agenda tipificada.
+- `BE-017` - Definir estrategia SQL de agenda operativa.
+- `BE-028` - Implementar modelo DB de Agenda operativa.
+- `UI-014` queda dependiente de BE-012, BE-017 y DEC-034.
+
+### Resultado
+
+Agenda queda definida como arquitectura separada:
+
+- `solicitudes_agenda`: solicitud inicial de hora o contacto.
+- `agenda_eventos`: evento interno tipificado.
+- `consultas`: atencion/contacto/cita confirmada asociada a paciente real.
+
+La futura API publica debe crear solicitudes de agenda, no consultas clinicas directas.
+
+### Restricciones respetadas
+
+- No se implemento Agenda.
+- No se modifico codigo funcional.
+- No se modificaron formularios.
+- No se crearon tablas.
+- No se crearon migraciones.
+- No se toco Supabase remoto.
+- No se toco `.env`.
+- No se modifico Auth/RLS.
+- No se crearon endpoints.
+- No se implemento API real.
+- No se integro Google Calendar.
+- No se integro Gmail.
+- No se habilito produccion.
+
+### Observaciones
+
+PROD-001 sigue bloqueante. La implementacion tecnica queda derivada a BE-028 y debe esperar condiciones minimas de consentimiento, ambientes, auditoria sensible, seguridad API y QA.

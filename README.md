@@ -691,6 +691,18 @@ La pagina publica no debe escribir directamente en tablas clinicas, financieras 
 
 ---
 
+## Diseno futuro de Agenda operativa
+
+Agenda queda definida documentalmente como un flujo separado de la consulta clinica confirmada.
+
+La arquitectura futura distingue `solicitudes_agenda` para solicitudes iniciales, `agenda_eventos` para eventos internos tipificados y `consultas` para atenciones o contactos confirmados con paciente real.
+
+Agenda no esta implementada todavia. No existe tabla real de agenda, API publica operativa, integracion Google Calendar/Gmail ni produccion habilitada.
+
+Antes de conectar una pagina publica real se debe cerrar Agenda operativa, consentimiento, ambientes, auditoria sensible, seguridad API y PROD-001.
+
+---
+
 ## Seguridad
 
 No se deben subir claves reales al repositorio.
