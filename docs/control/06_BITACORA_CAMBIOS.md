@@ -1185,3 +1185,79 @@ La futura API publica debe crear solicitudes de agenda, no consultas clinicas di
 ### Observaciones
 
 PROD-001 sigue bloqueante. La implementacion tecnica queda derivada a BE-028 y debe esperar condiciones minimas de consentimiento, ambientes, auditoria sensible, seguridad API y QA.
+
+## LOG-031 - BE-028 modelo DB Agenda Operativa
+
+**Estado:** Registrado
+**Prioridad:** Alta
+**Responsable:** Integracion Backend/Estructura
+**Origen:** BE-012 / BE-017 / DEC-034
+**Fecha creacion:** 2026-07-01
+**Rama usada:** `be-028-modelo-db-agenda-operativa`
+
+### Descripcion
+
+Se implementa el modelo DB inicial de Agenda Operativa como migracion versionada local.
+
+La tarea aplica la separacion aprobada:
+
+- `solicitudes_agenda`: solicitudes iniciales de hora o contacto.
+- `agenda_eventos`: eventos internos tipificados.
+- `consultas`: atenciones/contactos confirmados con paciente real.
+
+### Archivos relacionados
+
+- `supabase/migrations/20260701040000_crear_modelo_agenda_operativa.sql`
+- `docs/control/auditorias/BE-028_IMPLEMENTACION_MODELO_DB_AGENDA_OPERATIVA.md`
+- `README.md`
+- `docs/control/00_ESTADO_GENERAL_PROYECTO.md`
+- `docs/control/01_PENDIENTES_PROYECTO.md`
+- `docs/control/03_INTEGRACION_BACKEND_ESTRUCTURA.md`
+- `docs/control/05_DECISIONES_PROYECTO.md`
+- `docs/control/06_BITACORA_CAMBIOS.md`
+
+### Cambios tecnicos
+
+- Se crea `public.solicitudes_agenda`.
+- Se crea `public.agenda_eventos`.
+- Se crea `public.vista_agenda_operativa`.
+- Se agregan checks, indices, triggers `updated_at`, FKs y campos tecnicos para futura sincronizacion Google.
+- Se habilita RLS en tablas nuevas.
+- Se crean policies internas para `admin` y `terapeuta`.
+- No se crea policy de `delete`.
+- No se habilita acceso directo para `anon`.
+- `finanzas` queda fuera de Agenda operativa.
+
+### Pendientes actualizados o derivados
+
+- `BE-028` queda como implementada local / pendiente PR.
+- `BE-029` se agrega para validar runtime local de Agenda operativa.
+- `UI-025` se agrega para integrar `AgendaPage` con el modelo DB despues de BE-029.
+- `BE-026` sigue pendiente y debe usar `solicitudes_agenda` como destino conceptual.
+
+### Validacion local
+
+- Supabase local estaba activo al ejecutar `npx supabase status`.
+- La migracion compilo en PostgreSQL local dentro de `BEGIN`/`ROLLBACK`, sin persistir cambios.
+- `npx supabase migration list --local` mostro la nueva migracion versionada.
+
+### Restricciones respetadas
+
+- No se modifico frontend funcional.
+- No se implemento API real.
+- No se crearon endpoints.
+- No se integro Google Calendar.
+- No se integro Gmail.
+- No se toco Supabase remoto.
+- No se ejecuto `supabase db push`.
+- No se toco `.env`.
+- No se modifico Auth.
+- No se modificaron policies existentes, salvo policies de tablas nuevas.
+- No se crearon pacientes automaticamente.
+- No se crearon consultas automaticamente.
+- No se habilito produccion.
+- No se usaron datos reales.
+
+### Observaciones
+
+BE-028 habilita una base DB versionada para Agenda interna, pero no habilita uso operativo real. Antes de conectar UI, API publica o Google Workspace deben cerrarse validacion runtime, consentimiento, auditoria, ambientes, seguridad de API y PROD-001.

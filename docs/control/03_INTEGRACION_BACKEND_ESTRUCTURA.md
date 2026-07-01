@@ -208,7 +208,7 @@ La API futura debe actuar como frontera entre pagina publica, sistema interno, b
 
 ### Dependencias
 
-Antes de implementar API real deben cerrarse o aprobarse BE-012, BE-017, BE-018, BE-019, BE-020, SEC-005, SEC-009, DOC-001, DOC-003 y PROD-001.
+Antes de implementar API real deben cerrarse o aprobarse BE-012, BE-017, BE-028, BE-029, BE-018, BE-019, BE-020, SEC-005, SEC-009, DOC-001, DOC-003 y PROD-001.
 
 ### Restricciones
 
@@ -249,15 +249,67 @@ BE-026 debe disenar su contrato publico sobre `solicitudes_agenda`, no sobre `co
 
 Antes de implementar API publica real deben estar resueltos Agenda operativa, consentimiento, ambientes, auditoria sensible, seguridad de API y PROD-001.
 
-### Tarea tecnica derivada
+### Implementacion tecnica derivada
 
-- `BE-028` - Implementar modelo DB de Agenda operativa con migracion futura para `solicitudes_agenda`, `agenda_eventos` y `vista_agenda_operativa`.
+- `BE-028` implementa el modelo DB inicial de Agenda operativa con migracion versionada para `solicitudes_agenda`, `agenda_eventos` y `vista_agenda_operativa`.
+- `BE-029` queda pendiente para validar runtime local por rol, RLS y no exposicion sensible.
+- `UI-025` queda pendiente para conectar `AgendaPage` al modelo DB despues de validacion runtime.
 
 ### Restricciones
 
 BE-012/BE-017 no crea migraciones, no modifica codigo funcional, no toca RLS/Auth, no toca `.env`, no toca Supabase remoto y no habilita datos reales ni produccion.
 
 Informe relacionado: `docs/control/auditorias/BE-012_BE-017_DISENO_AGENDA_OPERATIVA.md`
+
+## BE-028 - Modelo DB de Agenda Operativa
+
+**Estado:** Implementada local / pendiente PR
+**Origen:** BE-012 / BE-017 / DEC-034
+**Fecha:** 2026-07-01
+
+BE-028 implementa la base DB versionada de Agenda Operativa sin implementar API publica, UI funcional ni integracion Google.
+
+### Migracion
+
+```text
+supabase/migrations/20260701040000_crear_modelo_agenda_operativa.sql
+```
+
+### Estructura implementada
+
+- `public.solicitudes_agenda`: solicitudes iniciales de hora o contacto, con datos minimos y sin ficha clinica definitiva.
+- `public.agenda_eventos`: eventos internos tipificados, con relaciones opcionales a solicitud, paciente, consulta, evaluacion, caso, revision, trabajo y sesion de trabajo.
+- `public.vista_agenda_operativa`: vista interna basada en `agenda_eventos`, con contexto minimo de solicitud/paciente.
+
+### Seguridad aplicada
+
+- RLS habilitado en `solicitudes_agenda` y `agenda_eventos`.
+- Policies `select`, `insert` y `update` para `admin` y `terapeuta` mediante `public.es_terapeuta_o_admin()`.
+- Sin policy de `delete`.
+- Sin grants directos a `anon`.
+- `finanzas` no queda autorizado para Agenda operativa.
+- `vista_agenda_operativa` usa `security_invoker = true`.
+
+### Reglas de integracion
+
+- La pagina publica futura no debe escribir directo en estas tablas.
+- `solicitudes_agenda` sera el destino conceptual de BE-026 mediante API segura.
+- `agenda_eventos.consulta_id` permite vincular una consulta confirmada sin modificar `consultas`.
+- No se crean pacientes ni consultas automaticamente.
+- Campos Google quedan solo como preparacion futura, sin sincronizacion real.
+
+### Pendientes posteriores
+
+- `BE-029`: validacion runtime local por rol y RLS.
+- `UI-025`: integracion de `AgendaPage` con el modelo DB.
+- `BE-026`: contrato API publica sobre `solicitudes_agenda`.
+- `BE-027`: integracion Google Calendar/Gmail desde backend seguro.
+
+### Restricciones
+
+BE-028 no toca `.env`, no ejecuta `supabase db push`, no toca Supabase remoto, no implementa API real, no integra Google Calendar/Gmail y no habilita datos reales ni produccion.
+
+Informe relacionado: `docs/control/auditorias/BE-028_IMPLEMENTACION_MODELO_DB_AGENDA_OPERATIVA.md`
 
 ## BE-001 - Inventariar estructura backend y Supabase local
 
