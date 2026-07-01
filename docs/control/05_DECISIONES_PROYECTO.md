@@ -50,6 +50,7 @@ Este documento registra decisiones estables. No reemplaza la conversacion, pero 
 | DEC-032 | Auth productivo por invitacion/provisioning y MFA por rol. | Propuesta pendiente aprobacion | 2026-06-29 |
 | DEC-033 | API segura como frontera entre pagina publica, sistema interno y servicios Google. | Propuesta arquitectonica / pendiente implementacion | 2026-06-30 |
 | DEC-034 | Agenda operativa separada de consulta clinica confirmada. | Arquitectura aprobada / DB validada localmente | 2026-07-01 |
+| DEC-035 | Migracion progresiva a plataforma Google Cloud. | Propuesta documental / pendiente validacion Javier | 2026-07-01 |
 
 ## DEC-001 - Repositorio oficial del proyecto
 
@@ -1002,3 +1003,45 @@ Informe relacionado: `docs/control/auditorias/BE-012_BE-017_DISENO_AGENDA_OPERAT
 Implementacion relacionada: `docs/control/auditorias/BE-028_IMPLEMENTACION_MODELO_DB_AGENDA_OPERATIVA.md`.
 
 Validacion relacionada: `docs/control/auditorias/BE-029_VALIDACION_RUNTIME_AGENDA_OPERATIVA.md`.
+
+## DEC-035 - Migracion progresiva a plataforma Google Cloud
+
+**Estado:** Propuesta documental / pendiente validacion Javier
+**Origen:** CTRL-009 / API-001 / DEC-033 / DEC-034 / PROD-001
+**Fecha:** 2026-07-01
+
+### Decision propuesta
+
+El proyecto no migrara inmediatamente toda su base de datos, Auth ni backend hacia Google Cloud.
+
+La estrategia sera progresiva:
+
+- Supabase/PostgreSQL sigue como base actual.
+- Supabase Auth y RLS siguen como control actual del sistema interno.
+- Google Cloud se prepara como plataforma futura para API segura, integracion Google Workspace, despliegue, automatizacion y operacion por ambientes.
+- Google Calendar y Gmail deben integrarse solo desde backend seguro futuro.
+- La pagina publica no debe escribir directamente en tablas clinicas, financieras ni internas.
+
+### Razon
+
+El proyecto sigue en etapa local/demo y PROD-001 bloquea datos reales, fotos reales, pagos reales y produccion.
+
+Migrar la base, Auth o backend antes de cerrar Agenda operativa, consentimiento, ambientes, auditoria sensible, seguridad API, backup/restauracion y checklist cloud agregaria complejidad prematura.
+
+### Impacto
+
+- `BE-030` debe disenar la arquitectura futura Google Cloud.
+- `SEC-010` debe definir secretos, OAuth, IAM e identidades tecnicas.
+- `DOC-005` debe documentar la ruta progresiva.
+- `QA-007` debe funcionar como checklist previo a cualquier implementacion cloud.
+- `BE-026`, `BE-027`, `SEC-009` y `DOC-004` siguen vigentes para API publica y Google Workspace.
+
+### Restricciones
+
+Esta decision no crea infraestructura ni credenciales, no modifica `.env`, no crea endpoints, no despliega, no migra Supabase, no migra Auth, no cambia RLS, no toca Supabase remoto y no habilita produccion.
+
+### Observaciones
+
+DEC-035 complementa DEC-033 y DEC-034. No las reemplaza: la API segura sigue siendo la frontera futura y Agenda sigue separada de consulta clinica confirmada.
+
+Informe relacionado: `docs/control/auditorias/DEC-035_MIGRACION_PROGRESIVA_GOOGLE_CLOUD.md`.

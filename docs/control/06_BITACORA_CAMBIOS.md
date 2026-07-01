@@ -1264,7 +1264,7 @@ BE-028 habilita una base DB versionada para Agenda interna, pero no habilita uso
 
 ## LOG-032 - BE-029 validacion runtime Agenda Operativa
 
-**Estado:** Validada local / pendiente PR
+**Estado:** Integrada por PR #42 / validada local
 **Prioridad:** Alta
 **Responsable:** Control de desarrollo / Integracion Backend
 **Origen:** BE-028 / DEC-034 / SEC-001
@@ -1324,3 +1324,68 @@ La validacion cubre:
 ### Observaciones
 
 BE-029 valida Agenda solo en entorno local/demo. UI-025, BE-026, consentimiento, auditoria sensible, ambientes, seguridad de API y PROD-001 siguen pendientes antes de cualquier uso real.
+
+## LOG-033 - Integracion documental Google Cloud
+
+**Estado:** Registrado
+**Prioridad:** Alta
+**Responsable:** Control de desarrollo
+**Origen:** PR #43 / CTRL-009 / DEC-035
+**Fecha creacion:** 2026-07-01
+**Rama usada:** `docs/google-cloud-migracion-progresiva`
+
+### Descripcion
+
+Se integra documentalmente la estrategia progresiva Google Cloud en documentos nuevos y maestros de control.
+
+La regla central queda explicitada: Supabase/PostgreSQL sigue siendo la base actual y Google Cloud queda como plataforma futura para API segura, integracion Google Workspace, despliegue, automatizacion y operacion por ambientes.
+
+### Documentos creados
+
+- `docs/control/07_ESTRATEGIA_GOOGLE_CLOUD.md`
+- `docs/control/08_SINCRONIZACION_MAESTROS_GOOGLE_CLOUD.md`
+- `docs/control/auditorias/CTRL-009_SYNC_DOCUMENTAL_GOOGLE_CLOUD.md`
+- `docs/control/auditorias/DEC-035_MIGRACION_PROGRESIVA_GOOGLE_CLOUD.md`
+- `docs/control/auditorias/BE-030_ARQUITECTURA_PLATAFORMA_GOOGLE_CLOUD.md`
+- `docs/control/auditorias/SEC-010_SECRETOS_OAUTH_IAM_GOOGLE_CLOUD.md`
+- `docs/control/auditorias/DOC-005_ESTRATEGIA_MIGRACION_PROGRESIVA_GOOGLE_CLOUD.md`
+- `docs/control/auditorias/QA-007_CHECKLIST_PRE_MIGRACION_CLOUD.md`
+- `docs/control/auditorias/CODEX_REVISION_PR43_GOOGLE_CLOUD.md`
+
+### Documentos modificados
+
+- `README.md`
+- `docs/control/README.md`
+- `docs/control/00_ESTADO_GENERAL_PROYECTO.md`
+- `docs/control/01_PENDIENTES_PROYECTO.md`
+- `docs/control/03_INTEGRACION_BACKEND_ESTRUCTURA.md`
+- `docs/control/05_DECISIONES_PROYECTO.md`
+- `docs/control/06_BITACORA_CAMBIOS.md`
+
+### Decisiones y pendientes agregados
+
+- `CTRL-009` - Sincronizacion documental Google Cloud.
+- `DEC-035` - Migracion progresiva a plataforma Google Cloud.
+- `BE-030` - Arquitectura de plataforma Google Cloud.
+- `SEC-010` - Secretos, OAuth, IAM y cuentas de servicio.
+- `DOC-005` - Estrategia de migracion progresiva a Google Cloud.
+- `QA-007` - Checklist pre-migracion cloud.
+
+### Restricciones respetadas
+
+- No se modifico codigo fuente.
+- No se modificaron migraciones.
+- No se toco `.env`.
+- No se toco Supabase remoto.
+- No se ejecuto `supabase db push`.
+- No se crearon proyectos Google Cloud.
+- No se crearon credenciales.
+- No se crearon endpoints.
+- No se desplego infraestructura.
+- No se usaron datos reales.
+- No se habilito produccion.
+- No se hizo merge a `main`.
+
+### Resultado
+
+PR #43 queda orientado a revision de Javier como cambio documental. No queda listo para produccion.

@@ -691,6 +691,22 @@ La pagina publica no debe escribir directamente en tablas clinicas, financieras 
 
 ---
 
+## Roadmap tecnico Google Cloud
+
+Google Cloud queda incorporado solo como plataforma futura para API segura, integracion Google Workspace, despliegue futuro, automatizacion y operacion por ambientes.
+
+Supabase/PostgreSQL sigue siendo la base actual del sistema interno. Supabase Auth y RLS siguen siendo el mecanismo actual de autenticacion y control de acceso.
+
+En esta fase no se migra la base de datos, Auth, Storage ni produccion. Tampoco se crean proyectos Google Cloud, credenciales, endpoints, infraestructura ni despliegues cloud.
+
+Google Calendar y Gmail deben integrarse solo desde un backend seguro futuro, con secretos fuera del frontend, eventos neutros y correos neutros.
+
+La hoja de ruta queda documentada en `docs/control/07_ESTRATEGIA_GOOGLE_CLOUD.md`, `docs/control/08_SINCRONIZACION_MAESTROS_GOOGLE_CLOUD.md` y los informes `DEC-035`, `BE-030`, `SEC-010`, `DOC-005` y `QA-007`.
+
+PROD-001 sigue bloqueante para datos reales, fotos reales, pagos reales y produccion.
+
+---
+
 ## Diseno futuro de Agenda operativa
 
 Agenda queda definida documentalmente como un flujo separado de la consulta clinica confirmada.

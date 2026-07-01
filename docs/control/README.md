@@ -31,6 +31,8 @@ Este directorio es el sistema liviano de control del proyecto. Su objetivo es qu
 | `04_UI_UX_PULIDO_VISUAL.md` | Control de tareas visuales, formularios, responsive y experiencia de usuario. |
 | `05_DECISIONES_PROYECTO.md` | Registro de decisiones ya tomadas y su razon. |
 | `06_BITACORA_CAMBIOS.md` | Historial breve de cambios de control del proyecto. |
+| `07_ESTRATEGIA_GOOGLE_CLOUD.md` | Estrategia progresiva Google Cloud como plataforma futura. |
+| `08_SINCRONIZACION_MAESTROS_GOOGLE_CLOUD.md` | Sincronizacion documental maestra de la estrategia Google Cloud. |
 
 ## Chats del proyecto
 
