@@ -1261,3 +1261,66 @@ La tarea aplica la separacion aprobada:
 ### Observaciones
 
 BE-028 habilita una base DB versionada para Agenda interna, pero no habilita uso operativo real. Antes de conectar UI, API publica o Google Workspace deben cerrarse validacion runtime, consentimiento, auditoria, ambientes, seguridad de API y PROD-001.
+
+## LOG-032 - BE-029 validacion runtime Agenda Operativa
+
+**Estado:** Validada local / pendiente PR
+**Prioridad:** Alta
+**Responsable:** Control de desarrollo / Integracion Backend
+**Origen:** BE-028 / DEC-034 / SEC-001
+**Fecha creacion:** 2026-07-01
+**Rama:** `be-029-validacion-runtime-agenda-operativa`
+**Dependencias:** BE-028, SEC-001, SEC-002, QA-006, PROD-001
+
+### Descripcion
+Se valida en Supabase local/demo el runtime del modelo DB de Agenda Operativa integrado por BE-028.
+
+La validacion cubre:
+
+- `public.solicitudes_agenda`;
+- `public.agenda_eventos`;
+- `public.vista_agenda_operativa`;
+- checks, FKs, triggers, grants, RLS y policies;
+- acceso esperado por roles `admin`, `terapeuta`, `finanzas` y `anon`.
+
+### Archivos relacionados
+
+- `docs/control/auditorias/BE-029_VALIDACION_RUNTIME_AGENDA_OPERATIVA.md`
+- `README.md`
+- `docs/control/00_ESTADO_GENERAL_PROYECTO.md`
+- `docs/control/01_PENDIENTES_PROYECTO.md`
+- `docs/control/03_INTEGRACION_BACKEND_ESTRUCTURA.md`
+- `docs/control/05_DECISIONES_PROYECTO.md`
+- `docs/control/06_BITACORA_CAMBIOS.md`
+
+### Resultado runtime local
+
+- Supabase local activo.
+- Migracion BE-028 aplicada con `npx supabase migration up --local`.
+- Estructura, seguridad, roles y vista: 30/30 OK.
+- Checks, FKs y triggers: 17/17 OK.
+- `agenda_eventos` por rol: 11/11 OK.
+- `admin` y `terapeuta` pueden operar Agenda.
+- `finanzas` queda fuera por RLS.
+- `anon` queda fuera por ausencia de grants directos.
+- No se crean pacientes automaticamente.
+- No se crean consultas automaticamente.
+
+### Restricciones respetadas
+
+- No se implemento UI funcional.
+- No se implemento API publica.
+- No se crearon endpoints.
+- No se integro Google Calendar.
+- No se integro Gmail.
+- No se toco Supabase remoto.
+- No se ejecuto `supabase db push`.
+- No se toco `.env`.
+- No se modifico Auth.
+- No se modifico RLS existente fuera de las tablas nuevas de Agenda.
+- No se habilito produccion.
+- No se usaron datos reales.
+
+### Observaciones
+
+BE-029 valida Agenda solo en entorno local/demo. UI-025, BE-026, consentimiento, auditoria sensible, ambientes, seguridad de API y PROD-001 siguen pendientes antes de cualquier uso real.

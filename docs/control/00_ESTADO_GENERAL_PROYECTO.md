@@ -8,7 +8,7 @@ Estado general documental: En control activo
 
 El proyecto cuenta con una estructura documental de control en `docs/control/`. Esta estructura ordena responsabilidades, pendientes, decisiones, bitacora, auditorias y flujo de trabajo sin modificar codigo, migraciones ni base de datos.
 
-Al corte actual ya quedaron integradas las auditorias iniciales de control, backend, flujo clinico y UI/UX. Tambien quedaron registrados BE-003, BE-010, UI-011, IMP-001, DATA-001, BE-011, QA-002, SEC-001, BE-016, QA-004, UI-016, API-001, el diseno BE-012/BE-017 de Agenda Operativa y la implementacion DB inicial BE-028, junto con las decisiones clinicas/operativas y arquitectonicas clave que permiten avanzar sin romper el flujo definido.
+Al corte actual ya quedaron integradas las auditorias iniciales de control, backend, flujo clinico y UI/UX. Tambien quedaron registrados BE-003, BE-010, UI-011, IMP-001, DATA-001, BE-011, QA-002, SEC-001, BE-016, QA-004, UI-016, API-001, el diseno BE-012/BE-017 de Agenda Operativa, la implementacion DB inicial BE-028 y la validacion runtime local BE-029, junto con las decisiones clinicas/operativas y arquitectonicas clave que permiten avanzar sin romper el flujo definido.
 
 IMP-001 dejo disponible una implementacion funcional minima de hallazgos operativos dentro de `DetalleRevisionesPanel`. DATA-001 dejo un seed local demo integral ejecutado correctamente en Supabase local. BE-011 confirmo que la primera version de trazabilidad hallazgo a trabajo puede usar `trabajos.revision_hallazgo_origen_id` sin migracion inicial. QA-002 valido funcionalmente el flujo de hallazgos operativos con el caso demo DATA-001 en ambiente local. BE-016 incorporo la vista financiera minima para Finanzas, QA-004 la valido localmente y UI-016 separo `ReportesPage` por rol en main mediante PR #33.
 
@@ -49,7 +49,7 @@ El proyecto se mantiene alineado con el metodo acordado: primero documentar, aud
 - Implementacion funcional hallazgo a trabajo: pendiente futura, posterior a QA-002 y UI-012.
 - UI-010, UI-012 y UI-015: prioridades de planificacion UI derivadas de UI-001 + UI-002 y del estado post IMP-001.
 - UI-013, UI-014, UI-017, UI-018 y UI-019: pendientes UI derivados, aun sin activacion tecnica.
-- BE-028: Agenda operativa cuenta con modelo DB inicial versionado, pendiente de validacion runtime e integracion UI.
+- BE-029: Agenda operativa cuenta con modelo DB inicial versionado y validacion runtime local; queda pendiente integracion UI, API publica y uso real.
 - BE-013 a BE-015: tareas backend sugeridas por BE-002 para cobros, vistas, RLS y reportes.
 - API-001, BE-026, BE-027, SEC-009 y DOC-004: estrategia futura para API publica segura, contrato de agendamiento, integracion Google Workspace, seguridad API y flujo pagina publica -> API -> sistema interno -> Google.
 - RFC-002: deteccion de duplicidades entre entidades clinicas.
@@ -91,6 +91,14 @@ supabase/migrations/20260701040000_crear_modelo_agenda_operativa.sql
 ```
 
 El modelo crea `solicitudes_agenda`, `agenda_eventos` y `vista_agenda_operativa` con RLS para `admin`/`terapeuta`, sin acceso directo para `anon` ni `finanzas`.
+
+BE-029 valido el runtime local/demo de este modelo:
+
+- estructura, seguridad, roles y vista: 30/30 OK;
+- checks, FKs y triggers: 17/17 OK;
+- `agenda_eventos` por rol: 11/11 OK;
+- no se crean pacientes ni consultas automaticamente;
+- no se toco Supabase remoto ni se ejecuto `supabase db push`.
 
 Agenda aun no tiene UI funcional conectada, API publica real, Google Calendar, Gmail ni produccion habilitada.
 

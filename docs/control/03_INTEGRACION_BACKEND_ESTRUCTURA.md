@@ -251,8 +251,8 @@ Antes de implementar API publica real deben estar resueltos Agenda operativa, co
 
 ### Implementacion tecnica derivada
 
-- `BE-028` implementa el modelo DB inicial de Agenda operativa con migracion versionada para `solicitudes_agenda`, `agenda_eventos` y `vista_agenda_operativa`.
-- `BE-029` queda pendiente para validar runtime local por rol, RLS y no exposicion sensible.
+- `BE-028` implementa el modelo DB inicial de Agenda operativa con migracion versionada para `solicitudes_agenda`, `agenda_eventos` y `vista_agenda_operativa`; integrado por PR #41.
+- `BE-029` valida runtime local por rol, RLS y no exposicion sensible; pendiente PR.
 - `UI-025` queda pendiente para conectar `AgendaPage` al modelo DB despues de validacion runtime.
 
 ### Restricciones
@@ -263,7 +263,7 @@ Informe relacionado: `docs/control/auditorias/BE-012_BE-017_DISENO_AGENDA_OPERAT
 
 ## BE-028 - Modelo DB de Agenda Operativa
 
-**Estado:** Implementada local / pendiente PR
+**Estado:** Integrada por PR #41
 **Origen:** BE-012 / BE-017 / DEC-034
 **Fecha:** 2026-07-01
 
@@ -300,7 +300,6 @@ supabase/migrations/20260701040000_crear_modelo_agenda_operativa.sql
 
 ### Pendientes posteriores
 
-- `BE-029`: validacion runtime local por rol y RLS.
 - `UI-025`: integracion de `AgendaPage` con el modelo DB.
 - `BE-026`: contrato API publica sobre `solicitudes_agenda`.
 - `BE-027`: integracion Google Calendar/Gmail desde backend seguro.
@@ -310,6 +309,39 @@ supabase/migrations/20260701040000_crear_modelo_agenda_operativa.sql
 BE-028 no toca `.env`, no ejecuta `supabase db push`, no toca Supabase remoto, no implementa API real, no integra Google Calendar/Gmail y no habilita datos reales ni produccion.
 
 Informe relacionado: `docs/control/auditorias/BE-028_IMPLEMENTACION_MODELO_DB_AGENDA_OPERATIVA.md`
+
+## BE-029 - Validacion runtime Agenda Operativa
+
+**Estado:** Validada local / pendiente PR
+**Origen:** BE-028 / DEC-034 / SEC-001
+**Fecha:** 2026-07-01
+
+BE-029 valida en Supabase local/demo el modelo DB de Agenda Operativa integrado por BE-028.
+
+### Validacion ejecutada
+
+- `npx supabase status`: Supabase local activo.
+- `npx supabase migration list --local`: migraciones locales revisadas.
+- `npx supabase migration up --local`: migracion BE-028 aplicada solo localmente.
+- Pruebas SQL con datos ficticios dentro de transacciones revertidas.
+
+### Resultado runtime
+
+- Estructura, seguridad, roles y vista: 30/30 OK.
+- Checks, FKs y triggers: 17/17 OK.
+- `agenda_eventos` por rol: 11/11 OK.
+- `admin` y `terapeuta` pueden leer, insertar y actualizar `solicitudes_agenda` y `agenda_eventos`.
+- `finanzas` queda fuera por RLS.
+- `anon` queda fuera por ausencia de grants directos.
+- `vista_agenda_operativa` respeta `security_invoker` y no expone hallazgos, fotos, Storage, pagos, cobros, montos, notas internas ni mensaje de contacto.
+- No se crean pacientes automaticamente.
+- No se crean consultas automaticamente.
+
+### Restricciones
+
+BE-029 no toca Supabase remoto, no ejecuta `supabase db push`, no modifica `.env`, no implementa API publica, no integra Google Calendar/Gmail, no implementa UI funcional y no habilita produccion ni datos reales.
+
+Informe relacionado: `docs/control/auditorias/BE-029_VALIDACION_RUNTIME_AGENDA_OPERATIVA.md`
 
 ## BE-001 - Inventariar estructura backend y Supabase local
 
