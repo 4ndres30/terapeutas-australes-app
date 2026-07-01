@@ -1,6 +1,6 @@
 # Estado general del proyecto
 
-Fecha de corte: `2026-06-29`
+Fecha de corte: `2026-06-30`
 Responsable del documento: Control de desarrollo
 Estado general documental: En control activo
 
@@ -8,7 +8,7 @@ Estado general documental: En control activo
 
 El proyecto cuenta con una estructura documental de control en `docs/control/`. Esta estructura ordena responsabilidades, pendientes, decisiones, bitacora, auditorias y flujo de trabajo sin modificar codigo, migraciones ni base de datos.
 
-Al corte actual ya quedaron integradas las auditorias iniciales de control, backend, flujo clinico y UI/UX. Tambien quedaron registrados BE-003, BE-010, UI-011, IMP-001, DATA-001, BE-011, QA-002, SEC-001, BE-016, QA-004 y UI-016, junto con las decisiones clinicas/operativas clave que permiten avanzar sin romper el flujo definido.
+Al corte actual ya quedaron integradas las auditorias iniciales de control, backend, flujo clinico y UI/UX. Tambien quedaron registrados BE-003, BE-010, UI-011, IMP-001, DATA-001, BE-011, QA-002, SEC-001, BE-016, QA-004, UI-016 y API-001, junto con las decisiones clinicas/operativas y arquitectonicas clave que permiten avanzar sin romper el flujo definido.
 
 IMP-001 dejo disponible una implementacion funcional minima de hallazgos operativos dentro de `DetalleRevisionesPanel`. DATA-001 dejo un seed local demo integral ejecutado correctamente en Supabase local. BE-011 confirmo que la primera version de trazabilidad hallazgo a trabajo puede usar `trabajos.revision_hallazgo_origen_id` sin migracion inicial. QA-002 valido funcionalmente el flujo de hallazgos operativos con el caso demo DATA-001 en ambiente local. BE-016 incorporo la vista financiera minima para Finanzas, QA-004 la valido localmente y UI-016 separo `ReportesPage` por rol en main mediante PR #33.
 
@@ -50,6 +50,7 @@ El proyecto se mantiene alineado con el metodo acordado: primero documentar, aud
 - UI-010, UI-012 y UI-015: prioridades de planificacion UI derivadas de UI-001 + UI-002 y del estado post IMP-001.
 - UI-013, UI-014, UI-017, UI-018 y UI-019: pendientes UI derivados, aun sin activacion tecnica.
 - BE-012 a BE-015 y BE-017: tareas backend sugeridas por BE-002 para agenda, cobros, vistas, RLS y reportes.
+- API-001, BE-026, BE-027, SEC-009 y DOC-004: estrategia futura para API publica segura, contrato de agendamiento, integracion Google Workspace, seguridad API y flujo pagina publica -> API -> sistema interno -> Google.
 - RFC-002: deteccion de duplicidades entre entidades clinicas.
 
 ## Pendiente operativo
@@ -59,6 +60,18 @@ El proyecto se mantiene alineado con el metodo acordado: primero documentar, aud
 - Sincronizar periodicamente `01_PENDIENTES_PROYECTO.md` cuando una tarea cambie de estado.
 - Mantener `06_BITACORA_CAMBIOS.md` actualizado despues de cada bloque documental o tecnico relevante.
 - Atender observaciones de SEC-001 antes de avanzar a datos reales, fotos reales, pagos reales o produccion.
+
+## Estrategia futura de API publica
+
+API-001 registra la necesidad arquitectonica futura de una API segura entre la pagina publica de Terapeutas Australes, el sistema interno, Supabase y Google Calendar/Gmail/Workspace.
+
+La API no esta implementada y no habilita produccion, datos reales, fotos reales ni pagos reales.
+
+La pagina publica no debe escribir directamente en tablas clinicas, financieras ni internas. Tampoco debe consultar agenda interna completa ni exponer estructura de Supabase.
+
+La integracion con Google Calendar y Gmail/Workspace debe pasar por backend controlado, con secretos fuera del frontend, eventos neutros, correos neutros, validacion, consentimiento y auditoria.
+
+La implementacion futura depende de cerrar Agenda operativa, consentimiento informado, separacion de ambientes, auditoria sensible, seguridad de API, backup/restauracion y PROD-001.
 
 ## Estado para uso real con datos sensibles
 

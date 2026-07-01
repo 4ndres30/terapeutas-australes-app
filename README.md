@@ -677,6 +677,20 @@ Cada nueva tabla se trabajara con el siguiente orden:
 
 ---
 
+## Estrategia futura de API publica
+
+El sistema interno no debe exponerse directamente a una pagina publica.
+
+La futura pagina publica de agendamiento debe usar una API segura como frontera entre el sitio publico, el sistema interno, Supabase y Google Calendar/Gmail/Workspace.
+
+Esa API debera validar solicitudes, registrar consentimiento, crear solicitudes o citas segun el modelo de Agenda aprobado, sincronizar Calendar con eventos neutros y enviar correos neutros mediante Gmail/Workspace.
+
+La API esta planificada documentalmente en `docs/control/auditorias/API-001_DISENO_API_PUBLICA_GOOGLE_WORKSPACE.md`, pero no esta implementada. Su desarrollo queda condicionado a cerrar Agenda operativa, consentimiento, ambientes, auditoria sensible, seguridad de API y PROD-001.
+
+La pagina publica no debe escribir directamente en tablas clinicas, financieras ni internas.
+
+---
+
 ## Seguridad
 
 No se deben subir claves reales al repositorio.

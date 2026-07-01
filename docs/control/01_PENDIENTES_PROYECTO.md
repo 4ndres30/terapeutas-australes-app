@@ -31,6 +31,7 @@ Este documento es la lista maestra de pendientes. Cada pendiente debe tener un c
 | QA-004 | Validacion funcional local de BE-016 / Finanzas. | Integrada | Alta | Control de desarrollo |
 | QA-005 | Validacion funcional local UI-016 / Reportes por rol. | Integrada | Alta | Control de desarrollo |
 | QA-006 | Base minima de pruebas por rol y no exposicion sensible. | Pendiente | Alta | Control de desarrollo / QA |
+| API-001 | Disenar API publica segura e integracion Google Workspace. | Diseno documental / pendiente implementacion | Alta | Control de desarrollo / Integracion Backend |
 | BE-001 | Inventariar estructura backend y Supabase local. | Integrada | Alta | Integracion Backend/Estructura |
 | RFC-001 | Auditar flujo clinico completo. | Integrada | Alta | Revision de flujo clinico |
 | BE-002 | Comparar backend con flujo clinico aprobado. | Integrada | Alta | Integracion Backend/Estructura |
@@ -67,6 +68,7 @@ Este documento es la lista maestra de pendientes. Cada pendiente debe tener un c
 | SEC-007 | Procedimiento de scripts manuales locales/demo y prohibicion en produccion. | Pendiente | Alta | Integracion Backend / Seguridad |
 | SEC-008 | Implementacion controlada Hardening Auth. | Implementada parcial / pendiente PR | Alta | Integracion Backend / Seguridad |
 | SEC-008B | Cierre de signup y provisioning Auth controlado. | Pendiente | Alta | Integracion Backend / Seguridad |
+| SEC-009 | Disenar seguridad de API publica. | Pendiente | Alta | Integracion Backend / Seguridad |
 | BE-018 | Separacion tecnica de ambientes. | Pendiente | Alta | Integracion Backend |
 | BE-019 | Estrategia de backup/restauracion. | Pendiente | Alta | Integracion Backend / Produccion |
 | BE-020 | Consentimiento informado y tratamiento de datos. | Pendiente | Alta | Control de desarrollo / Revision Clinica / Backend |
@@ -75,6 +77,8 @@ Este documento es la lista maestra de pendientes. Cada pendiente debe tener un c
 | BE-023 | Alias/codigo administrativo persistente para Finanzas. | Pendiente | Alta | Integracion Backend/Estructura |
 | BE-024 | Regla de hallazgo unico/multiple por aspecto revisado. | Pendiente | Alta | Integracion Backend/Estructura |
 | BE-025 | Campos financieros permitidos/prohibidos para Finanzas. | Pendiente | Alta | Integracion Backend/Estructura |
+| BE-026 | Disenar contrato de API publica de agendamiento. | Pendiente | Alta | Integracion Backend/Estructura |
+| BE-027 | Disenar integracion Google Calendar / Gmail / Workspace. | Pendiente | Alta | Integracion Backend/Estructura |
 | UI-020 | Indicador visual de ambiente activo. | Pendiente | Alta | UI / UX |
 | UI-021 | Bloqueo visual de produccion no habilitada. | Pendiente | Alta | UI / UX |
 | UI-022 | Integracion visual minima de fotos dentro de Elementos del caso. | Implementada local / pend. QA | Alta | UI / UX / Pulido visual |
@@ -83,6 +87,7 @@ Este documento es la lista maestra de pendientes. Cada pendiente debe tener un c
 | DOC-001 | Manual de ambientes. | Pendiente | Alta | Control de desarrollo |
 | DOC-002 | Procedimiento de backup/restauracion. | Pendiente | Alta | Control de desarrollo / Integracion Backend |
 | DOC-003 | Politica de carga de datos reales. | Pendiente | Alta | Control de desarrollo |
+| DOC-004 | Documentar flujo pagina publica -> API -> sistema interno -> Google. | Pendiente | Alta | Control de desarrollo |
 | QA-003 | Validacion funcional local de fotos de elementos del caso. | Pendiente | Alta | Control de desarrollo |
 | IMP-002 | Implementacion funcional hallazgo a trabajo. | Pendiente | Alta | Implementacion |
 | PROD-001 | Preparacion para uso real con datos sensibles. | Mantener pendiente / bloqueante | Alta | Control de desarrollo / Integracion Backend |
@@ -749,6 +754,65 @@ Implementar el cierre de signup por ambiente y un procedimiento de provisioning/
 - No tocar Supabase remoto sin autorizacion expresa.
 - No usar datos reales, fotos reales ni pagos reales.
 
+### SEC-009 - Disenar seguridad de API publica
+
+**Estado:** Pendiente
+**Prioridad:** Alta
+**Responsable:** Integracion Backend / Seguridad
+**Origen:** API-001 / DEC-033 / PROD-001
+**Fecha creacion:** 2026-06-30
+**Dependencias:** API-001, BE-012, BE-017, BE-018, BE-020, SEC-005, SEC-008, SEC-008B, DOC-001, DOC-003, QA-006, PROD-001
+
+#### Descripcion
+Definir el modelo de seguridad para la futura API publica que conectara la pagina publica con Agenda, consentimiento, sistema interno y Google Workspace.
+
+#### Criterios de aceptacion preliminares
+- Definir separacion entre endpoints publicos e internos.
+- Definir CORS estricto por ambiente y dominio.
+- Definir rate limit, anti-spam y CAPTCHA o mecanismo equivalente.
+- Definir validacion y sanitizacion de payloads.
+- Definir errores publicos neutros sin detalles tecnicos.
+- Definir manejo de secretos y prohibicion de tokens en frontend publico.
+- Definir idempotencia y deduplicacion para solicitudes de agenda.
+- Definir auditoria minima junto a SEC-005.
+- Definir estrategia de pruebas sin datos reales.
+- No crear endpoints, migraciones ni cambios RLS en esta tarea.
+- No tocar `.env`, Supabase remoto ni servicios Google reales sin autorizacion expresa.
+
+#### Observaciones
+SEC-009 debe cerrarse antes de implementar cualquier endpoint publico operativo. No habilita produccion ni datos reales.
+
+### API-001 - Disenar API publica segura e integracion Google Workspace
+
+**Estado:** Diseno documental / pendiente implementacion futura
+**Prioridad:** Alta
+**Responsable:** Control de desarrollo / Integracion Backend
+**Origen:** Solicitud arquitectura API publica / DEC-033
+**Fecha creacion:** 2026-06-30
+**Rama usada:** `api-001-diseno-api-publica-google-workspace`
+**Informe:** `docs/control/auditorias/API-001_DISENO_API_PUBLICA_GOOGLE_WORKSPACE.md`
+**Dependencias:** BE-012, BE-017, BE-018, BE-019, BE-020, SEC-005, SEC-009, DOC-001, DOC-003, PROD-001
+
+#### Descripcion
+Registrar la estrategia futura de una API segura que actue como frontera entre pagina publica, sistema interno, Supabase y Google Calendar/Gmail/Workspace.
+
+API-001 establece que la pagina publica no debe escribir directamente en tablas clinicas o financieras, y que la integracion Google debe ejecutarse desde backend controlado.
+
+#### Criterios de aceptacion
+- Crear informe arquitectonico en `docs/control/auditorias/`.
+- Registrar decision arquitectonica en `05_DECISIONES_PROYECTO.md`.
+- Registrar tareas derivadas para contrato API, integracion Google, seguridad API y documentacion de flujo.
+- Identificar que Agenda no tiene backend operativo todavia.
+- Identificar que no existe API real ni backend propio implementado.
+- Definir endpoints conceptuales futuros sin implementarlos.
+- Mantener PROD-001 bloqueante.
+- No modificar codigo funcional.
+- No modificar migraciones.
+- No tocar `.env` ni Supabase remoto.
+
+#### Observaciones
+API-001 no habilita agendamiento publico real, datos reales, fotos reales, pagos reales ni produccion. Su objetivo es dejar preparada la arquitectura antes de construir.
+
 ### BE-018 - Separacion tecnica de ambientes
 
 **Estado:** Pendiente
@@ -921,6 +985,33 @@ Definir politica operativa para autorizar, ejecutar y controlar la primera carga
 - Definir checklist pre-produccion.
 - Documentar responsable de autorizacion y evidencia.
 
+### DOC-004 - Documentar flujo pagina publica -> API -> sistema interno -> Google
+
+**Estado:** Pendiente
+**Prioridad:** Alta
+**Responsable:** Control de desarrollo
+**Origen:** API-001 / DEC-033
+**Fecha creacion:** 2026-06-30
+**Dependencias:** API-001, BE-012, BE-017, BE-018, BE-020, BE-026, BE-027, SEC-005, SEC-009, DOC-001, DOC-003, PROD-001
+
+#### Descripcion
+Documentar el flujo operativo completo entre pagina publica, API, sistema interno, base de datos y Google Calendar/Gmail/Workspace.
+
+#### Criterios de aceptacion preliminares
+- Describir el flujo de solicitud publica de agenda.
+- Describir el registro de consentimiento.
+- Describir creacion o revision interna de cita.
+- Describir sincronizacion Calendar con datos neutros.
+- Describir correos de confirmacion y recordatorio con contenido neutro.
+- Describir errores, cancelaciones, duplicados y reintentos.
+- Indicar datos permitidos y prohibidos en cada tramo.
+- Indicar responsabilidades por ambiente.
+- Mantener PROD-001 como bloqueo antes de datos reales.
+- No implementar endpoints ni tocar servicios externos.
+
+#### Observaciones
+DOC-004 debe ayudar a que implementacion, UI, backend y control trabajen con el mismo mapa antes de construir la API real.
+
 ### BE-022 - Soporte de fotos para elementos del caso con Supabase Storage
 
 **Estado:** Implementada local / pendiente QA
@@ -1007,6 +1098,59 @@ Definir contrato de campos financieros visibles para Finanzas y prohibir conteni
 - Evaluar si se requieren checks, vistas o campos administrativos separados.
 - Considerar `concepto_cobro`, `descripcion_cobro`, `observaciones`, `notas_internas` y `referencia_pago`.
 - No crear migracion sin tarea posterior aprobada.
+
+### BE-026 - Disenar contrato de API publica de agendamiento
+
+**Estado:** Pendiente
+**Prioridad:** Alta
+**Responsable:** Integracion Backend/Estructura
+**Origen:** API-001 / DEC-033
+**Fecha creacion:** 2026-06-30
+**Dependencias:** API-001, BE-012, BE-017, BE-018, BE-020, SEC-005, SEC-009, DOC-001, DOC-003, PROD-001
+
+#### Descripcion
+Definir el contrato tecnico de la futura API publica de agendamiento, incluyendo endpoints, payloads, validaciones, respuestas, errores neutros, idempotencia, relacion con Agenda y consentimiento.
+
+#### Criterios de aceptacion preliminares
+- Definir contratos conceptuales para disponibilidad, agendamientos y consentimientos.
+- Definir datos permitidos desde pagina publica: nombre, correo, telefono, servicio, modalidad, fecha/hora deseada, consentimiento y motivo general no sensible.
+- Definir datos prohibidos: detalles clinicos profundos, informacion canalizada, fotos, datos financieros e IDs internos.
+- Definir esquema de errores publicos neutros.
+- Definir idempotencia y deduplicacion.
+- Definir relacion con tablas futuras o existentes solo despues de BE-012/BE-017.
+- Definir estrategia de versionado, por ejemplo `/api/v1/...`.
+- No crear endpoints reales en esta tarea.
+- No modificar migraciones, RLS, Auth, `.env` ni Supabase remoto.
+
+#### Observaciones
+BE-026 depende del modelo de Agenda y de consentimiento. No debe cerrar contrato productivo mientras PROD-001 este abierto.
+
+### BE-027 - Disenar integracion Google Calendar / Gmail / Workspace
+
+**Estado:** Pendiente
+**Prioridad:** Alta
+**Responsable:** Integracion Backend/Estructura
+**Origen:** API-001 / DEC-033
+**Fecha creacion:** 2026-06-30
+**Dependencias:** API-001, BE-012, BE-017, BE-018, BE-020, BE-026, SEC-005, SEC-009, DOC-001, DOC-003, PROD-001
+
+#### Descripcion
+Definir la arquitectura tecnica para sincronizar Agenda con Google Calendar y enviar confirmaciones/recordatorios neutros mediante Gmail/Google Workspace desde backend seguro.
+
+#### Criterios de aceptacion preliminares
+- Definir si la integracion usara Google Cloud Run, Supabase Edge Functions u otro backend aprobado.
+- Definir manejo de secretos mediante Secret Manager o mecanismo equivalente.
+- Definir OAuth/service account segun el modelo real de Workspace.
+- Definir titulos neutros para eventos de Calendar.
+- Definir plantillas neutras de correo.
+- Definir retries, idempotencia y manejo de fallos.
+- Definir auditoria de sincronizacion y envio.
+- Prohibir tokens o credenciales Google en frontend publico.
+- No conectar Google real en esta tarea.
+- No tocar `.env`, Supabase remoto ni datos reales.
+
+#### Observaciones
+La integracion Google no debe implementarse antes de cerrar ambientes, consentimiento, seguridad API, auditoria y Agenda operativa.
 
 ### UI-022 - Integracion visual minima de fotos dentro de Elementos del caso
 
