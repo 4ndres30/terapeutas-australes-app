@@ -171,6 +171,51 @@ SEC-008 no toca `.env`, no modifica migraciones, no ejecuta `supabase db push`, 
 
 Informe relacionado: `docs/control/auditorias/SEC-008_IMPLEMENTACION_HARDENING_AUTH.md`
 
+## API-001 - API publica segura e integracion Google Workspace
+
+**Estado:** Diseno arquitectonico documental / pendiente implementacion futura
+**Origen:** Solicitud arquitectura API publica / DEC-033
+**Fecha:** 2026-06-30
+
+API-001 registra que una futura pagina publica de Terapeutas Australes no debe conectarse directamente a tablas clinicas, financieras ni internas de Supabase.
+
+La API futura debe actuar como frontera entre pagina publica, sistema interno, base de datos y Google Calendar/Gmail/Workspace.
+
+### Estado tecnico observado
+
+- No existe API real ni backend propio implementado.
+- No existen endpoints funcionales para agendamiento publico.
+- Agenda sigue sin backend operativo dedicado.
+- El sistema interno consume Supabase desde React como aplicacion autenticada, pero ese patron no debe usarse para una pagina publica.
+- No existe integracion funcional con Google Calendar, Gmail, Workspace o Google Cloud.
+- PROD-001 sigue bloqueante para datos reales y produccion.
+
+### Reglas backend futuras
+
+- La pagina publica no debe escribir directo en tablas clinicas o financieras.
+- Los endpoints publicos deben validar payloads, sanitizar campos, aplicar CORS estricto, rate limit, anti-spam, idempotencia y errores neutros.
+- Los endpoints internos deben separarse de los endpoints publicos por autenticacion, autorizacion y superficie de datos.
+- Google Calendar y Gmail/Workspace deben integrarse desde backend controlado, nunca desde frontend publico.
+- Calendar y correos deben usar informacion neutra, sin motivos clinicos o energeticos sensibles.
+- Los secretos deben vivir fuera del frontend y separados por ambiente.
+
+### Tareas derivadas
+
+- `BE-026` - Disenar contrato de API publica de agendamiento.
+- `BE-027` - Disenar integracion Google Calendar / Gmail / Workspace.
+- `SEC-009` - Disenar seguridad de API publica.
+- `DOC-004` - Documentar flujo pagina publica -> API -> sistema interno -> Google.
+
+### Dependencias
+
+Antes de implementar API real deben cerrarse o aprobarse BE-012, BE-017, BE-018, BE-019, BE-020, SEC-005, SEC-009, DOC-001, DOC-003 y PROD-001.
+
+### Restricciones
+
+API-001 no crea backend, no crea endpoints, no instala dependencias, no crea migraciones, no modifica RLS/Auth, no toca `.env`, no toca Supabase remoto y no habilita datos reales ni produccion.
+
+Informe relacionado: `docs/control/auditorias/API-001_DISENO_API_PUBLICA_GOOGLE_WORKSPACE.md`
+
 ## BE-001 - Inventariar estructura backend y Supabase local
 
 **Estado:** Integrada

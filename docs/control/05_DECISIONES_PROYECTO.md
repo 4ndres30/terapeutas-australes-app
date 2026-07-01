@@ -48,6 +48,7 @@ Este documento registra decisiones estables. No reemplaza la conversacion, pero 
 | DEC-030 | El proyecto debe reconocer LOCAL, DEMO, STAGING y PRODUCCION. | Propuesta pendiente aprobacion | 2026-06-29 |
 | DEC-031 | Carga real requiere aprobacion explicita y checklist. | Pregunta abierta bloqueante | 2026-06-29 |
 | DEC-032 | Auth productivo por invitacion/provisioning y MFA por rol. | Propuesta pendiente aprobacion | 2026-06-29 |
+| DEC-033 | API segura como frontera entre pagina publica, sistema interno y servicios Google. | Propuesta arquitectonica / pendiente implementacion | 2026-06-30 |
 
 ## DEC-001 - Repositorio oficial del proyecto
 
@@ -891,3 +892,62 @@ Mantener signup abierto o alta manual sin trazabilidad puede generar usuarios hu
 ### Observaciones
 
 Esta decision no modifica configuracion tecnica. El diseno queda registrado en `docs/control/auditorias/SEC-003_HARDENING_AUTH.md`.
+
+## DEC-033 - API segura como frontera entre pagina publica, sistema interno y servicios Google
+
+**Estado:** Propuesta arquitectonica / pendiente implementacion
+**Origen:** API-001 / PROD-001 / BE-012 / BE-017 / BE-020 / SEC-005
+**Fecha:** 2026-06-30
+
+### Decision propuesta
+
+La futura pagina publica de Terapeutas Australes no debe conectarse directamente a tablas clinicas, financieras ni internas de Supabase.
+
+La conexion entre pagina publica, sistema interno y servicios Google debe pasar por una API segura que actue como frontera controlada.
+
+La API sera responsable de:
+
+- validar y sanitizar solicitudes publicas;
+- aplicar CORS estricto, rate limit y anti-spam;
+- registrar consentimiento cuando corresponda;
+- crear solicitudes o citas segun el modelo de Agenda aprobado;
+- registrar auditoria minima;
+- sincronizar Google Calendar desde backend controlado;
+- enviar correos neutros mediante Gmail/Workspace;
+- no exponer errores tecnicos, secretos, stack traces, politicas RLS ni estructura de base de datos.
+
+### Reglas
+
+- La pagina publica no debe escribir directamente en tablas clinicas o financieras.
+- La pagina publica no debe consultar disponibilidad leyendo agenda interna completa.
+- Google Calendar y Gmail/Workspace no deben integrarse desde el frontend publico.
+- Los eventos de Calendar deben usar titulos neutros.
+- Los correos deben usar contenido neutro.
+- Los detalles sensibles deben quedar solo dentro del sistema interno protegido por login, roles, RLS y auditoria.
+
+### Condiciones previas
+
+La API no debe implementarse con datos reales hasta cerrar, al menos:
+
+- BE-012: backend de Agenda tipificada.
+- BE-017: estrategia SQL de agenda operativa.
+- BE-018: separacion tecnica de ambientes.
+- BE-019: backup/restauracion.
+- BE-020: consentimiento informado y tratamiento de datos.
+- SEC-005: auditoria de cambios sensibles.
+- SEC-009: seguridad de API publica.
+- DOC-001: manual de ambientes.
+- DOC-003: politica de carga de datos reales.
+- PROD-001: preparacion para uso real con datos sensibles.
+
+### Impacto
+
+API-001 queda como informe arquitectonico y origina tareas tecnicas posteriores para contrato de API, integracion Google y seguridad de API publica.
+
+Esta decision no implementa endpoints, no modifica codigo, no crea migraciones, no toca Supabase remoto y no habilita produccion.
+
+### Observaciones
+
+La API sera requisito para conectar agendamiento publico con datos reales. Mientras esta decision no este implementada y validada, cualquier pagina publica debe operar sin escribir directamente en el sistema interno.
+
+Informe relacionado: `docs/control/auditorias/API-001_DISENO_API_PUBLICA_GOOGLE_WORKSPACE.md`.

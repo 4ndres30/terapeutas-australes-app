@@ -1055,3 +1055,67 @@ SEC-008 queda implementada parcialmente y pendiente de PR. No habilita staging, 
 Los cambios de `supabase/config.toml` requieren reiniciar Supabase local para que Auth cargue la nueva configuracion. En esta tarea no se reinicio el servicio para evitar interrumpir el entorno local.
 
 PROD-001 sigue bloqueante.
+
+## LOG-029 - API-001 diseno API publica segura e integracion Google Workspace
+
+**Estado:** Registrado
+**Prioridad:** Alta
+**Responsable:** Control de desarrollo / Integracion Backend
+**Origen:** Solicitud arquitectura API publica / PROD-001
+**Fecha creacion:** 2026-06-30
+**Rama usada:** `api-001-diseno-api-publica-google-workspace`
+
+### Descripcion
+
+Se registra API-001 como diseno arquitectonico futuro para conectar pagina publica, API segura, sistema interno, Supabase y Google Calendar/Gmail/Workspace.
+
+La tarea revisa el estado actual del proyecto y confirma que no existe API real, no existe backend propio operativo y Agenda no tiene backend operativo dedicado.
+
+### Archivos relacionados
+
+- `README.md`
+- `docs/control/auditorias/API-001_DISENO_API_PUBLICA_GOOGLE_WORKSPACE.md`
+- `docs/control/00_ESTADO_GENERAL_PROYECTO.md`
+- `docs/control/01_PENDIENTES_PROYECTO.md`
+- `docs/control/03_INTEGRACION_BACKEND_ESTRUCTURA.md`
+- `docs/control/05_DECISIONES_PROYECTO.md`
+- `docs/control/06_BITACORA_CAMBIOS.md`
+
+### Decision agregada
+
+- DEC-033: API segura como frontera entre pagina publica, sistema interno y servicios Google.
+
+### Pendientes agregados
+
+- `API-001` - Disenar API publica segura e integracion Google Workspace.
+- `BE-026` - Disenar contrato de API publica de agendamiento.
+- `BE-027` - Disenar integracion Google Calendar / Gmail / Workspace.
+- `SEC-009` - Disenar seguridad de API publica.
+- `DOC-004` - Documentar flujo pagina publica -> API -> sistema interno -> Google.
+
+### Resultado
+
+La arquitectura futura queda documentada. La API debe actuar como frontera de seguridad y no permitir que la pagina publica escriba directamente en tablas clinicas, financieras ni internas.
+
+La integracion Google Calendar/Gmail/Workspace queda definida como backend seguro futuro, no como integracion desde frontend publico.
+
+### Restricciones respetadas
+
+- No se implemento API real.
+- No se crearon endpoints funcionales.
+- No se modifico codigo funcional.
+- No se instalaron dependencias.
+- No se modificaron migraciones.
+- No se modifico RLS.
+- No se modifico Auth.
+- No se toco `.env`.
+- No se toco Supabase remoto.
+- No se ejecuto `supabase db push`.
+- No se usaron datos reales.
+- No se usaron fotos reales.
+- No se usaron pagos reales.
+- No se hizo merge a `main`.
+
+### Observaciones
+
+PROD-001 sigue bloqueante. La API publica no debe implementarse con datos reales hasta cerrar Agenda, consentimiento, ambientes, auditoria sensible, seguridad de API, backup/restauracion y checklist pre-produccion.
