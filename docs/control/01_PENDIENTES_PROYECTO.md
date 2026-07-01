@@ -24,6 +24,7 @@ Este documento es la lista maestra de pendientes. Cada pendiente debe tener un c
 | CTRL-004 | Sincronizar control post IMP-001, DATA-001 y BE-011. | Integrada | Alta | Control de desarrollo |
 | CTRL-007 | Sincronizar documentacion maestra post BE-016, QA-004 y UI-016. | Integrada | Alta | Control de desarrollo |
 | CTRL-008 | Registrar decisiones criticas post auditoria. | Integrada | Alta | Control de desarrollo |
+| CTRL-009 | Sincronizacion documental Google Cloud. | Integrada documentalmente / pendiente revision | Alta | Control de desarrollo |
 | PEND-001 | Levantar inventario real del proyecto desde `main`. | Integrada | Alta | Control de desarrollo |
 | PEND-002 | Clasificar pendientes por chat responsable. | Integrada | Alta | Control de desarrollo |
 | QA-001 | Auditoria inicial del proyecto. | Integrada | Alta | Control de desarrollo |
@@ -31,7 +32,9 @@ Este documento es la lista maestra de pendientes. Cada pendiente debe tener un c
 | QA-004 | Validacion funcional local de BE-016 / Finanzas. | Integrada | Alta | Control de desarrollo |
 | QA-005 | Validacion funcional local UI-016 / Reportes por rol. | Integrada | Alta | Control de desarrollo |
 | QA-006 | Base minima de pruebas por rol y no exposicion sensible. | Pendiente | Alta | Control de desarrollo / QA |
+| QA-007 | Checklist pre-migracion cloud. | Checklist documental / pendiente ejecucion futura | Alta | Control de desarrollo / QA |
 | API-001 | Disenar API publica segura e integracion Google Workspace. | Diseno documental / pendiente implementacion | Alta | Control de desarrollo / Integracion Backend |
+| DEC-035 | Migracion progresiva a plataforma Google Cloud. | Propuesta documental / pendiente validacion Javier | Alta | Control de desarrollo |
 | BE-001 | Inventariar estructura backend y Supabase local. | Integrada | Alta | Integracion Backend/Estructura |
 | RFC-001 | Auditar flujo clinico completo. | Integrada | Alta | Revision de flujo clinico |
 | BE-002 | Comparar backend con flujo clinico aprobado. | Integrada | Alta | Integracion Backend/Estructura |
@@ -69,6 +72,7 @@ Este documento es la lista maestra de pendientes. Cada pendiente debe tener un c
 | SEC-008 | Implementacion controlada Hardening Auth. | Implementada parcial / pendiente PR | Alta | Integracion Backend / Seguridad |
 | SEC-008B | Cierre de signup y provisioning Auth controlado. | Pendiente | Alta | Integracion Backend / Seguridad |
 | SEC-009 | Disenar seguridad de API publica. | Pendiente | Alta | Integracion Backend / Seguridad |
+| SEC-010 | Disenar seguridad cloud, OAuth, IAM e identidades tecnicas. | Diseno documental / pendiente implementacion futura | Alta | Integracion Backend / Seguridad |
 | BE-018 | Separacion tecnica de ambientes. | Pendiente | Alta | Integracion Backend |
 | BE-019 | Estrategia de backup/restauracion. | Pendiente | Alta | Integracion Backend / Produccion |
 | BE-020 | Consentimiento informado y tratamiento de datos. | Pendiente | Alta | Control de desarrollo / Revision Clinica / Backend |
@@ -80,7 +84,8 @@ Este documento es la lista maestra de pendientes. Cada pendiente debe tener un c
 | BE-026 | Disenar contrato de API publica de agendamiento. | Pendiente | Alta | Integracion Backend/Estructura |
 | BE-027 | Disenar integracion Google Calendar / Gmail / Workspace. | Pendiente | Alta | Integracion Backend/Estructura |
 | BE-028 | Implementar modelo DB de Agenda operativa. | Integrada por PR #41 | Alta | Integracion Backend/Estructura |
-| BE-029 | Validar runtime local de Agenda operativa. | Validada local / pendiente PR | Alta | Integracion Backend / Seguridad |
+| BE-029 | Validar runtime local de Agenda operativa. | Integrada por PR #42 / validada local | Alta | Integracion Backend / Seguridad |
+| BE-030 | Disenar arquitectura de plataforma Google Cloud. | Diseno documental / pendiente implementacion futura | Alta | Integracion Backend/Estructura |
 | UI-020 | Indicador visual de ambiente activo. | Pendiente | Alta | UI / UX |
 | UI-021 | Bloqueo visual de produccion no habilitada. | Pendiente | Alta | UI / UX |
 | UI-022 | Integracion visual minima de fotos dentro de Elementos del caso. | Implementada local / pend. QA | Alta | UI / UX / Pulido visual |
@@ -91,6 +96,7 @@ Este documento es la lista maestra de pendientes. Cada pendiente debe tener un c
 | DOC-002 | Procedimiento de backup/restauracion. | Pendiente | Alta | Control de desarrollo / Integracion Backend |
 | DOC-003 | Politica de carga de datos reales. | Pendiente | Alta | Control de desarrollo |
 | DOC-004 | Documentar flujo pagina publica -> API -> sistema interno -> Google. | Pendiente | Alta | Control de desarrollo |
+| DOC-005 | Documentar estrategia de migracion progresiva a Google Cloud. | Documental / pendiente validacion | Alta | Control de desarrollo |
 | QA-003 | Validacion funcional local de fotos de elementos del caso. | Pendiente | Alta | Control de desarrollo |
 | IMP-002 | Implementacion funcional hallazgo a trabajo. | Pendiente | Alta | Implementacion |
 | PROD-001 | Preparacion para uso real con datos sensibles. | Mantener pendiente / bloqueante | Alta | Control de desarrollo / Integracion Backend |
@@ -145,6 +151,103 @@ CTRL-008 distingue:
 #### Observaciones
 
 CTRL-008 no implemento seguridad, backend, UI ni migraciones. PROD-001 sigue bloqueante.
+
+### CTRL-009 - Sincronizacion documental Google Cloud
+
+**Estado:** Integrada documentalmente / pendiente revision
+**Prioridad:** Alta
+**Responsable:** Control de desarrollo
+**Origen:** PR #43 / estrategia Google Cloud
+**Fecha creacion:** 2026-07-01
+**Rama usada:** `docs/google-cloud-migracion-progresiva`
+**Informe:** `docs/control/auditorias/CTRL-009_SYNC_DOCUMENTAL_GOOGLE_CLOUD.md`
+**Dependencias:** API-001, DEC-033, DEC-034, BE-028, BE-029, PROD-001
+
+#### Descripcion
+Sincronizar los documentos maestros con la estrategia progresiva Google Cloud, manteniendo Supabase/PostgreSQL como base actual y Google Cloud como plataforma futura para API segura, Workspace, despliegue y automatizacion.
+
+#### Resultado
+Documentacion integrada en la rama del PR #43 y pendiente de revision de Javier. No implementa infraestructura, credenciales, endpoints, migraciones ni despliegues.
+
+### DEC-035 - Migracion progresiva a plataforma Google Cloud
+
+**Estado:** Propuesta documental / pendiente validacion Javier
+**Prioridad:** Alta
+**Responsable:** Control de desarrollo
+**Origen:** CTRL-009 / API-001 / PROD-001
+**Fecha creacion:** 2026-07-01
+**Informe:** `docs/control/auditorias/DEC-035_MIGRACION_PROGRESIVA_GOOGLE_CLOUD.md`
+**Dependencias:** DEC-033, DEC-034, BE-030, SEC-010, DOC-005, QA-007, PROD-001
+
+#### Descripcion
+Registrar que el proyecto no migra inmediatamente base de datos, Auth ni backend hacia Google Cloud. La migracion sera progresiva y solo documental en esta fase.
+
+#### Resultado
+Pendiente validacion de Javier. Supabase/PostgreSQL sigue siendo la base actual y PROD-001 sigue bloqueante.
+
+### BE-030 - Disenar arquitectura de plataforma Google Cloud
+
+**Estado:** Diseno documental / pendiente implementacion futura
+**Prioridad:** Alta
+**Responsable:** Integracion Backend/Estructura
+**Origen:** DEC-035 / API-001 / BE-027
+**Fecha creacion:** 2026-07-01
+**Informe:** `docs/control/auditorias/BE-030_ARQUITECTURA_PLATAFORMA_GOOGLE_CLOUD.md`
+**Dependencias:** BE-026, BE-027, SEC-009, SEC-010, DOC-004, DOC-005, PROD-001
+
+#### Descripcion
+Disenar Google Cloud como plataforma futura para API segura, integracion Workspace, despliegue, automatizacion y operacion por ambientes.
+
+#### Resultado
+Diseno documental. Cloud Run, Firebase App Hosting y Cloud Functions quedan como opciones futuras no implementadas. No se crean servicios cloud.
+
+### SEC-010 - Disenar seguridad cloud, OAuth, IAM e identidades tecnicas
+
+**Estado:** Diseno documental / pendiente implementacion futura
+**Prioridad:** Alta
+**Responsable:** Integracion Backend / Seguridad
+**Origen:** DEC-035 / BE-030 / SEC-009
+**Fecha creacion:** 2026-07-01
+**Informe:** `docs/control/auditorias/SEC-010_SECRETOS_OAUTH_IAM_GOOGLE_CLOUD.md`
+**Dependencias:** BE-018, DOC-001, DOC-003, BE-026, BE-027, SEC-009, DOC-005, PROD-001
+
+#### Descripcion
+Definir manejo futuro de secretos, OAuth, IAM, service accounts, CI/CD y credenciales por ambiente sin crear credenciales reales.
+
+#### Resultado
+Diseno documental. No autoriza secretos, proyectos Google Cloud, OAuth clients, service accounts, `.env`, datos reales ni produccion.
+
+### DOC-005 - Documentar estrategia de migracion progresiva a Google Cloud
+
+**Estado:** Documental / pendiente validacion
+**Prioridad:** Alta
+**Responsable:** Control de desarrollo
+**Origen:** DEC-035 / BE-030 / SEC-010
+**Fecha creacion:** 2026-07-01
+**Informe:** `docs/control/auditorias/DOC-005_ESTRATEGIA_MIGRACION_PROGRESIVA_GOOGLE_CLOUD.md`
+**Dependencias:** DEC-035, BE-030, SEC-010, DOC-001, DOC-003, DOC-004, PROD-001
+
+#### Descripcion
+Ordenar la ruta progresiva para incorporar Google Cloud sin interrumpir el desarrollo actual ni habilitar produccion o datos reales.
+
+#### Resultado
+Documento creado para revision. Mantiene migracion progresiva, no inmediata.
+
+### QA-007 - Checklist pre-migracion cloud
+
+**Estado:** Checklist documental / pendiente ejecucion futura
+**Prioridad:** Alta
+**Responsable:** Control de desarrollo / QA
+**Origen:** DEC-035 / BE-030 / SEC-010 / DOC-005
+**Fecha creacion:** 2026-07-01
+**Informe:** `docs/control/auditorias/QA-007_CHECKLIST_PRE_MIGRACION_CLOUD.md`
+**Dependencias:** DEC-035, BE-030, SEC-010, DOC-001, DOC-003, DOC-004, BE-026, BE-027, SEC-009, PROD-001
+
+#### Descripcion
+Definir checklist previo a cualquier implementacion o despliegue real en Google Cloud.
+
+#### Resultado
+Checklist documental. No habilita produccion mientras PROD-001 siga abierto.
 
 ### PEND-001 - Levantar inventario real del proyecto desde main
 
@@ -1193,13 +1296,16 @@ BE-028 no habilita uso real, pagina publica, API ni produccion. La validacion ru
 
 ### BE-029 - Validar runtime local de Agenda operativa
 
-**Estado:** Validada local / pendiente PR
+**Estado:** Integrada por PR #42 / validada local
 **Prioridad:** Alta
 **Responsable:** Integracion Backend / Seguridad
 **Origen:** BE-028 / SEC-001 / DEC-034
 **Fecha creacion:** 2026-07-01
 **Fecha validacion local:** 2026-07-01
+**Fecha integracion main:** 2026-07-01
 **Rama usada:** `be-029-validacion-runtime-agenda-operativa`
+**PR:** #42
+**Commit main:** `007b0a7c16e8ba85a22f1f361b97b493474c6c7d`
 **Informe:** `docs/control/auditorias/BE-029_VALIDACION_RUNTIME_AGENDA_OPERATIVA.md`
 **Dependencias:** BE-028, SEC-001, SEC-002, QA-006, PROD-001
 

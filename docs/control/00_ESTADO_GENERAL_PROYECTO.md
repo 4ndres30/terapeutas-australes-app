@@ -10,6 +10,8 @@ El proyecto cuenta con una estructura documental de control en `docs/control/`. 
 
 Al corte actual ya quedaron integradas las auditorias iniciales de control, backend, flujo clinico y UI/UX. Tambien quedaron registrados BE-003, BE-010, UI-011, IMP-001, DATA-001, BE-011, QA-002, SEC-001, BE-016, QA-004, UI-016, API-001, el diseno BE-012/BE-017 de Agenda Operativa, la implementacion DB inicial BE-028 y la validacion runtime local BE-029, junto con las decisiones clinicas/operativas y arquitectonicas clave que permiten avanzar sin romper el flujo definido.
 
+La estrategia progresiva Google Cloud queda incorporada como propuesta documental en revision: Supabase/PostgreSQL sigue siendo la base actual y Google Cloud queda como plataforma futura para API segura, integracion Google Workspace, despliegue, automatizacion y operacion por ambientes.
+
 IMP-001 dejo disponible una implementacion funcional minima de hallazgos operativos dentro de `DetalleRevisionesPanel`. DATA-001 dejo un seed local demo integral ejecutado correctamente en Supabase local. BE-011 confirmo que la primera version de trazabilidad hallazgo a trabajo puede usar `trabajos.revision_hallazgo_origen_id` sin migracion inicial. QA-002 valido funcionalmente el flujo de hallazgos operativos con el caso demo DATA-001 en ambiente local. BE-016 incorporo la vista financiera minima para Finanzas, QA-004 la valido localmente y UI-016 separo `ReportesPage` por rol en main mediante PR #33.
 
 El proyecto se mantiene alineado con el metodo acordado: primero documentar, auditar y decidir; luego implementar por tareas aprobadas.
@@ -52,6 +54,7 @@ El proyecto se mantiene alineado con el metodo acordado: primero documentar, aud
 - BE-029: Agenda operativa cuenta con modelo DB inicial versionado y validacion runtime local; queda pendiente integracion UI, API publica y uso real.
 - BE-013 a BE-015: tareas backend sugeridas por BE-002 para cobros, vistas, RLS y reportes.
 - API-001, BE-026, BE-027, SEC-009 y DOC-004: estrategia futura para API publica segura, contrato de agendamiento, integracion Google Workspace, seguridad API y flujo pagina publica -> API -> sistema interno -> Google.
+- CTRL-009, DEC-035, BE-030, SEC-010, DOC-005 y QA-007: estrategia progresiva Google Cloud en revision documental; no migra base de datos, Auth ni produccion.
 - RFC-002: deteccion de duplicidades entre entidades clinicas.
 
 ## Pendiente operativo
@@ -73,6 +76,20 @@ La pagina publica no debe escribir directamente en tablas clinicas, financieras 
 La integracion con Google Calendar y Gmail/Workspace debe pasar por backend controlado, con secretos fuera del frontend, eventos neutros, correos neutros, validacion, consentimiento y auditoria.
 
 La implementacion futura depende de cerrar Agenda operativa, consentimiento informado, separacion de ambientes, auditoria sensible, seguridad de API, backup/restauracion y PROD-001.
+
+## Estrategia futura Google Cloud
+
+Google Cloud queda definido como plataforma futura para API segura, integracion Google Workspace, despliegue, automatizacion y operacion por ambientes.
+
+Supabase/PostgreSQL sigue siendo la base actual. Supabase Auth, RLS y el modelo vigente no se migran en esta fase.
+
+La migracion sera progresiva, documentada y reversible. Cloud Run, Firebase App Hosting y Cloud Functions quedan solo como opciones futuras evaluables; no estan implementadas ni autorizan produccion.
+
+Google Calendar y Gmail deben integrarse solo desde backend seguro, nunca desde frontend publico ni con secretos versionados.
+
+En esta fase no se crean proyectos, credenciales, secretos, service accounts, endpoints ni infraestructura Google Cloud.
+
+PROD-001 sigue bloqueante para datos reales, fotos reales, pagos reales y produccion.
 
 ## Diseno de Agenda Operativa
 

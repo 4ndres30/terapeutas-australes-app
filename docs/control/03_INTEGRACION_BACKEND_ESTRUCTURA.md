@@ -252,7 +252,7 @@ Antes de implementar API publica real deben estar resueltos Agenda operativa, co
 ### Implementacion tecnica derivada
 
 - `BE-028` implementa el modelo DB inicial de Agenda operativa con migracion versionada para `solicitudes_agenda`, `agenda_eventos` y `vista_agenda_operativa`; integrado por PR #41.
-- `BE-029` valida runtime local por rol, RLS y no exposicion sensible; pendiente PR.
+- `BE-029` valida runtime local por rol, RLS y no exposicion sensible; integrado por PR #42.
 - `UI-025` queda pendiente para conectar `AgendaPage` al modelo DB despues de validacion runtime.
 
 ### Restricciones
@@ -312,7 +312,7 @@ Informe relacionado: `docs/control/auditorias/BE-028_IMPLEMENTACION_MODELO_DB_AG
 
 ## BE-029 - Validacion runtime Agenda Operativa
 
-**Estado:** Validada local / pendiente PR
+**Estado:** Integrada por PR #42 / validada local
 **Origen:** BE-028 / DEC-034 / SEC-001
 **Fecha:** 2026-07-01
 
@@ -342,6 +342,42 @@ BE-029 valida en Supabase local/demo el modelo DB de Agenda Operativa integrado 
 BE-029 no toca Supabase remoto, no ejecuta `supabase db push`, no modifica `.env`, no implementa API publica, no integra Google Calendar/Gmail, no implementa UI funcional y no habilita produccion ni datos reales.
 
 Informe relacionado: `docs/control/auditorias/BE-029_VALIDACION_RUNTIME_AGENDA_OPERATIVA.md`
+
+## BE-030 - Arquitectura de plataforma Google Cloud
+
+**Estado:** Diseno documental / pendiente implementacion futura
+**Origen:** DEC-035 / API-001 / BE-027 / PROD-001
+**Fecha:** 2026-07-01
+
+BE-030 define Google Cloud como plataforma futura para API segura, integracion Google Workspace, despliegue, automatizacion y operacion por ambientes.
+
+Supabase/PostgreSQL sigue siendo la base actual del sistema interno. Supabase Auth y RLS siguen siendo el mecanismo actual de autenticacion y control de acceso. No se migra base de datos, Auth ni produccion en esta fase.
+
+### Opciones futuras evaluables
+
+- Cloud Run para API/backend seguro o workers futuros.
+- Firebase App Hosting si el frontend evoluciona hacia ese flujo.
+- Cloud Functions solo para funciones acotadas si una decision tecnica posterior lo justifica.
+
+Estas opciones no estan implementadas y no habilitan datos reales ni produccion.
+
+### Relaciones y dependencias
+
+- `BE-026`: contrato de API publica de agendamiento sobre `solicitudes_agenda`.
+- `BE-027`: integracion Google Calendar/Gmail/Workspace desde backend seguro.
+- `SEC-009`: seguridad de API publica.
+- `SEC-010`: secretos, OAuth, IAM e identidades tecnicas Google Cloud.
+- `DOC-004`: flujo pagina publica -> API -> sistema interno -> Google.
+- `DOC-005`: estrategia de migracion progresiva Google Cloud.
+- `PROD-001`: bloqueo para uso real con datos sensibles.
+
+BE-030 tambien debe respetar BE-028 y BE-029: Agenda operativa ya tiene modelo DB inicial y validacion runtime local/demo, pero sigue sin UI funcional, API publica real, integracion Google Calendar/Gmail ni produccion.
+
+### Restricciones
+
+No se crean servicios cloud, endpoints, credenciales, secretos, proyectos Google Cloud, cambios de `.env`, migraciones, RLS/Auth ni despliegues. Queda prohibido un backend productivo real hasta cerrar PROD-001 y las dependencias de seguridad, ambientes, consentimiento y auditoria.
+
+Informe relacionado: `docs/control/auditorias/BE-030_ARQUITECTURA_PLATAFORMA_GOOGLE_CLOUD.md`
 
 ## BE-001 - Inventariar estructura backend y Supabase local
 

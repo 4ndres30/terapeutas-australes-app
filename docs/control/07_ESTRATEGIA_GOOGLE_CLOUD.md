@@ -1,8 +1,8 @@
 # Estrategia Google Cloud
 
-Fecha creacion: `2026-07-01`  
-Responsable documental: Control de desarrollo  
-Estado: Propuesta / pendiente aprobacion de Javier
+Fecha creacion: `2026-07-01`
+Responsable documental: Control de desarrollo
+Estado: Propuesta documental / pendiente validacion de Javier
 
 ## Objetivo
 
@@ -49,6 +49,7 @@ Esta estrategia complementa:
 - `auditorias/CTRL-009_SYNC_DOCUMENTAL_GOOGLE_CLOUD.md`
 - `auditorias/DEC-035_MIGRACION_PROGRESIVA_GOOGLE_CLOUD.md`
 - `auditorias/BE-030_ARQUITECTURA_PLATAFORMA_GOOGLE_CLOUD.md`
+- `auditorias/SEC-010_SECRETOS_OAUTH_IAM_GOOGLE_CLOUD.md`
 - `auditorias/DOC-005_ESTRATEGIA_MIGRACION_PROGRESIVA_GOOGLE_CLOUD.md`
 - `auditorias/QA-007_CHECKLIST_PRE_MIGRACION_CLOUD.md`
 

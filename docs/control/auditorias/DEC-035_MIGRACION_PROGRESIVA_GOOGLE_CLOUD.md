@@ -2,7 +2,7 @@
 
 ## Estado
 
-Propuesta arquitectonica / pendiente aprobacion de Javier.
+Propuesta documental / pendiente validacion de Javier.
 
 ## Fecha
 

@@ -2,7 +2,7 @@
 
 ## Estado
 
-Propuesta documental / pendiente revision de Javier.
+Integrada documentalmente / pendiente revision de Javier.
 
 ## Fecha
 
@@ -30,7 +30,7 @@ Registrar una sincronizacion documental que formalice que el proyecto no debe mi
 
 Esta tarea no modifica codigo fuente, migraciones, `.env`, Supabase local/remoto, credenciales, secretos, configuracion de Google Cloud ni configuracion productiva.
 
-La actualizacion documental se realiza creando documentos especializados para no sobrescribir archivos maestros extensos sin revision humana.
+La actualizacion documental se realiza creando documentos especializados y sincronizando los documentos maestros con cambios minimos, sin reemplazar documentos completos.
 
 ## Documentos nuevos creados
 
@@ -38,27 +38,27 @@ La actualizacion documental se realiza creando documentos especializados para no
 - `docs/control/auditorias/BE-030_ARQUITECTURA_PLATAFORMA_GOOGLE_CLOUD.md`
 - `docs/control/auditorias/SEC-010_SECRETOS_OAUTH_IAM_GOOGLE_CLOUD.md`
 - `docs/control/auditorias/DOC-005_ESTRATEGIA_MIGRACION_PROGRESIVA_GOOGLE_CLOUD.md`
+- `docs/control/auditorias/QA-007_CHECKLIST_PRE_MIGRACION_CLOUD.md`
 
-## Documentos maestros que deben sincronizarse despues de aprobacion
+## Documentos maestros sincronizados en esta revision
 
-Cuando Javier apruebe esta sincronizacion, Control de desarrollo debe integrar los cambios en:
+La rama del PR #43 sincroniza los cambios en:
 
 - `README.md`
+- `docs/control/README.md`
 - `docs/control/00_ESTADO_GENERAL_PROYECTO.md`
 - `docs/control/01_PENDIENTES_PROYECTO.md`
 - `docs/control/03_INTEGRACION_BACKEND_ESTRUCTURA.md`
 - `docs/control/05_DECISIONES_PROYECTO.md`
 - `docs/control/06_BITACORA_CAMBIOS.md`
 
-## Cambios conceptuales que deben reflejarse en los maestros
+## Cambios conceptuales reflejados en los maestros
 
 ### Nueva decision
 
-Agregar `DEC-035 - Migracion progresiva a plataforma Google Cloud`.
+`DEC-035 - Migracion progresiva a plataforma Google Cloud`.
 
 ### Nuevas tareas
-
-Agregar:
 
 - `BE-030 - Disenar arquitectura de plataforma Google Cloud`.
 - `SEC-010 - Disenar manejo de secretos, OAuth, IAM y cuentas de servicio`.
@@ -127,4 +127,4 @@ CTRL-009 no autoriza:
 
 ## Resultado
 
-Pendiente de revision de Javier y posterior sincronizacion en documentos maestros.
+Sincronizacion integrada en rama. Queda pendiente revision de Javier.

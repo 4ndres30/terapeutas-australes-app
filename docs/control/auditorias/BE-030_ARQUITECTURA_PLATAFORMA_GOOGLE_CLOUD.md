@@ -39,7 +39,7 @@ No existe backend HTTP propio implementado.
 
 No existe integracion funcional con Google Calendar, Gmail, Workspace o Google Cloud.
 
-Agenda operativa cuenta con diseno y modelo DB inicial, pero sigue pendiente validacion runtime, UI funcional, API publica, integracion Google y produccion.
+Agenda operativa cuenta con diseno, modelo DB inicial y validacion runtime local. Sigue pendiente UI funcional, API publica, integracion Google y produccion.
 
 PROD-001 sigue bloqueante.
 
@@ -218,7 +218,7 @@ No se debe desplegar backend/API real a Google Cloud hasta que exista al menos:
 - consentimiento BE-020;
 - auditoria SEC-005;
 - backup/restauracion BE-019;
-- validacion Agenda BE-029;
+- BE-029 integrado como antecedente de validacion runtime local de Agenda;
 - checklist QA-007;
 - aprobacion expresa de Javier.
 

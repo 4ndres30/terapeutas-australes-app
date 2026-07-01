@@ -44,7 +44,7 @@ Cuenta con:
 - RLS por roles;
 - base clinica principal;
 - vista financiera minima;
-- Agenda operativa DB inicial;
+- Agenda operativa DB inicial con validacion runtime local;
 - documentacion de API publica segura;
 - PROD-001 bloqueante.
 
@@ -82,7 +82,7 @@ Objetivo: terminar lo que ya esta en curso antes de sumar infraestructura.
 
 Tareas relacionadas:
 
-- BE-029: validar Agenda operativa runtime.
+- BE-029: usar como antecedente la validacion runtime local ya integrada.
 - UI-025: integrar AgendaPage con modelo DB.
 - BE-020: consentimiento informado.
 - SEC-005: auditoria sensible.
