@@ -70,6 +70,15 @@ const AGENDA_OPERATIVA_SELECT = [
   'updated_at',
 ].join(', ')
 
+const ESTADOS_EVENTO_AGENDA = [
+  'programado',
+  'confirmado',
+  'reagendado',
+  'cancelado',
+  'completado',
+  'no_asistio',
+]
+
 function normalizarTexto(texto: string) {
   return texto.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '')
 }
@@ -180,10 +189,6 @@ function AgendaPage() {
   const [mensaje, setMensaje] = useState('')
   const [cargando, setCargando] = useState(true)
 
-  const estadosDisponibles = useMemo(() => {
-    return Array.from(new Set(agenda.map((evento) => evento.estado_evento).filter(Boolean))).sort()
-  }, [agenda])
-
   const agendaFiltrada = useMemo(() => {
     const filtroTexto = normalizarTexto(busqueda.trim())
 
@@ -227,7 +232,7 @@ function AgendaPage() {
     { etiqueta: 'Eventos', valor: agenda.length, detalle: 'Vista operativa' },
     { etiqueta: 'Solicitudes', valor: solicitudesVinculadas.length, detalle: 'Vinculadas a evento' },
     { etiqueta: 'Consultas', valor: consultasVinculadas.length, detalle: 'Con consulta asociada' },
-    { etiqueta: 'Confirmar', valor: pendientesConfirmacion.length, detalle: 'Pendientes' },
+    { etiqueta: 'Pendientes', valor: pendientesConfirmacion.length, detalle: 'Por confirmar' },
   ]
 
   async function cargarAgenda() {
@@ -260,7 +265,7 @@ function AgendaPage() {
 
   return (
     <main className="clinical-module-page">
-      <section className="clinical-hero">
+      <section className="clinical-hero clinical-hero--compact">
         <div className="clinical-hero__copy">
           <span className="clinical-kicker">Agenda interna</span>
           <h1>Agenda</h1>
@@ -293,7 +298,7 @@ function AgendaPage() {
             <span>Buscar</span>
             <input
               className="clinical-input"
-              placeholder="Título, paciente, contacto, tipo, modalidad, estado u origen"
+              placeholder="Buscar por título, paciente o contacto"
               type="search"
               value={busqueda}
               onChange={(event) => setBusqueda(event.target.value)}
@@ -308,7 +313,7 @@ function AgendaPage() {
                 value={filtroContexto}
                 onChange={(event) => setFiltroContexto(event.target.value as TipoContextoAgenda)}
               >
-                <option value="todos">Todos</option>
+                <option value="todos">Todos los contextos</option>
                 <option value="solicitudes">Solicitudes</option>
                 <option value="eventos">Eventos internos</option>
                 <option value="consultas">Consultas clínicas</option>
@@ -323,7 +328,7 @@ function AgendaPage() {
                 onChange={(event) => setFiltroEstado(event.target.value)}
               >
                 <option value="todos">Todos</option>
-                {estadosDisponibles.map((estado) => (
+                {ESTADOS_EVENTO_AGENDA.map((estado) => (
                   <option key={estado} value={estado}>{formatearEtiqueta(estado)}</option>
                 ))}
               </select>
