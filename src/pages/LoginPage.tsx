@@ -12,6 +12,9 @@ type LoginPageProps = {
   onCerrarSesion: () => Promise<void>
 }
 
+const mensajeLoginFallido =
+  'No se pudo iniciar sesión. Revisa tus credenciales o solicita acceso a un administrador.'
+
 function LoginPage({ estadoAuth, mensajeAuth, session, onCerrarSesion }: LoginPageProps) {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -24,12 +27,12 @@ function LoginPage({ estadoAuth, mensajeAuth, session, onCerrarSesion }: LoginPa
     setMensajeLogin('')
 
     const { error } = await supabase.auth.signInWithPassword({
-      email,
+      email: email.trim(),
       password,
     })
 
     if (error) {
-      setMensajeLogin(`No se pudo iniciar sesión: ${error.message}`)
+      setMensajeLogin(mensajeLoginFallido)
       setEnviando(false)
       return
     }

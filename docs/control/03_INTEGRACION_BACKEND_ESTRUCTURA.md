@@ -18,9 +18,9 @@ Este documento controla tareas tecnicas relacionadas con estructura, Supabase, m
 
 ## Restricciones actuales
 
-En esta rama documental:
+Por defecto, salvo tarea tecnica expresamente autorizada como SEC-008:
 
-- No modificar codigo fuente.
+- No modificar codigo fuente sin alcance aprobado.
 - No modificar migraciones.
 - No ejecutar SQL.
 - No tocar `.env`.
@@ -86,7 +86,7 @@ Informe relacionado: `docs/control/auditorias/CTRL-008_DECISIONES_CRITICAS_POST_
 
 ## SEC-003 - Hardening Auth / diseno documental
 
-**Estado:** Diseno documental / pendiente implementacion tecnica
+**Estado:** Integrada como diseno base
 **Origen:** CTRL-008 / DEC-029 / DEC-030 / DEC-031
 **Fecha:** 2026-06-29
 
@@ -128,6 +128,48 @@ SEC-003 analiza la configuracion local de Supabase Auth y define la politica obj
 SEC-003 no modifica `supabase/config.toml`, no crea migraciones, no modifica codigo fuente, no toca `.env`, no ejecuta `supabase db push` y no toca Supabase remoto.
 
 Informe relacionado: `docs/control/auditorias/SEC-003_HARDENING_AUTH.md`
+
+## SEC-008 - Implementacion controlada Hardening Auth
+
+**Estado:** Implementada parcialmente / pendiente validacion PR
+**Origen:** SEC-003 / DEC-029 / DEC-030 / DEC-031 / DEC-032
+**Fecha:** 2026-06-30
+
+SEC-008 aplica solo controles seguros para local/demo y documenta lo que debe quedar para staging/produccion.
+
+### Cambios tecnicos aplicados
+
+- `supabase/config.toml` sube `minimum_password_length` de 6 a 8.
+- `supabase/config.toml` exige `password_requirements = "lower_upper_letters_digits"`.
+- `supabase/config.toml` habilita `auth.sessions` con `timebox = "24h"` e `inactivity_timeout = "8h"`.
+- `src/pages/LoginPage.tsx` deja de mostrar errores crudos de Supabase en login.
+- `src/App.tsx` deja de mostrar mensajes tecnicos al validar sesion o `usuarios_internos`.
+- Se mantiene el bloqueo de usuarios Auth sin perfil interno, usuarios inactivos y roles invalidos.
+
+### Cambios no aplicados
+
+- No se cerro signup local por falta de provisioning Auth versionado.
+- No se habilito email confirm local por riesgo de bloquear cuentas demo no confirmadas.
+- No se habilito MFA por falta de UI de enrolamiento/verificacion.
+- No se implemento recovery por falta de flujo de correo/UI/procedimiento.
+- No se crearon migraciones.
+- No se toco Supabase remoto.
+
+### Tareas derivadas
+
+- `SEC-008B` - Cierre de signup y provisioning Auth controlado.
+- `UI-024` - Recuperacion de cuenta, MFA y estados Auth no tecnicos.
+- `SEC-005` - Auditoria sensible Auth y cambios de rol.
+- `SEC-007` - Procedimiento de scripts manuales locales/demo.
+- `BE-018` - Separacion tecnica de ambientes.
+- `DOC-001` - Manual de ambientes.
+- `QA-006` - Validacion de casos Auth minimos.
+
+### Restricciones
+
+SEC-008 no toca `.env`, no modifica migraciones, no ejecuta `supabase db push`, no ejecuta `supabase db pull`, no toca Supabase remoto y no habilita datos reales, fotos reales, pagos reales ni produccion.
+
+Informe relacionado: `docs/control/auditorias/SEC-008_IMPLEMENTACION_HARDENING_AUTH.md`
 
 ## BE-001 - Inventariar estructura backend y Supabase local
 
