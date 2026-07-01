@@ -91,7 +91,7 @@ Este documento es la lista maestra de pendientes. Cada pendiente debe tener un c
 | UI-022 | Integracion visual minima de fotos dentro de Elementos del caso. | Implementada local / pend. QA | Alta | UI / UX / Pulido visual |
 | UI-023 | Navegacion y superficies filtradas por rol. | Pendiente | Alta | UI / UX |
 | UI-024 | Recuperacion de cuenta, MFA y estados Auth no tecnicos. | Pendiente | Alta | UI / UX / Integracion Backend |
-| UI-025 | Integrar AgendaPage con modelo DB de Agenda operativa. | Pendiente | Alta | UI / UX / Integracion Backend |
+| UI-025 | Integrar AgendaPage con modelo DB de Agenda operativa. | Integrada lectura / pendiente UI-025B | Alta | UI / UX / Integracion Backend |
 | DOC-001 | Manual de ambientes. | Pendiente | Alta | Control de desarrollo |
 | DOC-002 | Procedimiento de backup/restauracion. | Pendiente | Alta | Control de desarrollo / Integracion Backend |
 | DOC-003 | Politica de carga de datos reales. | Pendiente | Alta | Control de desarrollo |
@@ -525,7 +525,7 @@ No se deben cargar datos reales como uso oficial todavia. Antes de produccion de
 
 ### RFC-002 - Detectar duplicidades entre entidades clinicas
 
-**Estado:** Pendiente
+**Estado:** Integrada lectura / pendiente UI-025B
 **Prioridad:** Alta
 **Responsable:** Revision de flujo clinico
 **Origen:** Revision de flujo clinico
@@ -1410,22 +1410,31 @@ Definir e implementar el flujo visual de recuperacion de cuenta, enrolamiento/ve
 **Responsable:** UI / UX / Integracion Backend
 **Origen:** BE-028 / DEC-034 / UI-014
 **Fecha creacion:** 2026-07-01
+**Fecha integracion:** 2026-07-01
+**Rama usada:** `ui-025-integracion-agenda-operativa`
+**Informe:** `docs/control/auditorias/UI-025_INTEGRACION_AGENDA_OPERATIVA.md`
 **Dependencias:** BE-028, BE-029, UI-014, DEC-034, QA-006, PROD-001
 
 #### Descripcion
-Integrar posteriormente `src/pages/AgendaPage.tsx` con `solicitudes_agenda`, `agenda_eventos` y `vista_agenda_operativa`, manteniendo la separacion entre solicitud inicial, evento interno y consulta confirmada.
+Integrar `src/pages/AgendaPage.tsx` con `vista_agenda_operativa`, manteniendo la separacion entre solicitud inicial, evento interno y consulta confirmada.
 
-#### Criterios de aceptacion preliminares
-- Reemplazar el placeholder solo despues de integrar BE-029 y revisar QA local.
-- Mostrar agenda operativa desde `vista_agenda_operativa` o consultas controladas.
-- Crear/editar eventos internos sin crear pacientes ni consultas automaticamente.
-- Distinguir solicitudes de agenda de eventos confirmados.
-- No exponer datos a Finanzas si la navegacion por rol no lo permite.
-- No implementar API publica ni Google Calendar/Gmail en esta tarea UI.
-- No usar datos reales hasta cerrar PROD-001.
+#### Resultado
+Se reemplaza el placeholder de `/agenda` por una vista interna de lectura desde `public.vista_agenda_operativa`.
+
+La pantalla permite:
+
+- listar eventos operativos;
+- buscar por titulo, paciente/contacto, tipo, modalidad, estado u origen;
+- filtrar por contexto y estado;
+- distinguir solicitudes vinculadas, eventos internos y consultas clinicas confirmadas;
+- mostrar fecha/hora, modalidad, contacto operativo, estado, origen, confirmacion y estado tecnico Google.
+
+La ruta sigue protegida para `admin` y `terapeuta`. Finanzas no queda autorizada por navegacion ni por RLS.
+
+No se implementa creacion/edicion en esta fase para evitar conversiones prematuras, creacion automatica de pacientes/consultas o cambios de estado sin auditoria completa.
 
 #### Observaciones
-UI-025 no reemplaza BE-026 ni BE-027. La pagina publica futura debe seguir pasando por API segura.
+UI-025 no reemplaza BE-026 ni BE-027. La pagina publica futura debe seguir pasando por API segura. La fase posterior recomendada es `UI-025B` para creacion/edicion controlada, solo si Control aprueba el alcance.
 
 ### QA-003 - Validacion funcional local de fotos de elementos del caso
 

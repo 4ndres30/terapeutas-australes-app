@@ -717,7 +717,9 @@ BE-028 deja implementado el modelo DB inicial versionado para Agenda operativa e
 
 BE-029 valida localmente ese modelo en Supabase local/demo: roles, RLS, checks, FKs, triggers y vista operativa quedan comprobados sin usar datos reales ni tocar Supabase remoto.
 
-Agenda todavia no tiene UI funcional conectada, API publica operativa, integracion Google Calendar/Gmail ni produccion habilitada.
+UI-025 integra `/agenda` como lectura interna desde `public.vista_agenda_operativa`, con listado, filtros y separacion visual entre solicitudes vinculadas, eventos internos y consultas confirmadas.
+
+Agenda todavia no tiene creacion/edicion controlada, API publica operativa, integracion Google Calendar/Gmail ni produccion habilitada.
 
 Antes de conectar una pagina publica real se debe cerrar Agenda operativa, consentimiento, ambientes, auditoria sensible, seguridad API y PROD-001.
 

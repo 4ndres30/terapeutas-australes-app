@@ -246,6 +246,7 @@
   font-size: 13px;
   font-weight: 700;
   margin: 4px 0 0;
+  overflow-wrap: anywhere;
 }
 
 .clinical-form {
