@@ -3,7 +3,7 @@
 Responsable: UI / UX / Pulido visual
 Estado del documento: En analisis
 Fecha creacion: `2026-06-11`
-Ultima actualizacion: `2026-06-29`
+Ultima actualizacion: `2026-07-01`
 
 Este documento controla tareas de experiencia de usuario, formularios, responsive y pulido visual. El objetivo es que la aplicacion sea clara, sobria, profesional y facil de usar para el flujo terapeutico.
 
@@ -345,6 +345,39 @@ Resultado:
 Informe relacionado: `auditorias/QA-005_VALIDACION_UI016_REPORTES_POR_ROL.md`
 
 Este avance no habilita datos reales, fotos reales, pagos reales ni produccion. PROD-001 sigue bloqueante.
+
+## UI-025 - Integracion Agenda Operativa
+
+**Estado:** Integrada lectura / pendiente UI-025B
+**Prioridad:** Alta
+**Responsable:** UI / UX / Integracion Backend
+**Origen:** BE-028 / BE-029 / DEC-034
+**Fecha integracion:** 2026-07-01
+**Rama usada:** `ui-025-integracion-agenda-operativa`
+
+### Resultado integrado
+
+`AgendaPage` deja de ser placeholder y queda conectada a `public.vista_agenda_operativa` como vista interna de lectura.
+
+La pantalla muestra:
+
+- eventos operativos desde la vista validada;
+- filtros por contexto y estado;
+- busqueda por titulo, paciente/contacto, tipo, modalidad, estado u origen;
+- separacion visual entre solicitudes vinculadas, eventos internos y consultas confirmadas;
+- estados de carga, error y vacio.
+
+### Decisiones UI
+
+La primera fase se mantiene en modo lectura. No se agregan formularios de creacion ni edicion porque todavia faltan auditoria sensible, consentimiento, reglas de conversion y aprobacion de flujo UI-025B.
+
+La ruta `/agenda` sigue protegida para `admin` y `terapeuta`. Finanzas no tiene acceso visual ni funcional a Agenda.
+
+### Restricciones
+
+No se implementa API publica, endpoints, Google Calendar, Gmail, conversion automatica a pacientes/consultas, migraciones, Auth/RLS, Supabase remoto ni datos reales.
+
+Informe relacionado: `auditorias/UI-025_INTEGRACION_AGENDA_OPERATIVA.md`
 
 ## CTRL-008 - Decisiones UI derivadas post auditoria
 

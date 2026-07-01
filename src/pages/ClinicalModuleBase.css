@@ -85,6 +85,19 @@
   font-weight: 700;
 }
 
+.clinical-hero--compact .clinical-hero__copy {
+  padding: 20px 22px;
+}
+
+.clinical-hero--compact .clinical-metric-card {
+  min-height: 100px;
+  padding: 14px 16px;
+}
+
+.clinical-hero--compact .clinical-metric-card strong {
+  font-size: 1.7rem;
+}
+
 .clinical-layout {
   align-items: start;
   display: grid;
@@ -246,6 +259,7 @@
   font-size: 13px;
   font-weight: 700;
   margin: 4px 0 0;
+  overflow-wrap: anywhere;
 }
 
 .clinical-form {

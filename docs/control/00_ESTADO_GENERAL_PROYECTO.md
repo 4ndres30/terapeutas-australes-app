@@ -117,7 +117,9 @@ BE-029 valido el runtime local/demo de este modelo:
 - no se crean pacientes ni consultas automaticamente;
 - no se toco Supabase remoto ni se ejecuto `supabase db push`.
 
-Agenda aun no tiene UI funcional conectada, API publica real, Google Calendar, Gmail ni produccion habilitada.
+UI-025 integra `/agenda` como primera vista interna de lectura desde `public.vista_agenda_operativa`, con filtros por contexto/estado y separacion visual entre solicitudes vinculadas, eventos internos y consultas confirmadas.
+
+Agenda aun no tiene creacion/edicion controlada, API publica real, Google Calendar, Gmail ni produccion habilitada.
 
 Este diseno es bloqueo previo para `BE-026`, porque el contrato publico debe crear solicitudes de agenda y no consultas clinicas directas.
 

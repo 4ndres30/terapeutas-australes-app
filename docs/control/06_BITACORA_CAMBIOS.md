@@ -1389,3 +1389,56 @@ La regla central queda explicitada: Supabase/PostgreSQL sigue siendo la base act
 ### Resultado
 
 PR #43 queda orientado a revision de Javier como cambio documental. No queda listo para produccion.
+
+## LOG-034 - UI-025 integracion Agenda Operativa
+
+**Estado:** Registrado
+**Prioridad:** Alta
+**Responsable:** UI / UX / Integracion Backend
+**Origen:** UI-025 / BE-028 / BE-029 / DEC-034
+**Fecha creacion:** 2026-07-01
+**Rama usada:** `ui-025-integracion-agenda-operativa`
+
+### Descripcion
+
+Se integra `AgendaPage` con el modelo DB de Agenda Operativa en modo lectura interna.
+
+La pantalla `/agenda` consulta `public.vista_agenda_operativa` y muestra eventos operativos con filtros por contexto/estado, busqueda, metricas y separacion visual entre solicitudes vinculadas, eventos internos y consultas confirmadas.
+
+### Archivos relacionados
+
+- `src/pages/AgendaPage.tsx`
+- `src/pages/ClinicalModuleBase.css`
+- `docs/control/auditorias/UI-025_INTEGRACION_AGENDA_OPERATIVA.md`
+- `README.md`
+- `docs/control/00_ESTADO_GENERAL_PROYECTO.md`
+- `docs/control/01_PENDIENTES_PROYECTO.md`
+- `docs/control/04_UI_UX_PULIDO_VISUAL.md`
+- `docs/control/06_BITACORA_CAMBIOS.md`
+
+### Decisiones registradas
+
+- UI-025 queda como primera fase de lectura/listado operativo.
+- La creacion/edicion controlada queda para `UI-025B` futura.
+- No se crean pacientes ni consultas automaticamente.
+- No se consulta `solicitudes_agenda` directamente en esta fase; la UI usa la vista segura validada por BE-029.
+
+### Restricciones respetadas
+
+- No se creo API publica.
+- No se crearon endpoints.
+- No se integro Google Calendar.
+- No se integro Gmail.
+- No se toco Supabase remoto.
+- No se ejecuto `supabase db push`.
+- No se modificaron migraciones SQL.
+- No se modifico Auth/RLS.
+- No se toco `.env`.
+- No se habilito produccion.
+- No se usaron datos reales.
+- No se modificaron cobros/pagos.
+- No se modifico Storage.
+
+### Resultado
+
+UI-025 queda lista para revision como integracion interna de lectura. No queda lista para produccion ni reemplaza BE-026.
