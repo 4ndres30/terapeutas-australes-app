@@ -91,7 +91,8 @@ Este documento es la lista maestra de pendientes. Cada pendiente debe tener un c
 | UI-022 | Integracion visual minima de fotos dentro de Elementos del caso. | Implementada local / pend. QA | Alta | UI / UX / Pulido visual |
 | UI-023 | Navegacion y superficies filtradas por rol. | Pendiente | Alta | UI / UX |
 | UI-024 | Recuperacion de cuenta, MFA y estados Auth no tecnicos. | Pendiente | Alta | UI / UX / Integracion Backend |
-| UI-025 | Integrar AgendaPage con modelo DB de Agenda operativa. | Integrada lectura / pendiente UI-025B | Alta | UI / UX / Integracion Backend |
+| UI-025 | Integrar AgendaPage con modelo DB de Agenda operativa. | Integrada lectura por PR #44 | Alta | UI / UX / Integracion Backend |
+| UI-025B | Alta y edicion controlada de Agenda operativa interna. | Integrada / pendiente revision | Alta | UI / UX / Integracion Backend |
 | DOC-001 | Manual de ambientes. | Pendiente | Alta | Control de desarrollo |
 | DOC-002 | Procedimiento de backup/restauracion. | Pendiente | Alta | Control de desarrollo / Integracion Backend |
 | DOC-003 | Politica de carga de datos reales. | Pendiente | Alta | Control de desarrollo |
@@ -525,7 +526,7 @@ No se deben cargar datos reales como uso oficial todavia. Antes de produccion de
 
 ### RFC-002 - Detectar duplicidades entre entidades clinicas
 
-**Estado:** Integrada lectura / pendiente UI-025B
+**Estado:** Pendiente
 **Prioridad:** Alta
 **Responsable:** Revision de flujo clinico
 **Origen:** Revision de flujo clinico
@@ -1405,7 +1406,7 @@ Definir e implementar el flujo visual de recuperacion de cuenta, enrolamiento/ve
 
 ### UI-025 - Integrar AgendaPage con modelo DB de Agenda operativa
 
-**Estado:** Pendiente
+**Estado:** Integrada lectura por PR #44
 **Prioridad:** Alta
 **Responsable:** UI / UX / Integracion Backend
 **Origen:** BE-028 / DEC-034 / UI-014
@@ -1434,7 +1435,40 @@ La ruta sigue protegida para `admin` y `terapeuta`. Finanzas no queda autorizada
 No se implementa creacion/edicion en esta fase para evitar conversiones prematuras, creacion automatica de pacientes/consultas o cambios de estado sin auditoria completa.
 
 #### Observaciones
-UI-025 no reemplaza BE-026 ni BE-027. La pagina publica futura debe seguir pasando por API segura. La fase posterior recomendada es `UI-025B` para creacion/edicion controlada, solo si Control aprueba el alcance.
+UI-025 no reemplaza BE-026 ni BE-027. La pagina publica futura debe seguir pasando por API segura. La fase posterior de alta/edicion controlada queda registrada como `UI-025B`.
+
+### UI-025B - Alta y edicion controlada de Agenda operativa interna
+
+**Estado:** Integrada / pendiente revision
+**Prioridad:** Alta
+**Responsable:** UI / UX / Integracion Backend
+**Origen:** UI-025 / BE-028 / BE-029 / DEC-034
+**Fecha creacion:** 2026-07-01
+**Fecha integracion:** 2026-07-01
+**Rama usada:** `ui-025b-agenda-operativa-edicion-controlada`
+**Informe:** `docs/control/auditorias/UI-025B_EDICION_CONTROLADA_AGENDA_OPERATIVA.md`
+**Dependencias:** BE-028, BE-029, UI-025, DEC-034, SEC-005, PROD-001
+
+#### Descripcion
+Extender `/agenda` para permitir gestion manual minima y segura de `public.agenda_eventos` desde el sistema interno.
+
+#### Resultado
+Se habilita:
+
+- crear eventos internos con titulo, tipo, fecha/hora, modalidad, estado, ubicacion/enlace y notas internas breves;
+- editar eventos existentes de `agenda_eventos`;
+- cambiar estado usando solo `programado`, `confirmado`, `reagendado`, `cancelado`, `completado` y `no_asistio`;
+- cancelar sin borrado fisico;
+- reagendar como edicion controlada de fecha/hora y estado;
+- marcar eventos como completados.
+
+La ruta `/agenda` sigue protegida para `admin` y `terapeuta`. Finanzas, anonimos y usuarios no autorizados quedan fuera por ruta y por RLS.
+
+#### Restricciones
+UI-025B no crea pacientes, consultas, solicitudes de agenda, evaluaciones, casos, revisiones, trabajos, pagos ni fotos. Tampoco implementa API publica, endpoints, Google Calendar, Gmail, Workspace, migraciones SQL, Auth/RLS, `.env`, Supabase remoto, produccion ni datos reales.
+
+#### Observaciones
+UI-025B no reemplaza BE-026 ni BE-027. La pagina publica futura debe seguir pasando por API segura y la integracion Google debe implementarse solo desde backend controlado. Sigue pendiente definir auditoria sensible completa para cambios de agenda antes de uso real.
 
 ### QA-003 - Validacion funcional local de fotos de elementos del caso
 

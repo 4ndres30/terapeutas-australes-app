@@ -8,7 +8,7 @@ Estado general documental: En control activo
 
 El proyecto cuenta con una estructura documental de control en `docs/control/`. Esta estructura ordena responsabilidades, pendientes, decisiones, bitacora, auditorias y flujo de trabajo sin modificar codigo, migraciones ni base de datos.
 
-Al corte actual ya quedaron integradas las auditorias iniciales de control, backend, flujo clinico y UI/UX. Tambien quedaron registrados BE-003, BE-010, UI-011, IMP-001, DATA-001, BE-011, QA-002, SEC-001, BE-016, QA-004, UI-016, API-001, el diseno BE-012/BE-017 de Agenda Operativa, la implementacion DB inicial BE-028 y la validacion runtime local BE-029, junto con las decisiones clinicas/operativas y arquitectonicas clave que permiten avanzar sin romper el flujo definido.
+Al corte actual ya quedaron integradas las auditorias iniciales de control, backend, flujo clinico y UI/UX. Tambien quedaron registrados BE-003, BE-010, UI-011, IMP-001, DATA-001, BE-011, QA-002, SEC-001, BE-016, QA-004, UI-016, API-001, el diseno BE-012/BE-017 de Agenda Operativa, la implementacion DB inicial BE-028, la validacion runtime local BE-029 y la integracion interna UI-025/UI-025B de Agenda, junto con las decisiones clinicas/operativas y arquitectonicas clave que permiten avanzar sin romper el flujo definido.
 
 La estrategia progresiva Google Cloud queda incorporada como propuesta documental en revision: Supabase/PostgreSQL sigue siendo la base actual y Google Cloud queda como plataforma futura para API segura, integracion Google Workspace, despliegue, automatizacion y operacion por ambientes.
 
@@ -51,7 +51,7 @@ El proyecto se mantiene alineado con el metodo acordado: primero documentar, aud
 - Implementacion funcional hallazgo a trabajo: pendiente futura, posterior a QA-002 y UI-012.
 - UI-010, UI-012 y UI-015: prioridades de planificacion UI derivadas de UI-001 + UI-002 y del estado post IMP-001.
 - UI-013, UI-014, UI-017, UI-018 y UI-019: pendientes UI derivados, aun sin activacion tecnica.
-- BE-029: Agenda operativa cuenta con modelo DB inicial versionado y validacion runtime local; queda pendiente integracion UI, API publica y uso real.
+- UI-025/UI-025B: Agenda operativa cuenta con vista interna, filtros y gestion manual minima de `agenda_eventos`; queda pendiente API publica, Google Calendar/Gmail y uso real.
 - BE-013 a BE-015: tareas backend sugeridas por BE-002 para cobros, vistas, RLS y reportes.
 - API-001, BE-026, BE-027, SEC-009 y DOC-004: estrategia futura para API publica segura, contrato de agendamiento, integracion Google Workspace, seguridad API y flujo pagina publica -> API -> sistema interno -> Google.
 - CTRL-009, DEC-035, BE-030, SEC-010, DOC-005 y QA-007: estrategia progresiva Google Cloud en revision documental; no migra base de datos, Auth ni produccion.
@@ -119,7 +119,9 @@ BE-029 valido el runtime local/demo de este modelo:
 
 UI-025 integra `/agenda` como primera vista interna de lectura desde `public.vista_agenda_operativa`, con filtros por contexto/estado y separacion visual entre solicitudes vinculadas, eventos internos y consultas confirmadas.
 
-Agenda aun no tiene creacion/edicion controlada, API publica real, Google Calendar, Gmail ni produccion habilitada.
+UI-025B agrega alta y edicion manual minima sobre `agenda_eventos` para usuarios internos autorizados, incluyendo cambio de estado, cancelacion logica, reagendamiento y cierre como completado. No crea pacientes, consultas ni solicitudes automaticamente.
+
+Agenda aun no tiene API publica real, Google Calendar, Gmail ni produccion habilitada.
 
 Este diseno es bloqueo previo para `BE-026`, porque el contrato publico debe crear solicitudes de agenda y no consultas clinicas directas.
 

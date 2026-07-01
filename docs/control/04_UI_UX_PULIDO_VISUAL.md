@@ -348,7 +348,7 @@ Este avance no habilita datos reales, fotos reales, pagos reales ni produccion. 
 
 ## UI-025 - Integracion Agenda Operativa
 
-**Estado:** Integrada lectura / pendiente UI-025B
+**Estado:** Integrada lectura por PR #44
 **Prioridad:** Alta
 **Responsable:** UI / UX / Integracion Backend
 **Origen:** BE-028 / BE-029 / DEC-034
@@ -369,7 +369,7 @@ La pantalla muestra:
 
 ### Decisiones UI
 
-La primera fase se mantiene en modo lectura. No se agregan formularios de creacion ni edicion porque todavia faltan auditoria sensible, consentimiento, reglas de conversion y aprobacion de flujo UI-025B.
+La primera fase se mantiene en modo lectura. La alta y edicion controlada queda separada como UI-025B.
 
 La ruta `/agenda` sigue protegida para `admin` y `terapeuta`. Finanzas no tiene acceso visual ni funcional a Agenda.
 
@@ -378,6 +378,42 @@ La ruta `/agenda` sigue protegida para `admin` y `terapeuta`. Finanzas no tiene 
 No se implementa API publica, endpoints, Google Calendar, Gmail, conversion automatica a pacientes/consultas, migraciones, Auth/RLS, Supabase remoto ni datos reales.
 
 Informe relacionado: `auditorias/UI-025_INTEGRACION_AGENDA_OPERATIVA.md`
+
+## UI-025B - Edicion controlada Agenda Operativa
+
+**Estado:** Integrada / pendiente revision
+**Prioridad:** Alta
+**Responsable:** UI / UX / Integracion Backend
+**Origen:** UI-025 / BE-028 / BE-029 / DEC-034
+**Fecha integracion:** 2026-07-01
+**Rama usada:** `ui-025b-agenda-operativa-edicion-controlada`
+
+### Resultado integrado
+
+`AgendaPage` permite gestion manual minima de `agenda_eventos` desde la agenda interna protegida.
+
+La pantalla habilita:
+
+- accion `Nuevo evento interno`;
+- formulario de creacion con campos existentes del modelo;
+- edicion de eventos internos existentes;
+- reagendamiento limitado a fecha/hora y estado;
+- cancelacion como cambio de estado a `cancelado`, sin borrado fisico;
+- marcado de eventos como `completado`.
+
+### Decisiones UI
+
+La edicion opera solo sobre `agenda_eventos`. No se editan directamente pacientes, consultas, solicitudes, evaluaciones, casos, revisiones, trabajos, pagos, fotos ni Storage.
+
+Los estados disponibles son los definidos por el modelo: `programado`, `confirmado`, `reagendado`, `cancelado`, `completado` y `no_asistio`.
+
+La ruta `/agenda` sigue protegida para `admin` y `terapeuta`. Finanzas no tiene acceso visual ni funcional a Agenda.
+
+### Restricciones
+
+No se implementa API publica, endpoints, Google Calendar, Gmail, Workspace, conversion automatica a pacientes/consultas, migraciones, Auth/RLS, Supabase remoto, credenciales, datos reales ni produccion.
+
+Informe relacionado: `auditorias/UI-025B_EDICION_CONTROLADA_AGENDA_OPERATIVA.md`
 
 ## CTRL-008 - Decisiones UI derivadas post auditoria
 
