@@ -49,7 +49,7 @@ Este documento registra decisiones estables. No reemplaza la conversacion, pero 
 | DEC-031 | Carga real requiere aprobacion explicita y checklist. | Pregunta abierta bloqueante | 2026-06-29 |
 | DEC-032 | Auth productivo por invitacion/provisioning y MFA por rol. | Propuesta pendiente aprobacion | 2026-06-29 |
 | DEC-033 | API segura como frontera entre pagina publica, sistema interno y servicios Google. | Propuesta arquitectonica / pendiente implementacion | 2026-06-30 |
-| DEC-034 | Agenda operativa separada de consulta clinica confirmada. | Propuesta arquitectonica / pendiente implementacion | 2026-07-01 |
+| DEC-034 | Agenda operativa separada de consulta clinica confirmada. | Arquitectura aprobada / DB inicial implementada local | 2026-07-01 |
 
 ## DEC-001 - Repositorio oficial del proyecto
 
@@ -896,7 +896,7 @@ Esta decision no modifica configuracion tecnica. El diseno queda registrado en `
 
 ## DEC-033 - API segura como frontera entre pagina publica, sistema interno y servicios Google
 
-**Estado:** Propuesta arquitectonica / pendiente implementacion
+**Estado:** Arquitectura aprobada / DB inicial implementada local
 **Origen:** API-001 / PROD-001 / BE-012 / BE-017 / BE-020 / SEC-005
 **Fecha:** 2026-06-30
 
@@ -985,15 +985,19 @@ Agenda debe separar tres conceptos:
 
 ### Queda pendiente
 
-- Crear migraciones futuras para `solicitudes_agenda`, `agenda_eventos` y `vista_agenda_operativa`.
+- Validar runtime local de `solicitudes_agenda`, `agenda_eventos` y `vista_agenda_operativa`.
 - Definir UI de Agenda tipificada.
 - Definir contrato real `BE-026`.
 - Definir consentimiento, auditoria, ambientes, seguridad API e integracion Google.
 
 ### Impacto
 
-BE-012 y BE-017 quedan documentados como diseno arquitectonico. La implementacion tecnica debe quedar para tarea posterior y no debe habilitar produccion mientras PROD-001 siga abierto.
+BE-012 y BE-017 quedan documentados como diseno arquitectonico. BE-028 aplica la primera implementacion DB versionada para Agenda Operativa.
+
+La implementacion DB no habilita API publica, Google Calendar/Gmail, uso con datos reales ni produccion mientras PROD-001 siga abierto.
 
 ### Observaciones
 
 Informe relacionado: `docs/control/auditorias/BE-012_BE-017_DISENO_AGENDA_OPERATIVA.md`.
+
+Implementacion relacionada: `docs/control/auditorias/BE-028_IMPLEMENTACION_MODELO_DB_AGENDA_OPERATIVA.md`.

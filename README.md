@@ -695,9 +695,11 @@ La pagina publica no debe escribir directamente en tablas clinicas, financieras 
 
 Agenda queda definida documentalmente como un flujo separado de la consulta clinica confirmada.
 
-La arquitectura futura distingue `solicitudes_agenda` para solicitudes iniciales, `agenda_eventos` para eventos internos tipificados y `consultas` para atenciones o contactos confirmados con paciente real.
+La arquitectura distingue `solicitudes_agenda` para solicitudes iniciales, `agenda_eventos` para eventos internos tipificados y `consultas` para atenciones o contactos confirmados con paciente real.
 
-Agenda no esta implementada todavia. No existe tabla real de agenda, API publica operativa, integracion Google Calendar/Gmail ni produccion habilitada.
+BE-028 deja implementado el modelo DB inicial versionado para Agenda operativa en `supabase/migrations/20260701040000_crear_modelo_agenda_operativa.sql`.
+
+Agenda todavia no tiene UI funcional conectada, API publica operativa, integracion Google Calendar/Gmail ni produccion habilitada.
 
 Antes de conectar una pagina publica real se debe cerrar Agenda operativa, consentimiento, ambientes, auditoria sensible, seguridad API y PROD-001.
 
