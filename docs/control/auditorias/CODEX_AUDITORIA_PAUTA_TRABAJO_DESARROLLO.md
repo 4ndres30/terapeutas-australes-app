@@ -2,22 +2,17 @@
 
 ## 1. Resumen ejecutivo
 
-La pauta general del proyecto es adecuada y ha evitado decisiones peligrosas: el sistema sigue separado entre flujo clinico, agenda, finanzas, seguridad, documentacion y futuras integraciones externas.
+La pauta general del proyecto sigue siendo adecuada para un sistema clinico/terapeutico interno con datos sensibles. El orden `documentar -> auditar -> decidir -> disenar -> implementar -> validar -> revisar -> corregir -> integrar -> registrar` ha evitado mezclar agenda, consulta clinica, paciente, API publica, Google y produccion.
 
-El orden `documentar -> auditar -> decidir -> disenar -> implementar -> validar -> revisar -> corregir -> integrar -> registrar` es correcto para un sistema clinico/terapeutico con datos sensibles, pero ya muestra riesgo de sobredocumentacion y duplicacion entre documentos maestros, bitacora e informes puntuales.
+El estado observado ya cambio respecto de la primera version de esta auditoria: PR #45 fue fusionado a `main`. Por lo tanto, Agenda interna ya cuenta con lectura, alta y edicion controlada integrada en la rama estable.
 
-El avance reciente esta razonablemente ordenado:
-
-- PR #39 a PR #44 estan integrados en `main`.
-- PR #45 esta abierto, no draft y mergeable al momento de esta auditoria.
-- `PROD-001` sigue correctamente bloqueante.
-- Google Cloud, Gmail, Calendar y API publica siguen definidos como futuros, no implementados.
+PR #45 ya esta integrado. La prioridad inmediata pasa a ser preparar y ejecutar una validacion funcional completa de Agenda interna mediante `QA-008`. Esa validacion debe confirmar el flujo real de crear, editar, cancelar, reagendar y completar eventos, sin crear efectos colaterales clinicos ni avanzar a API publica o Google.
 
 Veredicto de pauta: **Pauta aprobada con ajustes menores.**
 
 ## 2. Finalidad del proyecto entendida por Codex
 
-El proyecto no es una agenda ni una ficha simple de pacientes. Es una plataforma interna para ordenar el proceso clinico/terapeutico completo:
+El proyecto no es solamente una agenda ni una ficha simple de pacientes. Es una plataforma interna para ordenar el proceso clinico/terapeutico completo:
 
 - paciente;
 - consulta;
@@ -40,14 +35,11 @@ La finalidad real exige trazabilidad, separacion conceptual, control de permisos
 Estado local/GitHub revisado:
 
 - `main` actualizado y limpio.
-- Historial reciente de `main` incluye:
-  - PR #39: `API-001` integrado.
-  - PR #40: `BE-012 / BE-017` integrado.
-  - PR #41: `BE-028` integrado.
-  - PR #42: `BE-029` integrado.
-  - PR #43: estrategia Google Cloud integrada.
-  - PR #44: UI-025A integrada.
-- PR #45: abierto, no draft, `MERGEABLE`, rama `ui-025b-agenda-operativa-edicion-controlada`.
+- PR #43: estrategia Google Cloud integrada en `main`.
+- PR #44: UI-025A integrada en `main`.
+- PR #45: UI-025B fusionado a `main`.
+- PR #46: abierto, no draft, apuntando a `main` desde `ctrl-auditoria-pauta-trabajo`.
+- `PROD-001` sigue correctamente bloqueante.
 
 Estado tecnico observado:
 
@@ -55,7 +47,7 @@ Estado tecnico observado:
 - No hay API publica real ni backend propio operativo.
 - No hay integracion funcional con Google Calendar, Gmail, Workspace o Google Cloud.
 - Agenda DB existe como `solicitudes_agenda`, `agenda_eventos` y `vista_agenda_operativa`.
-- UI-025A esta en `main`; UI-025B esta en revision por PR #45.
+- Agenda interna ya permite lectura desde la vista operativa y gestion manual minima de `agenda_eventos`.
 
 ## 4. Evaluacion de la pauta de trabajo
 
@@ -77,7 +69,7 @@ Lo sobredimensionado:
 
 Lo que falta:
 
-- Una regla explicita de "documentacion minima suficiente" por tipo de tarea.
+- Una regla explicita de documentacion minima suficiente por tipo de tarea.
 - Una matriz corta que diga que documentos se actualizan obligatoriamente para cada tipo de cambio.
 - Un cierre periodico de pendientes obsoletos o absorbidos por tareas posteriores.
 
@@ -94,36 +86,23 @@ El riesgo no es la separacion, sino convertirla en burocracia. La separacion deb
 
 Ajuste recomendado: mantener los focos, pero clasificar tareas en tres niveles:
 
-- Nivel 1: ajuste visual o microcopy, con nota breve y validaciones.
-- Nivel 2: cambio funcional interno, con informe puntual y bitacora.
-- Nivel 3: cambio de arquitectura, seguridad, datos, RLS, API o produccion, con decision formal, informe completo y validacion ampliada.
+- Nivel 1: ajuste visual, microcopy, CSS o texto.
+- Nivel 2: cambio funcional interno acotado.
+- Nivel 3: cambio de arquitectura, seguridad, datos, RLS, API, Google o produccion.
 
 ## 6. Evaluacion de arquitectura tecnica
 
-Mantener Supabase/PostgreSQL como base actual tiene sentido. El proyecto ya depende de:
+Mantener Supabase/PostgreSQL como base actual tiene sentido. El proyecto ya depende de esquema relacional, RLS, Auth, vistas, migraciones versionadas y validacion local/demo.
 
-- esquema relacional;
-- RLS;
-- Auth;
-- vistas;
-- migraciones versionadas;
-- validacion local/demo.
+Mover la base, Auth o modelo a Google Cloud ahora seria prematuro y agregaria complejidad sin resolver los bloqueos reales: consentimiento, auditoria, ambientes, hardening, backup, QA y `PROD-001`.
 
-Mover la base, Auth o modelo a Google Cloud ahora seria prematuro y agregaria complejidad sin resolver los bloqueos reales: consentimiento, auditoria, ambientes, hardening, backup, QA y PROD-001.
-
-Google Cloud como plataforma futura tambien es coherente, especialmente para:
-
-- API segura;
-- integracion Google Workspace;
-- workers o automatizaciones;
-- despliegue por ambientes;
-- manejo de secretos.
+Google Cloud como plataforma futura tambien es coherente para API segura, integracion Google Workspace, workers o automatizaciones, despliegue por ambientes y manejo de secretos.
 
 La decision correcta es mantener Google Cloud como futuro y no tratarlo como backend actual.
 
-La decision de no integrar Gmail/Calendar antes de estabilizar Agenda interna es correcta. Calendar/Gmail agregan riesgos de privacidad, duplicacion, secretos, reintentos, eventos neutros, correos erroneos y sincronizacion parcial. Sin Agenda interna estable y auditada, esa integracion seria fragil.
+La decision de no integrar Gmail/Calendar antes de estabilizar Agenda interna es correcta. Calendar/Gmail agregan riesgos de privacidad, duplicacion, secretos, reintentos, eventos neutros, correos erroneos y sincronizacion parcial.
 
-La decision de no crear API publica antes de cerrar Agenda interna tambien es correcta. La API debe operar sobre un modelo aprobado, no inventar entidades ni escribir en `consultas` por conveniencia.
+La decision de no crear API publica antes de validar Agenda interna tambien es correcta. La API debe operar sobre un modelo aprobado, no inventar entidades ni escribir en `consultas` por conveniencia.
 
 ## 7. Evaluacion del flujo clinico-operativo
 
@@ -143,7 +122,7 @@ Tension conceptual relevante:
 
 Riesgo futuro:
 
-- Si UI-025B se usa para crear eventos vinculados a consultas sin una politica clara, puede reaparecer duplicacion entre evento de agenda y consulta clinica. No es un problema bloqueante hoy, pero debe ser cubierto por QA funcional y auditoria de cambios.
+- Si Agenda se usa para vincular eventos a consultas sin una politica clara, puede reaparecer duplicacion entre evento de agenda y consulta clinica. No es bloqueante hoy, pero debe cubrirse en `QA-008`.
 
 ## 8. Evaluacion de seguridad y produccion
 
@@ -184,40 +163,30 @@ Antes de Google Calendar/Gmail deben resolverse:
 
 La estrategia UI-025A -> UI-025B fue correcta.
 
-Primero leer antes de escribir fue una decision prudente porque permitio validar:
+Primero leer antes de escribir fue prudente porque permitio validar la vista `vista_agenda_operativa`, la separacion visual entre solicitudes/eventos/consultas, los estados reales del modelo y las restricciones de rol antes de editar datos.
 
-- que la vista `vista_agenda_operativa` funciona como superficie segura;
-- que el usuario entiende separacion entre solicitudes, eventos y consultas;
-- que los estados reales del modelo aparecen en UI;
-- que las restricciones visuales y de rol se sostienen antes de editar datos.
+Con PR #45 integrado, UI-025B ya permite gestion manual minima de `agenda_eventos`: crear evento interno, editar, cambiar estado, cancelar sin delete fisico, reagendar y marcar como completado.
 
-UI-025B es una evolucion razonable, siempre que se integre despues de revisar:
-
-- responsive del modal y formularios;
-- errores de RLS sin exponer detalles tecnicos;
-- que no exista delete fisico;
-- que no cree pacientes/consultas/solicitudes;
-- que `notas_internas` no se use como deposito de informacion clinica sensible;
-- que cambios de estado queden cubiertos por una futura auditoria.
+Esto no habilita produccion ni uso real. Tampoco habilita API publica, Google Calendar, Gmail, creacion automatica de pacientes o conversion automatica de solicitudes en consultas.
 
 Riesgos tecnicos del modelo actual:
 
 - No hay historial detallado de cambios de agenda; solo `updated_at`/`updated_by`.
-- No hay auditoria para cancelacion, reagendamiento, conversion o sincronizacion futura.
+- No hay auditoria especifica para cancelacion, reagendamiento, conversion o sincronizacion futura.
 - La vista operativa expone datos personales operativos a roles clinicos; esto es razonable para demo/local, pero no para datos reales sin `PROD-001` cerrado.
-- Solicitudes sin evento vinculado no aparecen en la vista basada en `agenda_eventos`; puede ser correcto como decision v1, pero debe estar claro para operacion.
+- Solicitudes sin evento vinculado pueden quedar fuera de la vista basada en `agenda_eventos`; debe validarse en QA si esto coincide con la operacion esperada.
 - El modelo prepara campos Google, pero no debe interpretarse como integracion implementada.
 
-Conviene pulir y validar Agenda interna antes de API publica.
+Conviene ejecutar `QA-008` antes de API publica, Google o nuevos cambios funcionales de Agenda.
 
 ## 10. Riesgos detectados
 
 Riesgos si se sigue igual sin ajustes:
 
 - Sobredocumentacion y fatiga de mantenimiento.
-- Estados de documentos maestros quedando atras respecto de PRs abiertos o recien integrados.
+- Estados de documentos maestros quedando atras respecto de PRs recien integrados.
 - Repeticion de restricciones en demasiados informes, con riesgo de inconsistencias menores.
-- Implementar API o Google antes de cerrar auditoria, consentimiento y ambientes.
+- Implementar API o Google antes de cerrar QA funcional, consentimiento y ambientes.
 - Usar Agenda interna como sustituto de un flujo clinico completo.
 
 Riesgos si se cambia demasiado rapido:
@@ -235,16 +204,16 @@ No se detecta contradiccion mayor que invalide la pauta.
 Tensiones menores:
 
 1. `README.md` aun usa una frase amplia sobre `consultas` y "agendamientos". Conviene matizarla en una tarea futura para evitar conflicto con DEC-034.
-2. La documentacion de `main` no incluye UI-025B porque PR #45 esta abierto. Esto es correcto, pero al revisar el proyecto completo debe distinguirse `main` de PR abierto.
+2. La documentacion debe distinguir mejor entre "estado integrado en main" y "pauta o QA pendiente de ejecutar".
 3. API-001 lista una secuencia amplia de dependencias; es correcta, pero puede ser dificil decidir el siguiente paso operativo sin una priorizacion mas corta.
-4. La bitacora es util, pero esta creciendo como repeticion de informes. Debe mantenerse, pero con entradas mas sinteticas.
+4. La bitacora es util, pero esta creciendo como repeticion de informes. Debe mantenerse con entradas mas sinteticas.
 
 ## 12. Ajustes recomendados a la pauta de trabajo
 
-1. Definir niveles de documentacion:
-   - menor: cambios visuales, microcopy, fixes CSS;
-   - medio: funcionalidad interna acotada;
-   - mayor: DB, RLS, Auth, API, datos reales, Google, produccion.
+1. Aplicar niveles de documentacion:
+   - Nivel 1: cambios visuales, microcopy, fixes CSS o texto.
+   - Nivel 2: funcionalidad interna acotada.
+   - Nivel 3: DB, RLS, Auth, API, datos reales, Google o produccion.
 
 2. Definir una matriz de sincronizacion documental:
    - que archivos maestros se tocan por tipo de tarea;
@@ -259,32 +228,33 @@ Tensiones menores:
 
 ## 13. Optimizaciones sugeridas
 
-- Crear una tabla breve de "bloqueos transversales vigentes" referenciada desde informes, en vez de repetirla completa.
+- Crear una tabla breve de bloqueos transversales vigentes referenciada desde informes, en vez de repetirla completa.
 - Consolidar duplicidades entre bitacora, pendientes e informes cuando una tarea ya esta cerrada.
 - Mantener informes largos solo para arquitectura, seguridad, migraciones y flujo clinico.
 - Usar checklists mas cortos para fixes visuales.
-- Crear un "mapa de flujo operativo" actualizado despues de UI-025B y antes de BE-026.
+- Crear un mapa de flujo operativo actualizado despues de `QA-008` y antes de `BE-026`.
 - Priorizar QA funcional de Agenda interna sobre nuevas capas externas.
 
 ## 14. Proximos pasos recomendados
 
-Recomendacion principal despues de cerrar PR #45: **Opcion B - QA funcional completo de Agenda interna.**
+Recomendacion principal: **preparar y ejecutar QA-008 - Validacion funcional completa de Agenda interna**.
 
 Justificacion:
 
-- UI-025B cambia Agenda desde lectura a escritura interna.
+- UI-025B ya esta integrada en `main`.
+- Agenda paso de lectura a escritura interna controlada.
 - Antes de API publica o Google, hay que validar el flujo real de crear, editar, cancelar, reagendar y completar.
 - Debe probarse por rol: admin, terapeuta, finanzas y anonimo.
 - Deben verificarse errores RLS, estados invalidos, rangos de fecha, responsive y ausencia de efectos colaterales sobre pacientes/consultas.
 
 Secuencia recomendada:
 
-1. Cerrar PR #45 solo si pasa revision visual/funcional.
-2. Ejecutar QA funcional completo de Agenda interna.
-3. Aplicar pulidos UI/UX derivados del QA si aparecen.
-4. Reforzar seguridad/auditoria (`SEC-005`, `BE-021`) antes de API publica.
-5. Avanzar a `BE-026` solo despues de que Agenda interna este estable.
-6. Dejar `BE-027` para despues de API, seguridad, consentimiento, ambientes y auditoria.
+1. Actualizar y cerrar PR #46, o reemplazarlo por un PR nuevo si la rama quedo incomoda.
+2. Crear `QA-008` como pauta de validacion funcional completa de Agenda interna.
+3. Ejecutar `QA-008` en una tarea posterior sobre `main` actualizado.
+4. Corregir hallazgos de `QA-008` si aparecen.
+5. Recien despues evaluar `BE-026` API publica.
+6. Mantener `BE-027` Google Calendar/Gmail en espera.
 
 No recomiendo avanzar directamente a `BE-027`.
 
@@ -292,14 +262,16 @@ Tampoco recomiendo produccion, datos reales ni Google Calendar/Gmail en esta eta
 
 ## 15. Conclusion final
 
-La pauta de trabajo esta alineada con la finalidad real del proyecto. El proyecto ha avanzado con una arquitectura prudente: primero flujo clinico, luego separacion de agenda, despues modelo DB, validacion local, UI lectura y finalmente edicion interna controlada.
+La pauta de trabajo esta alineada con la finalidad real del proyecto. El proyecto ha avanzado con una arquitectura prudente: primero flujo clinico, luego separacion de agenda, despues modelo DB, validacion local, UI lectura y edicion interna controlada.
+
+El cambio clave es que PR #45 ya fue integrado. Por eso el foco inmediato no es cerrar esa rama, sino validar funcionalmente Agenda interna mediante `QA-008` antes de abrir nuevas capas.
 
 La decision de mantener Supabase/PostgreSQL como base actual y Google Cloud como futuro es tecnicamente sana. La decision de no implementar API publica ni Google Calendar/Gmail antes de estabilizar Agenda interna tambien es correcta.
 
-El principal ajuste no es tecnico sino operativo: reducir repeticion documental, formalizar niveles de documentacion y priorizar QA funcional antes de nuevas capas.
+El principal ajuste no es tecnico sino operativo: reducir repeticion documental, formalizar niveles de documentacion y priorizar QA funcional antes de API publica o integraciones Google.
 
 ## 16. Veredicto
 
 **Pauta aprobada con ajustes menores.**
 
-La pauta es recomendable y debe mantenerse, pero con optimizaciones para evitar sobredocumentacion, mejorar priorizacion y cerrar QA/seguridad antes de API publica o integraciones Google.
+La pauta es recomendable y debe mantenerse, pero con optimizaciones para evitar sobredocumentacion, mejorar priorizacion y cerrar `QA-008` antes de API publica o integraciones Google.

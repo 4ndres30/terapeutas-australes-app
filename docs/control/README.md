@@ -33,6 +33,7 @@ Este directorio es el sistema liviano de control del proyecto. Su objetivo es qu
 | `06_BITACORA_CAMBIOS.md` | Historial breve de cambios de control del proyecto. |
 | `07_ESTRATEGIA_GOOGLE_CLOUD.md` | Estrategia progresiva Google Cloud como plataforma futura. |
 | `08_SINCRONIZACION_MAESTROS_GOOGLE_CLOUD.md` | Sincronizacion documental maestra de la estrategia Google Cloud. |
+| `09_NIVELES_DOCUMENTACION.md` | Regla de documentacion minima suficiente por nivel de riesgo. |
 
 ## Chats del proyecto
 

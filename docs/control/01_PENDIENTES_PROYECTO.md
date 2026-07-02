@@ -1,7 +1,7 @@
 # Pendientes del proyecto
 
 Fecha de apertura: `2026-06-11`
-Ultima actualizacion: `2026-07-01`
+Ultima actualizacion: `2026-07-02`
 Responsable del documento: Control de desarrollo
 
 Este documento es la lista maestra de pendientes. Cada pendiente debe tener un codigo, un responsable y un estado permitido. Los detalles tecnicos o clinicos pueden vivir en los documentos especializados, pero este archivo debe permitir ver rapidamente que falta.
@@ -33,6 +33,7 @@ Este documento es la lista maestra de pendientes. Cada pendiente debe tener un c
 | QA-005 | Validacion funcional local UI-016 / Reportes por rol. | Integrada | Alta | Control de desarrollo |
 | QA-006 | Base minima de pruebas por rol y no exposicion sensible. | Pendiente | Alta | Control de desarrollo / QA |
 | QA-007 | Checklist pre-migracion cloud. | Checklist documental / pendiente ejecucion futura | Alta | Control de desarrollo / QA |
+| QA-008 | Validacion funcional completa de Agenda interna. | Pauta creada / pendiente ejecucion | Alta | Control de Desarrollo / QA / UI-UX / Integracion Backend |
 | API-001 | Disenar API publica segura e integracion Google Workspace. | Diseno documental / pendiente implementacion | Alta | Control de desarrollo / Integracion Backend |
 | DEC-035 | Migracion progresiva a plataforma Google Cloud. | Propuesta documental / pendiente validacion Javier | Alta | Control de desarrollo |
 | BE-001 | Inventariar estructura backend y Supabase local. | Integrada | Alta | Integracion Backend/Estructura |
@@ -92,7 +93,7 @@ Este documento es la lista maestra de pendientes. Cada pendiente debe tener un c
 | UI-023 | Navegacion y superficies filtradas por rol. | Pendiente | Alta | UI / UX |
 | UI-024 | Recuperacion de cuenta, MFA y estados Auth no tecnicos. | Pendiente | Alta | UI / UX / Integracion Backend |
 | UI-025 | Integrar AgendaPage con modelo DB de Agenda operativa. | Integrada lectura por PR #44 | Alta | UI / UX / Integracion Backend |
-| UI-025B | Alta y edicion controlada de Agenda operativa interna. | Integrada / pendiente revision | Alta | UI / UX / Integracion Backend |
+| UI-025B | Alta y edicion controlada de Agenda operativa interna. | Integrada por PR #45 / pendiente QA-008 | Alta | UI / UX / Integracion Backend |
 | DOC-001 | Manual de ambientes. | Pendiente | Alta | Control de desarrollo |
 | DOC-002 | Procedimiento de backup/restauracion. | Pendiente | Alta | Control de desarrollo / Integracion Backend |
 | DOC-003 | Politica de carga de datos reales. | Pendiente | Alta | Control de desarrollo |
@@ -1439,7 +1440,7 @@ UI-025 no reemplaza BE-026 ni BE-027. La pagina publica futura debe seguir pasan
 
 ### UI-025B - Alta y edicion controlada de Agenda operativa interna
 
-**Estado:** Integrada / pendiente revision
+**Estado:** Integrada por PR #45 / pendiente QA-008
 **Prioridad:** Alta
 **Responsable:** UI / UX / Integracion Backend
 **Origen:** UI-025 / BE-028 / BE-029 / DEC-034
@@ -1468,7 +1469,38 @@ La ruta `/agenda` sigue protegida para `admin` y `terapeuta`. Finanzas, anonimos
 UI-025B no crea pacientes, consultas, solicitudes de agenda, evaluaciones, casos, revisiones, trabajos, pagos ni fotos. Tampoco implementa API publica, endpoints, Google Calendar, Gmail, Workspace, migraciones SQL, Auth/RLS, `.env`, Supabase remoto, produccion ni datos reales.
 
 #### Observaciones
-UI-025B no reemplaza BE-026 ni BE-027. La pagina publica futura debe seguir pasando por API segura y la integracion Google debe implementarse solo desde backend controlado. Sigue pendiente definir auditoria sensible completa para cambios de agenda antes de uso real.
+UI-025B no reemplaza BE-026 ni BE-027. La pagina publica futura debe seguir pasando por API segura y la integracion Google debe implementarse solo desde backend controlado. La validacion funcional completa queda registrada como `QA-008` y debe ejecutarse antes de evaluar API publica.
+
+### QA-008 - Validacion funcional completa de Agenda interna
+
+**Estado:** Pauta creada / pendiente ejecucion
+**Prioridad:** Alta
+**Responsable:** Control de Desarrollo / QA / UI-UX / Integracion Backend
+**Origen:** PR #45 / UI-025B / BE-028 / BE-029
+**Fecha creacion:** 2026-07-02
+**Rama sugerida:** `qa-008-validacion-agenda-interna`
+**Informe:** `docs/control/auditorias/QA-008_VALIDACION_FUNCIONAL_AGENDA_INTERNA.md`
+**Dependencias:** PR #45 integrado, UI-025B, BE-028, BE-029, PROD-001
+**Nivel documental:** Nivel 2
+
+#### Descripcion
+Ejecutar en una tarea posterior la validacion funcional completa de Agenda interna ya integrada en `main`.
+
+#### Alcance esperado
+- Visualizacion desde `public.vista_agenda_operativa`.
+- Busqueda y filtros.
+- Creacion, edicion, cambio de estado, cancelacion, reagendamiento y marcado como completado de eventos internos.
+- Persistencia despues de recargar.
+- Errores controlados.
+- Responsive del formulario/modal.
+- Proteccion por rol.
+- Ausencia de efectos colaterales clinicos.
+
+#### Restricciones
+QA-008 no debe crear pacientes, consultas, solicitudes publicas, evaluaciones, casos, revisiones, trabajos, cobros, pagos, fotos ni objetos Storage. Tampoco debe ejecutar API publica, Google Calendar, Gmail, migraciones, Supabase remoto, produccion ni datos reales.
+
+#### Resultado
+Pendiente de ejecucion.
 
 ### QA-003 - Validacion funcional local de fotos de elementos del caso
 

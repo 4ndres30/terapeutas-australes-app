@@ -381,7 +381,7 @@ Informe relacionado: `auditorias/UI-025_INTEGRACION_AGENDA_OPERATIVA.md`
 
 ## UI-025B - Edicion controlada Agenda Operativa
 
-**Estado:** Integrada / pendiente revision
+**Estado:** Integrada por PR #45 / pendiente QA-008
 **Prioridad:** Alta
 **Responsable:** UI / UX / Integracion Backend
 **Origen:** UI-025 / BE-028 / BE-029 / DEC-034
@@ -390,7 +390,7 @@ Informe relacionado: `auditorias/UI-025_INTEGRACION_AGENDA_OPERATIVA.md`
 
 ### Resultado integrado
 
-`AgendaPage` permite gestion manual minima de `agenda_eventos` desde la agenda interna protegida.
+`AgendaPage` permite gestion manual minima de `agenda_eventos` desde la agenda interna protegida. UI-025B ya fue integrada mediante PR #45.
 
 La pantalla habilita:
 
@@ -414,6 +414,8 @@ La ruta `/agenda` sigue protegida para `admin` y `terapeuta`. Finanzas no tiene 
 No se implementa API publica, endpoints, Google Calendar, Gmail, Workspace, conversion automatica a pacientes/consultas, migraciones, Auth/RLS, Supabase remoto, credenciales, datos reales ni produccion.
 
 Informe relacionado: `auditorias/UI-025B_EDICION_CONTROLADA_AGENDA_OPERATIVA.md`
+
+Pendiente relacionado: `QA-008` debe validar la experiencia funcional completa de Agenda interna antes de evaluar API publica o integraciones Google.
 
 ## CTRL-008 - Decisiones UI derivadas post auditoria
 
