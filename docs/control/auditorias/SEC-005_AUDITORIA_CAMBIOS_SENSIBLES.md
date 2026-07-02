@@ -124,7 +124,7 @@ Criterios futuros:
 
 ## Relacion con anulacion
 
-BE-021 debe definir politica transversal de anulacion vs eliminacion.
+BE-021 define la politica documental transversal de anulacion vs eliminacion, pendiente implementacion futura.
 
 SEC-005 exige que anulaciones de datos clinicos, financieros, agenda, fotos y consentimientos queden auditadas con motivo, actor, fecha y entidad afectada.
 
@@ -162,11 +162,11 @@ SEC-005 exige trazabilidad para aceptacion, rechazo, revocacion, reemplazo y cam
 
 - Falta disenar tabla, indices, RLS y triggers futuros.
 - Falta definir retencion exacta.
-- Falta validar politica de anulacion BE-021.
+- Falta implementar politica de anulacion BE-021.
 - Falta definir visualizacion UI de auditoria.
 - Falta probar auditoria runtime.
 - PROD-001 sigue bloqueante.
 
 ## Recomendacion
 
-El siguiente paso recomendado es `BE-021 - Politica de anulacion vs eliminacion`, porque la auditoria necesita reglas claras sobre correccion, anulacion logica y delete fisico excepcional antes de una implementacion real.
+El siguiente bloque recomendado es `BE-018 / DOC-001 / DOC-003`, porque la implementacion tecnica de auditoria y anulacion requiere ambientes separados y politica de carga de datos reales.

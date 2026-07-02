@@ -515,6 +515,30 @@ SEC-005 no crea tablas, indices, triggers, policies, codigo, endpoints, SQL, `.e
 
 Informe relacionado: `docs/control/auditorias/SEC-005_AUDITORIA_CAMBIOS_SENSIBLES.md`
 
+## BE-021 - Politica de anulacion vs eliminacion
+
+**Estado:** Diseno documental / pendiente implementacion futura
+**Origen:** PROD-001 / SEC-001 / SEC-002 / SEC-004 / SEC-005
+**Fecha:** 2026-07-02
+
+BE-021 define la politica funcional para correccion, anulacion logica y eliminacion fisica excepcional.
+
+### Reglas definidas
+
+- No delete fisico operativo para datos clinicos, financieros, fotos, consentimientos, auditoria ni usuarios internos en produccion.
+- Anulacion logica como mecanismo normal para invalidar registros.
+- Correccion trazable cuando afecta datos sensibles.
+- Eliminacion fisica solo excepcional, autorizada, auditada y fuera de UI normal.
+- Cobros y pagos deben operar con anulacion logica.
+- Fotos y archivos requieren retencion, auditoria y manejo de objetos huerfanos antes de uso real.
+- SEC-005 debe auditar anulaciones, correcciones y eliminaciones excepcionales.
+
+### Restricciones
+
+BE-021 no crea columnas, estados, tablas, triggers, policies, migraciones, SQL, codigo, `.env`, Supabase remoto ni produccion.
+
+Informe relacionado: `docs/control/auditorias/BE-021_POLITICA_ANULACION_ELIMINACION.md`
+
 ## BE-001 - Inventariar estructura backend y Supabase local
 
 **Estado:** Integrada

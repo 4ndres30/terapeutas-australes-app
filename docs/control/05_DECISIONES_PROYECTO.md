@@ -675,7 +675,7 @@ Informe relacionado: `docs/control/auditorias/CTRL-008_DECISIONES_CRITICAS_POST_
 
 ## DEC-026 - Produccion debe usar anulacion logica, no delete fisico operativo
 
-**Estado:** Propuesta bloqueante
+**Estado:** Diseno documental / pendiente implementacion futura
 **Origen:** CTRL-008 / SEC-001 / SEC-002 / SEC-004
 **Fecha:** 2026-06-29
 
@@ -691,9 +691,11 @@ No existe politica transversal de anulacion logica. Hay grants amplios con `dele
 
 ### Impacto
 
-- BE-021 pasa a ser bloqueante para datos reales.
-- SEC-005 debe registrar auditoria de anulaciones y cambios sensibles.
+- BE-021 queda documentado como politica transversal pendiente implementacion real.
+- SEC-005 define el modelo documental para registrar auditoria de anulaciones y cambios sensibles.
 - PROD-001 sigue bloqueante.
+
+Politica relacionada: `docs/control/auditorias/BE-021_POLITICA_ANULACION_ELIMINACION.md`.
 
 ### Observaciones
 
@@ -964,6 +966,8 @@ Consentimiento relacionado: `docs/control/auditorias/BE-020_CONSENTIMIENTO_TRATA
 
 Auditoria relacionada: `docs/control/auditorias/SEC-005_AUDITORIA_CAMBIOS_SENSIBLES.md`.
 
+Anulacion relacionada: `docs/control/auditorias/BE-021_POLITICA_ANULACION_ELIMINACION.md`.
+
 ## DEC-034 - Agenda operativa separada de consulta clinica confirmada
 
 **Estado:** Arquitectura aprobada / DB validada localmente
@@ -1023,6 +1027,8 @@ Flujo relacionado: `docs/control/auditorias/DOC-004_FLUJO_PAGINA_PUBLICA_API_SIS
 Consentimiento relacionado: `docs/control/auditorias/BE-020_CONSENTIMIENTO_TRATAMIENTO_DATOS.md`.
 
 Auditoria relacionada: `docs/control/auditorias/SEC-005_AUDITORIA_CAMBIOS_SENSIBLES.md`.
+
+Anulacion relacionada: `docs/control/auditorias/BE-021_POLITICA_ANULACION_ELIMINACION.md`.
 
 ## DEC-035 - Migracion progresiva a plataforma Google Cloud
 
