@@ -10,7 +10,7 @@ El proyecto cuenta con una estructura documental de control en `docs/control/`. 
 
 Al corte actual ya quedaron integradas las auditorias iniciales de control, backend, flujo clinico y UI/UX. Tambien quedaron registrados BE-003, BE-010, UI-011, IMP-001, DATA-001, BE-011, QA-002, SEC-001, BE-016, QA-004, UI-016, API-001, el diseno BE-012/BE-017 de Agenda Operativa, la implementacion DB inicial BE-028, la validacion runtime local BE-029 y la integracion interna UI-025/UI-025B de Agenda, junto con las decisiones clinicas/operativas y arquitectonicas clave que permiten avanzar sin romper el flujo definido.
 
-PR #45 ya esta integrado en `main`: Agenda interna cuenta con lectura, alta y edicion controlada de `agenda_eventos`. PR #48 tambien quedo integrado: el modal suma selector calendario/horario, duracion controlada, fin calculado y validacion basica de solapamiento. PR #49 y PR #50 quedaron integrados en `main`: QA-008 queda cerrada como validacion funcional local/demo de Agenda interna, con validacion visual autenticada admin y correccion responsive movil UI-027 mediante menu superior y drawer lateral. API publica, Google Calendar/Gmail y produccion siguen en espera.
+PR #45 ya esta integrado en `main`: Agenda interna cuenta con lectura, alta y edicion controlada de `agenda_eventos`. PR #48 tambien quedo integrado: el modal suma selector calendario/horario, duracion controlada, fin calculado y validacion basica de solapamiento. PR #49 y PR #50 quedaron integrados en `main`: QA-008 queda cerrada como validacion funcional local/demo de Agenda interna, con validacion visual autenticada admin y correccion responsive movil UI-027 mediante menu superior y drawer lateral. BE-026 define el contrato documental de la futura API publica de agendamiento sobre `solicitudes_agenda`, sin endpoints reales. API publica funcional, Google Calendar/Gmail y produccion siguen en espera.
 
 UI-026 incorpora selector de fecha, selector de hora, duracion controlada, fin calculado y validacion basica de solapamiento con buffer operativo de 15 minutos para consultas. El cambio se mantiene en UI interna; no modifica DB, RLS, API publica ni Google. UI-027 quedo integrado en `main` y ajusta el shell responsive para que Agenda no presente overflow horizontal en mobile y la navegacion se despliegue desde el costado izquierdo.
 
@@ -74,7 +74,7 @@ El proyecto se mantiene alineado con el metodo acordado: primero documentar, aud
 
 API-001 registra la necesidad arquitectonica futura de una API segura entre la pagina publica de Terapeutas Australes, el sistema interno, Supabase y Google Calendar/Gmail/Workspace.
 
-La API no esta implementada y no habilita produccion, datos reales, fotos reales ni pagos reales.
+La API no esta implementada y no habilita produccion, datos reales, fotos reales ni pagos reales. BE-026 define solo el contrato documental futuro bajo `/api/v1`, usando `solicitudes_agenda` como destino conceptual.
 
 La pagina publica no debe escribir directamente en tablas clinicas, financieras ni internas. Tampoco debe consultar agenda interna completa ni exponer estructura de Supabase.
 
@@ -130,7 +130,7 @@ QA-008 valida Agenda interna en entorno local/demo: creacion, edicion, reagendam
 
 UI-026 mejora el modal de Agenda con seleccion de fecha por calendario, hora de inicio en intervalos de 15 minutos, duracion por opciones controladas y fin calculado. Para consultas se usa duracion estandar de 60 minutos y buffer operativo de 15 minutos en la validacion de solapamientos.
 
-Este diseno es insumo previo para `BE-026`, porque el contrato publico debe crear solicitudes de agenda y no consultas clinicas directas. Con QA-008/UI-027 integradas, Control puede evaluar el inicio de `BE-026` como diseno de contrato, manteniendo `BE-027` Google Calendar/Gmail en espera y sin habilitar produccion.
+Este diseno es insumo de `BE-026`, porque el contrato publico debe crear solicitudes de agenda y no consultas clinicas directas. BE-026 queda como diseno documental de contrato, manteniendo `BE-027` Google Calendar/Gmail en espera y sin habilitar produccion.
 
 PROD-001 sigue bloqueante para cualquier uso con datos reales.
 

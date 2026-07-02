@@ -82,7 +82,7 @@ Este documento es la lista maestra de pendientes. Cada pendiente debe tener un c
 | BE-023 | Alias/codigo administrativo persistente para Finanzas. | Pendiente | Alta | Integracion Backend/Estructura |
 | BE-024 | Regla de hallazgo unico/multiple por aspecto revisado. | Pendiente | Alta | Integracion Backend/Estructura |
 | BE-025 | Campos financieros permitidos/prohibidos para Finanzas. | Pendiente | Alta | Integracion Backend/Estructura |
-| BE-026 | Disenar contrato de API publica de agendamiento. | Pendiente | Alta | Integracion Backend/Estructura |
+| BE-026 | Disenar contrato de API publica de agendamiento. | Diseno documental / pendiente implementacion futura | Alta | Integracion Backend/Estructura |
 | BE-027 | Disenar integracion Google Calendar / Gmail / Workspace. | Pendiente | Alta | Integracion Backend/Estructura |
 | BE-028 | Implementar modelo DB de Agenda operativa. | Integrada por PR #41 | Alta | Integracion Backend/Estructura |
 | BE-029 | Validar runtime local de Agenda operativa. | Integrada por PR #42 / validada local | Alta | Integracion Backend / Seguridad |
@@ -529,7 +529,7 @@ No se deben cargar datos reales como uso oficial todavia. Antes de produccion de
 
 ### RFC-002 - Detectar duplicidades entre entidades clinicas
 
-**Estado:** Pendiente
+**Estado:** Diseno documental / pendiente implementacion futura
 **Prioridad:** Alta
 **Responsable:** Revision de flujo clinico
 **Origen:** Revision de flujo clinico
@@ -1216,6 +1216,9 @@ Definir contrato de campos financieros visibles para Finanzas y prohibir conteni
 **Responsable:** Integracion Backend/Estructura
 **Origen:** API-001 / DEC-033
 **Fecha creacion:** 2026-06-30
+**Fecha diseno:** 2026-07-02
+**Rama usada:** `be-026-diseno-contrato-api-agendamiento`
+**Informe:** `docs/control/auditorias/BE-026_CONTRATO_API_PUBLICA_AGENDAMIENTO.md`
 **Dependencias:** API-001, BE-012, BE-017, BE-028, BE-029, BE-018, BE-020, SEC-005, SEC-009, DOC-001, DOC-003, PROD-001
 
 #### Descripcion
@@ -1233,7 +1236,7 @@ Definir el contrato tecnico de la futura API publica de agendamiento, incluyendo
 - No modificar migraciones, RLS, Auth, `.env` ni Supabase remoto.
 
 #### Observaciones
-BE-026 depende del modelo de Agenda y de consentimiento. No debe cerrar contrato productivo mientras PROD-001 este abierto.
+BE-026 queda documentado como contrato conceptual bajo `/api/v1`, usando `solicitudes_agenda` como destino publico. No implementa endpoints reales ni cierra contrato productivo mientras PROD-001 este abierto. La implementacion futura debe esperar SEC-009, BE-020, DOC-001, DOC-003, SEC-005 y cierre de PROD-001.
 
 ### BE-027 - Disenar integracion Google Calendar / Gmail / Workspace
 

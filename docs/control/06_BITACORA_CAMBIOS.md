@@ -1799,3 +1799,53 @@ Se ejecuta pasada visual autenticada post-merge sobre `main` para confirmar el c
 QA-008 queda cerrada post-merge como validacion funcional local/demo de Agenda interna.
 
 `BE-026` puede evaluarse como siguiente tarea de diseno de contrato de API publica de agendamiento. `BE-027`, Google, produccion y datos reales siguen fuera de alcance.
+
+## LOG-043 - BE-026 contrato API publica de agendamiento
+
+**Estado:** Documentado
+**Prioridad:** Alta
+**Responsable:** Integracion Backend/Estructura
+**Origen:** BE-026 / API-001 / DEC-033 / DEC-034 / QA-008
+**Fecha creacion:** 2026-07-02
+**Rama usada:** `be-026-diseno-contrato-api-agendamiento`
+
+### Resumen
+
+Se define el contrato documental de la futura API publica de agendamiento.
+
+El contrato usa versionado `/api/v1`, mantiene `solicitudes_agenda` como destino conceptual de solicitudes publicas y evita que la pagina publica escriba directamente en `consultas`, `pacientes`, `agenda_eventos`, tablas clinicas, tablas financieras o Storage.
+
+### Contratos documentados
+
+- `GET /api/v1/public/agenda/disponibilidad`.
+- `POST /api/v1/public/agendamientos`.
+- `POST /api/v1/public/consentimientos`.
+
+### Archivos relacionados
+
+- `docs/control/auditorias/BE-026_CONTRATO_API_PUBLICA_AGENDAMIENTO.md`
+- `docs/control/00_ESTADO_GENERAL_PROYECTO.md`
+- `docs/control/01_PENDIENTES_PROYECTO.md`
+- `docs/control/03_INTEGRACION_BACKEND_ESTRUCTURA.md`
+- `docs/control/05_DECISIONES_PROYECTO.md`
+- `docs/control/06_BITACORA_CAMBIOS.md`
+
+### Restricciones respetadas
+
+- No se creo API publica funcional.
+- No se crearon endpoints.
+- No se modifico codigo fuente.
+- No se modificaron migraciones.
+- No se ejecuto SQL.
+- No se toco `.env`.
+- No se uso Supabase remoto.
+- No se ejecuto `supabase db push`.
+- No se integro Google Calendar, Gmail ni Workspace.
+- No se habilito produccion.
+- No se usaron datos reales.
+
+### Resultado
+
+BE-026 queda como diseno documental / pendiente implementacion futura.
+
+La implementacion real debe esperar SEC-009, BE-020, DOC-001, DOC-003, SEC-005, BE-018 y PROD-001. BE-027 Google Calendar/Gmail sigue fuera de alcance.

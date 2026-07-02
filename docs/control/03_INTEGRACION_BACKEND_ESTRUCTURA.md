@@ -379,6 +379,36 @@ No se crean servicios cloud, endpoints, credenciales, secretos, proyectos Google
 
 Informe relacionado: `docs/control/auditorias/BE-030_ARQUITECTURA_PLATAFORMA_GOOGLE_CLOUD.md`
 
+## BE-026 - Contrato API publica de agendamiento
+
+**Estado:** Diseno documental / pendiente implementacion futura
+**Origen:** API-001 / DEC-033 / DEC-034 / QA-008
+**Fecha:** 2026-07-02
+
+BE-026 define el contrato conceptual de la futura API publica de agendamiento.
+
+### Contrato definido
+
+- Versionado bajo `/api/v1`.
+- `GET /api/v1/public/agenda/disponibilidad` para disponibilidad publicable sin exponer agenda interna.
+- `POST /api/v1/public/agendamientos` para recibir solicitudes publicas.
+- `POST /api/v1/public/consentimientos` como contrato separado opcional segun BE-020.
+
+### Reglas backend
+
+- El destino conceptual de una solicitud publica es `public.solicitudes_agenda`.
+- La API publica no debe escribir directo en `consultas`.
+- La API publica no debe crear pacientes automaticamente.
+- La API publica no debe crear evaluaciones, casos, revisiones, trabajos, cobros, pagos, fotos ni eventos Google.
+- La API debe definir payloads permitidos, datos prohibidos, errores neutros, idempotencia y anti-spam.
+- Secretos y credenciales quedan solo para backend futuro, nunca para frontend.
+
+### Restricciones
+
+BE-026 no crea endpoints, no instala dependencias, no modifica codigo, no modifica migraciones, no ejecuta SQL, no toca `.env`, no toca Supabase remoto, no integra Google y no habilita produccion ni datos reales.
+
+Informe relacionado: `docs/control/auditorias/BE-026_CONTRATO_API_PUBLICA_AGENDAMIENTO.md`
+
 ## BE-001 - Inventariar estructura backend y Supabase local
 
 **Estado:** Integrada
