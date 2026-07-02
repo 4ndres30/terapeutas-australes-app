@@ -1,0 +1,133 @@
+# UI-026 - Selector calendario/horario y duracion estandar de consulta
+
+## Estado
+
+Implementado en rama / pendiente revision.
+
+## Fecha
+
+2026-07-02
+
+## Rama
+
+`ui-026-selector-calendario-horario-agenda`
+
+## Objetivo
+
+Mejorar el modal de Agenda interna para evitar ingreso manual complejo de fecha/hora y preparar una seleccion operativa mas segura.
+
+## Alcance
+
+- Separar fecha y hora de inicio en el formulario de Agenda.
+- Usar selector calendario con `input type="date"`.
+- Usar selector de hora en intervalos de 15 minutos.
+- Calcular hora de fin desde duracion controlada.
+- Mantener creacion, edicion, reagendamiento, cancelacion y completado.
+- Validar solapamientos basicos contra eventos cargados desde Agenda.
+- Mantener Agenda como UI interna sobre `agenda_eventos`.
+
+## Fuera de alcance
+
+- Migraciones SQL.
+- Cambios en RLS/Auth.
+- Supabase remoto.
+- API publica.
+- Google Calendar.
+- Gmail.
+- Workspace.
+- Produccion.
+- Datos reales.
+- Creacion automatica de pacientes, consultas o solicitudes.
+
+## Decision funcional
+
+Se reemplaza el campo combinado de fecha/hora por:
+
+- `Fecha`: selector calendario nativo.
+- `Hora inicio`: selector de horarios cada 15 minutos.
+- `Duracion`: opciones controladas, sin texto libre.
+- `Fin calculado`: resumen solo lectura calculado desde inicio + duracion.
+
+El formulario unico se mantiene para crear, editar y reagendar.
+
+## Duracion estandar
+
+La duracion por defecto queda en 60 minutos.
+
+Cuando el usuario cambia el tipo de evento a `consulta`, el formulario fuerza la duracion estandar de consulta a 60 minutos.
+
+Para eventos existentes se conserva la duracion derivada de `fecha_inicio` y `fecha_fin` cuando se abre el modal. Si esa duracion no pertenece a las opciones base, se incorpora como opcion controlada temporal para no destruir datos existentes.
+
+## Buffer operativo
+
+El buffer operativo queda definido en 15 minutos.
+
+No se crea un evento separado para el buffer.
+
+El buffer se usa solo para validar disponibilidad cuando el evento candidato o un evento existente es de tipo `consulta`.
+
+## Validacion de solapamientos
+
+La validacion se hace contra eventos cargados en memoria desde `public.vista_agenda_operativa`.
+
+Estados considerados ocupantes:
+
+- `programado`
+- `confirmado`
+- `reagendado`
+- `completado`
+
+Estados no bloqueantes:
+
+- `cancelado`
+- `no_asistio`
+
+El evento actualmente editado se excluye de la comparacion.
+
+Si hay cruce, el formulario muestra:
+
+```text
+El horario seleccionado se cruza con otro evento o con el espacio de 15 minutos entre consultas.
+```
+
+## Archivos modificados
+
+- `src/pages/AgendaPage.tsx`
+- `src/pages/ClinicalModuleBase.css`
+- `docs/control/00_ESTADO_GENERAL_PROYECTO.md`
+- `docs/control/01_PENDIENTES_PROYECTO.md`
+- `docs/control/04_UI_UX_PULIDO_VISUAL.md`
+- `docs/control/06_BITACORA_CAMBIOS.md`
+- `docs/control/auditorias/UI-026_SELECTOR_CALENDARIO_HORARIO_AGENDA.md`
+
+## Pruebas realizadas
+
+- `npm run build`
+- `git diff --check`
+- `npm run lint`
+- `npm run build`
+- `npm run dev -- --force` con verificacion tecnica de servidor local.
+
+## Limitaciones
+
+La validacion visual autenticada depende de navegador disponible y usuarios demo. Si el navegador integrado no esta disponible, se debe completar revision visual humana de `/agenda`.
+
+La validacion de solapamiento usa los eventos visibles/cargados en la Agenda. No reemplaza una validacion transaccional de backend, que corresponderia a una fase posterior si se expone API publica.
+
+## Riesgos
+
+- Dos usuarios simultaneos podrian intentar crear eventos en el mismo horario si no existe validacion backend transaccional.
+- Eventos historicos con horarios no alineados a 15 minutos se conservan para evitar perdida de informacion, pero conviene normalizarlos si aparecen.
+- La regla de buffer es funcional/UI; no modifica el modelo DB.
+
+## Resultado
+
+UI-026 deja el modal de Agenda con selector calendario, selector de hora, duracion controlada, fin calculado y validacion basica de solapamiento con buffer de consulta.
+
+No se modifican migraciones, Auth/RLS, Supabase remoto, API publica, Google ni produccion.
+
+## Proximo paso recomendado
+
+Revisar visualmente `/agenda` con datos demo y usuario interno autorizado.
+
+Si la revision visual pasa, Control puede decidir si este pulido cierra la limitacion visual pendiente de QA-008 o si requiere una QA puntual adicional antes de `BE-026`.

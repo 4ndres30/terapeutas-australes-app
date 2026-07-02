@@ -60,8 +60,9 @@ type AgendaEventoForm = {
   titulo_evento: string
   tipo_evento: TipoEventoAgenda
   estado_evento: EstadoEventoAgenda
-  fecha_inicio: string
-  fecha_fin: string
+  fecha_evento: string
+  hora_inicio: string
+  duracion_minutos: number
   modalidad: ModalidadAgenda
   ubicacion: string
   enlace_online: string
@@ -160,12 +161,29 @@ const MODALIDADES_AGENDA: ModalidadAgenda[] = [
   'por_definir',
 ]
 
+const DURACION_CONSULTA_MINUTOS = 60
+const BUFFER_CONSULTA_MINUTOS = 15
+const DURACIONES_EVENTO_AGENDA = [30, 45, 60, 75, 90, 120]
+const ESTADOS_OCUPAN_HORARIO = new Set<EstadoEventoAgenda>([
+  'programado',
+  'confirmado',
+  'reagendado',
+  'completado',
+])
+const HORARIOS_AGENDA = Array.from({ length: 96 }, (_, indice) => {
+  const minutosTotales = indice * 15
+  const horas = Math.floor(minutosTotales / 60)
+  const minutos = minutosTotales % 60
+  return `${String(horas).padStart(2, '0')}:${String(minutos).padStart(2, '0')}`
+})
+
 const FORMULARIO_EVENTO_INICIAL: AgendaEventoForm = {
   titulo_evento: '',
   tipo_evento: 'administrativo',
   estado_evento: 'programado',
-  fecha_inicio: '',
-  fecha_fin: '',
+  fecha_evento: '',
+  hora_inicio: '',
+  duracion_minutos: DURACION_CONSULTA_MINUTOS,
   modalidad: 'por_definir',
   ubicacion: '',
   enlace_online: '',
@@ -246,7 +264,12 @@ function formatearRangoHorario(evento: AgendaOperativa) {
   return `${inicio} - ${horaFin}`
 }
 
-function convertirIsoADatetimeLocal(fecha: string | null) {
+function convertirFechaLocalAInput(fecha: Date) {
+  const fechaLocal = new Date(fecha.getTime() - fecha.getTimezoneOffset() * 60000)
+  return fechaLocal.toISOString().slice(0, 10)
+}
+
+function convertirIsoAFechaLocal(fecha: string | null) {
   if (!fecha) {
     return ''
   }
@@ -257,24 +280,107 @@ function convertirIsoADatetimeLocal(fecha: string | null) {
     return ''
   }
 
-  const fechaLocal = new Date(fechaAgenda.getTime() - fechaAgenda.getTimezoneOffset() * 60000)
-  return fechaLocal.toISOString().slice(0, 16)
+  return convertirFechaLocalAInput(fechaAgenda)
 }
 
-function convertirDatetimeLocalAIso(fecha: string) {
-  const fechaLimpia = fecha.trim()
+function convertirIsoAHoraLocal(fecha: string | null) {
+  if (!fecha) {
+    return ''
+  }
 
-  if (!fechaLimpia) {
+  const fechaAgenda = new Date(fecha)
+
+  if (Number.isNaN(fechaAgenda.getTime())) {
+    return ''
+  }
+
+  return `${String(fechaAgenda.getHours()).padStart(2, '0')}:${String(fechaAgenda.getMinutes()).padStart(2, '0')}`
+}
+
+function obtenerProximaHoraAgenda() {
+  const ahora = new Date()
+  ahora.setMinutes(Math.ceil(ahora.getMinutes() / 15) * 15, 0, 0)
+
+  if (ahora.getHours() === 24) {
+    return '08:00'
+  }
+
+  const hora = `${String(ahora.getHours()).padStart(2, '0')}:${String(ahora.getMinutes()).padStart(2, '0')}`
+  return HORARIOS_AGENDA.includes(hora) ? hora : '08:00'
+}
+
+function crearFormularioEventoInicial(): AgendaEventoForm {
+  return {
+    ...FORMULARIO_EVENTO_INICIAL,
+    fecha_evento: convertirFechaLocalAInput(new Date()),
+    hora_inicio: obtenerProximaHoraAgenda(),
+  }
+}
+
+function combinarFechaHoraAIso(fecha: string, hora: string) {
+  const fechaLimpia = fecha.trim()
+  const horaLimpia = hora.trim()
+
+  if (!fechaLimpia || !horaLimpia) {
     return null
   }
 
-  const fechaAgenda = new Date(fechaLimpia)
+  const fechaAgenda = new Date(`${fechaLimpia}T${horaLimpia}:00`)
 
   if (Number.isNaN(fechaAgenda.getTime())) {
     return null
   }
 
   return fechaAgenda.toISOString()
+}
+
+function sumarMinutosAIso(fechaIso: string, minutos: number) {
+  const fechaAgenda = new Date(fechaIso)
+
+  if (Number.isNaN(fechaAgenda.getTime())) {
+    return null
+  }
+
+  return new Date(fechaAgenda.getTime() + minutos * 60000).toISOString()
+}
+
+function calcularDuracionMinutos(fechaInicio: string | null, fechaFin: string | null) {
+  if (!fechaInicio || !fechaFin) {
+    return DURACION_CONSULTA_MINUTOS
+  }
+
+  const inicio = new Date(fechaInicio).getTime()
+  const fin = new Date(fechaFin).getTime()
+
+  if (Number.isNaN(inicio) || Number.isNaN(fin) || fin <= inicio) {
+    return DURACION_CONSULTA_MINUTOS
+  }
+
+  const minutos = Math.round((fin - inicio) / 60000)
+  return minutos > 0 ? minutos : DURACION_CONSULTA_MINUTOS
+}
+
+function obtenerDuracionesFormulario(duracionActual: number) {
+  return Array.from(new Set([...DURACIONES_EVENTO_AGENDA, duracionActual]))
+    .filter((duracion) => Number.isFinite(duracion) && duracion > 0)
+    .sort((a, b) => a - b)
+}
+
+function obtenerHorariosFormulario(horaActual: string) {
+  return Array.from(new Set([...HORARIOS_AGENDA, horaActual]))
+    .filter(Boolean)
+    .sort()
+}
+
+function formatearDuracion(minutos: number) {
+  if (minutos < 60) {
+    return `${minutos} min`
+  }
+
+  const horas = Math.floor(minutos / 60)
+  const resto = minutos % 60
+
+  return resto ? `${horas} h ${resto} min` : `${horas} h`
 }
 
 function textoCorto(texto: string, largo = 130) {
@@ -336,7 +442,7 @@ function AgendaPage() {
   const [formularioAbierto, setFormularioAbierto] = useState(false)
   const [modoFormulario, setModoFormulario] = useState<ModoFormularioAgenda>('crear')
   const [eventoSeleccionado, setEventoSeleccionado] = useState<AgendaOperativa | null>(null)
-  const [formularioEvento, setFormularioEvento] = useState<AgendaEventoForm>(FORMULARIO_EVENTO_INICIAL)
+  const [formularioEvento, setFormularioEvento] = useState<AgendaEventoForm>(() => crearFormularioEventoInicial())
 
   const agendaFiltrada = useMemo(() => {
     const filtroTexto = normalizarTexto(busqueda.trim())
@@ -377,6 +483,12 @@ function AgendaPage() {
   const eventosInternos = agenda.filter((evento) => !evento.solicitud_agenda_id && !evento.consulta_id)
   const pendientesConfirmacion = agenda.filter((evento) => evento.requiere_confirmacion && !evento.confirmado_por_paciente)
   const soloReagendar = modoFormulario === 'reagendar'
+  const fechaInicioFormularioIso = combinarFechaHoraAIso(formularioEvento.fecha_evento, formularioEvento.hora_inicio)
+  const fechaFinFormularioIso = fechaInicioFormularioIso
+    ? sumarMinutosAIso(fechaInicioFormularioIso, formularioEvento.duracion_minutos)
+    : null
+  const horariosFormulario = obtenerHorariosFormulario(formularioEvento.hora_inicio)
+  const duracionesFormulario = obtenerDuracionesFormulario(formularioEvento.duracion_minutos)
 
   const metricas = [
     { etiqueta: 'Eventos', valor: agenda.length, detalle: 'Vista operativa' },
@@ -419,13 +531,16 @@ function AgendaPage() {
     setFormularioEvento((actual) => ({
       ...actual,
       [campo]: valor,
+      ...(campo === 'tipo_evento' && valor === 'consulta'
+        ? { duracion_minutos: DURACION_CONSULTA_MINUTOS }
+        : {}),
     }))
   }
 
   function abrirFormularioCreacion() {
     setModoFormulario('crear')
     setEventoSeleccionado(null)
-    setFormularioEvento(FORMULARIO_EVENTO_INICIAL)
+    setFormularioEvento(crearFormularioEventoInicial())
     setMensaje('')
     setMensajeOperacion('')
     setMensajeFormulario('')
@@ -461,8 +576,9 @@ function AgendaPage() {
       estado_evento: modo === 'reagendar'
         ? 'reagendado'
         : (esEstadoEventoAgenda(detalle.estado_evento) ? detalle.estado_evento : 'programado'),
-      fecha_inicio: convertirIsoADatetimeLocal(detalle.fecha_inicio),
-      fecha_fin: convertirIsoADatetimeLocal(detalle.fecha_fin),
+      fecha_evento: convertirIsoAFechaLocal(detalle.fecha_inicio),
+      hora_inicio: convertirIsoAHoraLocal(detalle.fecha_inicio),
+      duracion_minutos: calcularDuracionMinutos(detalle.fecha_inicio, detalle.fecha_fin),
       modalidad: esModalidadAgenda(detalle.modalidad) ? detalle.modalidad : 'por_definir',
       ubicacion: detalle.ubicacion || '',
       enlace_online: detalle.enlace_online || '',
@@ -481,24 +597,81 @@ function AgendaPage() {
     setMensajeFormulario('')
   }
 
+  function detectarSolapamiento(fechaInicioIso: string, fechaFinIso: string, tipoEvento: TipoEventoAgenda) {
+    const inicioCandidato = new Date(fechaInicioIso).getTime()
+    const finCandidato = new Date(fechaFinIso).getTime()
+
+    if (Number.isNaN(inicioCandidato) || Number.isNaN(finCandidato)) {
+      return false
+    }
+
+    const finCandidatoConBuffer = tipoEvento === 'consulta'
+      ? finCandidato + BUFFER_CONSULTA_MINUTOS * 60000
+      : finCandidato
+
+    return agenda.some((evento) => {
+      if (eventoSeleccionado?.id_agenda_evento === evento.id_agenda_evento) {
+        return false
+      }
+
+      if (!ESTADOS_OCUPAN_HORARIO.has(evento.estado_evento)) {
+        return false
+      }
+
+      const inicioExistente = new Date(evento.fecha_inicio).getTime()
+      const finExistenteBase = evento.fecha_fin
+        ? new Date(evento.fecha_fin).getTime()
+        : inicioExistente + DURACION_CONSULTA_MINUTOS * 60000
+
+      if (Number.isNaN(inicioExistente) || Number.isNaN(finExistenteBase) || finExistenteBase <= inicioExistente) {
+        return false
+      }
+
+      const finExistenteConBuffer = evento.tipo_evento === 'consulta'
+        ? finExistenteBase + BUFFER_CONSULTA_MINUTOS * 60000
+        : finExistenteBase
+
+      return inicioCandidato < finExistenteConBuffer && finCandidatoConBuffer > inicioExistente
+    })
+  }
+
   function construirPayloadEvento(usuarioId: string) {
-    const fechaInicioIso = convertirDatetimeLocalAIso(formularioEvento.fecha_inicio)
-    const fechaFinIso = convertirDatetimeLocalAIso(formularioEvento.fecha_fin)
+    const fechaInicioIso = combinarFechaHoraAIso(formularioEvento.fecha_evento, formularioEvento.hora_inicio)
+
+    if (!formularioEvento.fecha_evento.trim()) {
+      return { error: 'La fecha del evento es obligatoria.', payload: null }
+    }
+
+    if (!formularioEvento.hora_inicio.trim()) {
+      return { error: 'La hora de inicio es obligatoria.', payload: null }
+    }
 
     if (!fechaInicioIso) {
-      return { error: 'La fecha de inicio es obligatoria.', payload: null }
+      return { error: 'La fecha u hora seleccionada no es valida.', payload: null }
     }
 
-    if (formularioEvento.fecha_fin.trim() && !fechaFinIso) {
-      return { error: 'La fecha de fin no es valida.', payload: null }
+    if (!Number.isFinite(formularioEvento.duracion_minutos) || formularioEvento.duracion_minutos <= 0) {
+      return { error: 'La duracion seleccionada no es valida.', payload: null }
     }
 
-    if (fechaFinIso && new Date(fechaFinIso).getTime() <= new Date(fechaInicioIso).getTime()) {
-      return { error: 'La fecha de fin debe ser posterior al inicio.', payload: null }
+    const fechaFinIso = sumarMinutosAIso(fechaInicioIso, formularioEvento.duracion_minutos)
+
+    if (!fechaFinIso) {
+      return { error: 'No se pudo calcular la hora de fin del evento.', payload: null }
     }
 
     if (!esEstadoEventoAgenda(formularioEvento.estado_evento)) {
       return { error: 'El estado seleccionado no pertenece al modelo de agenda.', payload: null }
+    }
+
+    if (
+      ESTADOS_OCUPAN_HORARIO.has(formularioEvento.estado_evento)
+      && detectarSolapamiento(fechaInicioIso, fechaFinIso, formularioEvento.tipo_evento)
+    ) {
+      return {
+        error: 'El horario seleccionado se cruza con otro evento o con el espacio de 15 minutos entre consultas.',
+        payload: null,
+      }
     }
 
     const payloadBase = {
@@ -946,28 +1119,65 @@ function AgendaPage() {
 
               <div className="clinical-grid">
                 <label className="clinical-field">
-                  <span>Inicio</span>
+                  <span>Fecha</span>
                   <input
                     className="clinical-input"
                     disabled={guardando}
                     required
-                    type="datetime-local"
-                    value={formularioEvento.fecha_inicio}
-                    onChange={(event) => actualizarFormulario('fecha_inicio', event.target.value)}
+                    type="date"
+                    value={formularioEvento.fecha_evento}
+                    onChange={(event) => actualizarFormulario('fecha_evento', event.target.value)}
                   />
                 </label>
 
                 <label className="clinical-field">
-                  <span>Fin</span>
-                  <input
-                    className="clinical-input"
+                  <span>Hora inicio</span>
+                  <select
+                    className="clinical-select"
                     disabled={guardando}
-                    type="datetime-local"
-                    value={formularioEvento.fecha_fin}
-                    onChange={(event) => actualizarFormulario('fecha_fin', event.target.value)}
-                  />
+                    required
+                    value={formularioEvento.hora_inicio}
+                    onChange={(event) => actualizarFormulario('hora_inicio', event.target.value)}
+                  >
+                    {horariosFormulario.map((hora) => (
+                      <option key={hora} value={hora}>{hora}</option>
+                    ))}
+                  </select>
                 </label>
               </div>
+
+              <div className="clinical-grid">
+                <label className="clinical-field">
+                  <span>Duracion</span>
+                  <select
+                    className="clinical-select"
+                    disabled={soloReagendar || guardando}
+                    value={formularioEvento.duracion_minutos}
+                    onChange={(event) => actualizarFormulario('duracion_minutos', Number(event.target.value))}
+                  >
+                    {duracionesFormulario.map((duracion) => (
+                      <option key={duracion} value={duracion}>{formatearDuracion(duracion)}</option>
+                    ))}
+                  </select>
+                  <small>{formularioEvento.tipo_evento === 'consulta'
+                    ? 'Consulta estandar: 1 hora.'
+                    : 'Duracion controlada, sin texto libre.'}</small>
+                </label>
+
+                <label className="clinical-field">
+                  <span>Fin calculado</span>
+                  <output className="clinical-readonly-value">
+                    {fechaFinFormularioIso ? formatearFechaHora(fechaFinFormularioIso) : 'Selecciona fecha y hora'}
+                  </output>
+                  <small>Se calcula desde la hora de inicio y la duracion seleccionada.</small>
+                </label>
+              </div>
+
+              <p className="clinical-note clinical-note--compact">
+                {formularioEvento.tipo_evento === 'consulta'
+                  ? 'Consulta de 1 hora + 15 minutos de separacion operativa para validar disponibilidad.'
+                  : 'Se evita solapamiento con eventos activos; el buffer de 15 minutos aplica cuando participa una consulta.'}
+              </p>
 
               <label className="clinical-field">
                 <span>Modalidad</span>

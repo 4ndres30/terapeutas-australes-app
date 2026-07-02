@@ -1578,3 +1578,38 @@ Solo QA/documentacion. Sin codigo, sin migraciones, sin Supabase remoto, sin API
 - `docs/control/01_PENDIENTES_PROYECTO.md`
 - `docs/control/04_UI_UX_PULIDO_VISUAL.md`
 - `docs/control/06_BITACORA_CAMBIOS.md`
+
+## LOG-038 - UI-026 selector calendario horario Agenda
+
+**Estado:** Registrado
+**Prioridad:** Alta
+**Responsable:** UI / UX / Integracion Backend
+**Origen:** UI-026 / QA-008 / UI-025B
+**Fecha creacion:** 2026-07-02
+**Rama usada:** `ui-026-selector-calendario-horario-agenda`
+
+### Resumen
+
+Se mejora el modal de Agenda con seleccion de fecha y hora.
+
+Se define duracion estandar de consulta en 60 minutos.
+
+Se incorpora buffer operativo de 15 minutos entre consultas como validacion de disponibilidad.
+
+### Archivos relacionados
+
+- `src/pages/AgendaPage.tsx`
+- `src/pages/ClinicalModuleBase.css`
+- `docs/control/auditorias/UI-026_SELECTOR_CALENDARIO_HORARIO_AGENDA.md`
+- `docs/control/00_ESTADO_GENERAL_PROYECTO.md`
+- `docs/control/01_PENDIENTES_PROYECTO.md`
+- `docs/control/04_UI_UX_PULIDO_VISUAL.md`
+- `docs/control/06_BITACORA_CAMBIOS.md`
+
+### Restricciones
+
+Solo UI interna y documentacion. Sin migraciones, sin Supabase remoto, sin API publica, sin Google y sin produccion.
+
+### Resultado
+
+Agenda interna mantiene creacion, edicion, reagendamiento, cancelacion y completado, con fecha/hora controlada y validacion basica de solapamientos desde la agenda cargada.

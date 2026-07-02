@@ -94,6 +94,7 @@ Este documento es la lista maestra de pendientes. Cada pendiente debe tener un c
 | UI-024 | Recuperacion de cuenta, MFA y estados Auth no tecnicos. | Pendiente | Alta | UI / UX / Integracion Backend |
 | UI-025 | Integrar AgendaPage con modelo DB de Agenda operativa. | Integrada lectura por PR #44 | Alta | UI / UX / Integracion Backend |
 | UI-025B | Alta y edicion controlada de Agenda operativa interna. | Integrada por PR #45 / QA-008 parcial | Alta | UI / UX / Integracion Backend |
+| UI-026 | Selector calendario/horario y duracion estandar de consulta en Agenda interna. | Implementada en rama / pendiente revision | Alta | UI / UX / Integracion Backend |
 | DOC-001 | Manual de ambientes. | Pendiente | Alta | Control de desarrollo |
 | DOC-002 | Procedimiento de backup/restauracion. | Pendiente | Alta | Control de desarrollo / Integracion Backend |
 | DOC-003 | Politica de carga de datos reales. | Pendiente | Alta | Control de desarrollo |
@@ -1470,6 +1471,27 @@ UI-025B no crea pacientes, consultas, solicitudes de agenda, evaluaciones, casos
 
 #### Observaciones
 UI-025B no reemplaza BE-026 ni BE-027. La pagina publica futura debe seguir pasando por API segura y la integracion Google debe implementarse solo desde backend controlado. `QA-008` fue ejecutado parcialmente y debe cerrar validacion visual autenticada antes de evaluar API publica.
+
+### UI-026 - Selector calendario/horario y duracion estandar de consulta en Agenda interna
+
+**Estado:** Implementada en rama / pendiente revision
+**Prioridad:** Alta
+**Responsable:** UI / UX / Integracion Backend
+**Origen:** QA-008 / UI-025B
+**Fecha creacion:** 2026-07-02
+**Rama usada:** `ui-026-selector-calendario-horario-agenda`
+**Informe:** `docs/control/auditorias/UI-026_SELECTOR_CALENDARIO_HORARIO_AGENDA.md`
+**Dependencias:** UI-025B, QA-008, BE-028, BE-029, PROD-001
+**Nivel documental:** Nivel 2
+
+#### Descripcion
+Mejorar el modal de Agenda para que el usuario seleccione fecha desde calendario, hora de inicio desde lista de 15 minutos y duracion desde opciones controladas.
+
+#### Resultado
+Se calcula hora de fin automaticamente y se valida solapamiento basico contra eventos cargados, aplicando buffer operativo de 15 minutos cuando participa una consulta.
+
+#### Restricciones
+UI-026 no modifica migraciones, DB, Auth/RLS, Supabase remoto, API publica, Google Calendar, Gmail, produccion ni datos reales.
 
 ### QA-008 - Validacion funcional completa de Agenda interna
 
