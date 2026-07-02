@@ -468,6 +468,29 @@ DOC-004 no crea endpoints, no instala dependencias, no modifica codigo, no modif
 
 Informe relacionado: `docs/control/auditorias/DOC-004_FLUJO_PAGINA_PUBLICA_API_SISTEMA_INTERNO_GOOGLE.md`
 
+## BE-020 - Consentimiento informado y tratamiento de datos
+
+**Estado:** Diseno documental base / pendiente validacion clinica/legal
+**Origen:** PROD-001 / SEC-001 / API-001 / DOC-004
+**Fecha:** 2026-07-02
+
+BE-020 define la base operativa para consentimiento informado y tratamiento de datos antes de usar pacientes reales, API publica real o integracion Google funcional.
+
+### Reglas backend futuras
+
+- Registrar version del texto aceptado, fecha/hora, canal y relacion con solicitud, paciente o consulta cuando corresponda.
+- Separar consentimiento publico, interno, financiero, fotos/archivos y Google.
+- No convertir una solicitud publica en consulta clinica sin revision interna y consentimiento suficiente.
+- No exponer datos clinicos a Finanzas.
+- No enviar datos clinicos sensibles a Google Calendar/Gmail.
+- Mantener revocacion, reemplazo y rechazo como estados conceptuales antes de disenar almacenamiento real.
+
+### Restricciones
+
+BE-020 no crea endpoints, no instala dependencias, no modifica codigo, no modifica migraciones, no ejecuta SQL, no toca `.env`, no toca Supabase remoto, no integra Google y no habilita produccion ni datos reales.
+
+Informe relacionado: `docs/control/auditorias/BE-020_CONSENTIMIENTO_TRATAMIENTO_DATOS.md`
+
 ## BE-001 - Inventariar estructura backend y Supabase local
 
 **Estado:** Integrada

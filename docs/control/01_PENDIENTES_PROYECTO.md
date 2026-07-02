@@ -76,7 +76,7 @@ Este documento es la lista maestra de pendientes. Cada pendiente debe tener un c
 | SEC-010 | Disenar seguridad cloud, OAuth, IAM e identidades tecnicas. | Diseno documental / pendiente implementacion futura | Alta | Integracion Backend / Seguridad |
 | BE-018 | Separacion tecnica de ambientes. | Pendiente | Alta | Integracion Backend |
 | BE-019 | Estrategia de backup/restauracion. | Pendiente | Alta | Integracion Backend / Produccion |
-| BE-020 | Consentimiento informado y tratamiento de datos. | Pendiente | Alta | Control de desarrollo / Revision Clinica / Backend |
+| BE-020 | Consentimiento informado y tratamiento de datos. | Diseno documental base / pendiente validacion clinica/legal | Alta | Control de desarrollo / Revision Clinica / Backend |
 | BE-021 | Politica de anulacion vs eliminacion. | Pendiente | Media-alta | Control de desarrollo / Backend |
 | BE-022 | Soporte de fotos para elementos del caso con Supabase Storage. | Implementada local / pend. QA | Alta | Integracion Backend/Estructura |
 | BE-023 | Alias/codigo administrativo persistente para Finanzas. | Pendiente | Alta | Integracion Backend/Estructura |
@@ -970,16 +970,21 @@ Definir estrategia de respaldo y restauracion antes de operar con datos reales.
 
 ### BE-020 - Consentimiento informado y tratamiento de datos
 
-**Estado:** Pendiente
+**Estado:** Diseno documental base / pendiente validacion clinica/legal
 **Prioridad:** Alta
 **Responsable:** Control de desarrollo / Revision Clinica / Backend
 **Origen:** Auditoria PROD-001 / SEC-001
 **Fecha creacion:** 2026-06-19
+**Fecha documentacion:** 2026-07-02
+**Rama usada:** `be-020-consentimiento-tratamiento-datos`
+**Informe:** `docs/control/auditorias/BE-020_CONSENTIMIENTO_TRATAMIENTO_DATOS.md`
 
 #### Descripcion
 Definir el consentimiento informado o autorizacion de tratamiento de datos requerida antes de registrar pacientes reales.
 
-#### Criterios de aceptacion preliminares
+BE-020 define la base operativa para finalidades de tratamiento, datos permitidos/prohibidos, evidencia de aceptacion, estados conceptuales y restricciones por contexto. No reemplaza validacion clinica ni legal.
+
+#### Criterios de aceptacion
 - Definir texto o referencia del consentimiento informado.
 - Validar alcance con Revision Clinica.
 - Definir donde se registra la aceptacion o autorizacion.
@@ -988,7 +993,9 @@ Definir el consentimiento informado o autorizacion de tratamiento de datos reque
 
 #### Observaciones
 
-SEC-004 deja nombre completo, telefono y email prohibidos por defecto para Finanzas. BE-020 debe definir consentimiento o autorizacion especifica si Control de Desarrollo decide exponer alguno de esos datos para cobranza directa.
+SEC-004 deja nombre completo, telefono y email prohibidos por defecto para Finanzas. BE-020 define que su exposicion requiere aprobacion expresa de Control y consentimiento/autorizacion suficiente.
+
+BE-020 no implementa formularios, endpoints, migraciones, almacenamiento tecnico, firma electronica, `.env`, Supabase remoto, Google ni produccion. PROD-001 sigue bloqueante.
 
 ### BE-021 - Politica de anulacion vs eliminacion
 
