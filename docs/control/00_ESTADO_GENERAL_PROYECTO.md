@@ -12,6 +12,8 @@ Al corte actual ya quedaron integradas las auditorias iniciales de control, back
 
 PR #45 ya esta integrado en `main`: Agenda interna cuenta con lectura, alta y edicion controlada de `agenda_eventos`. QA-008 fue ejecutado parcialmente: las operaciones locales de datos/RLS pasaron, pero queda pendiente validacion visual autenticada. API publica, Google Calendar/Gmail y produccion siguen en espera.
 
+UI-026 incorpora selector de fecha, selector de hora, duracion controlada, fin calculado y validacion basica de solapamiento con buffer operativo de 15 minutos para consultas. El cambio se mantiene en UI interna; no modifica DB, RLS, API publica ni Google.
+
 La estrategia progresiva Google Cloud queda incorporada como propuesta documental en revision: Supabase/PostgreSQL sigue siendo la base actual y Google Cloud queda como plataforma futura para API segura, integracion Google Workspace, despliegue, automatizacion y operacion por ambientes.
 
 IMP-001 dejo disponible una implementacion funcional minima de hallazgos operativos dentro de `DetalleRevisionesPanel`. DATA-001 dejo un seed local demo integral ejecutado correctamente en Supabase local. BE-011 confirmo que la primera version de trazabilidad hallazgo a trabajo puede usar `trabajos.revision_hallazgo_origen_id` sin migracion inicial. QA-002 valido funcionalmente el flujo de hallazgos operativos con el caso demo DATA-001 en ambiente local. BE-016 incorporo la vista financiera minima para Finanzas, QA-004 la valido localmente y UI-016 separo `ReportesPage` por rol en main mediante PR #33.
@@ -53,7 +55,7 @@ El proyecto se mantiene alineado con el metodo acordado: primero documentar, aud
 - Implementacion funcional hallazgo a trabajo: pendiente futura, posterior a QA-002 y UI-012.
 - UI-010, UI-012 y UI-015: prioridades de planificacion UI derivadas de UI-001 + UI-002 y del estado post IMP-001.
 - UI-013, UI-014, UI-017, UI-018 y UI-019: pendientes UI derivados, aun sin activacion tecnica.
-- UI-025/UI-025B: Agenda operativa cuenta con vista interna, filtros y gestion manual minima de `agenda_eventos`; QA-008 queda ejecutado parcialmente y pendiente de validacion visual autenticada antes de evaluar BE-026.
+- UI-025/UI-025B/UI-026: Agenda operativa cuenta con vista interna, filtros, gestion manual minima de `agenda_eventos` y selector controlado de fecha/hora; QA-008 queda ejecutado parcialmente y pendiente de validacion visual autenticada antes de evaluar BE-026.
 - BE-013 a BE-015: tareas backend sugeridas por BE-002 para cobros, vistas, RLS y reportes.
 - API-001, BE-026, BE-027, SEC-009 y DOC-004: estrategia futura para API publica segura, contrato de agendamiento, integracion Google Workspace, seguridad API y flujo pagina publica -> API -> sistema interno -> Google.
 - CTRL-009, DEC-035, BE-030, SEC-010, DOC-005 y QA-007: estrategia progresiva Google Cloud en revision documental; no migra base de datos, Auth ni produccion.
@@ -125,6 +127,8 @@ UI-025 integra `/agenda` como primera vista interna de lectura desde `public.vis
 UI-025B agrega alta y edicion manual minima sobre `agenda_eventos` para usuarios internos autorizados, incluyendo cambio de estado, cancelacion logica, reagendamiento y cierre como completado. No crea pacientes, consultas ni solicitudes automaticamente.
 
 QA-008 valida parcialmente Agenda interna: creacion, edicion, reagendamiento, completado, cancelacion sin delete y no efectos colaterales pasan en Supabase local. Queda pendiente revision visual autenticada del modal/formulario. Agenda aun no tiene API publica real, Google Calendar, Gmail ni produccion habilitada.
+
+UI-026 mejora el modal de Agenda con seleccion de fecha por calendario, hora de inicio en intervalos de 15 minutos, duracion por opciones controladas y fin calculado. Para consultas se usa duracion estandar de 60 minutos y buffer operativo de 15 minutos en la validacion de solapamientos.
 
 Este diseno es bloqueo previo para `BE-026`, porque el contrato publico debe crear solicitudes de agenda y no consultas clinicas directas.
 

@@ -417,6 +417,24 @@ Informe relacionado: `auditorias/UI-025B_EDICION_CONTROLADA_AGENDA_OPERATIVA.md`
 
 Resultado relacionado: `QA-008` valido operaciones locales de Agenda, permisos y no efectos colaterales. Queda pendiente validacion visual autenticada del modal/formulario antes de evaluar API publica o integraciones Google.
 
+## UI-026 - Selector calendario/horario Agenda
+
+**Estado:** Implementada en rama / pendiente revision
+**Prioridad:** Alta
+**Responsable:** UI / UX / Integracion Backend
+**Origen:** QA-008 / UI-025B
+**Fecha:** 2026-07-02
+
+`AgendaPage` reemplaza el ingreso combinado de fecha/hora por selector de fecha, selector de hora en intervalos de 15 minutos, duracion controlada y fin calculado.
+
+Correccion post revision visual: el campo Fecha incorpora accion visible `Elegir fecha`, con apertura de calendario nativo mediante `showPicker()` cuando el navegador lo permite y fallback seguro.
+
+La duracion estandar de consulta queda en 60 minutos y se aplica un buffer operativo de 15 minutos para validar solapamientos cuando participa una consulta.
+
+No se agregan librerias, API publica, Google Calendar/Gmail, migraciones ni cambios de Auth/RLS.
+
+Informe relacionado: `auditorias/UI-026_SELECTOR_CALENDARIO_HORARIO_AGENDA.md`
+
 ## CTRL-008 - Decisiones UI derivadas post auditoria
 
 **Estado:** Propuesta documental / pendiente integracion
