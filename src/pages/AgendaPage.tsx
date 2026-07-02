@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import type { FormEvent } from 'react'
 import { Ban, CalendarClock, CheckCircle2, Pencil, Plus, RotateCcw, Save, X } from 'lucide-react'
 import { supabase } from '../lib/supabase'
@@ -383,6 +383,24 @@ function formatearDuracion(minutos: number) {
   return resto ? `${horas} h ${resto} min` : `${horas} h`
 }
 
+function formatearFechaSeleccionada(fecha: string) {
+  if (!fecha) {
+    return 'Selecciona una fecha desde el calendario'
+  }
+
+  const fechaAgenda = new Date(`${fecha}T00:00:00`)
+
+  if (Number.isNaN(fechaAgenda.getTime())) {
+    return 'Selecciona una fecha desde el calendario'
+  }
+
+  return `Fecha seleccionada: ${new Intl.DateTimeFormat('es-CL', {
+    day: 'numeric',
+    month: 'short',
+    year: 'numeric',
+  }).format(fechaAgenda)}`
+}
+
 function textoCorto(texto: string, largo = 130) {
   const limpio = texto.trim()
   return limpio.length > largo ? `${limpio.slice(0, largo - 1)}...` : limpio
@@ -443,6 +461,7 @@ function AgendaPage() {
   const [modoFormulario, setModoFormulario] = useState<ModoFormularioAgenda>('crear')
   const [eventoSeleccionado, setEventoSeleccionado] = useState<AgendaOperativa | null>(null)
   const [formularioEvento, setFormularioEvento] = useState<AgendaEventoForm>(() => crearFormularioEventoInicial())
+  const fechaInputRef = useRef<HTMLInputElement | null>(null)
 
   const agendaFiltrada = useMemo(() => {
     const filtroTexto = normalizarTexto(busqueda.trim())
@@ -595,6 +614,27 @@ function AgendaPage() {
     setFormularioAbierto(false)
     setEventoSeleccionado(null)
     setMensajeFormulario('')
+  }
+
+  function abrirSelectorFecha() {
+    const inputFecha = fechaInputRef.current
+
+    if (!inputFecha || guardando) {
+      return
+    }
+
+    inputFecha.focus()
+
+    try {
+      if (typeof inputFecha.showPicker === 'function') {
+        inputFecha.showPicker()
+        return
+      }
+    } catch {
+      // Fallback para navegadores sin picker nativo expuesto.
+    }
+
+    inputFecha.click()
   }
 
   function detectarSolapamiento(fechaInicioIso: string, fechaFinIso: string, tipoEvento: TipoEventoAgenda) {
@@ -1120,14 +1160,29 @@ function AgendaPage() {
               <div className="clinical-grid">
                 <label className="clinical-field">
                   <span>Fecha</span>
-                  <input
-                    className="clinical-input"
-                    disabled={guardando}
-                    required
-                    type="date"
-                    value={formularioEvento.fecha_evento}
-                    onChange={(event) => actualizarFormulario('fecha_evento', event.target.value)}
-                  />
+                  <div className="clinical-date-picker">
+                    <input
+                      ref={fechaInputRef}
+                      aria-describedby="agenda-fecha-ayuda"
+                      className="clinical-input clinical-input--date"
+                      disabled={guardando}
+                      inputMode="none"
+                      required
+                      type="date"
+                      value={formularioEvento.fecha_evento}
+                      onChange={(event) => actualizarFormulario('fecha_evento', event.target.value)}
+                    />
+                    <button
+                      className="clinical-button clinical-button--secondary clinical-button--compact clinical-date-picker__button"
+                      type="button"
+                      disabled={guardando}
+                      onClick={abrirSelectorFecha}
+                    >
+                      <CalendarClock aria-hidden="true" />
+                      Elegir fecha
+                    </button>
+                  </div>
+                  <small id="agenda-fecha-ayuda">{formatearFechaSeleccionada(formularioEvento.fecha_evento)}</small>
                 </label>
 
                 <label className="clinical-field">

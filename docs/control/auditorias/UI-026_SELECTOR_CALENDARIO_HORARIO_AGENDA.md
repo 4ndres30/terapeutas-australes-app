@@ -90,6 +90,21 @@ Si hay cruce, el formulario muestra:
 El horario seleccionado se cruza con otro evento o con el espacio de 15 minutos entre consultas.
 ```
 
+## Correccion post revision visual
+
+Se agrega un disparador explicito `Elegir fecha` junto al campo Fecha para que el usuario entienda que debe abrir el calendario y no escribir la fecha completa manualmente.
+
+Se mantiene `input type="date"` nativo, sin dependencia externa ni datepicker de terceros.
+
+La accion usa `HTMLInputElement.showPicker()` cuando esta disponible. Si el navegador no lo expone, aplica fallback con `focus()` y `click()` sobre el input date.
+
+Se muestra un resumen legible:
+
+- `Fecha seleccionada: 20 jul 2026` cuando existe fecha.
+- `Selecciona una fecha desde el calendario` cuando no existe fecha.
+
+Se mantienen la duracion estandar de consulta de 60 minutos y el buffer operativo de 15 minutos.
+
 ## Archivos modificados
 
 - `src/pages/AgendaPage.tsx`
@@ -123,6 +138,8 @@ La validacion de solapamiento usa los eventos visibles/cargados en la Agenda. No
 ## Resultado
 
 UI-026 deja el modal de Agenda con selector calendario, selector de hora, duracion controlada, fin calculado y validacion basica de solapamiento con buffer de consulta.
+
+Post revision visual, el selector de fecha queda reforzado con boton visible `Elegir fecha` y apertura programatica del calendario nativo cuando el navegador lo permite.
 
 No se modifican migraciones, Auth/RLS, Supabase remoto, API publica, Google ni produccion.
 

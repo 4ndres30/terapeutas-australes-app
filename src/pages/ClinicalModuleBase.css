@@ -314,6 +314,24 @@
   width: 100%;
 }
 
+.clinical-date-picker {
+  align-items: stretch;
+  display: grid;
+  gap: 8px;
+  grid-template-columns: minmax(0, 1fr) auto;
+  min-width: 0;
+  width: 100%;
+}
+
+.clinical-input--date {
+  cursor: pointer;
+}
+
+.clinical-date-picker__button {
+  align-self: stretch;
+  white-space: nowrap;
+}
+
 .clinical-checkbox {
   align-items: center;
   background: rgba(255, 255, 255, 0.75);
@@ -630,5 +648,9 @@
 
   .clinical-actions--end .clinical-button {
     flex: 1 1 100%;
+  }
+
+  .clinical-date-picker {
+    grid-template-columns: 1fr;
   }
 }

@@ -1613,3 +1613,34 @@ Solo UI interna y documentacion. Sin migraciones, sin Supabase remoto, sin API p
 ### Resultado
 
 Agenda interna mantiene creacion, edicion, reagendamiento, cancelacion y completado, con fecha/hora controlada y validacion basica de solapamientos desde la agenda cargada.
+
+## LOG-039 - UI-026 ajuste selector calendario visible
+
+**Estado:** Registrado
+**Prioridad:** Alta
+**Responsable:** UI / UX / Integracion Backend
+**Origen:** Revision visual humana PR #48 / UI-026
+**Fecha creacion:** 2026-07-02
+**Rama usada:** `ui-026-selector-calendario-horario-agenda`
+
+### Resumen
+
+Se ajusta el campo Fecha para que tenga accion explicita `Elegir fecha`.
+
+Se mantiene selector de hora, duracion controlada y buffer operativo.
+
+### Archivos relacionados
+
+- `src/pages/AgendaPage.tsx`
+- `src/pages/ClinicalModuleBase.css`
+- `docs/control/auditorias/UI-026_SELECTOR_CALENDARIO_HORARIO_AGENDA.md`
+- `docs/control/04_UI_UX_PULIDO_VISUAL.md`
+- `docs/control/06_BITACORA_CAMBIOS.md`
+
+### Restricciones
+
+Sin migraciones, sin Supabase remoto, sin API publica, sin Google y sin produccion.
+
+### Resultado
+
+El modal mantiene `input type="date"` nativo sin dependencia externa, pero agrega boton visible para abrir el calendario mediante `showPicker()` con fallback `focus()`/`click()`.

@@ -427,6 +427,8 @@ Resultado relacionado: `QA-008` valido operaciones locales de Agenda, permisos y
 
 `AgendaPage` reemplaza el ingreso combinado de fecha/hora por selector de fecha, selector de hora en intervalos de 15 minutos, duracion controlada y fin calculado.
 
+Correccion post revision visual: el campo Fecha incorpora accion visible `Elegir fecha`, con apertura de calendario nativo mediante `showPicker()` cuando el navegador lo permite y fallback seguro.
+
 La duracion estandar de consulta queda en 60 minutos y se aplica un buffer operativo de 15 minutos para validar solapamientos cuando participa una consulta.
 
 No se agregan librerias, API publica, Google Calendar/Gmail, migraciones ni cambios de Auth/RLS.
