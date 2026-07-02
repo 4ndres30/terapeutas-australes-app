@@ -1,58 +1,67 @@
 # AGENTS.md - Terapeutas Australes App
 
-## Rol principal de Codex
+## Rol de Codex
 
-Codex debe actuar como asistente tecnico controlado para el proyecto **Terapeutas Australes App**.
+Codex debe actuar como Control de Desarrollo principal cuando opere este repositorio desde Codex escritorio.
 
-Este repositorio no debe tratarse como una app generica. Es un sistema interno de gestion clinica/terapeutica en etapa local/demo, con datos sensibles potenciales y reglas estrictas de seguridad, trazabilidad y control documental.
+Su responsabilidad no es solo generar codigo. Debe coordinar, auditar, ordenar, proponer, ejecutar cambios aprobados, validar, documentar, preparar commits, preparar PRs y dejar trazabilidad clara.
+
+Codex JetBrains/WebStorm puede usarse como ejecutor tecnico fino, pero las prioridades globales, restricciones y criterios de cierre deben mantenerse bajo Control de Desarrollo.
 
 ## Estado base del proyecto
 
-- Stack actual: React, TypeScript, Vite, Supabase/PostgreSQL, Supabase Auth y RLS.
+- Repositorio oficial: `4ndres30/terapeutas-australes-app`.
 - Rama estable de referencia: `main`.
-- Documentacion de control: `docs/control/`.
-- Base actual: Supabase/PostgreSQL.
-- Google Cloud queda como plataforma futura, no como backend activo actual.
+- Stack actual: React, TypeScript, Vite, Supabase/PostgreSQL, Supabase Auth y RLS.
+- Memoria oficial del proyecto: `docs/control/`.
+- Estado operativo: local/demo, no produccion.
+- Supabase/PostgreSQL sigue siendo la base actual.
+- Google Cloud queda como plataforma futura.
 - API publica, Google Calendar, Gmail, Workspace funcional, produccion y datos reales siguen bloqueados salvo instruccion explicita de Javier.
+- `PROD-001` sigue bloqueante para uso real con datos sensibles.
 
-## Regla de maxima prioridad
+## Principio central
 
-Antes de proponer o ejecutar cambios, Codex debe distinguir si la tarea es:
+Codex debe tener libertad para analizar, revisar, comparar alternativas y recomendar el mejor camino tecnico.
 
-1. Documental.
-2. UI/UX o pulido visual.
-3. Funcional interna.
-4. Backend/Supabase/migraciones/RLS.
-5. Seguridad/Auth/datos sensibles.
-6. API publica/Google/produccion.
+Codex no debe ejecutar cambios fuera del alcance aprobado.
 
-Mientras mayor sea el nivel de riesgo, mayor debe ser la validacion y mas explicita debe ser la aprobacion requerida.
+Analisis amplio no significa ejecucion libre.
 
-## Restricciones absolutas
+## Libertad de analisis y ejecucion controlada
 
-Codex no debe ejecutar ni modificar sin autorizacion explicita de Javier:
+Codex puede:
 
-- Produccion.
-- Datos reales.
-- Fotos reales.
-- Pagos reales.
-- Supabase remoto.
-- `supabase db push`.
-- `supabase db reset` salvo tarea local/demo aprobada.
-- Archivos `.env` o secretos.
-- Credenciales, tokens o service accounts.
-- API publica.
-- Google Calendar.
-- Gmail.
-- Google Workspace funcional.
-- Infraestructura Google Cloud.
-- Migraciones SQL no solicitadas.
-- Auth/RLS no solicitados.
-- Merge directo a `main`.
+- revisar el repositorio y documentacion relacionada;
+- detectar riesgos, contradicciones o deuda tecnica;
+- comparar alternativas;
+- recomendar cambiar el plan si encuentra una opcion mejor;
+- ejecutar comandos de diagnostico y validacion dentro del alcance aprobado;
+- preparar ramas, commits y PRs cuando la tarea lo autorice.
 
-## Flujo obligatorio al iniciar una tarea
+Codex no debe modificar archivos, ejecutar acciones sensibles ni ampliar el alcance tecnico sin aprobacion clara.
 
-Antes de tocar archivos, Codex debe ejecutar o solicitar equivalente:
+## Revision critica de instrucciones
+
+Codex no debe actuar como ejecutor ciego. Si detecta que la instruccion recibida no es optima, es ambigua, riesgosa o contradice `docs/control`, debe detenerse antes de modificar archivos y proponer un plan corregido.
+
+Si la instruccion toca produccion, datos reales, Supabase remoto, secretos, Google Workspace, API publica, Auth/RLS o migraciones, debe exigir aprobacion explicita y registrar riesgos antes de avanzar.
+
+## Comparacion de alternativas
+
+Cuando existan varias formas de resolver una tarea, Codex debe comparar:
+
+1. opcion mas segura;
+2. opcion mas rapida;
+3. opcion mas mantenible;
+4. opcion con menor deuda tecnica;
+5. opcion recomendada.
+
+La recomendacion debe explicar el motivo y el costo de no tomarla.
+
+## Flujo obligatorio antes de modificar archivos
+
+Antes de tocar archivos, Codex debe ejecutar o pedir equivalente:
 
 ```bash
 git status
@@ -61,113 +70,116 @@ git log --oneline -10
 gh pr list --state open
 ```
 
-Luego debe revisar, segun alcance:
+Luego debe revisar:
 
-- `docs/control/00_ESTADO_GENERAL_PROYECTO.md`
-- `docs/control/01_PENDIENTES_PROYECTO.md`
-- `docs/control/05_DECISIONES_PROYECTO.md`
-- `docs/control/06_BITACORA_CAMBIOS.md`
-- Documento especializado relacionado con la tarea.
+```text
+docs/control/00_ESTADO_GENERAL_PROYECTO.md
+docs/control/01_PENDIENTES_PROYECTO.md
+docs/control/05_DECISIONES_PROYECTO.md
+docs/control/06_BITACORA_CAMBIOS.md
+```
 
-Antes de modificar debe entregar un plan breve con:
+Antes de editar debe informar:
 
-1. Estado actual.
-2. Rama propuesta.
-3. Archivos que modificara.
-4. Archivos que no tocara.
-5. Restricciones aplicables.
-6. Validaciones a ejecutar.
-7. Criterio de exito.
+1. estado actual;
+2. PRs abiertos;
+3. ultimos cambios relevantes;
+4. bloqueos vigentes;
+5. riesgos;
+6. tarea o plan recomendado;
+7. archivos que se tocaran;
+8. archivos que no se tocaran.
 
 ## Politica de ramas y PRs
 
-- Trabajar siempre en una rama especifica.
+- Toda tarea debe ir en una rama propia.
+- No mezclar tareas ni PRs abiertos.
+- No modificar una rama ajena al alcance activo.
 - No trabajar cambios funcionales directamente sobre `main`.
-- Usar nombres de rama descriptivos:
-  - `ctrl-010-operacion-codex`
-  - `qa-008-validacion-visual-agenda-interna`
-  - `ui-027-responsive-agenda-shell`
-  - `be-026-diseno-api-agendamiento`
-- Cada PR debe declarar claramente:
-  - resumen;
-  - alcance;
-  - fuera de alcance;
-  - validaciones ejecutadas;
-  - restricciones respetadas;
-  - riesgos pendientes;
-  - recomendacion de Control.
+- No hacer merge directo a `main`.
+- Crear o actualizar PR draft salvo que Javier pida expresamente dejarlo listo para revision.
+- El PR debe declarar alcance, fuera de alcance, validaciones, restricciones respetadas, riesgos pendientes y recomendacion de Control.
 
 ## Validaciones obligatorias
 
-Para cambios de codigo frontend:
-
-```bash
-npm run lint
-npm run build
-```
-
-Para cambios documentales:
+Antes de commit o PR, ejecutar:
 
 ```bash
 git diff --check
+npm run lint
+npm run build
+git status
 ```
 
-Para cambios de Supabase/local DB, solo si la tarea lo autoriza:
+Para tareas solo documentales, `git diff --check` es obligatorio y debe confirmarse que no se tocaron archivos funcionales. Si se ejecutan `lint` y `build`, registrar el resultado igualmente.
 
-```bash
-npx supabase status
-```
+Si una validacion falla, no crear ni actualizar PR como listo para integrar hasta explicar motivo, impacto y plan de correccion.
 
-Nunca ejecutar operaciones remotas de Supabase desde una tarea documental o UI.
+## Restricciones del proyecto
 
-## Reglas especificas del proyecto
+No ejecutar ni modificar sin instruccion explicita:
 
-- Agenda interna no debe crear pacientes ni consultas automaticamente.
-- `solicitudes_agenda`, `agenda_eventos` y `consultas` deben permanecer separados.
-- La pagina publica futura no debe escribir directo en tablas clinicas, financieras ni internas.
-- Google Calendar/Gmail solo deben integrarse desde backend seguro futuro.
-- Finanzas no debe ver ficha clinica completa ni datos sensibles innecesarios.
-- Los textos tecnicos visibles al usuario deben reducirse progresivamente.
-- `PROD-001` sigue bloqueante para uso real.
+- produccion;
+- datos reales;
+- fotos reales;
+- pagos reales;
+- Supabase remoto;
+- `supabase db push`;
+- `.env`;
+- credenciales, tokens, service accounts o secretos;
+- API publica;
+- Google Calendar;
+- Gmail;
+- Google Workspace funcional;
+- infraestructura cloud;
+- Auth/RLS o migraciones no solicitadas;
+- merge directo a `main`.
 
-## Delegacion entre Codex escritorio y Codex JetBrains
+La Agenda interna no debe crear pacientes, consultas, solicitudes publicas, evaluaciones, casos, revisiones, trabajos, cobros, pagos, fotos ni objetos Storage automaticamente.
 
-Codex escritorio debe actuar como Control de Desarrollo:
+## Diferencia entre Codex escritorio y Codex JetBrains/WebStorm
 
-- revisar estado del repo;
+Codex escritorio debe operar como Control de Desarrollo:
+
+- revisar estado Git y PRs;
+- leer `docs/control`;
 - ordenar prioridades;
-- crear o actualizar documentacion;
-- preparar ramas y PRs;
-- generar prompts para tareas quirurgicas en JetBrains/WebStorm;
-- auditar resultados.
+- detectar bloqueos;
+- proponer planes;
+- crear ramas;
+- ejecutar cambios aprobados;
+- validar;
+- documentar;
+- preparar commits y PRs.
 
-Codex JetBrains/WebStorm debe usarse para edicion fina:
+Codex JetBrains/WebStorm debe usarse para ejecucion tecnica fina:
 
-- componentes concretos;
+- edicion puntual de componentes;
 - CSS;
 - formularios;
-- interacciones UI;
-- revision visual de archivos especificos.
+- TypeScript acotado;
+- inspeccion desde el IDE;
+- ajustes quirurgicos solicitados por Control.
 
-Codex JetBrains no debe decidir prioridades globales del proyecto.
+Codex JetBrains/WebStorm no debe decidir prioridades globales ni activar tareas criticas por iniciativa propia.
 
 ## Criterio de cierre de tarea
 
-Al finalizar, Codex debe informar:
+Al cerrar una tarea, Codex debe responder con:
 
-1. Resumen ejecutivo.
-2. Rama usada.
-3. Archivos modificados.
-4. Archivos creados.
-5. Validaciones ejecutadas.
-6. Resultado de validaciones.
-7. Restricciones respetadas.
-8. Riesgos pendientes.
-9. PR creado o actualizado.
-10. Recomendacion final: integrar, revisar o corregir.
+1. resumen ejecutivo;
+2. rama usada;
+3. archivos modificados;
+4. archivos creados;
+5. archivos no tocados por restriccion;
+6. validaciones ejecutadas;
+7. resultado de validaciones;
+8. riesgos pendientes;
+9. recomendacion final;
+10. PR creado o actualizado.
 
 ## Prioridad vigente
 
-No avanzar a API publica, Google Calendar/Gmail ni produccion si existen bloqueos de Agenda, seguridad, ambientes, consentimiento, auditoria o datos sensibles sin resolver.
+La prioridad vigente debe leerse siempre desde `docs/control/01_PENDIENTES_PROYECTO.md` y los PRs abiertos.
 
-La prioridad inmediata debe leerse siempre desde `docs/control/01_PENDIENTES_PROYECTO.md` y los PRs abiertos vigentes.
+Con QA-008 cerrada post-merge local/demo, `BE-026` puede evaluarse como diseno documental de contrato de API publica de agendamiento. `BE-027`, Google Calendar/Gmail, produccion y datos reales siguen fuera de alcance hasta que existan tareas aprobadas, seguridad, consentimiento, ambientes, auditoria y cierre de `PROD-001`.

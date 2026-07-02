@@ -1,46 +1,66 @@
 # Prompts operativos para Codex
 
-## Uso
+Estos prompts son reutilizables por Javier para operar Codex como Control de Desarrollo dentro de **Terapeutas Australes App**.
 
-Estos prompts ayudan a operar Codex como herramienta de desarrollo controlado en Terapeutas Australes App.
-
-Deben usarse junto con:
+Usar junto con:
 
 - `AGENTS.md`
 - `docs/control/10_OPERACION_CODEX.md`
 - `docs/control/00_ESTADO_GENERAL_PROYECTO.md`
 - `docs/control/01_PENDIENTES_PROYECTO.md`
 
-## Prompt base - Control de Desarrollo
+## Prompt base - Revisar estado del repositorio
 
 ```text
 Actua como Control de Desarrollo principal del proyecto Terapeutas Australes App.
 
-Antes de modificar archivos, revisa:
+Antes de modificar archivos, ejecuta:
 
-1. Estado Git.
-2. Rama actual.
-3. Ultimos commits.
-4. PRs abiertos.
-5. Documentacion maestra en docs/control.
+git status
+git branch --show-current
+git log --oneline -10
+gh pr list --state open
 
-Entrega primero:
+Luego revisa docs/control/00_ESTADO_GENERAL_PROYECTO.md, 01_PENDIENTES_PROYECTO.md, 05_DECISIONES_PROYECTO.md y 06_BITACORA_CAMBIOS.md.
 
-1. Estado actual del repositorio.
+Entregame:
+
+1. Estado actual.
 2. PRs abiertos.
-3. Ultimos PRs integrados relevantes.
+3. Ultimos cambios relevantes.
 4. Bloqueos vigentes.
 5. Riesgos detectados.
 6. Siguiente tarea recomendada.
 7. Rama propuesta.
-8. Archivos que modificarias.
-9. Archivos que no tocaras.
+8. Archivos que tocarias.
+9. Archivos que no tocarias.
 10. Validaciones necesarias.
 
-No modifiques archivos hasta que apruebe el plan.
+No modifiques archivos.
 ```
 
-## Prompt - Tarea documental
+## Prompt - Preparar plan de tarea
+
+```text
+Control, prepara plan para [CODIGO - TAREA].
+
+No modifiques archivos todavia.
+
+Incluye:
+
+1. Objetivo.
+2. Rama propuesta.
+3. Nivel de riesgo.
+4. Alternativas posibles.
+5. Opcion recomendada.
+6. Archivos permitidos.
+7. Archivos prohibidos.
+8. Restricciones aplicables.
+9. Validaciones.
+10. Criterio de exito.
+```
+
+## Prompt - Ejecutar tarea documental
 
 ```text
 Control, ejecuta la tarea documental [CODIGO - NOMBRE].
@@ -48,13 +68,18 @@ Control, ejecuta la tarea documental [CODIGO - NOMBRE].
 Alcance:
 
 - Solo documentacion.
-- Mantener el cambio acotado.
-- No mezclar con implementacion funcional.
-- No habilitar capacidades nuevas.
+- Rama propia.
+- No modificar codigo funcional.
+- No modificar migraciones.
+- No tocar .env.
+- No tocar Supabase remoto.
+- No crear API publica.
+- No integrar Google.
+- No habilitar produccion ni datos reales.
 
-Antes de cerrar, revisa el diff y confirma que el cambio coincide con el alcance aprobado.
+Al cierre ejecuta git diff --check, npm run lint, npm run build y git status si aplica al flujo acordado.
 
-Entrega resumen final con archivos modificados, validaciones y PR creado o actualizado.
+Crea o actualiza PR draft contra main. No hagas merge.
 ```
 
 ## Prompt - Generar prompt para Codex JetBrains/WebStorm
@@ -67,55 +92,24 @@ Tarea: [DESCRIBIR TAREA]
 El prompt debe incluir:
 
 - objetivo tecnico;
-- contexto del proyecto;
+- contexto minimo;
 - archivos permitidos;
 - archivos prohibidos;
 - restricciones aplicables;
 - pasos de validacion;
 - criterios de aceptacion;
 - respuesta final esperada;
-- indicacion de no hacer commit ni push salvo autorizacion.
+- instruccion de no hacer commit, push ni merge salvo autorizacion.
 
 No ejecutes la tarea. Solo genera el prompt para revision.
 ```
 
-## Prompt - UI/UX o pulido visual
-
-```text
-Actua como Codex JetBrains/WebStorm para una tarea UI/UX acotada.
-
-Objetivo:
-[OBJETIVO]
-
-Archivos permitidos:
-[LISTA]
-
-Archivos prohibidos:
-[LISTA]
-
-Reglas:
-
-- No cambiar modelo de datos.
-- No modificar flujo clinico sin aprobacion.
-- Mantener microcopy claro para usuarios.
-- Ejecutar validaciones del proyecto si se modifica codigo.
-- No hacer commit ni push hasta aprobacion.
-
-Entrega:
-
-1. Cambios aplicados.
-2. Archivos modificados.
-3. Validaciones ejecutadas.
-4. Riesgos pendientes.
-5. Recomendacion.
-```
-
-## Prompt - QA funcional local
+## Prompt - Ejecutar QA funcional local
 
 ```text
 Control, prepara y ejecuta QA funcional local para [MODULO/TAREA].
 
-Validar:
+Valida:
 
 - funcionalidad esperada;
 - permisos por rol si aplica;
@@ -124,15 +118,16 @@ Validar:
 - alcance aprobado;
 - evidencia de pruebas.
 
-No corrijas bugs dentro del mismo PR salvo autorizacion. Registra hallazgos y propone tareas derivadas.
+No corrijas bugs dentro del mismo PR salvo autorizacion.
 
-Entregar:
+Entrega:
 
 1. Informe QA.
-2. Evidencia de validaciones.
+2. Evidencia.
 3. Hallazgos por severidad.
 4. Bloqueos.
-5. Recomendacion de siguiente paso.
+5. Riesgos.
+6. Recomendacion.
 ```
 
 ## Prompt - Revisar PR antes de integrar
@@ -144,12 +139,37 @@ Evalua:
 
 - alcance real;
 - archivos modificados;
-- si coincide con el resumen;
+- coincidencia con el resumen;
 - restricciones respetadas;
 - validaciones ejecutadas;
 - riesgos;
-- si debe pasar de draft a ready;
-- si se recomienda integrar o pedir cambios.
+- conflictos o dependencia con otros PRs;
+- si debe seguir draft o pasar a ready;
+- si recomiendas integrar o pedir cambios.
 
-No hagas merge. Presenta analisis para revision de Javier.
+No hagas merge. Presenta analisis para Javier.
+```
+
+## Prompt - Cerrar tarea y preparar PR
+
+```text
+Control, cierra la tarea actual.
+
+Ejecuta:
+
+git diff --check
+npm run lint
+npm run build
+git status
+
+Luego:
+
+1. Revisa el diff.
+2. Confirma que no hay archivos fuera de alcance.
+3. Crea commit con mensaje claro.
+4. Sube la rama.
+5. Crea o actualiza PR draft contra main.
+6. No hagas merge.
+
+Entrega resumen final con rama, commit, archivos, validaciones, resultado, riesgos pendientes y PR.
 ```

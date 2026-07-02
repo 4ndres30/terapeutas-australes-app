@@ -1,36 +1,44 @@
 # Configuracion local recomendada para Codex
 
-Esta carpeta documenta como usar Codex dentro del proyecto **Terapeutas Australes App**.
-
 ## Proposito
 
-- Centralizar comandos utiles.
-- Evitar repetir instrucciones largas en cada thread.
-- Mantener Codex alineado con `AGENTS.md` y `docs/control`.
-- Separar configuracion operativa de instrucciones de comportamiento.
+La carpeta `.codex` documenta recomendaciones locales para usar Codex dentro de **Terapeutas Australes App** sin mezclar instrucciones operativas con codigo funcional.
 
-## Archivo principal
+Debe servir para:
 
-Las instrucciones que Codex debe cargar automaticamente estan en:
+- orientar el uso de Codex escritorio;
+- orientar el uso de Codex JetBrains/WebStorm;
+- registrar comandos de diagnostico utiles;
+- recordar restricciones de seguridad;
+- evitar repetir instrucciones largas en cada thread.
 
-```text
-AGENTS.md
-```
+## Relacion con AGENTS.md
 
-Ese archivo contiene las reglas principales del repositorio.
+`AGENTS.md` es el contrato persistente principal del repositorio y debe tener prioridad sobre esta carpeta.
+
+`.codex/README.md` solo explica convenciones locales recomendadas. Si hay contradiccion, Codex debe detenerse, revisar `docs/control` y pedir confirmacion antes de modificar archivos.
 
 ## Acciones locales recomendadas
 
-Configurar en Codex escritorio acciones equivalentes a:
+Acciones utiles para tener configuradas en Codex escritorio o en el IDE:
 
 ```bash
 npm install
+npm run dev
 npm run lint
 npm run build
-npm run dev
 ```
 
-Acciones de diagnostico recomendadas:
+Para tareas documentales, priorizar:
+
+```bash
+git diff --check
+git status
+```
+
+## Comandos de diagnostico
+
+Comandos base antes de iniciar tareas:
 
 ```bash
 git status
@@ -39,31 +47,44 @@ git log --oneline -10
 gh pr list --state open
 ```
 
-## Uso recomendado
+Comandos utiles para revisar ramas y PRs:
 
-### Control de Desarrollo
+```bash
+git fetch origin
+git branch --all
+gh pr list --state open --draft
+```
 
-Usar Codex escritorio para:
+## Uso recomendado de Codex escritorio
 
-- revisar estado del repo;
-- coordinar tareas;
-- crear ramas;
-- preparar PRs;
-- registrar auditorias;
-- generar prompts para WebStorm.
+Usar Codex escritorio como Control de Desarrollo:
 
-### Edicion fina
+- revisar estado del repositorio;
+- revisar PRs abiertos;
+- leer `docs/control`;
+- detectar bloqueos;
+- proponer planes;
+- crear ramas de trabajo;
+- ejecutar cambios aprobados;
+- validar;
+- preparar commit y PR draft;
+- dejar trazabilidad.
 
-Usar Codex JetBrains/WebStorm para:
+## Uso recomendado de Codex JetBrains/WebStorm
 
-- cambios concretos en componentes;
+Usar Codex JetBrains/WebStorm para ejecucion tecnica fina:
+
+- componentes concretos;
 - CSS;
 - formularios;
-- revision visual;
-- ajustes TypeScript acotados.
+- TypeScript acotado;
+- revision visual dentro del IDE;
+- cambios quirurgicos indicados por Control.
 
-## Precaucion
+El IDE no debe usarse para decidir prioridades globales, saltar validaciones ni abrir tareas criticas sin autorizacion.
 
-No almacenar credenciales, tokens, claves ni configuracion privada dentro de esta carpeta.
+## Precaucion sobre secretos
 
-Este directorio debe contener solo documentacion o configuracion segura del flujo de trabajo.
+`.codex` no debe guardar claves, tokens, contrasenas, service accounts, datos privados, datos reales ni credenciales.
+
+No versionar secretos. No copiar contenido de `.env`. No registrar informacion sensible de pacientes, pagos, fotos ni usuarios reales.
