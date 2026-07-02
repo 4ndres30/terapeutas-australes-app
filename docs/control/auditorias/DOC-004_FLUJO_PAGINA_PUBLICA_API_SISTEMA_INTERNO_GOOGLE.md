@@ -94,16 +94,18 @@ Estados internos siguen el modelo ya validado por Agenda interna y no deben expo
 
 ## Consentimiento
 
-BE-020 debe definir:
+BE-020 define la base documental pendiente de validacion clinica/legal para:
 
-- texto o referencia del consentimiento;
-- forma de aceptacion;
+- finalidades de tratamiento;
+- datos permitidos y prohibidos;
+- forma de aceptacion futura;
 - version aceptada;
 - fecha/hora;
-- IP o evidencia tecnica si corresponde;
-- relacion con solicitud, paciente o consulta.
+- canal de aceptacion;
+- relacion con solicitud, paciente o consulta;
+- revocacion, rechazo o reemplazo.
 
-DOC-004 no cierra BE-020.
+DOC-004 no implementa BE-020 ni reemplaza validacion legal/clinica.
 
 ## Disponibilidad publica
 

@@ -1937,3 +1937,48 @@ DOC-004 define que la pagina publica envia datos minimos a una API futura, la AP
 DOC-004 queda como documento de flujo / pendiente implementacion futura.
 
 La implementacion real debe esperar BE-020, SEC-005, BE-018, DOC-001, DOC-003, BE-027, SEC-010 y PROD-001.
+
+## LOG-046 - BE-020 consentimiento y tratamiento de datos
+
+**Estado:** Documentado
+**Prioridad:** Alta
+**Responsable:** Control de desarrollo / Revision Clinica / Backend
+**Origen:** BE-020 / PROD-001 / SEC-001 / API-001 / DOC-004
+**Fecha creacion:** 2026-07-02
+**Rama usada:** `be-020-consentimiento-tratamiento-datos`
+
+### Resumen
+
+Se documenta la base operativa para consentimiento informado y tratamiento de datos antes de usar pacientes reales, API publica real o integracion Google funcional.
+
+BE-020 define finalidades de tratamiento, datos permitidos y prohibidos, evidencia minima de aceptacion, estados conceptuales, reglas para Finanzas, fotos/archivos y Google, y mantiene la necesidad de validacion clinica/legal antes de uso real.
+
+### Archivos relacionados
+
+- `docs/control/auditorias/BE-020_CONSENTIMIENTO_TRATAMIENTO_DATOS.md`
+- `docs/control/auditorias/DOC-004_FLUJO_PAGINA_PUBLICA_API_SISTEMA_INTERNO_GOOGLE.md`
+- `docs/control/00_ESTADO_GENERAL_PROYECTO.md`
+- `docs/control/01_PENDIENTES_PROYECTO.md`
+- `docs/control/03_INTEGRACION_BACKEND_ESTRUCTURA.md`
+- `docs/control/05_DECISIONES_PROYECTO.md`
+- `docs/control/06_BITACORA_CAMBIOS.md`
+
+### Restricciones respetadas
+
+- No se creo API publica funcional.
+- No se crearon endpoints.
+- No se modifico codigo fuente.
+- No se modificaron migraciones.
+- No se ejecuto SQL.
+- No se toco `.env`.
+- No se uso Supabase remoto.
+- No se ejecuto `supabase db push`.
+- No se integro Google Calendar, Gmail ni Workspace.
+- No se habilito produccion.
+- No se usaron datos reales.
+
+### Resultado
+
+BE-020 queda como diseno documental base / pendiente validacion clinica y legal.
+
+La implementacion real debe esperar SEC-005, BE-018, DOC-001, DOC-003, definicion tecnica de almacenamiento, validacion clinica/legal y PROD-001.
