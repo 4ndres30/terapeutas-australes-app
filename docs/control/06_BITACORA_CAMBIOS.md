@@ -2029,3 +2029,50 @@ SEC-005 define eventos sensibles por area funcional, datos minimos por evento, d
 SEC-005 queda como diseno documental / pendiente implementacion futura.
 
 La implementacion real debe esperar BE-021, BE-018, DOC-001, DOC-003, diseno tecnico de tabla/RLS/triggers, QA runtime y PROD-001.
+
+## LOG-048 - BE-021 politica de anulacion vs eliminacion
+
+**Estado:** Documentado
+**Prioridad:** Media-alta
+**Responsable:** Control de desarrollo / Backend
+**Origen:** BE-021 / PROD-001 / SEC-001 / SEC-002 / SEC-004 / SEC-005
+**Fecha creacion:** 2026-07-02
+**Rama usada:** `be-021-politica-anulacion-eliminacion`
+
+### Resumen
+
+Se documenta la politica transversal para correccion, anulacion logica y eliminacion fisica excepcional.
+
+BE-021 define que produccion no debe usar delete fisico operativo para datos clinicos, financieros, fotos, consentimientos, auditoria ni usuarios internos. La anulacion logica queda como mecanismo normal y la eliminacion fisica queda limitada a casos excepcionales, autorizados y auditados.
+
+### Archivos relacionados
+
+- `docs/control/auditorias/BE-021_POLITICA_ANULACION_ELIMINACION.md`
+- `docs/control/auditorias/SEC-005_AUDITORIA_CAMBIOS_SENSIBLES.md`
+- `docs/control/00_ESTADO_GENERAL_PROYECTO.md`
+- `docs/control/01_PENDIENTES_PROYECTO.md`
+- `docs/control/03_INTEGRACION_BACKEND_ESTRUCTURA.md`
+- `docs/control/05_DECISIONES_PROYECTO.md`
+- `docs/control/06_BITACORA_CAMBIOS.md`
+
+### Restricciones respetadas
+
+- No se crearon columnas ni estados.
+- No se crearon tablas.
+- No se crearon triggers.
+- No se modificaron policies RLS.
+- No se modifico codigo fuente.
+- No se modificaron migraciones.
+- No se ejecuto SQL.
+- No se toco `.env`.
+- No se uso Supabase remoto.
+- No se ejecuto `supabase db push`.
+- No se integro Google Calendar, Gmail ni Workspace.
+- No se habilito produccion.
+- No se usaron datos reales.
+
+### Resultado
+
+BE-021 queda como diseno documental / pendiente implementacion futura.
+
+La implementacion real debe esperar BE-018, DOC-001, DOC-003, diseno tecnico de columnas/estados/RLS, QA runtime y PROD-001.

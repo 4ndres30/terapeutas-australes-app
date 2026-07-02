@@ -77,7 +77,7 @@ Este documento es la lista maestra de pendientes. Cada pendiente debe tener un c
 | BE-018 | Separacion tecnica de ambientes. | Pendiente | Alta | Integracion Backend |
 | BE-019 | Estrategia de backup/restauracion. | Pendiente | Alta | Integracion Backend / Produccion |
 | BE-020 | Consentimiento informado y tratamiento de datos. | Diseno documental base / pendiente validacion clinica/legal | Alta | Control de desarrollo / Revision Clinica / Backend |
-| BE-021 | Politica de anulacion vs eliminacion. | Pendiente | Media-alta | Control de desarrollo / Backend |
+| BE-021 | Politica de anulacion vs eliminacion. | Diseno documental / pendiente implementacion futura | Media-alta | Control de desarrollo / Backend |
 | BE-022 | Soporte de fotos para elementos del caso con Supabase Storage. | Implementada local / pend. QA | Alta | Integracion Backend/Estructura |
 | BE-023 | Alias/codigo administrativo persistente para Finanzas. | Pendiente | Alta | Integracion Backend/Estructura |
 | BE-024 | Regla de hallazgo unico/multiple por aspecto revisado. | Pendiente | Alta | Integracion Backend/Estructura |
@@ -1006,16 +1006,21 @@ BE-020 no implementa formularios, endpoints, migraciones, almacenamiento tecnico
 
 ### BE-021 - Politica de anulacion vs eliminacion
 
-**Estado:** Pendiente
+**Estado:** Diseno documental / pendiente implementacion futura
 **Prioridad:** Media-alta
 **Responsable:** Control de desarrollo / Backend
 **Origen:** Auditoria PROD-001 / SEC-001
 **Fecha creacion:** 2026-06-19
+**Fecha documentacion:** 2026-07-02
+**Rama usada:** `be-021-politica-anulacion-eliminacion`
+**Informe:** `docs/control/auditorias/BE-021_POLITICA_ANULACION_ELIMINACION.md`
 
 #### Descripcion
 Definir cuando corresponde anular, corregir o eliminar informacion clinica, financiera o administrativa.
 
-#### Criterios de aceptacion preliminares
+BE-021 define la politica transversal para correccion, anulacion logica y eliminacion fisica excepcional, con reglas por area funcional y dependencia de auditoria SEC-005.
+
+#### Criterios de aceptacion
 - Separar anulacion operativa de eliminacion fisica.
 - Definir criterios por tipo de dato sensible.
 - Considerar trazabilidad y auditoria de cambios.
@@ -1027,6 +1032,8 @@ Definir cuando corresponde anular, corregir o eliminar informacion clinica, fina
 BE-021 debe definir la politica transversal de anulacion logica vs delete fisico, considerando que SEC-002 recomienda prohibir delete fisico clinico/financiero en produccion.
 
 SEC-004 agrega que cobros y pagos deben operar con anulacion logica y que el delete fisico financiero debe quedar prohibido en produccion para mantener trazabilidad.
+
+BE-021 no implementa columnas, estados, triggers, policies, migraciones, codigo, `.env`, Supabase remoto ni produccion. PROD-001 sigue bloqueante.
 
 ### UI-020 - Indicador visual de ambiente activo
 
