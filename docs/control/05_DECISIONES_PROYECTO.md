@@ -786,7 +786,7 @@ Informe relacionado: `docs/control/auditorias/CTRL-008_DECISIONES_CRITICAS_POST_
 
 ## DEC-030 - El proyecto debe reconocer LOCAL, DEMO, STAGING y PRODUCCION
 
-**Estado:** Propuesta pendiente aprobacion
+**Estado:** Diseno documental / pendiente implementacion futura
 **Origen:** CTRL-008 / PROD-001
 **Fecha:** 2026-06-29
 
@@ -807,7 +807,7 @@ Sin separacion visual, documental y tecnica de ambientes, existe riesgo de carga
 
 ### Impacto
 
-- BE-018 y DOC-001 deben definir ambientes.
+- BE-018 y DOC-001 definen ambientes a nivel documental.
 - UI-020 debe mostrar ambiente activo.
 - UI-021 debe advertir/bloquear produccion no habilitada.
 
@@ -815,9 +815,13 @@ Sin separacion visual, documental y tecnica de ambientes, existe riesgo de carga
 
 Informe relacionado: `docs/control/auditorias/CTRL-008_DECISIONES_CRITICAS_POST_AUDITORIA.md`.
 
+Separacion relacionada: `docs/control/auditorias/BE-018_SEPARACION_TECNICA_AMBIENTES.md`.
+
+Manual relacionado: `docs/control/auditorias/DOC-001_MANUAL_AMBIENTES.md`.
+
 ## DEC-031 - Carga real requiere aprobacion explicita y checklist
 
-**Estado:** Pregunta abierta bloqueante
+**Estado:** Politica documental / pendiente implementacion futura
 **Origen:** CTRL-008 / PROD-001
 **Fecha:** 2026-06-29
 
@@ -829,9 +833,9 @@ La carga real requiere aprobacion explicita de Javier / Control de Desarrollo y 
 
 - SEC-003 aprobado como diseno.
 - SEC-008 implementado y validado.
-- SEC-005 cerrado.
-- BE-021 cerrado.
-- BE-018 cerrado.
+- SEC-005 documentado e implementado para uso real.
+- BE-021 documentado e implementado para uso real.
+- BE-018 documentado e implementado para uso real.
 - BE-019 cerrado.
 - BE-020 cerrado.
 - QA-006 cerrado.
@@ -840,6 +844,7 @@ La carga real requiere aprobacion explicita de Javier / Control de Desarrollo y 
 - BE-025 cerrado si Finanzas operara textos financieros.
 - UI-020 y UI-021 cerrados.
 - Matriz de permisos vigente y validada.
+- DOC-001 y DOC-003 documentados y aprobados.
 - Procedimiento de carga real documentado.
 - Prohibicion de seeds demo en produccion confirmada.
 
@@ -857,6 +862,8 @@ PROD-001 sigue bloqueante.
 ### Observaciones
 
 Informe relacionado: `docs/control/auditorias/CTRL-008_DECISIONES_CRITICAS_POST_AUDITORIA.md`.
+
+Politica relacionada: `docs/control/auditorias/DOC-003_POLITICA_CARGA_DATOS_REALES.md`.
 
 ## DEC-032 - Auth productivo por invitacion/provisioning y MFA por rol
 

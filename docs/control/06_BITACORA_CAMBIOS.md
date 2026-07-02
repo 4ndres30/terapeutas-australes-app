@@ -2076,3 +2076,49 @@ BE-021 define que produccion no debe usar delete fisico operativo para datos cli
 BE-021 queda como diseno documental / pendiente implementacion futura.
 
 La implementacion real debe esperar BE-018, DOC-001, DOC-003, diseno tecnico de columnas/estados/RLS, QA runtime y PROD-001.
+
+## LOG-049 - BE-018 DOC-001 DOC-003 ambientes y datos reales
+
+**Estado:** Documentado
+**Prioridad:** Alta
+**Responsable:** Control de desarrollo / Integracion Backend
+**Origen:** BE-018 / DOC-001 / DOC-003 / PROD-001 / SEC-001 / DEC-030 / DEC-031
+**Fecha creacion:** 2026-07-02
+**Rama usada:** `be-018-doc001-doc003-ambientes-datos-reales`
+
+### Resumen
+
+Se documenta el bloque de separacion tecnica y operativa de ambientes, manual de ambientes y politica de carga de datos reales.
+
+El bloque define LOCAL, DEMO, STAGING y PRODUCCION; proposito y restricciones de cada ambiente; reglas para variables de entorno sin exponer secretos; prohibicion de mezclar datos demo con datos reales; y condiciones minimas para una futura carga real con aprobacion explicita de Javier.
+
+### Archivos relacionados
+
+- `docs/control/auditorias/BE-018_SEPARACION_TECNICA_AMBIENTES.md`
+- `docs/control/auditorias/DOC-001_MANUAL_AMBIENTES.md`
+- `docs/control/auditorias/DOC-003_POLITICA_CARGA_DATOS_REALES.md`
+- `docs/control/00_ESTADO_GENERAL_PROYECTO.md`
+- `docs/control/01_PENDIENTES_PROYECTO.md`
+- `docs/control/03_INTEGRACION_BACKEND_ESTRUCTURA.md`
+- `docs/control/05_DECISIONES_PROYECTO.md`
+- `docs/control/06_BITACORA_CAMBIOS.md`
+
+### Restricciones respetadas
+
+- No se crearon ambientes.
+- No se crearon proyectos, credenciales ni secretos.
+- No se modifico `.env`.
+- No se modifico codigo fuente.
+- No se modificaron migraciones.
+- No se ejecuto SQL.
+- No se uso Supabase remoto.
+- No se ejecuto `supabase db push`.
+- No se integro Google Calendar, Gmail ni Workspace.
+- No se habilito produccion.
+- No se usaron datos reales.
+
+### Resultado
+
+BE-018, DOC-001 y DOC-003 quedan como diseno/documentacion base / pendiente implementacion futura.
+
+La implementacion real debe esperar DOC-002/BE-019 backup-restauracion, UI-020/UI-021, QA runtime de ambientes, validacion clinica/legal de BE-020 y cierre de PROD-001.

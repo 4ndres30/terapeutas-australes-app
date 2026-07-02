@@ -539,6 +539,34 @@ BE-021 no crea columnas, estados, tablas, triggers, policies, migraciones, SQL, 
 
 Informe relacionado: `docs/control/auditorias/BE-021_POLITICA_ANULACION_ELIMINACION.md`
 
+## BE-018 / DOC-001 / DOC-003 - Ambientes y carga de datos reales
+
+**Estado:** Diseno documental / pendiente implementacion futura
+**Origen:** PROD-001 / SEC-001 / DEC-030 / DEC-031
+**Fecha:** 2026-07-02
+
+Se documenta la separacion tecnica y operativa entre ambientes local, demo, staging y produccion, junto con la politica para una futura carga de datos reales.
+
+### Reglas definidas
+
+- Local y demo solo pueden usar datos ficticios/demo.
+- Staging requiere aislamiento, autorizacion y datos ficticios o anonimizados aprobados.
+- Produccion sigue bloqueada hasta cerrar PROD-001.
+- `.env` no debe modificarse ni versionarse con secretos.
+- Seeds demo quedan prohibidos en produccion.
+- Datos reales requieren aprobacion explicita de Javier y checklist previo.
+- Backups/restauracion deben definirse antes de cualquier carga real.
+
+### Restricciones
+
+BE-018/DOC-001/DOC-003 no crean ambientes, proyectos, credenciales, secretos, endpoints, migraciones, SQL, cambios de `.env`, Supabase remoto, Google ni produccion. No cargan datos reales.
+
+Informes relacionados:
+
+- `docs/control/auditorias/BE-018_SEPARACION_TECNICA_AMBIENTES.md`
+- `docs/control/auditorias/DOC-001_MANUAL_AMBIENTES.md`
+- `docs/control/auditorias/DOC-003_POLITICA_CARGA_DATOS_REALES.md`
+
 ## BE-001 - Inventariar estructura backend y Supabase local
 
 **Estado:** Integrada
