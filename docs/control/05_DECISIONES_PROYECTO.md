@@ -954,6 +954,8 @@ La API sera requisito para conectar agendamiento publico con datos reales. Mient
 
 Informe relacionado: `docs/control/auditorias/API-001_DISENO_API_PUBLICA_GOOGLE_WORKSPACE.md`.
 
+Contrato relacionado: `docs/control/auditorias/BE-026_CONTRATO_API_PUBLICA_AGENDAMIENTO.md`.
+
 ## DEC-034 - Agenda operativa separada de consulta clinica confirmada
 
 **Estado:** Arquitectura aprobada / DB validada localmente
@@ -987,7 +989,7 @@ Agenda debe separar tres conceptos:
 ### Queda pendiente
 
 - Definir UI de Agenda tipificada.
-- Definir contrato real `BE-026`.
+- Definir contrato real `BE-026`: documentado como contrato conceptual, pendiente implementacion futura.
 - Definir consentimiento, auditoria, ambientes, seguridad API e integracion Google.
 
 ### Impacto
@@ -1003,6 +1005,8 @@ Informe relacionado: `docs/control/auditorias/BE-012_BE-017_DISENO_AGENDA_OPERAT
 Implementacion relacionada: `docs/control/auditorias/BE-028_IMPLEMENTACION_MODELO_DB_AGENDA_OPERATIVA.md`.
 
 Validacion relacionada: `docs/control/auditorias/BE-029_VALIDACION_RUNTIME_AGENDA_OPERATIVA.md`.
+
+Contrato relacionado: `docs/control/auditorias/BE-026_CONTRATO_API_PUBLICA_AGENDAMIENTO.md`.
 
 ## DEC-035 - Migracion progresiva a plataforma Google Cloud
 
