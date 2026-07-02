@@ -1893,3 +1893,47 @@ SEC-009 establece controles minimos para endpoints publicos, internos y de servi
 SEC-009 queda como diseno documental / pendiente implementacion futura.
 
 La implementacion real debe esperar, como minimo, DOC-004, BE-020, SEC-005, BE-018, DOC-001, DOC-003, SEC-010 y PROD-001. BE-027 Google Calendar/Gmail sigue fuera de alcance.
+
+## LOG-045 - DOC-004 flujo pagina publica API sistema interno Google
+
+**Estado:** Documentado
+**Prioridad:** Alta
+**Responsable:** Control de desarrollo
+**Origen:** DOC-004 / API-001 / BE-026 / SEC-009 / DEC-033 / DEC-034 / PROD-001
+**Fecha creacion:** 2026-07-02
+**Rama usada:** `doc-004-flujo-publica-api-google`
+
+### Resumen
+
+Se documenta el flujo operativo futuro entre pagina publica, API segura, sistema interno, Supabase/PostgreSQL y Google Calendar/Gmail/Workspace.
+
+DOC-004 define que la pagina publica envia datos minimos a una API futura, la API valida controles de seguridad, crea una solicitud en `solicitudes_agenda`, el equipo interno revisa la solicitud y solo despues se evalua crear evento operativo, asociar paciente/consulta o sincronizar Google con contenido neutro.
+
+### Archivos relacionados
+
+- `docs/control/auditorias/DOC-004_FLUJO_PAGINA_PUBLICA_API_SISTEMA_INTERNO_GOOGLE.md`
+- `docs/control/00_ESTADO_GENERAL_PROYECTO.md`
+- `docs/control/01_PENDIENTES_PROYECTO.md`
+- `docs/control/03_INTEGRACION_BACKEND_ESTRUCTURA.md`
+- `docs/control/05_DECISIONES_PROYECTO.md`
+- `docs/control/06_BITACORA_CAMBIOS.md`
+
+### Restricciones respetadas
+
+- No se creo API publica funcional.
+- No se crearon endpoints.
+- No se modifico codigo fuente.
+- No se modificaron migraciones.
+- No se ejecuto SQL.
+- No se toco `.env`.
+- No se uso Supabase remoto.
+- No se ejecuto `supabase db push`.
+- No se integro Google Calendar, Gmail ni Workspace.
+- No se habilito produccion.
+- No se usaron datos reales.
+
+### Resultado
+
+DOC-004 queda como documento de flujo / pendiente implementacion futura.
+
+La implementacion real debe esperar BE-020, SEC-005, BE-018, DOC-001, DOC-003, BE-027, SEC-010 y PROD-001.
