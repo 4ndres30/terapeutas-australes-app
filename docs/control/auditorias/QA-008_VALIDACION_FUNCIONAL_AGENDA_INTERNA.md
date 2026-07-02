@@ -2,7 +2,7 @@
 
 ## Estado
 
-Ejecutado parcialmente / pendiente validaciones no disponibles.
+Ejecutado con validacion visual autenticada admin / observacion responsive movil pendiente.
 
 ## Fecha
 
@@ -12,6 +12,7 @@ Ejecutado parcialmente / pendiente validaciones no disponibles.
 
 - PR #45 - UI-025B edicion controlada de Agenda operativa.
 - PR #46 - pauta QA-008 y niveles de documentacion.
+- PR #48 - UI-026 selector calendario/horario Agenda.
 - UI-025A lectura de Agenda desde `public.vista_agenda_operativa`.
 - BE-028 modelo DB Agenda operativa.
 - BE-029 validacion runtime local Agenda operativa.
@@ -21,7 +22,7 @@ Ejecutado parcialmente / pendiente validaciones no disponibles.
 
 Validar funcionalmente Agenda interna posterior a la integracion de PR #45 y determinar si el proyecto puede avanzar hacia `BE-026`.
 
-Resultado sintetico: las operaciones de datos y permisos locales pasaron en Supabase local, pero no se pudo ejecutar revision visual autenticada en navegador integrado. Por eso QA-008 no se declara aprobado total.
+Resultado sintetico: las operaciones de datos y permisos locales pasaron en Supabase local. La revision visual autenticada con usuario `admin` paso en desktop, incluyendo alta, edicion, reagendamiento, completado, cancelacion y bloqueo de solapamiento desde UI. Queda una observacion responsive movil por overflow horizontal del shell en viewport `390x844`.
 
 ## Nivel documental
 
@@ -65,13 +66,15 @@ QA-008 valida una pantalla interna conectada a modelo DB existente y operaciones
 
 - `main` contiene PR #45 integrado: cumplido.
 - `main` contiene PR #46 integrado: cumplido.
+- `main` contiene PR #48 integrado: cumplido.
 - Ambiente local/demo disponible: cumplido.
 - Datos usados son ficticios o demo: cumplido.
 - Usuario local con rol `admin`: disponible por SQL local.
 - Usuario local con rol `terapeuta`: disponible por SQL local.
 - Usuario local con rol `finanzas`: disponible por SQL local.
-- Navegador integrado: no disponible en esta sesion.
-- Credenciales demo para login visual por rol: no documentadas en repositorio.
+- Navegador integrado: disponible en `http://127.0.0.1:5173/agenda`.
+- Sesion visual autenticada: disponible como `Administrador Local`.
+- Credenciales demo para login visual separado por rol: no documentadas en repositorio.
 - `PROD-001` sigue bloqueante: cumplido.
 
 ## Checklist funcional
@@ -91,9 +94,11 @@ QA-008 valida una pantalla interna conectada a modelo DB existente y operaciones
 - [x] Reagendar modifico fecha/hora y estado.
 - [x] Marcar completado cambio el estado a `completado`.
 - [x] El evento permanecio visible tras quedar `cancelado`.
-- [ ] Modal de alta sin desborde horizontal: no validado visualmente por falta de navegador integrado.
-- [ ] Modal de edicion sin desborde horizontal: no validado visualmente por falta de navegador integrado.
-- [ ] Campos Inicio y Fin sin superposicion visual: no validado visualmente por falta de navegador integrado.
+- [x] Modal de alta sin desborde horizontal en desktop: validado visualmente con navegador integrado y sesion `admin`.
+- [x] Modal de edicion sin desborde horizontal en desktop: validado visualmente con navegador integrado y sesion `admin`.
+- [x] Campos Inicio y Fin sin superposicion visual en desktop: validado visualmente; fin calculado responde a hora/duracion.
+- [x] Bloqueo visual de solapamiento: el segundo evento demo superpuesto fue rechazado y no se creo.
+- [ ] Responsive movil sin overflow horizontal: observado overflow lateral en viewport `390x844`.
 - [x] CSS conserva controles tecnicos para evitar desborde (`box-sizing`, `overflow-x: hidden`, `max-width` y media queries).
 - [x] Fecha fin anterior a fecha inicio fue rechazada por constraint local.
 - [x] No existe boton `Eliminar` en el modulo servido por Vite ni operacion delete autorizada por RLS/grants.
@@ -115,8 +120,9 @@ QA-008 valida una pantalla interna conectada a modelo DB existente y operaciones
 - [x] Puede cancelar evento interno.
 - [x] Puede reagendar evento interno.
 - [x] Puede marcar evento interno como completado.
+- [x] Puede operar visualmente `/agenda` con sesion `Administrador Local`.
 
-Validacion visual por login real: no ejecutada por falta de navegador integrado y credenciales demo documentadas.
+Validacion visual por login real: ejecutada para rol `admin` en navegador integrado.
 
 ### terapeuta
 
@@ -124,7 +130,7 @@ Validacion visual por login real: no ejecutada por falta de navegador integrado 
 - [x] Puede actualizar evento interno dentro del alcance permitido.
 - [x] Puede reagendar un evento cancelado, lo que confirma que no hay bloqueo irreversible por estado.
 
-Validacion visual por login real: no ejecutada por falta de navegador integrado y credenciales demo documentadas.
+Validacion visual por login real: no ejecutada para rol `terapeuta` por falta de credenciales demo documentadas; cobertura mantenida por SQL local y codigo de rutas.
 
 ### finanzas
 
@@ -133,7 +139,7 @@ Validacion visual por login real: no ejecutada por falta de navegador integrado 
 - [x] `finanzas` no ve registros en `public.vista_agenda_operativa`.
 - [x] `finanzas` no puede insertar eventos por RLS.
 
-Validacion visual por login real: no ejecutada por falta de navegador integrado y credenciales demo documentadas.
+Validacion visual por login real: no ejecutada para rol `finanzas` por falta de credenciales demo documentadas; cobertura mantenida por SQL local, RLS y codigo de rutas.
 
 ### usuario no autorizado / anonimo
 
@@ -141,7 +147,7 @@ Validacion visual por login real: no ejecutada por falta de navegador integrado 
 - [x] Rol `anon` no tiene permiso de lectura sobre `public.vista_agenda_operativa`.
 - [x] Rol `anon` no puede crear ni editar eventos.
 
-Validacion visual anonima en navegador: no ejecutada por falta de navegador integrado.
+Validacion visual anonima en navegador: no ejecutada como login separado; cobertura mantenida por ruta protegida y permisos `anon`.
 
 ## Validacion de no efectos colaterales
 
@@ -162,20 +168,20 @@ Confirmado en Supabase local:
 - [x] No se envio Gmail.
 - [x] No se llamo API publica.
 
-Unico cambio de datos local esperado: se agrego un evento demo en `public.agenda_eventos` con titulo `QA-008 Evento demo Agenda editado` y estado final `cancelado`.
+Cambios de datos locales esperados: se agregaron eventos demo ficticios en `public.agenda_eventos`, incluyendo `QA-008 Evento demo Agenda editado`, `QA-008 Visual Agenda Codex editado` y `QA-008 Visual Solape Base`, todos con estado final `cancelado`. El intento `QA-008 Visual Solape Bloqueado` fue rechazado por la UI y no se creo.
 
 ## Riesgos a observar
 
-- La validacion visual autenticada sigue pendiente.
-- El repositorio no documenta contrasenas demo para login por rol, lo que limita reproducibilidad de QA visual.
+- Hay overflow horizontal en viewport movil `390x844`; desktop 1280x720 quedo sin overflow observado.
+- El repositorio no documenta contrasenas demo para login por rol, lo que limita reproducibilidad de QA visual separada por `terapeuta` y `finanzas`.
 - No hay historial detallado de cambios de agenda; solo `updated_at`/`updated_by`.
-- Antes de `BE-026`, conviene cerrar una revision visual manual o automatizada de `/agenda` con sesion real.
+- Antes de `BE-026`, Control debe decidir si corrige la observacion responsive movil o la acepta como deuda UI separada.
 
 ## Criterios de aprobacion
 
-QA-008 no alcanza aprobacion total porque no se ejecuto revision visual autenticada de modal/formulario.
+QA-008 alcanza aprobacion funcional local y visual desktop/admin para Agenda interna.
 
-Los criterios de datos, permisos y ausencia de efectos colaterales si pasan en entorno local/demo.
+La aprobacion total de experiencia responsive movil queda pendiente por `QA008-OBS-003`.
 
 ## Criterios de rechazo
 
@@ -191,13 +197,13 @@ No se detectaron condiciones de rechazo en las pruebas ejecutadas:
 
 ## Resultado
 
-QA-008 ejecutado parcialmente.
+QA-008 ejecutado con validacion visual autenticada admin.
 
-No hay hallazgos bloqueantes, altos ni medios en la parte ejecutada. La limitacion principal es de cobertura visual/autenticada, no un bug funcional comprobado.
+No hay hallazgos bloqueantes ni altos en la parte ejecutada. La observacion media vigente es responsive movil por overflow horizontal del shell de la aplicacion.
 
 ## Observaciones
 
-No se recomienda avanzar todavia a `BE-026` como siguiente PR funcional hasta completar revision visual autenticada de `/agenda` o aceptar formalmente esta limitacion.
+Control debe decidir si `QA008-OBS-003` se corrige antes de `BE-026` o si se deriva como `UI-027 - Ajuste responsive de shell y Agenda interna`, dado que el flujo desktop/admin ya paso.
 
 `PROD-001` sigue bloqueante. QA-008 no habilita produccion, datos reales, Google Calendar, Gmail ni API publica.
 
