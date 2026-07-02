@@ -2,7 +2,7 @@
 
 ## Estado
 
-Pauta creada / pendiente ejecucion.
+Ejecutado parcialmente / pendiente validaciones no disponibles.
 
 ## Fecha
 
@@ -11,6 +11,7 @@ Pauta creada / pendiente ejecucion.
 ## Origen
 
 - PR #45 - UI-025B edicion controlada de Agenda operativa.
+- PR #46 - pauta QA-008 y niveles de documentacion.
 - UI-025A lectura de Agenda desde `public.vista_agenda_operativa`.
 - BE-028 modelo DB Agenda operativa.
 - BE-029 validacion runtime local Agenda operativa.
@@ -18,9 +19,9 @@ Pauta creada / pendiente ejecucion.
 
 ## Objetivo
 
-Definir la pauta de validacion funcional completa de Agenda interna posterior a la integracion de PR #45.
+Validar funcionalmente Agenda interna posterior a la integracion de PR #45 y determinar si el proyecto puede avanzar hacia `BE-026`.
 
-Esta pauta debe ejecutarse en una tarea posterior sobre `main` actualizado. No valida produccion, datos reales, Google Calendar, Gmail ni API publica.
+Resultado sintetico: las operaciones de datos y permisos locales pasaron en Supabase local, pero no se pudo ejecutar revision visual autenticada en navegador integrado. Por eso QA-008 no se declara aprobado total.
 
 ## Nivel documental
 
@@ -62,129 +63,142 @@ QA-008 valida una pantalla interna conectada a modelo DB existente y operaciones
 
 ## Precondiciones
 
-- `main` contiene PR #45 integrado.
-- Ambiente local/demo disponible.
-- Datos usados son ficticios o demo.
-- Usuario de prueba con rol `admin`.
-- Usuario de prueba con rol `terapeuta`.
-- Usuario de prueba con rol `finanzas` o equivalente no autorizado para Agenda.
-- Sesion anonima o usuario no autorizado para probar bloqueo de acceso.
-- `PROD-001` sigue bloqueante.
+- `main` contiene PR #45 integrado: cumplido.
+- `main` contiene PR #46 integrado: cumplido.
+- Ambiente local/demo disponible: cumplido.
+- Datos usados son ficticios o demo: cumplido.
+- Usuario local con rol `admin`: disponible por SQL local.
+- Usuario local con rol `terapeuta`: disponible por SQL local.
+- Usuario local con rol `finanzas`: disponible por SQL local.
+- Navegador integrado: no disponible en esta sesion.
+- Credenciales demo para login visual por rol: no documentadas en repositorio.
+- `PROD-001` sigue bloqueante: cumplido.
 
 ## Checklist funcional
 
-- [ ] `/agenda` carga sin errores para rol autorizado.
-- [ ] La lista se construye desde `public.vista_agenda_operativa`.
-- [ ] La pantalla distingue solicitudes, eventos internos y consultas clinicas si la vista entrega esos contextos.
-- [ ] La busqueda encuentra por titulo, paciente/contacto u otros campos operativos disponibles.
-- [ ] Los filtros por contexto se muestran completos aunque no haya registros.
-- [ ] Los filtros por estado usan estados reales del modelo.
-- [ ] Se puede crear un evento interno demo.
-- [ ] El evento creado aparece en el listado sin recargar manualmente.
-- [ ] El evento persiste despues de recargar la pagina.
-- [ ] Se puede editar titulo, modalidad, ubicacion/enlace o notas internas si el modelo lo permite.
-- [ ] Se puede cambiar estado usando solo `programado`, `confirmado`, `reagendado`, `cancelado`, `completado` y `no_asistio`.
-- [ ] Cancelar cambia el estado a `cancelado` sin borrar fisicamente el evento.
-- [ ] Reagendar modifica fecha/hora y estado sin crear historial complejo no soportado por el modelo.
-- [ ] Marcar completado cambia el estado a `completado`.
-- [ ] El evento no desaparece por estar cancelado o completado.
-- [ ] El modal de alta no tiene desborde horizontal.
-- [ ] El modal de edicion no tiene desborde horizontal.
-- [ ] Los campos Inicio y Fin no se superponen.
-- [ ] El formulario responde correctamente en pantalla normal y angosta.
-- [ ] Los errores de Supabase/RLS se muestran de forma controlada y no exponen detalles sensibles innecesarios.
-- [ ] No existe boton de delete fisico.
-- [ ] No existen acciones de crear paciente, crear consulta o convertir solicitud automaticamente.
+- [x] `/agenda` responde desde Vite local.
+- [x] La lista se construye desde `public.vista_agenda_operativa` segun codigo servido y prueba SQL local.
+- [x] La pantalla distingue solicitudes, eventos internos y consultas clinicas segun logica de `AgendaPage`.
+- [x] La busqueda esta implementada sobre titulo, paciente/contacto, tipo, modalidad, estado y origen.
+- [x] Los filtros por contexto se muestran como opciones estaticas.
+- [x] Los filtros por estado usan los estados reales del modelo.
+- [x] Se pudo crear un evento interno demo en `agenda_eventos` con rol `admin` simulado.
+- [x] El evento creado aparece en `public.vista_agenda_operativa`.
+- [x] El evento persiste despues de commit y nueva consulta.
+- [x] Se pudo editar titulo, ubicacion y notas internas.
+- [x] Se pudo cambiar estado usando estados reales del modelo.
+- [x] Cancelar cambio el estado a `cancelado` sin borrar fisicamente el evento.
+- [x] Reagendar modifico fecha/hora y estado.
+- [x] Marcar completado cambio el estado a `completado`.
+- [x] El evento permanecio visible tras quedar `cancelado`.
+- [ ] Modal de alta sin desborde horizontal: no validado visualmente por falta de navegador integrado.
+- [ ] Modal de edicion sin desborde horizontal: no validado visualmente por falta de navegador integrado.
+- [ ] Campos Inicio y Fin sin superposicion visual: no validado visualmente por falta de navegador integrado.
+- [x] CSS conserva controles tecnicos para evitar desborde (`box-sizing`, `overflow-x: hidden`, `max-width` y media queries).
+- [x] Fecha fin anterior a fecha inicio fue rechazada por constraint local.
+- [x] No existe boton `Eliminar` en el modulo servido por Vite ni operacion delete autorizada por RLS/grants.
+- [x] No se crearon pacientes automaticamente.
+- [x] No se crearon consultas automaticamente.
+- [x] No se crearon solicitudes publicas automaticamente.
+- [x] No se escribio en Storage.
+- [x] No se sincronizo Google Calendar.
+- [x] No se envio Gmail.
+- [x] No se llamo API publica.
 
 ## Validacion por rol
 
 ### admin
 
-- [ ] Puede acceder a Agenda.
-- [ ] Puede crear evento interno.
-- [ ] Puede editar evento interno.
-- [ ] Puede cancelar evento interno.
-- [ ] Puede reagendar evento interno.
-- [ ] Puede marcar evento interno como completado.
+- [x] Puede operar `agenda_eventos` en Supabase local con JWT simulado.
+- [x] Puede crear evento interno.
+- [x] Puede editar evento interno.
+- [x] Puede cancelar evento interno.
+- [x] Puede reagendar evento interno.
+- [x] Puede marcar evento interno como completado.
+
+Validacion visual por login real: no ejecutada por falta de navegador integrado y credenciales demo documentadas.
 
 ### terapeuta
 
-- [ ] Puede acceder segun permisos vigentes.
-- [ ] Puede operar dentro del alcance permitido por RLS y UI.
-- [ ] No accede a funciones fuera de su rol.
-- [ ] No ve datos financieros sensibles ni superficies no autorizadas.
+- [x] Puede leer `public.vista_agenda_operativa` con JWT simulado.
+- [x] Puede actualizar evento interno dentro del alcance permitido.
+- [x] Puede reagendar un evento cancelado, lo que confirma que no hay bloqueo irreversible por estado.
+
+Validacion visual por login real: no ejecutada por falta de navegador integrado y credenciales demo documentadas.
 
 ### finanzas
 
-- [ ] No accede a Agenda clinica/operativa si la politica vigente no lo permite.
-- [ ] No ve datos clinicos sensibles.
-- [ ] No puede crear ni editar eventos de agenda si no esta autorizado.
+- [x] La ruta `/agenda` esta protegida en codigo para `admin` y `terapeuta`.
+- [x] Con JWT simulado de `finanzas`, `public.es_terapeuta_o_admin()` devuelve `false`.
+- [x] `finanzas` no ve registros en `public.vista_agenda_operativa`.
+- [x] `finanzas` no puede insertar eventos por RLS.
+
+Validacion visual por login real: no ejecutada por falta de navegador integrado y credenciales demo documentadas.
 
 ### usuario no autorizado / anonimo
 
-- [ ] No accede a `/agenda`.
-- [ ] No consulta `public.vista_agenda_operativa`.
-- [ ] No crea eventos.
-- [ ] No edita eventos.
+- [x] La ruta protegida redirige a login si no hay sesion autorizada segun `App.tsx`.
+- [x] Rol `anon` no tiene permiso de lectura sobre `public.vista_agenda_operativa`.
+- [x] Rol `anon` no puede crear ni editar eventos.
+
+Validacion visual anonima en navegador: no ejecutada por falta de navegador integrado.
 
 ## Validacion de no efectos colaterales
 
-Confirmar que Agenda interna no hace automaticamente:
+Confirmado en Supabase local:
 
-- [ ] Crear paciente.
-- [ ] Crear consulta.
-- [ ] Crear solicitud publica.
-- [ ] Crear evaluacion.
-- [ ] Crear caso.
-- [ ] Crear revision.
-- [ ] Crear trabajo.
-- [ ] Crear cobro.
-- [ ] Crear pago.
-- [ ] Subir fotos.
-- [ ] Escribir en Storage.
-- [ ] Sincronizar Google Calendar.
-- [ ] Enviar Gmail.
-- [ ] Llamar API publica.
+- [x] No se creo paciente.
+- [x] No se creo consulta.
+- [x] No se creo solicitud publica.
+- [x] No se creo evaluacion.
+- [x] No se creo caso.
+- [x] No se creo revision.
+- [x] No se creo trabajo.
+- [x] No se creo cobro.
+- [x] No se creo pago.
+- [x] No se subieron fotos.
+- [x] No se escribio en Storage.
+- [x] No se sincronizo Google Calendar.
+- [x] No se envio Gmail.
+- [x] No se llamo API publica.
+
+Unico cambio de datos local esperado: se agrego un evento demo en `public.agenda_eventos` con titulo `QA-008 Evento demo Agenda editado` y estado final `cancelado`.
 
 ## Riesgos a observar
 
-- Estados de Agenda que se muestren como acciones clinicas reales.
-- Notas internas usadas para registrar informacion clinica sensible extensa.
-- Errores RLS visibles con mensajes tecnicos innecesarios.
-- Eventos cancelados o completados que pierdan acciones basicas de edicion/reagendamiento.
-- Filtros incompletos cuando no hay registros.
-- Desbordes responsive en modal o tarjetas.
-- Confusion entre solicitud de agenda, evento interno y consulta confirmada.
+- La validacion visual autenticada sigue pendiente.
+- El repositorio no documenta contrasenas demo para login por rol, lo que limita reproducibilidad de QA visual.
+- No hay historial detallado de cambios de agenda; solo `updated_at`/`updated_by`.
+- Antes de `BE-026`, conviene cerrar una revision visual manual o automatizada de `/agenda` con sesion real.
 
 ## Criterios de aprobacion
 
-- Todos los puntos criticos del checklist funcional pasan con datos demo.
-- Roles autorizados pueden operar segun alcance vigente.
-- Roles no autorizados no acceden ni operan Agenda.
-- No se crean pacientes, consultas, solicitudes, entidades clinicas, pagos, fotos ni objetos Storage automaticamente.
-- No se ejecuta integracion Google, Gmail, Workspace ni API publica.
-- No hay delete fisico de eventos.
-- No hay bloqueos visuales graves en desktop ni pantalla angosta.
-- Los errores se muestran de forma controlada.
+QA-008 no alcanza aprobacion total porque no se ejecuto revision visual autenticada de modal/formulario.
+
+Los criterios de datos, permisos y ausencia de efectos colaterales si pasan en entorno local/demo.
 
 ## Criterios de rechazo
 
-- Agenda queda accesible para anonimos o roles no autorizados.
-- Crear, editar, cancelar, reagendar o completar falla sin mensaje controlado.
-- Cancelar borra fisicamente un evento.
-- La UI crea pacientes, consultas o solicitudes automaticamente.
-- La UI dispara API publica, Google Calendar, Gmail o Workspace.
-- El modal presenta desborde horizontal o campos superpuestos.
-- Se exponen datos clinicos, financieros o tecnicos fuera del rol autorizado.
+No se detectaron condiciones de rechazo en las pruebas ejecutadas:
+
+- `/agenda` responde desde Vite.
+- Crear, editar, reagendar, completar y cancelar funcionan a nivel DB/RLS local.
+- Cancelar no borra fisicamente.
+- No se crean pacientes, consultas ni solicitudes.
+- No aparece delete fisico en codigo servido ni en permisos.
+- No hay Google/Gmail/API publica.
+- No se usaron datos reales.
 
 ## Resultado
 
-Pendiente de ejecucion.
+QA-008 ejecutado parcialmente.
 
-QA-008 queda creada como pauta documental. No fue ejecutada en esta tarea.
+No hay hallazgos bloqueantes, altos ni medios en la parte ejecutada. La limitacion principal es de cobertura visual/autenticada, no un bug funcional comprobado.
 
 ## Observaciones
 
-La ejecucion de QA-008 debe realizarse en una tarea posterior, sobre `main` actualizado y usando solo datos demo.
+No se recomienda avanzar todavia a `BE-026` como siguiente PR funcional hasta completar revision visual autenticada de `/agenda` o aceptar formalmente esta limitacion.
 
-El resultado de esa ejecucion debe registrarse en un informe separado, indicando hallazgos, correcciones requeridas y si Agenda interna queda lista para evaluar `BE-026`.
+`PROD-001` sigue bloqueante. QA-008 no habilita produccion, datos reales, Google Calendar, Gmail ni API publica.
+
+Ver informe de ejecucion: `docs/control/auditorias/QA-008_EJECUCION_AGENDA_INTERNA.md`.

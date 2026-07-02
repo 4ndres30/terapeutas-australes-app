@@ -1544,3 +1544,37 @@ Solo documentacion. Sin codigo, sin migraciones, sin Supabase remoto, sin API pu
 ### Resultado
 
 PR #46 queda actualizado para reflejar PR #45 integrado y preparar QA-008. QA-008 queda documentado, no ejecutado.
+
+## LOG-037 - Ejecucion QA-008 Agenda interna
+
+**Estado:** Registrado
+**Prioridad:** Alta
+**Responsable:** Control de Desarrollo / QA / UI-UX / Integracion Backend
+**Origen:** QA-008 / UI-025B / PR #45 / PR #46
+**Fecha creacion:** 2026-07-02
+**Rama usada:** `qa-008-validacion-funcional-agenda-interna`
+
+### Resumen
+
+Se ejecuta QA-008 sobre Agenda interna integrada.
+
+Se validan creacion, edicion, reagendamiento, cancelacion sin delete y completado con datos demo locales.
+
+Se registran hallazgos, limitaciones y veredicto.
+
+### Resultado
+
+QA-008 queda ejecutado parcialmente. Las operaciones locales de datos/RLS pasan sin hallazgos bloqueantes, altos ni medios, pero queda pendiente validacion visual autenticada por falta de navegador integrado y credenciales demo documentadas para login visual por rol.
+
+### Restricciones
+
+Solo QA/documentacion. Sin codigo, sin migraciones, sin Supabase remoto, sin API publica, sin Google y sin produccion.
+
+### Archivos relacionados
+
+- `docs/control/auditorias/QA-008_VALIDACION_FUNCIONAL_AGENDA_INTERNA.md`
+- `docs/control/auditorias/QA-008_EJECUCION_AGENDA_INTERNA.md`
+- `docs/control/00_ESTADO_GENERAL_PROYECTO.md`
+- `docs/control/01_PENDIENTES_PROYECTO.md`
+- `docs/control/04_UI_UX_PULIDO_VISUAL.md`
+- `docs/control/06_BITACORA_CAMBIOS.md`

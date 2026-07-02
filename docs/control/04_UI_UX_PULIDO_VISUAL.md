@@ -381,7 +381,7 @@ Informe relacionado: `auditorias/UI-025_INTEGRACION_AGENDA_OPERATIVA.md`
 
 ## UI-025B - Edicion controlada Agenda Operativa
 
-**Estado:** Integrada por PR #45 / pendiente QA-008
+**Estado:** Integrada por PR #45 / QA-008 parcial
 **Prioridad:** Alta
 **Responsable:** UI / UX / Integracion Backend
 **Origen:** UI-025 / BE-028 / BE-029 / DEC-034
@@ -415,7 +415,7 @@ No se implementa API publica, endpoints, Google Calendar, Gmail, Workspace, conv
 
 Informe relacionado: `auditorias/UI-025B_EDICION_CONTROLADA_AGENDA_OPERATIVA.md`
 
-Pendiente relacionado: `QA-008` debe validar la experiencia funcional completa de Agenda interna antes de evaluar API publica o integraciones Google.
+Resultado relacionado: `QA-008` valido operaciones locales de Agenda, permisos y no efectos colaterales. Queda pendiente validacion visual autenticada del modal/formulario antes de evaluar API publica o integraciones Google.
 
 ## CTRL-008 - Decisiones UI derivadas post auditoria
 
