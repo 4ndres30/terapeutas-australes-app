@@ -956,6 +956,8 @@ Informe relacionado: `docs/control/auditorias/API-001_DISENO_API_PUBLICA_GOOGLE_
 
 Contrato relacionado: `docs/control/auditorias/BE-026_CONTRATO_API_PUBLICA_AGENDAMIENTO.md`.
 
+Seguridad relacionada: `docs/control/auditorias/SEC-009_SEGURIDAD_API_PUBLICA.md`.
+
 ## DEC-034 - Agenda operativa separada de consulta clinica confirmada
 
 **Estado:** Arquitectura aprobada / DB validada localmente
@@ -1007,6 +1009,8 @@ Implementacion relacionada: `docs/control/auditorias/BE-028_IMPLEMENTACION_MODEL
 Validacion relacionada: `docs/control/auditorias/BE-029_VALIDACION_RUNTIME_AGENDA_OPERATIVA.md`.
 
 Contrato relacionado: `docs/control/auditorias/BE-026_CONTRATO_API_PUBLICA_AGENDAMIENTO.md`.
+
+Seguridad relacionada: `docs/control/auditorias/SEC-009_SEGURIDAD_API_PUBLICA.md`.
 
 ## DEC-035 - Migracion progresiva a plataforma Google Cloud
 
