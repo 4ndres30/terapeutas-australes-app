@@ -445,6 +445,29 @@ SEC-009 no crea endpoints, no instala dependencias, no modifica codigo, no modif
 
 Informe relacionado: `docs/control/auditorias/SEC-009_SEGURIDAD_API_PUBLICA.md`
 
+## DOC-004 - Flujo pagina publica -> API -> sistema interno -> Google
+
+**Estado:** Documental / pendiente implementacion futura
+**Origen:** API-001 / BE-026 / SEC-009 / DEC-033 / DEC-034 / PROD-001
+**Fecha:** 2026-07-02
+
+DOC-004 documenta el flujo operativo futuro entre formulario publico, API segura, `solicitudes_agenda`, revision interna, Agenda y eventual sincronizacion Google.
+
+### Flujo definido
+
+- La pagina publica envia datos minimos a la API futura.
+- La API valida CORS, rate limit, anti-spam, payload, consentimiento e idempotencia.
+- La API crea una solicitud en `solicitudes_agenda`.
+- El sistema interno revisa la solicitud antes de confirmar.
+- Solo despues de revision humana se evalua crear evento interno, asociar paciente/consulta o sincronizar Google.
+- Google Calendar/Gmail debe recibir contenido neutro y operar solo desde backend seguro.
+
+### Restricciones
+
+DOC-004 no crea endpoints, no instala dependencias, no modifica codigo, no modifica migraciones, no ejecuta SQL, no toca `.env`, no toca Supabase remoto, no integra Google y no habilita produccion ni datos reales.
+
+Informe relacionado: `docs/control/auditorias/DOC-004_FLUJO_PAGINA_PUBLICA_API_SISTEMA_INTERNO_GOOGLE.md`
+
 ## BE-001 - Inventariar estructura backend y Supabase local
 
 **Estado:** Integrada

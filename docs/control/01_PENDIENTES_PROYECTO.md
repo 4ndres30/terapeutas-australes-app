@@ -99,7 +99,7 @@ Este documento es la lista maestra de pendientes. Cada pendiente debe tener un c
 | DOC-001 | Manual de ambientes. | Pendiente | Alta | Control de desarrollo |
 | DOC-002 | Procedimiento de backup/restauracion. | Pendiente | Alta | Control de desarrollo / Integracion Backend |
 | DOC-003 | Politica de carga de datos reales. | Pendiente | Alta | Control de desarrollo |
-| DOC-004 | Documentar flujo pagina publica -> API -> sistema interno -> Google. | Pendiente | Alta | Control de desarrollo |
+| DOC-004 | Documentar flujo pagina publica -> API -> sistema interno -> Google. | Documental / pendiente implementacion futura | Alta | Control de desarrollo |
 | DOC-005 | Documentar estrategia de migracion progresiva a Google Cloud. | Documental / pendiente validacion | Alta | Control de desarrollo |
 | QA-003 | Validacion funcional local de fotos de elementos del caso. | Pendiente | Alta | Control de desarrollo |
 | IMP-002 | Implementacion funcional hallazgo a trabajo. | Pendiente | Alta | Implementacion |
@@ -1106,17 +1106,22 @@ Definir politica operativa para autorizar, ejecutar y controlar la primera carga
 
 ### DOC-004 - Documentar flujo pagina publica -> API -> sistema interno -> Google
 
-**Estado:** Pendiente
+**Estado:** Documental / pendiente implementacion futura
 **Prioridad:** Alta
 **Responsable:** Control de desarrollo
 **Origen:** API-001 / DEC-033
 **Fecha creacion:** 2026-06-30
+**Fecha documentacion:** 2026-07-02
+**Rama usada:** `doc-004-flujo-publica-api-google`
+**Informe:** `docs/control/auditorias/DOC-004_FLUJO_PAGINA_PUBLICA_API_SISTEMA_INTERNO_GOOGLE.md`
 **Dependencias:** API-001, BE-012, BE-017, BE-018, BE-020, BE-026, BE-027, SEC-005, SEC-009, DOC-001, DOC-003, PROD-001
 
 #### Descripcion
 Documentar el flujo operativo completo entre pagina publica, API, sistema interno, base de datos y Google Calendar/Gmail/Workspace.
 
-#### Criterios de aceptacion preliminares
+DOC-004 ordena el flujo futuro de solicitud publica, validacion API, registro en `solicitudes_agenda`, revision interna, eventual conversion operativa y sincronizacion Google posterior a revision.
+
+#### Criterios de aceptacion
 - Describir el flujo de solicitud publica de agenda.
 - Describir el registro de consentimiento.
 - Describir creacion o revision interna de cita.
@@ -1129,7 +1134,7 @@ Documentar el flujo operativo completo entre pagina publica, API, sistema intern
 - No implementar endpoints ni tocar servicios externos.
 
 #### Observaciones
-DOC-004 debe ayudar a que implementacion, UI, backend y control trabajen con el mismo mapa antes de construir la API real.
+DOC-004 no implementa endpoints, codigo, migraciones, Google, Supabase remoto ni produccion. La implementacion real debe esperar BE-020, SEC-005, BE-018, DOC-001, DOC-003, BE-027, SEC-010 y PROD-001.
 
 ### BE-022 - Soporte de fotos para elementos del caso con Supabase Storage
 
