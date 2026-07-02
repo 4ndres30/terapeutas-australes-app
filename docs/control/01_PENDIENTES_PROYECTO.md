@@ -74,7 +74,7 @@ Este documento es la lista maestra de pendientes. Cada pendiente debe tener un c
 | SEC-008B | Cierre de signup y provisioning Auth controlado. | Pendiente | Alta | Integracion Backend / Seguridad |
 | SEC-009 | Disenar seguridad de API publica. | Diseno documental / pendiente implementacion futura | Alta | Integracion Backend / Seguridad |
 | SEC-010 | Disenar seguridad cloud, OAuth, IAM e identidades tecnicas. | Diseno documental / pendiente implementacion futura | Alta | Integracion Backend / Seguridad |
-| BE-018 | Separacion tecnica de ambientes. | Pendiente | Alta | Integracion Backend |
+| BE-018 | Separacion tecnica de ambientes. | Diseno documental / pendiente implementacion futura | Alta | Integracion Backend |
 | BE-019 | Estrategia de backup/restauracion. | Pendiente | Alta | Integracion Backend / Produccion |
 | BE-020 | Consentimiento informado y tratamiento de datos. | Diseno documental base / pendiente validacion clinica/legal | Alta | Control de desarrollo / Revision Clinica / Backend |
 | BE-021 | Politica de anulacion vs eliminacion. | Diseno documental / pendiente implementacion futura | Media-alta | Control de desarrollo / Backend |
@@ -96,9 +96,9 @@ Este documento es la lista maestra de pendientes. Cada pendiente debe tener un c
 | UI-025B | Alta y edicion controlada de Agenda operativa interna. | Integrada por PR #45 / QA-008 cerrada local/demo | Alta | UI / UX / Integracion Backend |
 | UI-026 | Selector calendario/horario y duracion estandar de consulta en Agenda interna. | Integrada por PR #48 / QA-008 cerrada local/demo | Alta | UI / UX / Integracion Backend |
 | UI-027 | Ajuste responsive de shell y Agenda interna. | Integrada por PR #50 / validada post-merge | Media-alta | UI / UX / Pulido visual |
-| DOC-001 | Manual de ambientes. | Pendiente | Alta | Control de desarrollo |
+| DOC-001 | Manual de ambientes. | Documental / pendiente implementacion futura | Alta | Control de desarrollo |
 | DOC-002 | Procedimiento de backup/restauracion. | Pendiente | Alta | Control de desarrollo / Integracion Backend |
-| DOC-003 | Politica de carga de datos reales. | Pendiente | Alta | Control de desarrollo |
+| DOC-003 | Politica de carga de datos reales. | Documental / pendiente implementacion futura | Alta | Control de desarrollo |
 | DOC-004 | Documentar flujo pagina publica -> API -> sistema interno -> Google. | Documental / pendiente implementacion futura | Alta | Control de desarrollo |
 | DOC-005 | Documentar estrategia de migracion progresiva a Google Cloud. | Documental / pendiente validacion | Alta | Control de desarrollo |
 | QA-003 | Validacion funcional local de fotos de elementos del caso. | Pendiente | Alta | Control de desarrollo |
@@ -941,21 +941,30 @@ API-001 no habilita agendamiento publico real, datos reales, fotos reales, pagos
 
 ### BE-018 - Separacion tecnica de ambientes
 
-**Estado:** Pendiente
+**Estado:** Diseno documental / pendiente implementacion futura
 **Prioridad:** Alta
 **Responsable:** Integracion Backend
 **Origen:** Auditoria PROD-001 / SEC-001
 **Fecha creacion:** 2026-06-19
+**Fecha documentacion:** 2026-07-02
+**Rama usada:** `be-018-doc001-doc003-ambientes-datos-reales`
+**Informe:** `docs/control/auditorias/BE-018_SEPARACION_TECNICA_AMBIENTES.md`
 
 #### Descripcion
 Definir separacion tecnica entre local, demo, staging y produccion, evitando mezcla de configuraciones y datos.
 
-#### Criterios de aceptacion preliminares
+BE-018 define ambientes local, demo, staging y produccion, reglas de separacion, barreras minimas, manejo de variables de entorno sin secretos y criterios para habilitar staging/produccion.
+
+#### Criterios de aceptacion
 - Documentar ambientes requeridos y proposito de cada uno.
 - Definir variables de ambiente por contexto.
 - Identificar barreras para evitar uso de seeds demo en produccion.
 - Definir criterio de habilitacion de staging y produccion.
 - No tocar `.env` ni Supabase remoto sin autorizacion expresa.
+
+#### Observaciones
+
+BE-018 no crea ambientes, no modifica `.env`, no toca Supabase remoto, no crea credenciales y no habilita datos reales ni produccion.
 
 ### BE-019 - Estrategia de backup/restauracion
 
@@ -1073,21 +1082,28 @@ Disenar una advertencia o bloqueo visual para impedir uso productivo cuando PROD
 
 ### DOC-001 - Manual de ambientes
 
-**Estado:** Pendiente
+**Estado:** Documental / pendiente implementacion futura
 **Prioridad:** Alta
 **Responsable:** Control de desarrollo
 **Origen:** Auditoria PROD-001 / SEC-001
 **Fecha creacion:** 2026-06-19
+**Fecha documentacion:** 2026-07-02
+**Rama usada:** `be-018-doc001-doc003-ambientes-datos-reales`
+**Informe:** `docs/control/auditorias/DOC-001_MANUAL_AMBIENTES.md`
 
 #### Descripcion
 Crear manual documental para uso y administracion de ambientes local, demo, staging y produccion.
 
-#### Criterios de aceptacion preliminares
+#### Criterios de aceptacion
 - Describir proposito y restricciones de cada ambiente.
 - Documentar responsable operativo por ambiente.
 - Registrar reglas para variables de entorno sin exponer secretos.
 - Incluir regla de no mezclar datos demo con datos reales.
 - No tocar `.env`.
+
+#### Observaciones
+
+DOC-001 no crea ambientes ni modifica configuracion. Define operacion, responsables, reglas de datos y respuesta ante incidentes de ambiente.
 
 ### DOC-002 - Procedimiento de backup/restauracion
 
@@ -1109,21 +1125,28 @@ Documentar el procedimiento de respaldo y restauracion que debe probarse antes d
 
 ### DOC-003 - Politica de carga de datos reales
 
-**Estado:** Pendiente
+**Estado:** Documental / pendiente implementacion futura
 **Prioridad:** Alta
 **Responsable:** Control de desarrollo
 **Origen:** Auditoria PROD-001 / SEC-001
 **Fecha creacion:** 2026-06-19
+**Fecha documentacion:** 2026-07-02
+**Rama usada:** `be-018-doc001-doc003-ambientes-datos-reales`
+**Informe:** `docs/control/auditorias/DOC-003_POLITICA_CARGA_DATOS_REALES.md`
 
 #### Descripcion
 Definir politica operativa para autorizar, ejecutar y controlar la primera carga de datos reales.
 
-#### Criterios de aceptacion preliminares
+#### Criterios de aceptacion
 - Exigir cierre de PROD-001 antes de cargar pacientes reales.
 - Definir aprobacion explicita de Javier como condicion.
 - Prohibir seeds demo en produccion.
 - Definir checklist pre-produccion.
 - Documentar responsable de autorizacion y evidencia.
+
+#### Observaciones
+
+DOC-003 no autoriza carga real. Define que pacientes reales, fotos reales y pagos reales siguen prohibidos hasta cerrar PROD-001 y contar con aprobacion explicita de Javier.
 
 ### DOC-004 - Documentar flujo pagina publica -> API -> sistema interno -> Google
 
