@@ -1698,7 +1698,7 @@ QA-008 queda validado funcionalmente en entorno local/demo y visualmente en desk
 
 ## LOG-041 - UI-027 drawer movil para Agenda interna
 
-**Estado:** Registrado
+**Estado:** Integrada por PR #50
 **Prioridad:** Media-alta
 **Responsable:** UI / UX / Pulido visual
 **Origen:** UI-027 / QA008-OBS-003
@@ -1747,3 +1747,55 @@ La navegacion lateral pasa a comportarse como menu movil colapsado: boton superi
 ### Resultado
 
 `QA008-OBS-003` queda corregida por UI-027. Agenda interna queda visualmente usable en desktop y mobile dentro de entorno local/demo.
+
+## LOG-042 - Cierre post-merge QA-008 Agenda interna
+
+**Estado:** Documentado
+**Prioridad:** Alta
+**Responsable:** Control de desarrollo
+**Origen:** CTRL-010 / QA-008 / PR #49 / PR #50
+**Fecha creacion:** 2026-07-02
+**Rama usada:** `ctrl-010-cierre-qa008-post-merge`
+
+### Resumen
+
+Se ejecuta pasada visual autenticada post-merge sobre `main` para confirmar el cierre de QA-008 tras integrar PR #49 y PR #50.
+
+### Evidencia principal
+
+- `main` sincronizado con `origin/main`.
+- PRs abiertos: ninguno.
+- `/agenda` carga en navegador integrado con sesion `Administrador Local`.
+- Desktop `1280x720`: sin overflow horizontal, sidebar fija conservada.
+- Mobile `390x844`: menu cerrado sin overflow y drawer abierto desde el costado izquierdo.
+- Mobile `360x740`: sin overflow horizontal.
+- Consola navegador: sin errores ni warnings capturados.
+
+### Archivos relacionados
+
+- `docs/control/auditorias/CTRL-010_CIERRE_QA008_POST_MERGE.md`
+- `docs/control/auditorias/QA-008_EJECUCION_AGENDA_INTERNA.md`
+- `docs/control/auditorias/QA-008_VALIDACION_FUNCIONAL_AGENDA_INTERNA.md`
+- `docs/control/auditorias/UI-027_AJUSTE_RESPONSIVE_SHELL_AGENDA.md`
+- `docs/control/00_ESTADO_GENERAL_PROYECTO.md`
+- `docs/control/01_PENDIENTES_PROYECTO.md`
+- `docs/control/04_UI_UX_PULIDO_VISUAL.md`
+- `docs/control/06_BITACORA_CAMBIOS.md`
+
+### Restricciones respetadas
+
+- No se modifico codigo funcional.
+- No se modificaron migraciones.
+- No se toco `.env`.
+- No se uso Supabase remoto.
+- No se ejecuto `supabase db push`.
+- No se creo API publica.
+- No se integro Google Calendar, Gmail ni Workspace.
+- No se habilito produccion.
+- No se usaron datos reales.
+
+### Resultado
+
+QA-008 queda cerrada post-merge como validacion funcional local/demo de Agenda interna.
+
+`BE-026` puede evaluarse como siguiente tarea de diseno de contrato de API publica de agendamiento. `BE-027`, Google, produccion y datos reales siguen fuera de alcance.

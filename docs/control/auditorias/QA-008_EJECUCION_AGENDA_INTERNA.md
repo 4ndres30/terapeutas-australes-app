@@ -2,7 +2,7 @@
 
 ## Estado
 
-Ejecutado con validacion visual autenticada / responsive movil corregido por UI-027.
+Cerrada post-merge con validacion visual autenticada / responsive movil corregido por UI-027.
 
 ## Fecha
 
@@ -16,13 +16,20 @@ Actualizacion visual autenticada:
 
 `qa-008-validacion-visual-agenda-interna`
 
+Cierre post-merge:
+
+`ctrl-010-cierre-qa008-post-merge`
+
 ## Base validada
 
 - `main` actualizado.
 - PR #45 integrado en `main`.
 - PR #46 integrado en `main`.
 - PR #48 integrado en `main`.
+- PR #49 integrado en `main`.
+- PR #50 integrado en `main`.
 - Commit base observado para validacion visual: `ce63f1e feat: mejora selector de horario en agenda (#48)`.
+- Commit post-merge validado: `7f72c4a feat: agrega drawer movil para agenda`.
 
 ## Entorno
 
@@ -58,7 +65,7 @@ Se valido creacion, visualizacion desde `public.vista_agenda_operativa`, edicion
 
 No se detectaron hallazgos bloqueantes ni altos en la parte ejecutada.
 
-La validacion visual autenticada queda ejecutada en desktop con resultado funcional OK. La observacion responsive detectada en viewport movil queda corregida por UI-027 mediante menu superior y drawer lateral desde la izquierda.
+La validacion visual autenticada queda ejecutada en desktop con resultado funcional OK. La observacion responsive detectada en viewport movil queda corregida por UI-027 mediante menu superior y drawer lateral desde la izquierda. La pasada post-merge sobre `main` confirma que el cierre queda integrado.
 
 ## Revision critica del prompt y estrategia aplicada
 
@@ -109,6 +116,7 @@ No se expandio el alcance hacia desarrollo. No se corrigieron bugs ni se modific
 | Responsive movil 390x844 | OK tras UI-027. Menu superior abre drawer lateral y no hay overflow horizontal. |
 | Responsive movil 360x740 | OK tras UI-027. Sin overflow horizontal. |
 | Consola navegador | OK. Sin errores ni warnings capturados durante el recorrido. |
+| Validacion post-merge `main` | OK. PR #49 y PR #50 integrados; `/agenda` carga autenticada sin overflow horizontal en desktop/mobile. |
 
 ## Resultado funcional
 
@@ -207,14 +215,14 @@ Confirmado:
 
 ## Riesgos
 
-- Avanzar a `BE-026` requiere integrar la trazabilidad QA-008/UI-027 y mantener API publica/Google/produccion fuera de alcance.
+- Avanzar a `BE-026` ya puede evaluarse como diseno de contrato, manteniendo API publica funcional, Google y produccion fuera de alcance.
 - La ausencia de historial detallado de cambios de Agenda sigue siendo riesgo antes de uso real.
 - `PROD-001` sigue bloqueante para cualquier dato real.
 
 ## Limitaciones
 
 - No se hizo login visual por rol `terapeuta` ni `finanzas`; se mantiene validacion por SQL local y rutas.
-- La validacion responsive desktop y movil pasa tras UI-027.
+- La validacion responsive desktop y movil pasa tras UI-027 integrada en `main`.
 - Se crearon eventos demo locales persistentes en `agenda_eventos`; se dejaron en estado `cancelado` para respetar la prueba de persistencia y no ejecutar delete fisico.
 
 ## Evidencia tecnica
@@ -234,6 +242,7 @@ Confirmado:
 - UI visual confirmo modal de creacion, edicion, reagendamiento, fin calculado, acciones rapidas y bloqueo de solapamiento.
 - Consola del navegador no registro errores ni warnings durante el recorrido visual.
 - Responsive desktop 1280x720 sin overflow horizontal; responsive movil 390x844 y 360x740 sin overflow horizontal tras UI-027.
+- Pasada post-merge sobre `main` el 2026-07-02: `/agenda` autenticada como `Administrador Local`, desktop `1280x720`, mobile `390x844` y mobile `360x740` sin overflow horizontal; consola sin errores ni warnings capturados.
 
 ## Validaciones ejecutadas
 
@@ -256,16 +265,16 @@ Confirmado:
 
 ## Veredicto
 
-**QA-008 ejecutado parcialmente.**
+**QA-008 cerrada post-merge para entorno local/demo.**
 
 No hay hallazgos bloqueantes ni altos en las pruebas ejecutadas.
 
-Agenda interna queda funcionalmente consistente a nivel local/DB/RLS y validada visualmente en desktop con usuario `admin`.
+Agenda interna queda funcionalmente consistente a nivel local/DB/RLS y validada visualmente con usuario `admin`.
 
-La unica observacion nueva de QA visual fue responsive movil y queda corregida por UI-027. `BE-026` sigue correspondiendo al diseno de contrato de API publica, sin habilitar Google ni produccion.
+La unica observacion nueva de QA visual fue responsive movil y queda corregida por UI-027 integrada en `main`. `BE-026` sigue correspondiendo al diseno de contrato de API publica, sin habilitar Google ni produccion.
 
 ## Proximo paso recomendado
 
-Integrar PR #49 y UI-027 para dejar cerrada la trazabilidad de Agenda interna antes de iniciar `BE-026`.
+Evaluar `BE-026` como siguiente tarea de diseno de contrato de API publica de agendamiento.
 
 `BE-027` Google Calendar/Gmail debe seguir en espera.

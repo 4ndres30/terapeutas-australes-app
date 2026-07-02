@@ -2,7 +2,7 @@
 
 ## Estado
 
-Ejecutado con validacion visual autenticada admin / responsive movil corregido por UI-027.
+Cerrada post-merge con validacion visual autenticada admin / responsive movil corregido por UI-027.
 
 ## Fecha
 
@@ -22,7 +22,7 @@ Ejecutado con validacion visual autenticada admin / responsive movil corregido p
 
 Validar funcionalmente Agenda interna posterior a la integracion de PR #45 y determinar si el proyecto puede avanzar hacia `BE-026`.
 
-Resultado sintetico: las operaciones de datos y permisos locales pasaron en Supabase local. La revision visual autenticada con usuario `admin` paso en desktop, incluyendo alta, edicion, reagendamiento, completado, cancelacion y bloqueo de solapamiento desde UI. La observacion responsive movil por overflow horizontal del shell en viewport `390x844` queda corregida por UI-027.
+Resultado sintetico: las operaciones de datos y permisos locales pasaron en Supabase local. La revision visual autenticada con usuario `admin` paso en desktop, incluyendo alta, edicion, reagendamiento, completado, cancelacion y bloqueo de solapamiento desde UI. La observacion responsive movil por overflow horizontal del shell en viewport `390x844` queda corregida por UI-027 e integrada en `main` por PR #50.
 
 ## Nivel documental
 
@@ -67,6 +67,8 @@ QA-008 valida una pantalla interna conectada a modelo DB existente y operaciones
 - `main` contiene PR #45 integrado: cumplido.
 - `main` contiene PR #46 integrado: cumplido.
 - `main` contiene PR #48 integrado: cumplido.
+- `main` contiene PR #49 integrado: cumplido.
+- `main` contiene PR #50 integrado: cumplido.
 - Ambiente local/demo disponible: cumplido.
 - Datos usados son ficticios o demo: cumplido.
 - Usuario local con rol `admin`: disponible por SQL local.
@@ -172,16 +174,16 @@ Cambios de datos locales esperados: se agregaron eventos demo ficticios en `publ
 
 ## Riesgos a observar
 
-- Riesgo responsive movil `QA008-OBS-003` corregido por UI-027; desktop 1280x720 y mobile 390x844/360x740 quedaron sin overflow observado.
+- Riesgo responsive movil `QA008-OBS-003` corregido por UI-027; desktop 1280x720 y mobile 390x844/360x740 quedaron sin overflow observado post-merge.
 - El repositorio no documenta contrasenas demo para login por rol, lo que limita reproducibilidad de QA visual separada por `terapeuta` y `finanzas`.
 - No hay historial detallado de cambios de agenda; solo `updated_at`/`updated_by`.
-- Antes de `BE-026`, Control debe integrar PR #49 y UI-027 manteniendo fuera API publica, Google y produccion.
+- `BE-026` puede evaluarse como siguiente tarea de diseno de contrato, manteniendo fuera API publica funcional, Google y produccion.
 
 ## Criterios de aprobacion
 
-QA-008 alcanza aprobacion funcional local y visual desktop/admin para Agenda interna.
+QA-008 alcanza aprobacion funcional local/demo y visual admin para Agenda interna.
 
-La experiencia responsive movil queda corregida por UI-027 en la rama `ui-027-ajuste-responsive-shell-agenda`.
+La experiencia responsive movil queda corregida por UI-027 integrada en `main`.
 
 ## Criterios de rechazo
 
@@ -197,7 +199,7 @@ No se detectaron condiciones de rechazo en las pruebas ejecutadas:
 
 ## Resultado
 
-QA-008 ejecutado con validacion visual autenticada admin.
+QA-008 cerrada post-merge con validacion visual autenticada admin.
 
 No hay hallazgos bloqueantes ni altos en la parte ejecutada. La observacion media responsive movil queda corregida por UI-027.
 

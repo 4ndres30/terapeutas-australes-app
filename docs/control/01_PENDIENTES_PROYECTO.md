@@ -33,7 +33,7 @@ Este documento es la lista maestra de pendientes. Cada pendiente debe tener un c
 | QA-005 | Validacion funcional local UI-016 / Reportes por rol. | Integrada | Alta | Control de desarrollo |
 | QA-006 | Base minima de pruebas por rol y no exposicion sensible. | Pendiente | Alta | Control de desarrollo / QA |
 | QA-007 | Checklist pre-migracion cloud. | Checklist documental / pendiente ejecucion futura | Alta | Control de desarrollo / QA |
-| QA-008 | Validacion funcional completa de Agenda interna. | Validacion visual admin ejecutada / responsive movil corregido por UI-027 | Alta | Control de Desarrollo / QA / UI-UX / Integracion Backend |
+| QA-008 | Validacion funcional completa de Agenda interna. | Cerrada post-merge local/demo | Alta | Control de Desarrollo / QA / UI-UX / Integracion Backend |
 | API-001 | Disenar API publica segura e integracion Google Workspace. | Diseno documental / pendiente implementacion | Alta | Control de desarrollo / Integracion Backend |
 | DEC-035 | Migracion progresiva a plataforma Google Cloud. | Propuesta documental / pendiente validacion Javier | Alta | Control de desarrollo |
 | BE-001 | Inventariar estructura backend y Supabase local. | Integrada | Alta | Integracion Backend/Estructura |
@@ -93,9 +93,9 @@ Este documento es la lista maestra de pendientes. Cada pendiente debe tener un c
 | UI-023 | Navegacion y superficies filtradas por rol. | Pendiente | Alta | UI / UX |
 | UI-024 | Recuperacion de cuenta, MFA y estados Auth no tecnicos. | Pendiente | Alta | UI / UX / Integracion Backend |
 | UI-025 | Integrar AgendaPage con modelo DB de Agenda operativa. | Integrada lectura por PR #44 | Alta | UI / UX / Integracion Backend |
-| UI-025B | Alta y edicion controlada de Agenda operativa interna. | Integrada por PR #45 / QA-008 visual desktop | Alta | UI / UX / Integracion Backend |
-| UI-026 | Selector calendario/horario y duracion estandar de consulta en Agenda interna. | Integrada por PR #48 / responsive movil corregido por UI-027 | Alta | UI / UX / Integracion Backend |
-| UI-027 | Ajuste responsive de shell y Agenda interna. | Implementada en rama / validada local | Media-alta | UI / UX / Pulido visual |
+| UI-025B | Alta y edicion controlada de Agenda operativa interna. | Integrada por PR #45 / QA-008 cerrada local/demo | Alta | UI / UX / Integracion Backend |
+| UI-026 | Selector calendario/horario y duracion estandar de consulta en Agenda interna. | Integrada por PR #48 / QA-008 cerrada local/demo | Alta | UI / UX / Integracion Backend |
+| UI-027 | Ajuste responsive de shell y Agenda interna. | Integrada por PR #50 / validada post-merge | Media-alta | UI / UX / Pulido visual |
 | DOC-001 | Manual de ambientes. | Pendiente | Alta | Control de desarrollo |
 | DOC-002 | Procedimiento de backup/restauracion. | Pendiente | Alta | Control de desarrollo / Integracion Backend |
 | DOC-003 | Politica de carga de datos reales. | Pendiente | Alta | Control de desarrollo |
@@ -1442,7 +1442,7 @@ UI-025 no reemplaza BE-026 ni BE-027. La pagina publica futura debe seguir pasan
 
 ### UI-025B - Alta y edicion controlada de Agenda operativa interna
 
-**Estado:** Integrada por PR #45 / QA-008 visual desktop
+**Estado:** Integrada por PR #45 / QA-008 cerrada local/demo
 **Prioridad:** Alta
 **Responsable:** UI / UX / Integracion Backend
 **Origen:** UI-025 / BE-028 / BE-029 / DEC-034
@@ -1471,11 +1471,11 @@ La ruta `/agenda` sigue protegida para `admin` y `terapeuta`. Finanzas, anonimos
 UI-025B no crea pacientes, consultas, solicitudes de agenda, evaluaciones, casos, revisiones, trabajos, pagos ni fotos. Tampoco implementa API publica, endpoints, Google Calendar, Gmail, Workspace, migraciones SQL, Auth/RLS, `.env`, Supabase remoto, produccion ni datos reales.
 
 #### Observaciones
-UI-025B no reemplaza BE-026 ni BE-027. La pagina publica futura debe seguir pasando por API segura y la integracion Google debe implementarse solo desde backend controlado. `QA-008` valido el flujo desktop/admin y la observacion responsive movil queda corregida por UI-027.
+UI-025B no reemplaza BE-026 ni BE-027. La pagina publica futura debe seguir pasando por API segura y la integracion Google debe implementarse solo desde backend controlado. `QA-008` valido el flujo desktop/admin y la observacion responsive movil quedo corregida por UI-027 e integrada en `main`.
 
 ### UI-026 - Selector calendario/horario y duracion estandar de consulta en Agenda interna
 
-**Estado:** Integrada por PR #48 / validada visual desktop / responsive movil corregido por UI-027
+**Estado:** Integrada por PR #48 / QA-008 cerrada local/demo
 **Prioridad:** Alta
 **Responsable:** UI / UX / Integracion Backend
 **Origen:** QA-008 / UI-025B
@@ -1491,14 +1491,14 @@ Mejorar el modal de Agenda para que el usuario seleccione fecha desde calendario
 #### Resultado
 Se calcula hora de fin automaticamente y se valida solapamiento basico contra eventos cargados, aplicando buffer operativo de 15 minutos cuando participa una consulta.
 
-QA-008 valido visualmente en desktop/admin el selector de fecha, selector de hora, duracion controlada, fin calculado, reagendamiento y bloqueo de solapamiento. La observacion responsive movil por overflow horizontal del shell queda corregida por UI-027.
+QA-008 valido visualmente en desktop/admin el selector de fecha, selector de hora, duracion controlada, fin calculado, reagendamiento y bloqueo de solapamiento. La observacion responsive movil por overflow horizontal del shell quedo corregida por UI-027 e integrada en `main`.
 
 #### Restricciones
 UI-026 no modifica migraciones, DB, Auth/RLS, Supabase remoto, API publica, Google Calendar, Gmail, produccion ni datos reales.
 
 ### UI-027 - Ajuste responsive de shell y Agenda interna
 
-**Estado:** Implementada en rama / validada local
+**Estado:** Integrada por PR #50 / validada post-merge
 **Prioridad:** Media-alta
 **Responsable:** UI / UX / Pulido visual
 **Origen:** QA008-OBS-003
@@ -1522,11 +1522,11 @@ Corregir el overflow horizontal observado en `/agenda` con viewport movil `390x8
 UI-027 no debe modificar DB, migraciones, Auth/RLS, Supabase remoto, API publica, Google Calendar, Gmail, produccion ni datos reales.
 
 #### Resultado
-Se ajustan `src/App.tsx`, `src/App.css` y `src/ReferenceFinalPass.css` para incorporar boton superior, drawer lateral movil, overlay y cierre por boton, Escape o enlace de navegacion. Validado sin overflow horizontal en `390x844`, `360x740` y desktop `1280x720`.
+Se ajustan `src/App.tsx`, `src/App.css` y `src/ReferenceFinalPass.css` para incorporar boton superior, drawer lateral movil, overlay y cierre por boton, Escape o enlace de navegacion. Integrado por PR #50. Validado post-merge en `main` sin overflow horizontal en `390x844`, `360x740` y desktop `1280x720`.
 
 ### QA-008 - Validacion funcional completa de Agenda interna
 
-**Estado:** Validacion visual admin ejecutada / responsive movil corregido por UI-027
+**Estado:** Cerrada post-merge local/demo
 **Prioridad:** Alta
 **Responsable:** Control de Desarrollo / QA / UI-UX / Integracion Backend
 **Origen:** PR #45 / UI-025B / BE-028 / BE-029
@@ -1539,7 +1539,7 @@ Se ajustan `src/App.tsx`, `src/App.css` y `src/ReferenceFinalPass.css` para inco
 **Nivel documental:** Nivel 2
 
 #### Descripcion
-Ejecutar en una tarea posterior la validacion funcional completa de Agenda interna ya integrada en `main`.
+Validar funcionalmente Agenda interna ya integrada en `main` y registrar el cierre post-merge de QA-008.
 
 #### Alcance esperado
 - Visualizacion desde `public.vista_agenda_operativa`.
@@ -1559,7 +1559,7 @@ QA-008 fue ejecutado en Supabase local, Vite local y navegador integrado autenti
 
 Pasaron las validaciones de creacion, lectura desde `vista_agenda_operativa`, edicion, reagendamiento, completado, cancelacion sin delete fisico, persistencia, permisos por rol simulados, ausencia de efectos colaterales sobre entidades clinicas, finanzas y Storage, y recorrido visual desktop/admin.
 
-La observacion responsive movil por overflow horizontal del shell queda corregida por UI-027 en la rama `ui-027-ajuste-responsive-shell-agenda`. Antes de `BE-026`, Control debe integrar PR #49 y la correccion UI-027 manteniendo fuera API publica, Google y produccion.
+La observacion responsive movil por overflow horizontal del shell queda corregida por UI-027 e integrada por PR #50. La pasada visual post-merge sobre `main` confirma desktop `1280x720`, mobile `390x844` y mobile `360x740` sin overflow horizontal. `BE-026` puede evaluarse como siguiente diseno de contrato, manteniendo fuera API publica funcional, Google y produccion.
 
 ### QA-003 - Validacion funcional local de fotos de elementos del caso
 
