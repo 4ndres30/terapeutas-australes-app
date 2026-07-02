@@ -2,7 +2,7 @@
 
 ## Estado
 
-Implementado en rama / pendiente revision.
+Integrado por PR #48 / validado visualmente en desktop con observacion responsive movil.
 
 ## Fecha
 
@@ -11,6 +11,11 @@ Implementado en rama / pendiente revision.
 ## Rama
 
 `ui-026-selector-calendario-horario-agenda`
+
+## Base integrada
+
+- PR #48 integrado en `main`.
+- Validacion visual autenticada ejecutada en `qa-008-validacion-visual-agenda-interna`.
 
 ## Objetivo
 
@@ -122,10 +127,25 @@ Se mantienen la duracion estandar de consulta de 60 minutos y el buffer operativ
 - `npm run lint`
 - `npm run build`
 - `npm run dev -- --force` con verificacion tecnica de servidor local.
+- Revision visual autenticada de `/agenda` con sesion `Administrador Local`.
+- Validacion UI de alta, edicion, reagendamiento, completado, cancelacion y bloqueo de solapamiento.
+- Revision responsive desktop 1280x720 y movil 390x844.
+
+## Validacion visual autenticada QA-008
+
+La revision visual admin confirmo que el modal de Agenda permite crear y editar eventos internos con fecha, hora, duracion y fin calculado sin desborde en desktop.
+
+El reagendamiento conserva bloqueados los campos que no corresponden y permite ajustar estado, fecha y hora. El fin calculado se actualiza al cambiar hora/duracion.
+
+La validacion de solapamiento mostro el mensaje esperado y no creo el evento superpuesto.
+
+Desktop 1280x720 no mostro overflow horizontal. En movil 390x844 se observo overflow horizontal del shell por la navegacion lateral fija, con contenido principal parcialmente recortado.
 
 ## Limitaciones
 
-La validacion visual autenticada depende de navegador disponible y usuarios demo. Si el navegador integrado no esta disponible, se debe completar revision visual humana de `/agenda`.
+La validacion visual autenticada fue ejecutada para `admin`. No se ejecuto login visual separado por `terapeuta` ni `finanzas` por falta de credenciales demo documentadas.
+
+La experiencia movil no queda aprobada por overflow horizontal del shell en viewport `390x844`.
 
 La validacion de solapamiento usa los eventos visibles/cargados en la Agenda. No reemplaza una validacion transaccional de backend, que corresponderia a una fase posterior si se expone API publica.
 
@@ -141,10 +161,10 @@ UI-026 deja el modal de Agenda con selector calendario, selector de hora, duraci
 
 Post revision visual, el selector de fecha queda reforzado con boton visible `Elegir fecha` y apertura programatica del calendario nativo cuando el navegador lo permite.
 
+La validacion visual autenticada en desktop/admin queda aprobada. Queda observacion responsive movil derivable a UI-027.
+
 No se modifican migraciones, Auth/RLS, Supabase remoto, API publica, Google ni produccion.
 
 ## Proximo paso recomendado
 
-Revisar visualmente `/agenda` con datos demo y usuario interno autorizado.
-
-Si la revision visual pasa, Control puede decidir si este pulido cierra la limitacion visual pendiente de QA-008 o si requiere una QA puntual adicional antes de `BE-026`.
+Decidir si se corrige responsive movil antes de `BE-026` o si se registra como `UI-027 - Ajuste responsive de shell y Agenda interna`.

@@ -2,7 +2,7 @@
 
 ## Estado
 
-Ejecutado parcialmente / pendiente validacion visual autenticada.
+Ejecutado con validacion visual autenticada / observacion responsive movil pendiente.
 
 ## Fecha
 
@@ -12,19 +12,25 @@ Ejecutado parcialmente / pendiente validacion visual autenticada.
 
 `qa-008-validacion-funcional-agenda-interna`
 
+Actualizacion visual autenticada:
+
+`qa-008-validacion-visual-agenda-interna`
+
 ## Base validada
 
 - `main` actualizado.
 - PR #45 integrado en `main`.
 - PR #46 integrado en `main`.
-- Commit base observado: `bc64b21 docs: actualiza pauta y prepara QA Agenda (#46)`.
+- PR #48 integrado en `main`.
+- Commit base observado para validacion visual: `ce63f1e feat: mejora selector de horario en agenda (#48)`.
 
 ## Entorno
 
 - Repositorio local: `4ndres30/terapeutas-australes-app`.
 - Supabase local activo.
 - Vite local verificado.
-- Navegador integrado no disponible en esta sesion.
+- Navegador integrado disponible en `http://127.0.0.1:5173/agenda`.
+- Sesion autenticada como `Administrador Local`.
 - No se uso Supabase remoto.
 - No se uso produccion.
 
@@ -38,18 +44,21 @@ Ejecutado parcialmente / pendiente validacion visual autenticada.
 - Ubicacion editada: `Sala demo QA editada`
 - Notas internas: `Prueba QA-008 sin datos reales`
 - Estado final del evento demo local: `cancelado`
+- Titulo visual autenticado: `QA-008 Visual Agenda Codex editado`
+- Titulo base solapamiento: `QA-008 Visual Solape Base`
+- Estado final de eventos visuales: `cancelado`
 
 No se usaron nombres reales, correos reales, telefonos reales ni datos clinicos reales.
 
 ## Resumen ejecutivo
 
-Agenda interna funciona correctamente en la parte de modelo local, RLS y operaciones principales de `agenda_eventos`.
+Agenda interna funciona correctamente en la parte de modelo local, RLS, operaciones principales de `agenda_eventos` y recorrido visual autenticado con usuario `admin`.
 
-Se valido creacion, visualizacion desde `public.vista_agenda_operativa`, edicion, reagendamiento, cambio a completado, cancelacion sin delete fisico, persistencia y ausencia de efectos colaterales clinicos/financieros/Storage.
+Se valido creacion, visualizacion desde `public.vista_agenda_operativa`, edicion, reagendamiento, cambio a completado, cancelacion sin delete fisico, persistencia, bloqueo de solapamiento desde UI y ausencia de efectos colaterales clinicos/financieros/Storage.
 
-No se detectaron hallazgos bloqueantes, altos ni medios en la parte ejecutada.
+No se detectaron hallazgos bloqueantes ni altos en la parte ejecutada.
 
-La validacion no queda aprobada total porque no se pudo realizar revision visual autenticada de `/agenda` en navegador integrado ni login real por roles. Se recomienda completar esa revision antes de iniciar `BE-026`.
+La validacion visual autenticada queda ejecutada en desktop con resultado funcional OK. Se detecta una observacion responsive en viewport movil: la navegacion lateral produce overflow horizontal y recorta la superficie de Agenda. Control debe decidir si esta observacion bloquea `BE-026` o si se deriva a una tarea UI separada antes de uso movil real.
 
 ## Revision critica del prompt y estrategia aplicada
 
@@ -90,6 +99,15 @@ No se expandio el alcance hacia desarrollo. No se corrigieron bugs ni se modific
 | Rol finanzas | OK por SQL local/ruta: no ve datos y no puede insertar. |
 | Rol anonimo | OK por SQL local/ruta: sin permiso sobre vista. |
 | No efectos colaterales | OK. Solo aumento `agenda_eventos`. |
+| Revision visual autenticada admin | OK. `/agenda` carga con sesion `Administrador Local`. |
+| Modal de creacion | OK en desktop. Controles presentes, sin solapes visibles. |
+| Edicion visual | OK. Cambios se reflejan en listado. |
+| Reagendamiento visual | OK. Campos no permitidos quedan deshabilitados; hora y fin calculado actualizan. |
+| Validacion UI de solapamiento | OK. El segundo evento demo superpuesto fue bloqueado y no se creo. |
+| Acciones rapidas visuales | OK. Completado y cancelado cambian estado sin delete fisico. |
+| Responsive desktop 1280x720 | OK. Sin overflow horizontal observado. |
+| Responsive movil 390x844 | Observacion. Hay overflow horizontal por layout con sidebar fija y contenido recortado. |
+| Consola navegador | OK. Sin errores ni warnings capturados durante el recorrido. |
 
 ## Resultado funcional
 
@@ -115,12 +133,12 @@ Google queda `no_sincronizado` y sin `google_calendar_event_id`.
 
 | Rol | Resultado |
 | --- | --- |
-| admin | OK por SQL local. Puede crear, editar, reagendar, completar y cancelar. |
+| admin | OK por SQL local y validacion visual autenticada. Puede crear, editar, reagendar, completar y cancelar. |
 | terapeuta | OK por SQL local. Puede leer vista y actualizar evento dentro del alcance. |
 | finanzas | OK por SQL local y codigo de ruta. No tiene acceso funcional a Agenda. |
 | anonimo | OK por SQL local y codigo de ruta. No tiene permiso sobre la vista ni acceso sin sesion. |
 
-Validacion visual por login real: no ejecutada por falta de navegador integrado y credenciales demo documentadas.
+Validacion visual por login real: ejecutada para `admin`. No se ejecuto login visual separado por `terapeuta` ni `finanzas` por falta de credenciales demo documentadas; esas coberturas se mantienen validadas por SQL local y codigo de rutas.
 
 ## Validacion de base de datos local
 
@@ -161,12 +179,11 @@ Confirmado:
 
 ### QA008-OBS-001 - Navegador integrado no disponible
 
-**Severidad:** Observacion
-**Descripcion:** No hubo navegador integrado disponible para ejecutar la revision visual autenticada de `/agenda`.
-**Evidencia:** La lista de navegadores disponibles para la sesion retorno vacia.
-**Impacto:** No se pudo aprobar visualmente el modal de alta/edicion/reagendamiento ni validar clicks reales sobre la UI autenticada.
-**Recomendacion:** Ejecutar una validacion visual manual o automatizada con navegador disponible antes de iniciar `BE-026`.
-**Tarea sugerida:** Completar revision visual autenticada de Agenda interna, sin cambiar alcance funcional.
+**Severidad:** Cerrada.
+**Descripcion:** La limitacion original queda resuelta en la actualizacion visual autenticada.
+**Evidencia:** Se valido `/agenda` en navegador integrado con sesion `Administrador Local`.
+**Impacto:** Ya no bloquea la revision visual admin de Agenda.
+**Recomendacion:** Mantener evidencia en esta ejecucion y no reabrir salvo que el navegador vuelva a quedar indisponible.
 
 ### QA008-OBS-002 - Credenciales demo por rol no documentadas
 
@@ -177,19 +194,26 @@ Confirmado:
 **Recomendacion:** Definir procedimiento controlado de usuarios demo locales sin exponer secretos en Git.
 **Tarea sugerida:** Documentar provisioning local/demo de usuarios internos en una tarea de seguridad/control, sin habilitar produccion.
 
+### QA008-OBS-003 - Overflow horizontal en viewport movil
+
+**Severidad:** Media.
+**Descripcion:** En viewport `390x844`, la barra lateral fija ocupa gran parte del ancho y la superficie de Agenda queda recortada con scroll horizontal.
+**Evidencia:** Validacion visual autenticada en navegador integrado. `documentElement.scrollWidth` supera `clientWidth` y la captura movil muestra contenido principal parcialmente oculto.
+**Impacto:** Agenda interna no queda aprobada como experiencia movil completa. En desktop 1280x720 no se observo overflow.
+**Recomendacion:** Derivar a tarea UI de responsive/navegacion antes de exigir uso movil real.
+**Tarea sugerida:** `UI-027 - Ajuste responsive de shell y Agenda interna`.
+
 ## Riesgos
 
-- Avanzar a `BE-026` sin cerrar revision visual autenticada puede arrastrar problemas de UX del modal a la API publica.
+- Avanzar a `BE-026` sin decidir el alcance de la observacion responsive movil puede arrastrar deuda UI interna, aunque el flujo desktop ya quedo validado.
 - La ausencia de historial detallado de cambios de Agenda sigue siendo riesgo antes de uso real.
 - `PROD-001` sigue bloqueante para cualquier dato real.
 
 ## Limitaciones
 
-- No se ejecuto navegador integrado.
-- No se hizo login visual por rol.
-- No se validaron clicks reales del modal en desktop/mobile.
-- La validacion responsive fue estatica por CSS y modulo servido, no visual.
-- Se creo un evento demo local persistente en `agenda_eventos`; no se borro para respetar la prueba de persistencia y no ejecutar delete fisico.
+- No se hizo login visual por rol `terapeuta` ni `finanzas`; se mantiene validacion por SQL local y rutas.
+- La validacion responsive desktop paso; responsive movil queda con observacion de overflow horizontal.
+- Se crearon eventos demo locales persistentes en `agenda_eventos`; se dejaron en estado `cancelado` para respetar la prueba de persistencia y no ejecutar delete fisico.
 
 ## Evidencia tecnica
 
@@ -204,6 +228,10 @@ Confirmado:
 - Vite forzado sirvio `/agenda` con HTTP 200 en puerto 5174.
 - Modulo servido contiene `Nuevo evento interno` y nota UI-025B, y no contiene `Eliminar`.
 - CSS contiene `box-sizing`, `overflow-x: hidden`, `max-width` y media queries para modal/grilla.
+- Navegador integrado cargo `/agenda` en `http://127.0.0.1:5173/agenda` con sesion `Administrador Local`.
+- UI visual confirmo modal de creacion, edicion, reagendamiento, fin calculado, acciones rapidas y bloqueo de solapamiento.
+- Consola del navegador no registro errores ni warnings durante el recorrido visual.
+- Responsive desktop 1280x720 sin overflow horizontal; responsive movil 390x844 con overflow horizontal.
 
 ## Validaciones ejecutadas
 
@@ -228,12 +256,17 @@ Confirmado:
 
 **QA-008 ejecutado parcialmente.**
 
-No hay hallazgos bloqueantes, altos ni medios en las pruebas ejecutadas.
+No hay hallazgos bloqueantes ni altos en las pruebas ejecutadas.
 
-Agenda interna queda funcionalmente consistente a nivel local/DB/RLS, pero no suficientemente validada en UI visual autenticada para recomendar avanzar directamente a `BE-026`.
+Agenda interna queda funcionalmente consistente a nivel local/DB/RLS y validada visualmente en desktop con usuario `admin`.
+
+La unica observacion nueva de QA visual es responsive movil. Control debe decidir si se corrige antes de `BE-026` o si se acepta como deuda UI interna separada, dado que `BE-026` corresponde al diseno de contrato de API publica y no a la operacion movil de la agenda interna.
 
 ## Proximo paso recomendado
 
-Completar revision visual autenticada de `/agenda` con navegador disponible y usuario demo por rol.
+Decidir tratamiento de `QA008-OBS-003`:
 
-Si esa revision no detecta problemas, Control puede evaluar `BE-026`. `BE-027` Google Calendar/Gmail debe seguir en espera.
+- corregir responsive movil antes de `BE-026`; o
+- aceptar formalmente que la validacion visual desktop/admin cierra el bloqueo de Agenda para iniciar el diseno `BE-026`, dejando responsive movil como tarea UI separada.
+
+`BE-027` Google Calendar/Gmail debe seguir en espera.

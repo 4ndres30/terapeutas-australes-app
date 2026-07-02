@@ -33,7 +33,7 @@ Este documento es la lista maestra de pendientes. Cada pendiente debe tener un c
 | QA-005 | Validacion funcional local UI-016 / Reportes por rol. | Integrada | Alta | Control de desarrollo |
 | QA-006 | Base minima de pruebas por rol y no exposicion sensible. | Pendiente | Alta | Control de desarrollo / QA |
 | QA-007 | Checklist pre-migracion cloud. | Checklist documental / pendiente ejecucion futura | Alta | Control de desarrollo / QA |
-| QA-008 | Validacion funcional completa de Agenda interna. | Ejecutado parcialmente / pendiente validacion visual autenticada | Alta | Control de Desarrollo / QA / UI-UX / Integracion Backend |
+| QA-008 | Validacion funcional completa de Agenda interna. | Validacion visual admin ejecutada / obs. responsive movil | Alta | Control de Desarrollo / QA / UI-UX / Integracion Backend |
 | API-001 | Disenar API publica segura e integracion Google Workspace. | Diseno documental / pendiente implementacion | Alta | Control de desarrollo / Integracion Backend |
 | DEC-035 | Migracion progresiva a plataforma Google Cloud. | Propuesta documental / pendiente validacion Javier | Alta | Control de desarrollo |
 | BE-001 | Inventariar estructura backend y Supabase local. | Integrada | Alta | Integracion Backend/Estructura |
@@ -93,8 +93,9 @@ Este documento es la lista maestra de pendientes. Cada pendiente debe tener un c
 | UI-023 | Navegacion y superficies filtradas por rol. | Pendiente | Alta | UI / UX |
 | UI-024 | Recuperacion de cuenta, MFA y estados Auth no tecnicos. | Pendiente | Alta | UI / UX / Integracion Backend |
 | UI-025 | Integrar AgendaPage con modelo DB de Agenda operativa. | Integrada lectura por PR #44 | Alta | UI / UX / Integracion Backend |
-| UI-025B | Alta y edicion controlada de Agenda operativa interna. | Integrada por PR #45 / QA-008 parcial | Alta | UI / UX / Integracion Backend |
-| UI-026 | Selector calendario/horario y duracion estandar de consulta en Agenda interna. | Implementada en rama / pendiente revision | Alta | UI / UX / Integracion Backend |
+| UI-025B | Alta y edicion controlada de Agenda operativa interna. | Integrada por PR #45 / QA-008 visual desktop | Alta | UI / UX / Integracion Backend |
+| UI-026 | Selector calendario/horario y duracion estandar de consulta en Agenda interna. | Integrada por PR #48 / obs. movil | Alta | UI / UX / Integracion Backend |
+| UI-027 | Ajuste responsive de shell y Agenda interna. | Sugerida por QA-008 / pendiente aprobacion | Media-alta | UI / UX / Pulido visual |
 | DOC-001 | Manual de ambientes. | Pendiente | Alta | Control de desarrollo |
 | DOC-002 | Procedimiento de backup/restauracion. | Pendiente | Alta | Control de desarrollo / Integracion Backend |
 | DOC-003 | Politica de carga de datos reales. | Pendiente | Alta | Control de desarrollo |
@@ -1441,7 +1442,7 @@ UI-025 no reemplaza BE-026 ni BE-027. La pagina publica futura debe seguir pasan
 
 ### UI-025B - Alta y edicion controlada de Agenda operativa interna
 
-**Estado:** Integrada por PR #45 / QA-008 parcial
+**Estado:** Integrada por PR #45 / QA-008 visual desktop
 **Prioridad:** Alta
 **Responsable:** UI / UX / Integracion Backend
 **Origen:** UI-025 / BE-028 / BE-029 / DEC-034
@@ -1470,11 +1471,11 @@ La ruta `/agenda` sigue protegida para `admin` y `terapeuta`. Finanzas, anonimos
 UI-025B no crea pacientes, consultas, solicitudes de agenda, evaluaciones, casos, revisiones, trabajos, pagos ni fotos. Tampoco implementa API publica, endpoints, Google Calendar, Gmail, Workspace, migraciones SQL, Auth/RLS, `.env`, Supabase remoto, produccion ni datos reales.
 
 #### Observaciones
-UI-025B no reemplaza BE-026 ni BE-027. La pagina publica futura debe seguir pasando por API segura y la integracion Google debe implementarse solo desde backend controlado. `QA-008` fue ejecutado parcialmente y debe cerrar validacion visual autenticada antes de evaluar API publica.
+UI-025B no reemplaza BE-026 ni BE-027. La pagina publica futura debe seguir pasando por API segura y la integracion Google debe implementarse solo desde backend controlado. `QA-008` valido el flujo desktop/admin y dejo observacion responsive movil pendiente de decision.
 
 ### UI-026 - Selector calendario/horario y duracion estandar de consulta en Agenda interna
 
-**Estado:** Implementada en rama / pendiente revision
+**Estado:** Integrada por PR #48 / validada visual desktop / obs. movil
 **Prioridad:** Alta
 **Responsable:** UI / UX / Integracion Backend
 **Origen:** QA-008 / UI-025B
@@ -1490,18 +1491,45 @@ Mejorar el modal de Agenda para que el usuario seleccione fecha desde calendario
 #### Resultado
 Se calcula hora de fin automaticamente y se valida solapamiento basico contra eventos cargados, aplicando buffer operativo de 15 minutos cuando participa una consulta.
 
+QA-008 valido visualmente en desktop/admin el selector de fecha, selector de hora, duracion controlada, fin calculado, reagendamiento y bloqueo de solapamiento. Queda observacion responsive movil por overflow horizontal del shell en viewport `390x844`.
+
 #### Restricciones
 UI-026 no modifica migraciones, DB, Auth/RLS, Supabase remoto, API publica, Google Calendar, Gmail, produccion ni datos reales.
 
+### UI-027 - Ajuste responsive de shell y Agenda interna
+
+**Estado:** Sugerida por QA-008 / pendiente aprobacion
+**Prioridad:** Media-alta
+**Responsable:** UI / UX / Pulido visual
+**Origen:** QA008-OBS-003
+**Fecha creacion:** 2026-07-02
+**Rama sugerida:** `ui-027-ajuste-responsive-shell-agenda`
+**Dependencias:** QA-008, UI-025B, UI-026
+**Nivel documental:** Nivel 2
+
+#### Descripcion
+Corregir el overflow horizontal observado en `/agenda` con viewport movil `390x844`, revisando shell, navegacion lateral y superficie principal de Agenda.
+
+#### Criterios preliminares
+- `/agenda` no debe presentar overflow horizontal en viewport movil.
+- La navegacion lateral no debe recortar la superficie principal.
+- El comportamiento desktop validado por QA-008 no debe degradarse.
+- La correccion debe validarse con navegador integrado o captura visual equivalente.
+
+#### Restricciones
+UI-027 no debe modificar DB, migraciones, Auth/RLS, Supabase remoto, API publica, Google Calendar, Gmail, produccion ni datos reales.
+
 ### QA-008 - Validacion funcional completa de Agenda interna
 
-**Estado:** Ejecutado parcialmente / pendiente validacion visual autenticada
+**Estado:** Validacion visual admin ejecutada / obs. responsive movil
 **Prioridad:** Alta
 **Responsable:** Control de Desarrollo / QA / UI-UX / Integracion Backend
 **Origen:** PR #45 / UI-025B / BE-028 / BE-029
 **Fecha creacion:** 2026-07-02
 **Rama sugerida:** `qa-008-validacion-agenda-interna`
+**Rama usada visual:** `qa-008-validacion-visual-agenda-interna`
 **Informe:** `docs/control/auditorias/QA-008_VALIDACION_FUNCIONAL_AGENDA_INTERNA.md`
+**Informe ejecucion:** `docs/control/auditorias/QA-008_EJECUCION_AGENDA_INTERNA.md`
 **Dependencias:** PR #45 integrado, UI-025B, BE-028, BE-029, PROD-001
 **Nivel documental:** Nivel 2
 
@@ -1522,11 +1550,11 @@ Ejecutar en una tarea posterior la validacion funcional completa de Agenda inter
 QA-008 no debe crear pacientes, consultas, solicitudes publicas, evaluaciones, casos, revisiones, trabajos, cobros, pagos, fotos ni objetos Storage. Tampoco debe ejecutar API publica, Google Calendar, Gmail, migraciones, Supabase remoto, produccion ni datos reales.
 
 #### Resultado
-QA-008 fue ejecutado parcialmente en Supabase local y Vite local.
+QA-008 fue ejecutado en Supabase local, Vite local y navegador integrado autenticado como `Administrador Local`.
 
-Pasaron las validaciones de creacion, lectura desde `vista_agenda_operativa`, edicion, reagendamiento, completado, cancelacion sin delete fisico, persistencia, permisos por rol simulados y ausencia de efectos colaterales sobre entidades clinicas, finanzas y Storage.
+Pasaron las validaciones de creacion, lectura desde `vista_agenda_operativa`, edicion, reagendamiento, completado, cancelacion sin delete fisico, persistencia, permisos por rol simulados, ausencia de efectos colaterales sobre entidades clinicas, finanzas y Storage, y recorrido visual desktop/admin.
 
-Queda pendiente validacion visual autenticada del modal/formulario en navegador. No se recomienda iniciar `BE-026` hasta cerrar esa limitacion o aceptarla formalmente.
+Queda observacion responsive movil por overflow horizontal del shell en viewport `390x844`. Control debe decidir si se corrige mediante UI-027 antes de `BE-026` o si se acepta formalmente como deuda UI separada.
 
 ### QA-003 - Validacion funcional local de fotos de elementos del caso
 

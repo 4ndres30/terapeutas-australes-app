@@ -3,7 +3,7 @@
 Responsable: UI / UX / Pulido visual
 Estado del documento: En analisis
 Fecha creacion: `2026-06-11`
-Ultima actualizacion: `2026-07-01`
+Ultima actualizacion: `2026-07-02`
 
 Este documento controla tareas de experiencia de usuario, formularios, responsive y pulido visual. El objetivo es que la aplicacion sea clara, sobria, profesional y facil de usar para el flujo terapeutico.
 
@@ -415,11 +415,11 @@ No se implementa API publica, endpoints, Google Calendar, Gmail, Workspace, conv
 
 Informe relacionado: `auditorias/UI-025B_EDICION_CONTROLADA_AGENDA_OPERATIVA.md`
 
-Resultado relacionado: `QA-008` valido operaciones locales de Agenda, permisos y no efectos colaterales. Queda pendiente validacion visual autenticada del modal/formulario antes de evaluar API publica o integraciones Google.
+Resultado relacionado: `QA-008` valido operaciones locales de Agenda, permisos, no efectos colaterales y recorrido visual autenticado desktop/admin. Queda observacion responsive movil antes de considerar la experiencia movil aprobada.
 
 ## UI-026 - Selector calendario/horario Agenda
 
-**Estado:** Implementada en rama / pendiente revision
+**Estado:** Integrada por PR #48 / validada visual desktop / observacion movil
 **Prioridad:** Alta
 **Responsable:** UI / UX / Integracion Backend
 **Origen:** QA-008 / UI-025B
@@ -434,6 +434,28 @@ La duracion estandar de consulta queda en 60 minutos y se aplica un buffer opera
 No se agregan librerias, API publica, Google Calendar/Gmail, migraciones ni cambios de Auth/RLS.
 
 Informe relacionado: `auditorias/UI-026_SELECTOR_CALENDARIO_HORARIO_AGENDA.md`
+
+Resultado relacionado: QA-008 confirmo alta, edicion, reagendamiento, completado, cancelacion y bloqueo de solapamiento desde UI autenticada en desktop. En viewport movil 390x844 se observo overflow horizontal del shell por navegacion lateral fija.
+
+## UI-027 - Ajuste responsive de shell y Agenda interna
+
+**Estado:** Sugerida por QA-008 / pendiente aprobacion
+**Prioridad:** Media-alta
+**Responsable:** UI / UX / Pulido visual
+**Origen:** QA008-OBS-003
+**Fecha:** 2026-07-02
+
+### Descripcion
+Corregir el overflow horizontal observado en `/agenda` con viewport movil `390x844`, revisando la convivencia entre navegacion lateral, shell principal y superficie de Agenda.
+
+### Restricciones
+No modificar DB, migraciones, Auth/RLS, Supabase remoto, API publica, Google Calendar/Gmail, produccion ni datos reales.
+
+### Criterios preliminares
+- `/agenda` debe renderizar sin overflow horizontal en viewport movil.
+- La navegacion debe permitir acceso usable sin recortar el contenido principal.
+- El comportamiento desktop validado por QA-008 no debe degradarse.
+- Debe verificarse con navegador integrado o captura visual equivalente.
 
 ## CTRL-008 - Decisiones UI derivadas post auditoria
 
