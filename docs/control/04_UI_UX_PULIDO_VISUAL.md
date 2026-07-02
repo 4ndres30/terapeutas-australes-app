@@ -381,7 +381,7 @@ Informe relacionado: `auditorias/UI-025_INTEGRACION_AGENDA_OPERATIVA.md`
 
 ## UI-025B - Edicion controlada Agenda Operativa
 
-**Estado:** Integrada por PR #45 / QA-008 parcial
+**Estado:** Integrada por PR #45 / QA-008 cerrada local/demo
 **Prioridad:** Alta
 **Responsable:** UI / UX / Integracion Backend
 **Origen:** UI-025 / BE-028 / BE-029 / DEC-034
@@ -415,11 +415,11 @@ No se implementa API publica, endpoints, Google Calendar, Gmail, Workspace, conv
 
 Informe relacionado: `auditorias/UI-025B_EDICION_CONTROLADA_AGENDA_OPERATIVA.md`
 
-Resultado relacionado: `QA-008` valido operaciones locales de Agenda, permisos, no efectos colaterales y recorrido visual autenticado desktop/admin. Queda observacion responsive movil antes de considerar la experiencia movil aprobada.
+Resultado relacionado: `QA-008` valido operaciones locales de Agenda, permisos, no efectos colaterales y recorrido visual autenticado desktop/admin. La observacion responsive movil quedo corregida por UI-027 e integrada en `main`.
 
 ## UI-026 - Selector calendario/horario Agenda
 
-**Estado:** Integrada por PR #48 / validada visual desktop / observacion movil
+**Estado:** Integrada por PR #48 / QA-008 cerrada local/demo
 **Prioridad:** Alta
 **Responsable:** UI / UX / Integracion Backend
 **Origen:** QA-008 / UI-025B
@@ -435,11 +435,11 @@ No se agregan librerias, API publica, Google Calendar/Gmail, migraciones ni camb
 
 Informe relacionado: `auditorias/UI-026_SELECTOR_CALENDARIO_HORARIO_AGENDA.md`
 
-Resultado relacionado: QA-008 confirmo alta, edicion, reagendamiento, completado, cancelacion y bloqueo de solapamiento desde UI autenticada en desktop. En viewport movil 390x844 se observo overflow horizontal del shell por navegacion lateral fija.
+Resultado relacionado: QA-008 confirmo alta, edicion, reagendamiento, completado, cancelacion y bloqueo de solapamiento desde UI autenticada en desktop. El overflow horizontal movil observado en 390x844 quedo corregido por UI-027 y validado post-merge.
 
 ## UI-027 - Ajuste responsive de shell y Agenda interna
 
-**Estado:** Implementada en rama / validada local
+**Estado:** Integrada por PR #50 / validada post-merge
 **Prioridad:** Media-alta
 **Responsable:** UI / UX / Pulido visual
 **Origen:** QA008-OBS-003
@@ -458,7 +458,7 @@ No modificar DB, migraciones, Auth/RLS, Supabase remoto, API publica, Google Cal
 - Debe verificarse con navegador integrado o captura visual equivalente.
 
 ### Resultado
-Implementado en la rama `ui-027-ajuste-responsive-shell-agenda`. El drawer movil abre/cierra por boton superior, boton interno, toque exterior y tecla `Escape`. Desktop mantiene sidebar fija.
+Integrado por PR #50 desde la rama `ui-027-ajuste-responsive-shell-agenda`. El drawer movil abre/cierra por boton superior, boton interno, toque exterior y tecla `Escape`. Desktop mantiene sidebar fija. La pasada post-merge en `main` confirma que `/agenda` no presenta overflow horizontal en desktop `1280x720`, mobile `390x844` ni mobile `360x740`.
 
 Informe relacionado: `auditorias/UI-027_AJUSTE_RESPONSIVE_SHELL_AGENDA.md`
 

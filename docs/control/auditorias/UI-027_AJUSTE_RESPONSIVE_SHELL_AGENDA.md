@@ -2,7 +2,7 @@
 
 ## Estado
 
-Implementado en rama / validado localmente.
+Integrado por PR #50 / validado post-merge en `main`.
 
 ## Fecha
 
@@ -17,6 +17,7 @@ Implementado en rama / validado localmente.
 - `QA008-OBS-003`.
 - Validacion visual autenticada de Agenda interna.
 - PR #49 draft como base documental de la observacion.
+- PR #50 como integracion del ajuste responsive.
 
 ## Objetivo
 
@@ -99,6 +100,15 @@ El ajuste:
 
 ## Resultado
 
-`QA008-OBS-003` queda corregida en la rama `ui-027-ajuste-responsive-shell-agenda`.
+`QA008-OBS-003` queda corregida e integrada en `main` por PR #50.
 
 Agenda interna queda validada visualmente en desktop y mobile desde el shell responsive, manteniendo pendiente `PROD-001` para cualquier uso real.
+
+## Cierre post-merge
+
+Pasada ejecutada sobre `main` el 2026-07-02:
+
+- Desktop `1280x720`: `/agenda` carga autenticada, sidebar fija, sin boton movil y sin overflow horizontal.
+- Mobile `390x844`: menu cerrado sin overflow, drawer abierto desde `x=0`, overlay activo y cierre por boton interno.
+- Mobile `360x740`: sin overflow horizontal con sidebar fuera de pantalla.
+- Consola navegador: sin errores ni warnings capturados.
