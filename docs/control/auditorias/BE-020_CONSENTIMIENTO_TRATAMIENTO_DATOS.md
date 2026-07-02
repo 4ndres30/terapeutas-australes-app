@@ -149,7 +149,7 @@ BE-020 define que cualquier implementacion futura debe:
 
 ## Relacion con auditoria
 
-SEC-005 sigue pendiente y debe definir trazabilidad para:
+SEC-005 define el modelo documental de trazabilidad, pendiente implementacion futura, para:
 
 - creacion de consentimiento;
 - cambios de version;
@@ -174,7 +174,7 @@ SEC-005 sigue pendiente y debe definir trazabilidad para:
 
 - Falta texto legal final aprobado.
 - Falta politica de privacidad publica.
-- Falta SEC-005 para auditoria sensible.
+- Falta implementar SEC-005 para auditoria sensible.
 - Falta BE-018/DOC-001/DOC-003 para ambientes y carga real.
 - Falta definir almacenamiento tecnico de consentimientos.
 - Falta definir revocacion operativa y efectos.
@@ -182,4 +182,4 @@ SEC-005 sigue pendiente y debe definir trazabilidad para:
 
 ## Recomendacion
 
-El siguiente paso recomendado es cerrar `SEC-005 - Auditoria de cambios sensibles`, porque BE-020 requiere trazabilidad antes de usar consentimiento con datos reales.
+El siguiente paso recomendado es cerrar `BE-021 - Politica de anulacion vs eliminacion`, porque consentimiento y auditoria requieren reglas claras para correcciones, revocaciones y anulaciones antes de usar datos reales.

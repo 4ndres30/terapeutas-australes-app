@@ -10,7 +10,7 @@ El proyecto cuenta con una estructura documental de control en `docs/control/`. 
 
 Al corte actual ya quedaron integradas las auditorias iniciales de control, backend, flujo clinico y UI/UX. Tambien quedaron registrados BE-003, BE-010, UI-011, IMP-001, DATA-001, BE-011, QA-002, SEC-001, BE-016, QA-004, UI-016, API-001, el diseno BE-012/BE-017 de Agenda Operativa, la implementacion DB inicial BE-028, la validacion runtime local BE-029 y la integracion interna UI-025/UI-025B de Agenda, junto con las decisiones clinicas/operativas y arquitectonicas clave que permiten avanzar sin romper el flujo definido.
 
-PR #45 ya esta integrado en `main`: Agenda interna cuenta con lectura, alta y edicion controlada de `agenda_eventos`. PR #48 tambien quedo integrado: el modal suma selector calendario/horario, duracion controlada, fin calculado y validacion basica de solapamiento. PR #49 y PR #50 quedaron integrados en `main`: QA-008 queda cerrada como validacion funcional local/demo de Agenda interna, con validacion visual autenticada admin y correccion responsive movil UI-027 mediante menu superior y drawer lateral. BE-026 define el contrato documental de la futura API publica de agendamiento sobre `solicitudes_agenda`, sin endpoints reales. SEC-009 define el marco documental de seguridad, DOC-004 documenta el flujo pagina publica -> API -> sistema interno -> Google y BE-020 define la base documental de consentimiento/tratamiento de datos pendiente de validacion clinica/legal. API publica funcional, Google Calendar/Gmail y produccion siguen en espera.
+PR #45 ya esta integrado en `main`: Agenda interna cuenta con lectura, alta y edicion controlada de `agenda_eventos`. PR #48 tambien quedo integrado: el modal suma selector calendario/horario, duracion controlada, fin calculado y validacion basica de solapamiento. PR #49 y PR #50 quedaron integrados en `main`: QA-008 queda cerrada como validacion funcional local/demo de Agenda interna, con validacion visual autenticada admin y correccion responsive movil UI-027 mediante menu superior y drawer lateral. BE-026 define el contrato documental de la futura API publica de agendamiento sobre `solicitudes_agenda`, sin endpoints reales. SEC-009 define el marco documental de seguridad, DOC-004 documenta el flujo pagina publica -> API -> sistema interno -> Google, BE-020 define la base documental de consentimiento/tratamiento de datos pendiente de validacion clinica/legal y SEC-005 define el modelo documental de auditoria de cambios sensibles. API publica funcional, Google Calendar/Gmail y produccion siguen en espera.
 
 UI-026 incorpora selector de fecha, selector de hora, duracion controlada, fin calculado y validacion basica de solapamiento con buffer operativo de 15 minutos para consultas. El cambio se mantiene en UI interna; no modifica DB, RLS, API publica ni Google. UI-027 quedo integrado en `main` y ajusta el shell responsive para que Agenda no presente overflow horizontal en mobile y la navegacion se despliegue desde el costado izquierdo.
 
@@ -80,7 +80,7 @@ La pagina publica no debe escribir directamente en tablas clinicas, financieras 
 
 La integracion con Google Calendar y Gmail/Workspace debe pasar por backend controlado, con secretos fuera del frontend, eventos neutros, correos neutros, validacion, consentimiento segun BE-020, auditoria y revision interna previa.
 
-La implementacion futura depende de validar clinica/legalmente BE-020 y cerrar separacion de ambientes, auditoria sensible, seguridad de API, backup/restauracion y PROD-001.
+La implementacion futura depende de validar clinica/legalmente BE-020 y cerrar separacion de ambientes, implementacion real de auditoria sensible, seguridad de API, backup/restauracion y PROD-001.
 
 ## Estrategia futura Google Cloud
 
@@ -160,7 +160,7 @@ SEC-002 ya cuenta con matriz documental de permisos esperados por tabla y rol. L
 
 SEC-001 ya fue ejecutada en local y quedo aprobada con observaciones. BE-016 y UI-016 ya resolvieron la vista financiera minima y la separacion de reportes por rol en main. Siguen pendientes:
 
-- SEC-005: diseñar bitácora/auditoría de cambios sensibles.
+- SEC-005: diseno documental de auditoria sensible registrado, pendiente implementacion real.
 - BE-021: definir anulación lógica vs eliminación física.
 - Hardening posterior de grants para fotos/Storage antes de datos reales.
 

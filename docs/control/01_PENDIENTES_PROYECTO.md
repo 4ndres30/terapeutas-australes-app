@@ -67,7 +67,7 @@ Este documento es la lista maestra de pendientes. Cada pendiente debe tener un c
 | SEC-002 | Crear matriz de permisos por tabla y rol. | Validada runtime / obs. | Alta | Integracion Backend / Seguridad |
 | SEC-003 | Hardening Auth para produccion. | Integrada | Alta | Integracion Backend / Seguridad |
 | SEC-004 | Definir alcance del rol Finanzas. | Validada runtime / obs. | Alta | Control de desarrollo / Integracion Backend |
-| SEC-005 | Disenar bitacora/auditoria de cambios sensibles. | Pendiente | Alta | Integracion Backend |
+| SEC-005 | Disenar bitacora/auditoria de cambios sensibles. | Diseno documental / pendiente implementacion futura | Alta | Integracion Backend |
 | SEC-006 | Politica de fotos, retencion y objetos huerfanos. | Pendiente | Alta | Integracion Backend / Seguridad |
 | SEC-007 | Procedimiento de scripts manuales locales/demo y prohibicion en produccion. | Pendiente | Alta | Integracion Backend / Seguridad |
 | SEC-008 | Implementacion controlada Hardening Auth. | Implementada parcial / pendiente PR | Alta | Integracion Backend / Seguridad |
@@ -738,16 +738,21 @@ SEC-001 valido runtime que Finanzas no accede a clinica sensible, elementos del 
 
 ### SEC-005 - Disenar bitacora/auditoria de cambios sensibles
 
-**Estado:** Pendiente
+**Estado:** Diseno documental / pendiente implementacion futura
 **Prioridad:** Alta
 **Responsable:** Integracion Backend
 **Origen:** Auditoria PROD-001 / SEC-001
 **Fecha creacion:** 2026-06-19
+**Fecha documentacion:** 2026-07-02
+**Rama usada:** `sec-005-auditoria-cambios-sensibles`
+**Informe:** `docs/control/auditorias/SEC-005_AUDITORIA_CAMBIOS_SENSIBLES.md`
 
 #### Descripcion
 Disenar una bitacora de auditoria para cambios sensibles en datos clinicos, financieros y de acceso.
 
-#### Criterios de aceptacion preliminares
+SEC-005 define el modelo documental de auditoria: eventos sensibles, datos minimos por evento, datos prohibidos en logs, criterio de antes/despues minimizado, acceso conceptual por rol y relacion con anulacion, consentimiento, API publica y PROD-001.
+
+#### Criterios de aceptacion
 - Identificar eventos sensibles que deben auditarse.
 - Definir actor, fecha, entidad afectada y tipo de cambio.
 - Definir alcance inicial sin crear tablas todavia.
@@ -759,6 +764,8 @@ Disenar una bitacora de auditoria para cambios sensibles en datos clinicos, fina
 SEC-005 debe considerar los riesgos detectados por SEC-002 sobre acciones sensibles, anulacion logica y cambios financieros/clinicos.
 
 CTRL-008 agrega que SEC-005 debe cubrir, al menos, cambios sobre pacientes, consultas, evaluaciones, casos, elementos, revisiones, hallazgos, trabajos, cobros, pagos, fotos, cambios de rol, anulaciones e intentos criticos.
+
+SEC-005 no crea tablas, triggers, policies, codigo, endpoints, `.env`, Supabase remoto, Google ni produccion. La implementacion real debe esperar BE-021, BE-018, DOC-001, DOC-003, QA runtime y cierre de PROD-001.
 
 ### SEC-006 - Politica de fotos, retencion y objetos huerfanos
 
