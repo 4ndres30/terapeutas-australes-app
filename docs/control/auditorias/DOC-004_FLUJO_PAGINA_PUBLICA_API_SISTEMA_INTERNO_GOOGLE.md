@@ -175,7 +175,7 @@ Los reintentos deben usar idempotencia definida por BE-026/SEC-009.
 
 ## Auditoria
 
-SEC-005 debe cerrar la auditoria antes de produccion.
+SEC-005 define el modelo documental de auditoria. Su implementacion real debe cerrarse antes de produccion.
 
 Eventos minimos futuros:
 
@@ -221,4 +221,4 @@ Cada ambiente debe tener dominios, CORS, secretos, datos y auditoria separados.
 
 ## Recomendacion
 
-Antes de construir API publica real, cerrar BE-020 y SEC-005. Sin consentimiento y auditoria, la API no debe avanzar a datos reales ni produccion.
+Antes de construir API publica real, validar BE-020 e implementar SEC-005. Sin consentimiento y auditoria operativa, la API no debe avanzar a datos reales ni produccion.

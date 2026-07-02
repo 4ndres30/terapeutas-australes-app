@@ -491,6 +491,30 @@ BE-020 no crea endpoints, no instala dependencias, no modifica codigo, no modifi
 
 Informe relacionado: `docs/control/auditorias/BE-020_CONSENTIMIENTO_TRATAMIENTO_DATOS.md`
 
+## SEC-005 - Auditoria de cambios sensibles
+
+**Estado:** Diseno documental / pendiente implementacion futura
+**Origen:** PROD-001 / SEC-001 / SEC-002 / SEC-004 / CTRL-008 / BE-020
+**Fecha:** 2026-07-02
+
+SEC-005 define el modelo documental de auditoria para cambios sensibles en datos clinicos, financieros, agenda, consentimiento, Auth, roles, fotos, API publica y Google futuro.
+
+### Modelo definido
+
+- Eventos sensibles por area funcional.
+- Datos minimos por evento: actor, rol, fecha, entidad, accion, resultado, ambiente y correlation id.
+- Datos prohibidos dentro del log: notas clinicas completas, fotos, documentos, secretos, tokens, payloads completos y datos financieros sensibles.
+- Antes/despues minimizado mediante nombres de campos, resumen neutro o hash cuando corresponda.
+- Acceso conceptual por rol, con Finanzas excluido de auditoria clinica.
+- No delete fisico normal de auditoria.
+- Relacion obligatoria con BE-021 para anulacion vs eliminacion.
+
+### Restricciones
+
+SEC-005 no crea tablas, indices, triggers, policies, codigo, endpoints, SQL, `.env`, Supabase remoto, Google ni produccion.
+
+Informe relacionado: `docs/control/auditorias/SEC-005_AUDITORIA_CAMBIOS_SENSIBLES.md`
+
 ## BE-001 - Inventariar estructura backend y Supabase local
 
 **Estado:** Integrada

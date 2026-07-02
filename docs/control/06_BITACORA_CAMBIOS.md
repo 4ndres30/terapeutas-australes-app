@@ -1982,3 +1982,50 @@ BE-020 define finalidades de tratamiento, datos permitidos y prohibidos, evidenc
 BE-020 queda como diseno documental base / pendiente validacion clinica y legal.
 
 La implementacion real debe esperar SEC-005, BE-018, DOC-001, DOC-003, definicion tecnica de almacenamiento, validacion clinica/legal y PROD-001.
+
+## LOG-047 - SEC-005 auditoria de cambios sensibles
+
+**Estado:** Documentado
+**Prioridad:** Alta
+**Responsable:** Integracion Backend / Seguridad
+**Origen:** SEC-005 / PROD-001 / SEC-001 / SEC-002 / SEC-004 / CTRL-008 / BE-020
+**Fecha creacion:** 2026-07-02
+**Rama usada:** `sec-005-auditoria-cambios-sensibles`
+
+### Resumen
+
+Se documenta el modelo minimo de auditoria para cambios sensibles antes de usar datos reales, fotos reales, pagos reales, API publica real o produccion.
+
+SEC-005 define eventos sensibles por area funcional, datos minimos por evento, datos prohibidos en auditoria, criterio de antes/despues minimizado, acceso conceptual por rol, relacion con consentimiento, API publica y anulacion, y mantiene fuera de alcance la implementacion tecnica.
+
+### Archivos relacionados
+
+- `docs/control/auditorias/SEC-005_AUDITORIA_CAMBIOS_SENSIBLES.md`
+- `docs/control/auditorias/BE-020_CONSENTIMIENTO_TRATAMIENTO_DATOS.md`
+- `docs/control/auditorias/DOC-004_FLUJO_PAGINA_PUBLICA_API_SISTEMA_INTERNO_GOOGLE.md`
+- `docs/control/00_ESTADO_GENERAL_PROYECTO.md`
+- `docs/control/01_PENDIENTES_PROYECTO.md`
+- `docs/control/03_INTEGRACION_BACKEND_ESTRUCTURA.md`
+- `docs/control/05_DECISIONES_PROYECTO.md`
+- `docs/control/06_BITACORA_CAMBIOS.md`
+
+### Restricciones respetadas
+
+- No se crearon tablas de auditoria.
+- No se crearon triggers.
+- No se modificaron policies RLS.
+- No se modifico codigo fuente.
+- No se modificaron migraciones.
+- No se ejecuto SQL.
+- No se toco `.env`.
+- No se uso Supabase remoto.
+- No se ejecuto `supabase db push`.
+- No se integro Google Calendar, Gmail ni Workspace.
+- No se habilito produccion.
+- No se usaron datos reales.
+
+### Resultado
+
+SEC-005 queda como diseno documental / pendiente implementacion futura.
+
+La implementacion real debe esperar BE-021, BE-018, DOC-001, DOC-003, diseno tecnico de tabla/RLS/triggers, QA runtime y PROD-001.

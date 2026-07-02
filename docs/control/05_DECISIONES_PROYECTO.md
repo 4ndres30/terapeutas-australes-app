@@ -962,6 +962,8 @@ Flujo relacionado: `docs/control/auditorias/DOC-004_FLUJO_PAGINA_PUBLICA_API_SIS
 
 Consentimiento relacionado: `docs/control/auditorias/BE-020_CONSENTIMIENTO_TRATAMIENTO_DATOS.md`.
 
+Auditoria relacionada: `docs/control/auditorias/SEC-005_AUDITORIA_CAMBIOS_SENSIBLES.md`.
+
 ## DEC-034 - Agenda operativa separada de consulta clinica confirmada
 
 **Estado:** Arquitectura aprobada / DB validada localmente
@@ -1019,6 +1021,8 @@ Seguridad relacionada: `docs/control/auditorias/SEC-009_SEGURIDAD_API_PUBLICA.md
 Flujo relacionado: `docs/control/auditorias/DOC-004_FLUJO_PAGINA_PUBLICA_API_SISTEMA_INTERNO_GOOGLE.md`.
 
 Consentimiento relacionado: `docs/control/auditorias/BE-020_CONSENTIMIENTO_TRATAMIENTO_DATOS.md`.
+
+Auditoria relacionada: `docs/control/auditorias/SEC-005_AUDITORIA_CAMBIOS_SENSIBLES.md`.
 
 ## DEC-035 - Migracion progresiva a plataforma Google Cloud
 
