@@ -439,23 +439,28 @@ Resultado relacionado: QA-008 confirmo alta, edicion, reagendamiento, completado
 
 ## UI-027 - Ajuste responsive de shell y Agenda interna
 
-**Estado:** Sugerida por QA-008 / pendiente aprobacion
+**Estado:** Implementada en rama / validada local
 **Prioridad:** Media-alta
 **Responsable:** UI / UX / Pulido visual
 **Origen:** QA008-OBS-003
 **Fecha:** 2026-07-02
 
 ### Descripcion
-Corregir el overflow horizontal observado en `/agenda` con viewport movil `390x844`, revisando la convivencia entre navegacion lateral, shell principal y superficie de Agenda.
+Corregir el overflow horizontal observado en `/agenda` con viewport movil `390x844`, reemplazando la sidebar movil por un boton superior y un drawer lateral que se despliega desde el costado izquierdo.
 
 ### Restricciones
 No modificar DB, migraciones, Auth/RLS, Supabase remoto, API publica, Google Calendar/Gmail, produccion ni datos reales.
 
 ### Criterios preliminares
 - `/agenda` debe renderizar sin overflow horizontal en viewport movil.
-- La navegacion debe permitir acceso usable sin recortar el contenido principal.
+- La navegacion debe abrirse desde un icono superior y no debe recortar el contenido principal.
 - El comportamiento desktop validado por QA-008 no debe degradarse.
 - Debe verificarse con navegador integrado o captura visual equivalente.
+
+### Resultado
+Implementado en la rama `ui-027-ajuste-responsive-shell-agenda`. El drawer movil abre/cierra por boton superior, boton interno, toque exterior y tecla `Escape`. Desktop mantiene sidebar fija.
+
+Informe relacionado: `auditorias/UI-027_AJUSTE_RESPONSIVE_SHELL_AGENDA.md`
 
 ## CTRL-008 - Decisiones UI derivadas post auditoria
 

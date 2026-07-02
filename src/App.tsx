@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import type { ReactNode } from 'react'
 import type { Session } from '@supabase/supabase-js'
+import { Menu, X } from 'lucide-react'
 import { BrowserRouter, Navigate, NavLink, Route, Routes } from 'react-router-dom'
 import PacientesPage from './pages/PacientesPage'
 import ConsultasPage from './pages/ConsultasPage'
@@ -116,16 +117,61 @@ function DashboardShell({ usuarioInterno, onCerrarSesion, children }: {
 }) {
   const inicialesUsuario = obtenerInicialesUsuario(usuarioInterno.nombre_completo)
   const rolVisible = formatearRol(usuarioInterno.rol)
+  const [menuMovilAbierto, setMenuMovilAbierto] = useState(false)
+
+  useEffect(() => {
+    document.body.classList.toggle('dashboard-menu-open', menuMovilAbierto)
+
+    return () => {
+      document.body.classList.remove('dashboard-menu-open')
+    }
+  }, [menuMovilAbierto])
+
+  useEffect(() => {
+    if (!menuMovilAbierto) {
+      return
+    }
+
+    const cerrarConEscape = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        setMenuMovilAbierto(false)
+      }
+    }
+
+    window.addEventListener('keydown', cerrarConEscape)
+
+    return () => {
+      window.removeEventListener('keydown', cerrarConEscape)
+    }
+  }, [menuMovilAbierto])
 
   return (
-    <div className="dashboard-shell">
-      <aside className="dashboard-sidebar" aria-label="Panel principal">
-        <div className="sidebar-brand">
-          <div className="sidebar-logo" aria-hidden="true">✦</div>
-          <div>
-            <strong>Terapeutas Australes</strong>
-            <span>Gestión profesional</span>
+    <div className={menuMovilAbierto ? 'dashboard-shell dashboard-shell--menu-open' : 'dashboard-shell'}>
+      <button
+        aria-label="Cerrar panel de navegación"
+        className="dashboard-menu-backdrop"
+        onClick={() => setMenuMovilAbierto(false)}
+        type="button"
+      />
+
+      <aside className="dashboard-sidebar" id="dashboard-sidebar" aria-label="Panel principal">
+        <div className="sidebar-mobile-header">
+          <div className="sidebar-brand">
+            <div className="sidebar-logo" aria-hidden="true">✦</div>
+            <div>
+              <strong>Terapeutas Australes</strong>
+              <span>Gestión profesional</span>
+            </div>
           </div>
+
+          <button
+            aria-label="Cerrar menú lateral"
+            className="dashboard-menu-close"
+            onClick={() => setMenuMovilAbierto(false)}
+            type="button"
+          >
+            <X aria-hidden="true" />
+          </button>
         </div>
 
         <nav className="sidebar-nav" aria-label="Módulos disponibles">
@@ -136,6 +182,7 @@ function DashboardShell({ usuarioInterno, onCerrarSesion, children }: {
                   isActive ? 'sidebar-nav-item sidebar-nav-item--active' : 'sidebar-nav-item sidebar-nav-item--soon'
                 )}
                 key={item.etiqueta}
+                onClick={() => setMenuMovilAbierto(false)}
                 to={item.ruta}
               >
                 <span className="sidebar-nav-icon" aria-hidden="true">{item.icono}</span>
@@ -170,7 +217,18 @@ function DashboardShell({ usuarioInterno, onCerrarSesion, children }: {
 
       <main className="dashboard-main">
         <header className="dashboard-topbar" aria-label="Barra superior">
-          <div>
+          <button
+            aria-controls="dashboard-sidebar"
+            aria-expanded={menuMovilAbierto}
+            aria-label={menuMovilAbierto ? 'Cerrar menú de navegación' : 'Abrir menú de navegación'}
+            className="dashboard-menu-toggle"
+            onClick={() => setMenuMovilAbierto((abierto) => !abierto)}
+            type="button"
+          >
+            {menuMovilAbierto ? <X aria-hidden="true" /> : <Menu aria-hidden="true" />}
+          </button>
+
+          <div className="dashboard-topbar-copy">
             <span className="dashboard-eyebrow">Centro clínico</span>
             <p>Gestión interna de Terapeutas Australes</p>
           </div>

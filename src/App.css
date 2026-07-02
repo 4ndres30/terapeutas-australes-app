@@ -275,6 +275,37 @@ button:disabled {
   background: rgba(255, 255, 255, 0.15);
 }
 
+.sidebar-mobile-header {
+  align-items: center;
+  display: flex;
+  gap: 12px;
+  justify-content: space-between;
+}
+
+.dashboard-menu-toggle,
+.dashboard-menu-close,
+.dashboard-menu-backdrop {
+  display: none;
+}
+
+.dashboard-menu-toggle,
+.dashboard-menu-close {
+  align-items: center;
+  border: 0;
+  cursor: pointer;
+  justify-content: center;
+}
+
+.dashboard-menu-toggle svg,
+.dashboard-menu-close svg {
+  height: 20px;
+  width: 20px;
+}
+
+.dashboard-topbar-copy {
+  display: none;
+}
+
 .dashboard-main {
   min-width: 0;
   padding: 18px;

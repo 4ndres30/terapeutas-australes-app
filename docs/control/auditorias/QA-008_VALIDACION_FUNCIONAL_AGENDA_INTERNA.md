@@ -2,7 +2,7 @@
 
 ## Estado
 
-Ejecutado con validacion visual autenticada admin / observacion responsive movil pendiente.
+Ejecutado con validacion visual autenticada admin / responsive movil corregido por UI-027.
 
 ## Fecha
 
@@ -22,7 +22,7 @@ Ejecutado con validacion visual autenticada admin / observacion responsive movil
 
 Validar funcionalmente Agenda interna posterior a la integracion de PR #45 y determinar si el proyecto puede avanzar hacia `BE-026`.
 
-Resultado sintetico: las operaciones de datos y permisos locales pasaron en Supabase local. La revision visual autenticada con usuario `admin` paso en desktop, incluyendo alta, edicion, reagendamiento, completado, cancelacion y bloqueo de solapamiento desde UI. Queda una observacion responsive movil por overflow horizontal del shell en viewport `390x844`.
+Resultado sintetico: las operaciones de datos y permisos locales pasaron en Supabase local. La revision visual autenticada con usuario `admin` paso en desktop, incluyendo alta, edicion, reagendamiento, completado, cancelacion y bloqueo de solapamiento desde UI. La observacion responsive movil por overflow horizontal del shell en viewport `390x844` queda corregida por UI-027.
 
 ## Nivel documental
 
@@ -98,7 +98,7 @@ QA-008 valida una pantalla interna conectada a modelo DB existente y operaciones
 - [x] Modal de edicion sin desborde horizontal en desktop: validado visualmente con navegador integrado y sesion `admin`.
 - [x] Campos Inicio y Fin sin superposicion visual en desktop: validado visualmente; fin calculado responde a hora/duracion.
 - [x] Bloqueo visual de solapamiento: el segundo evento demo superpuesto fue rechazado y no se creo.
-- [ ] Responsive movil sin overflow horizontal: observado overflow lateral en viewport `390x844`.
+- [x] Responsive movil sin overflow horizontal: corregido por UI-027 y validado en `390x844` y `360x740`.
 - [x] CSS conserva controles tecnicos para evitar desborde (`box-sizing`, `overflow-x: hidden`, `max-width` y media queries).
 - [x] Fecha fin anterior a fecha inicio fue rechazada por constraint local.
 - [x] No existe boton `Eliminar` en el modulo servido por Vite ni operacion delete autorizada por RLS/grants.
@@ -172,16 +172,16 @@ Cambios de datos locales esperados: se agregaron eventos demo ficticios en `publ
 
 ## Riesgos a observar
 
-- Hay overflow horizontal en viewport movil `390x844`; desktop 1280x720 quedo sin overflow observado.
+- Riesgo responsive movil `QA008-OBS-003` corregido por UI-027; desktop 1280x720 y mobile 390x844/360x740 quedaron sin overflow observado.
 - El repositorio no documenta contrasenas demo para login por rol, lo que limita reproducibilidad de QA visual separada por `terapeuta` y `finanzas`.
 - No hay historial detallado de cambios de agenda; solo `updated_at`/`updated_by`.
-- Antes de `BE-026`, Control debe decidir si corrige la observacion responsive movil o la acepta como deuda UI separada.
+- Antes de `BE-026`, Control debe integrar PR #49 y UI-027 manteniendo fuera API publica, Google y produccion.
 
 ## Criterios de aprobacion
 
 QA-008 alcanza aprobacion funcional local y visual desktop/admin para Agenda interna.
 
-La aprobacion total de experiencia responsive movil queda pendiente por `QA008-OBS-003`.
+La experiencia responsive movil queda corregida por UI-027 en la rama `ui-027-ajuste-responsive-shell-agenda`.
 
 ## Criterios de rechazo
 
@@ -199,11 +199,11 @@ No se detectaron condiciones de rechazo en las pruebas ejecutadas:
 
 QA-008 ejecutado con validacion visual autenticada admin.
 
-No hay hallazgos bloqueantes ni altos en la parte ejecutada. La observacion media vigente es responsive movil por overflow horizontal del shell de la aplicacion.
+No hay hallazgos bloqueantes ni altos en la parte ejecutada. La observacion media responsive movil queda corregida por UI-027.
 
 ## Observaciones
 
-Control debe decidir si `QA008-OBS-003` se corrige antes de `BE-026` o si se deriva como `UI-027 - Ajuste responsive de shell y Agenda interna`, dado que el flujo desktop/admin ya paso.
+`QA008-OBS-003` queda corregida por `UI-027 - Ajuste responsive de shell y Agenda interna`, dado que el flujo desktop/admin ya paso y mobile queda sin overflow horizontal.
 
 `PROD-001` sigue bloqueante. QA-008 no habilita produccion, datos reales, Google Calendar, Gmail ni API publica.
 

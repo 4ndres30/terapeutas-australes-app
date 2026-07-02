@@ -2,7 +2,7 @@
 
 ## Estado
 
-Ejecutado con validacion visual autenticada / observacion responsive movil pendiente.
+Ejecutado con validacion visual autenticada / responsive movil corregido por UI-027.
 
 ## Fecha
 
@@ -58,7 +58,7 @@ Se valido creacion, visualizacion desde `public.vista_agenda_operativa`, edicion
 
 No se detectaron hallazgos bloqueantes ni altos en la parte ejecutada.
 
-La validacion visual autenticada queda ejecutada en desktop con resultado funcional OK. Se detecta una observacion responsive en viewport movil: la navegacion lateral produce overflow horizontal y recorta la superficie de Agenda. Control debe decidir si esta observacion bloquea `BE-026` o si se deriva a una tarea UI separada antes de uso movil real.
+La validacion visual autenticada queda ejecutada en desktop con resultado funcional OK. La observacion responsive detectada en viewport movil queda corregida por UI-027 mediante menu superior y drawer lateral desde la izquierda.
 
 ## Revision critica del prompt y estrategia aplicada
 
@@ -106,7 +106,8 @@ No se expandio el alcance hacia desarrollo. No se corrigieron bugs ni se modific
 | Validacion UI de solapamiento | OK. El segundo evento demo superpuesto fue bloqueado y no se creo. |
 | Acciones rapidas visuales | OK. Completado y cancelado cambian estado sin delete fisico. |
 | Responsive desktop 1280x720 | OK. Sin overflow horizontal observado. |
-| Responsive movil 390x844 | Observacion. Hay overflow horizontal por layout con sidebar fija y contenido recortado. |
+| Responsive movil 390x844 | OK tras UI-027. Menu superior abre drawer lateral y no hay overflow horizontal. |
+| Responsive movil 360x740 | OK tras UI-027. Sin overflow horizontal. |
 | Consola navegador | OK. Sin errores ni warnings capturados durante el recorrido. |
 
 ## Resultado funcional
@@ -196,23 +197,24 @@ Confirmado:
 
 ### QA008-OBS-003 - Overflow horizontal en viewport movil
 
-**Severidad:** Media.
-**Descripcion:** En viewport `390x844`, la barra lateral fija ocupa gran parte del ancho y la superficie de Agenda queda recortada con scroll horizontal.
-**Evidencia:** Validacion visual autenticada en navegador integrado. `documentElement.scrollWidth` supera `clientWidth` y la captura movil muestra contenido principal parcialmente oculto.
-**Impacto:** Agenda interna no queda aprobada como experiencia movil completa. En desktop 1280x720 no se observo overflow.
-**Recomendacion:** Derivar a tarea UI de responsive/navegacion antes de exigir uso movil real.
-**Tarea sugerida:** `UI-027 - Ajuste responsive de shell y Agenda interna`.
+**Severidad:** Cerrada por UI-027.
+**Descripcion:** En viewport `390x844`, la barra lateral fija ocupaba gran parte del ancho y la superficie de Agenda quedaba recortada con scroll horizontal.
+**Evidencia original:** Validacion visual autenticada en navegador integrado. `documentElement.scrollWidth` superaba `clientWidth` y la captura movil mostraba contenido principal parcialmente oculto.
+**Correccion:** `UI-027` reemplaza la sidebar movil por boton superior y drawer lateral desde la izquierda.
+**Evidencia posterior:** En `390x844`, `documentElement.clientWidth` y `scrollWidth` quedan iguales. En `360x740` tampoco hay overflow. Desktop `1280x720` conserva sidebar fija y dos columnas.
+**Impacto:** Agenda interna queda aprobada como experiencia responsive local/demo, sin habilitar datos reales ni produccion.
+**Tarea relacionada:** `UI-027 - Ajuste responsive de shell y Agenda interna`.
 
 ## Riesgos
 
-- Avanzar a `BE-026` sin decidir el alcance de la observacion responsive movil puede arrastrar deuda UI interna, aunque el flujo desktop ya quedo validado.
+- Avanzar a `BE-026` requiere integrar la trazabilidad QA-008/UI-027 y mantener API publica/Google/produccion fuera de alcance.
 - La ausencia de historial detallado de cambios de Agenda sigue siendo riesgo antes de uso real.
 - `PROD-001` sigue bloqueante para cualquier dato real.
 
 ## Limitaciones
 
 - No se hizo login visual por rol `terapeuta` ni `finanzas`; se mantiene validacion por SQL local y rutas.
-- La validacion responsive desktop paso; responsive movil queda con observacion de overflow horizontal.
+- La validacion responsive desktop y movil pasa tras UI-027.
 - Se crearon eventos demo locales persistentes en `agenda_eventos`; se dejaron en estado `cancelado` para respetar la prueba de persistencia y no ejecutar delete fisico.
 
 ## Evidencia tecnica
@@ -231,7 +233,7 @@ Confirmado:
 - Navegador integrado cargo `/agenda` en `http://127.0.0.1:5173/agenda` con sesion `Administrador Local`.
 - UI visual confirmo modal de creacion, edicion, reagendamiento, fin calculado, acciones rapidas y bloqueo de solapamiento.
 - Consola del navegador no registro errores ni warnings durante el recorrido visual.
-- Responsive desktop 1280x720 sin overflow horizontal; responsive movil 390x844 con overflow horizontal.
+- Responsive desktop 1280x720 sin overflow horizontal; responsive movil 390x844 y 360x740 sin overflow horizontal tras UI-027.
 
 ## Validaciones ejecutadas
 
@@ -260,13 +262,10 @@ No hay hallazgos bloqueantes ni altos en las pruebas ejecutadas.
 
 Agenda interna queda funcionalmente consistente a nivel local/DB/RLS y validada visualmente en desktop con usuario `admin`.
 
-La unica observacion nueva de QA visual es responsive movil. Control debe decidir si se corrige antes de `BE-026` o si se acepta como deuda UI interna separada, dado que `BE-026` corresponde al diseno de contrato de API publica y no a la operacion movil de la agenda interna.
+La unica observacion nueva de QA visual fue responsive movil y queda corregida por UI-027. `BE-026` sigue correspondiendo al diseno de contrato de API publica, sin habilitar Google ni produccion.
 
 ## Proximo paso recomendado
 
-Decidir tratamiento de `QA008-OBS-003`:
-
-- corregir responsive movil antes de `BE-026`; o
-- aceptar formalmente que la validacion visual desktop/admin cierra el bloqueo de Agenda para iniciar el diseno `BE-026`, dejando responsive movil como tarea UI separada.
+Integrar PR #49 y UI-027 para dejar cerrada la trazabilidad de Agenda interna antes de iniciar `BE-026`.
 
 `BE-027` Google Calendar/Gmail debe seguir en espera.
