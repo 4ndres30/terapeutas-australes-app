@@ -2,7 +2,7 @@
 
 ## Estado
 
-Integrado por PR #48 / validado visualmente en desktop con observacion responsive movil.
+Integrado por PR #48 / validado visualmente en desktop / responsive movil corregido por UI-027.
 
 ## Fecha
 
@@ -139,13 +139,13 @@ El reagendamiento conserva bloqueados los campos que no corresponden y permite a
 
 La validacion de solapamiento mostro el mensaje esperado y no creo el evento superpuesto.
 
-Desktop 1280x720 no mostro overflow horizontal. En movil 390x844 se observo overflow horizontal del shell por la navegacion lateral fija, con contenido principal parcialmente recortado.
+Desktop 1280x720 no mostro overflow horizontal. En movil 390x844 se observo originalmente overflow horizontal del shell por la navegacion lateral fija, con contenido principal parcialmente recortado. Esa observacion queda corregida por UI-027 mediante menu superior y drawer lateral movil.
 
 ## Limitaciones
 
 La validacion visual autenticada fue ejecutada para `admin`. No se ejecuto login visual separado por `terapeuta` ni `finanzas` por falta de credenciales demo documentadas.
 
-La experiencia movil no queda aprobada por overflow horizontal del shell en viewport `390x844`.
+La experiencia movil queda corregida por UI-027 en viewport `390x844` y `360x740`, sin overflow horizontal observado.
 
 La validacion de solapamiento usa los eventos visibles/cargados en la Agenda. No reemplaza una validacion transaccional de backend, que corresponderia a una fase posterior si se expone API publica.
 
@@ -161,10 +161,10 @@ UI-026 deja el modal de Agenda con selector calendario, selector de hora, duraci
 
 Post revision visual, el selector de fecha queda reforzado con boton visible `Elegir fecha` y apertura programatica del calendario nativo cuando el navegador lo permite.
 
-La validacion visual autenticada en desktop/admin queda aprobada. Queda observacion responsive movil derivable a UI-027.
+La validacion visual autenticada en desktop/admin queda aprobada. La observacion responsive movil queda corregida por UI-027.
 
 No se modifican migraciones, Auth/RLS, Supabase remoto, API publica, Google ni produccion.
 
 ## Proximo paso recomendado
 
-Decidir si se corrige responsive movil antes de `BE-026` o si se registra como `UI-027 - Ajuste responsive de shell y Agenda interna`.
+Integrar la trazabilidad QA-008/UI-027 antes de iniciar `BE-026`. `BE-027` Google Calendar/Gmail debe seguir en espera.

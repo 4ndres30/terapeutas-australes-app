@@ -1695,3 +1695,55 @@ Se validan alta, edicion, reagendamiento, completado, cancelacion sin delete fis
 ### Resultado
 
 QA-008 queda validado funcionalmente en entorno local/demo y visualmente en desktop/admin. Queda observacion responsive movil `QA008-OBS-003`, derivable a `UI-027 - Ajuste responsive de shell y Agenda interna`.
+
+## LOG-041 - UI-027 drawer movil para Agenda interna
+
+**Estado:** Registrado
+**Prioridad:** Media-alta
+**Responsable:** UI / UX / Pulido visual
+**Origen:** UI-027 / QA008-OBS-003
+**Fecha creacion:** 2026-07-02
+**Rama usada:** `ui-027-ajuste-responsive-shell-agenda`
+
+### Resumen
+
+Se corrige el overflow horizontal movil detectado en QA-008.
+
+La navegacion lateral pasa a comportarse como menu movil colapsado: boton superior, drawer desde el costado izquierdo, overlay y cierre por boton interno, toque exterior o tecla `Escape`.
+
+### Archivos relacionados
+
+- `src/App.tsx`
+- `src/App.css`
+- `src/ReferenceFinalPass.css`
+- `docs/control/auditorias/UI-027_AJUSTE_RESPONSIVE_SHELL_AGENDA.md`
+- `docs/control/auditorias/QA-008_EJECUCION_AGENDA_INTERNA.md`
+- `docs/control/auditorias/QA-008_VALIDACION_FUNCIONAL_AGENDA_INTERNA.md`
+- `docs/control/auditorias/UI-026_SELECTOR_CALENDARIO_HORARIO_AGENDA.md`
+- `docs/control/00_ESTADO_GENERAL_PROYECTO.md`
+- `docs/control/01_PENDIENTES_PROYECTO.md`
+- `docs/control/04_UI_UX_PULIDO_VISUAL.md`
+- `docs/control/06_BITACORA_CAMBIOS.md`
+
+### Validacion visual
+
+- Mobile `390x844`: sin overflow horizontal, menu cerrado y drawer abierto.
+- Mobile `360x740`: sin overflow horizontal.
+- Desktop `1280x720`: sin overflow horizontal, sidebar fija conservada.
+- Consola navegador: sin errores ni warnings capturados.
+
+### Restricciones respetadas
+
+- No se modificaron migraciones.
+- No se toco `.env`.
+- No se uso Supabase remoto.
+- No se ejecuto `supabase db push`.
+- No se modifico Auth/RLS.
+- No se creo API publica.
+- No se integro Google Calendar, Gmail ni Workspace.
+- No se habilito produccion.
+- No se usaron datos reales.
+
+### Resultado
+
+`QA008-OBS-003` queda corregida por UI-027. Agenda interna queda visualmente usable en desktop y mobile dentro de entorno local/demo.
