@@ -1508,3 +1508,39 @@ La pantalla `/agenda` mantiene la lectura desde `public.vista_agenda_operativa` 
 ### Resultado
 
 UI-025B queda lista para revision como gestion interna controlada de Agenda. No queda lista para produccion ni reemplaza BE-026.
+
+## LOG-036 - Preparacion QA-008 post integracion PR #45
+
+**Estado:** Registrado
+**Prioridad:** Alta
+**Responsable:** Control de Desarrollo / QA / UI-UX / Integracion Backend
+**Origen:** PR #45 / PR #46 / CODEX auditoria pauta
+**Fecha creacion:** 2026-07-02
+**Rama usada:** `ctrl-auditoria-pauta-trabajo`
+
+### Resumen
+
+Se actualiza la auditoria de pauta tras la integracion de PR #45.
+
+Se crea `QA-008` como pauta de validacion funcional completa de Agenda interna.
+
+Se crea `09_NIVELES_DOCUMENTACION.md` para controlar sobredocumentacion y aplicar documentacion minima suficiente por nivel de riesgo.
+
+### Archivos relacionados
+
+- `docs/control/auditorias/CODEX_AUDITORIA_PAUTA_TRABAJO_DESARROLLO.md`
+- `docs/control/auditorias/QA-008_VALIDACION_FUNCIONAL_AGENDA_INTERNA.md`
+- `docs/control/09_NIVELES_DOCUMENTACION.md`
+- `docs/control/README.md`
+- `docs/control/00_ESTADO_GENERAL_PROYECTO.md`
+- `docs/control/01_PENDIENTES_PROYECTO.md`
+- `docs/control/04_UI_UX_PULIDO_VISUAL.md`
+- `docs/control/06_BITACORA_CAMBIOS.md`
+
+### Restricciones
+
+Solo documentacion. Sin codigo, sin migraciones, sin Supabase remoto, sin API publica, sin Google y sin produccion.
+
+### Resultado
+
+PR #46 queda actualizado para reflejar PR #45 integrado y preparar QA-008. QA-008 queda documentado, no ejecutado.
