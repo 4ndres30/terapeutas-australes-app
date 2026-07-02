@@ -1442,3 +1442,69 @@ La pantalla `/agenda` consulta `public.vista_agenda_operativa` y muestra eventos
 ### Resultado
 
 UI-025 queda lista para revision como integracion interna de lectura. No queda lista para produccion ni reemplaza BE-026.
+
+## LOG-035 - UI-025B edicion controlada Agenda Operativa
+
+**Estado:** Registrado
+**Prioridad:** Alta
+**Responsable:** UI / UX / Integracion Backend
+**Origen:** UI-025B / BE-028 / BE-029 / DEC-034
+**Fecha creacion:** 2026-07-01
+**Rama usada:** `ui-025b-agenda-operativa-edicion-controlada`
+
+### Descripcion
+
+Se extiende `AgendaPage` para habilitar gestion manual minima y segura de `public.agenda_eventos` dentro de la agenda interna.
+
+La pantalla `/agenda` mantiene la lectura desde `public.vista_agenda_operativa` y agrega operaciones directas controladas sobre `agenda_eventos` para usuarios internos autorizados.
+
+### Archivos relacionados
+
+- `src/pages/AgendaPage.tsx`
+- `src/pages/ClinicalModuleBase.css`
+- `docs/control/auditorias/UI-025B_EDICION_CONTROLADA_AGENDA_OPERATIVA.md`
+- `README.md`
+- `docs/control/00_ESTADO_GENERAL_PROYECTO.md`
+- `docs/control/01_PENDIENTES_PROYECTO.md`
+- `docs/control/04_UI_UX_PULIDO_VISUAL.md`
+- `docs/control/06_BITACORA_CAMBIOS.md`
+
+### Operaciones habilitadas
+
+- Crear evento interno en `agenda_eventos`.
+- Editar evento existente de `agenda_eventos`.
+- Cambiar estado con valores reales del modelo.
+- Reagendar como edicion controlada de fecha/hora y estado.
+- Cancelar mediante estado `cancelado`, sin borrado fisico.
+- Marcar como `completado`.
+
+### Decisiones registradas
+
+- La UI opera solo sobre `agenda_eventos`.
+- La ruta `/agenda` sigue protegida para `admin` y `terapeuta`.
+- `solicitudes_agenda`, `pacientes`, `consultas`, evaluaciones, casos, revisiones, trabajos, pagos, fotos y Storage quedan fuera de esta edicion.
+- No se agrega eliminacion fisica porque el modelo no define policy de `delete` ni decision de borrado para Agenda.
+- BE-026 y BE-027 siguen pendientes; UI-025B no crea API publica ni integracion Google.
+
+### Restricciones respetadas
+
+- No se creo API publica.
+- No se crearon endpoints.
+- No se integro Google Calendar.
+- No se integro Gmail ni Workspace.
+- No se toco Supabase remoto.
+- No se ejecuto `supabase db push`.
+- No se modificaron migraciones SQL.
+- No se modifico Auth/RLS.
+- No se toco `.env`.
+- No se crearon credenciales.
+- No se habilito produccion.
+- No se usaron datos reales.
+- No se crearon pacientes ni consultas automaticamente.
+- No se modificaron cobros/pagos.
+- No se modifico Storage ni fotos clinicas.
+- No se borraron eventos fisicamente.
+
+### Resultado
+
+UI-025B queda lista para revision como gestion interna controlada de Agenda. No queda lista para produccion ni reemplaza BE-026.
