@@ -1849,3 +1849,47 @@ El contrato usa versionado `/api/v1`, mantiene `solicitudes_agenda` como destino
 BE-026 queda como diseno documental / pendiente implementacion futura.
 
 La implementacion real debe esperar SEC-009, BE-020, DOC-001, DOC-003, SEC-005, BE-018 y PROD-001. BE-027 Google Calendar/Gmail sigue fuera de alcance.
+
+## LOG-044 - SEC-009 seguridad API publica
+
+**Estado:** Documentado
+**Prioridad:** Alta
+**Responsable:** Integracion Backend / Seguridad
+**Origen:** SEC-009 / API-001 / BE-026 / DEC-033 / DEC-034 / SEC-010 / PROD-001
+**Fecha creacion:** 2026-07-02
+**Rama usada:** `sec-009-diseno-seguridad-api-publica`
+
+### Resumen
+
+Se define el marco documental de seguridad para la futura API publica de Terapeutas Australes.
+
+SEC-009 establece controles minimos para endpoints publicos, internos y de servicio: CORS estricto, rate limit, anti-spam, CAPTCHA o mecanismo equivalente, validacion backend, sanitizacion, minimizacion de datos, idempotencia, deduplicacion, errores neutros, logs internos, auditoria y manejo de secretos fuera del frontend.
+
+### Archivos relacionados
+
+- `docs/control/auditorias/SEC-009_SEGURIDAD_API_PUBLICA.md`
+- `docs/control/00_ESTADO_GENERAL_PROYECTO.md`
+- `docs/control/01_PENDIENTES_PROYECTO.md`
+- `docs/control/03_INTEGRACION_BACKEND_ESTRUCTURA.md`
+- `docs/control/05_DECISIONES_PROYECTO.md`
+- `docs/control/06_BITACORA_CAMBIOS.md`
+
+### Restricciones respetadas
+
+- No se creo API publica funcional.
+- No se crearon endpoints.
+- No se modifico codigo fuente.
+- No se modificaron migraciones.
+- No se ejecuto SQL.
+- No se toco `.env`.
+- No se uso Supabase remoto.
+- No se ejecuto `supabase db push`.
+- No se integro Google Calendar, Gmail ni Workspace.
+- No se habilito produccion.
+- No se usaron datos reales.
+
+### Resultado
+
+SEC-009 queda como diseno documental / pendiente implementacion futura.
+
+La implementacion real debe esperar, como minimo, DOC-004, BE-020, SEC-005, BE-018, DOC-001, DOC-003, SEC-010 y PROD-001. BE-027 Google Calendar/Gmail sigue fuera de alcance.

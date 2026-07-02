@@ -409,6 +409,42 @@ BE-026 no crea endpoints, no instala dependencias, no modifica codigo, no modifi
 
 Informe relacionado: `docs/control/auditorias/BE-026_CONTRATO_API_PUBLICA_AGENDAMIENTO.md`
 
+## SEC-009 - Seguridad de API publica
+
+**Estado:** Diseno documental / pendiente implementacion futura
+**Origen:** API-001 / BE-026 / DEC-033 / DEC-034 / SEC-010 / PROD-001
+**Fecha:** 2026-07-02
+
+SEC-009 define el marco de seguridad que debe cumplir la futura API publica antes de implementar endpoints reales.
+
+### Controles definidos
+
+- CORS estricto por ambiente y dominio autorizado.
+- Rate limit por IP, datos normalizados y ventana temporal.
+- Anti-spam con CAPTCHA o mecanismo equivalente.
+- Validacion backend por esquema estricto.
+- Sanitizacion y minimizacion de datos publicos.
+- Idempotencia y deduplicacion para solicitudes de agenda.
+- Errores publicos neutros sin stack traces, SQL, RLS ni IDs internos.
+- Logs internos y auditoria minima coordinada con SEC-005.
+- Secretos, OAuth e identidades tecnicas alineados con SEC-010.
+
+### Reglas backend
+
+- La pagina publica no debe usar Supabase directo para insertar solicitudes.
+- El frontend publico no debe recibir service role, tokens Google ni secretos.
+- La API publica debe escribir conceptualmente en `solicitudes_agenda`.
+- La API publica no debe escribir en `consultas`, `pacientes`, `agenda_eventos`, tablas clinicas, tablas financieras ni Storage.
+- Los endpoints internos futuros deben exigir autenticacion, rol valido y usuario activo.
+- Los endpoints de servicio futuros deben usar identidad tecnica separada, minimo privilegio y auditoria.
+- Google Calendar/Gmail debe quedar fuera de solicitudes publicas no revisadas.
+
+### Restricciones
+
+SEC-009 no crea endpoints, no instala dependencias, no modifica codigo, no modifica migraciones, no ejecuta SQL, no toca `.env`, no toca Supabase remoto, no integra Google y no habilita produccion ni datos reales.
+
+Informe relacionado: `docs/control/auditorias/SEC-009_SEGURIDAD_API_PUBLICA.md`
+
 ## BE-001 - Inventariar estructura backend y Supabase local
 
 **Estado:** Integrada

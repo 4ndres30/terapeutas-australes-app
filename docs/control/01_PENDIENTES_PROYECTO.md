@@ -72,7 +72,7 @@ Este documento es la lista maestra de pendientes. Cada pendiente debe tener un c
 | SEC-007 | Procedimiento de scripts manuales locales/demo y prohibicion en produccion. | Pendiente | Alta | Integracion Backend / Seguridad |
 | SEC-008 | Implementacion controlada Hardening Auth. | Implementada parcial / pendiente PR | Alta | Integracion Backend / Seguridad |
 | SEC-008B | Cierre de signup y provisioning Auth controlado. | Pendiente | Alta | Integracion Backend / Seguridad |
-| SEC-009 | Disenar seguridad de API publica. | Pendiente | Alta | Integracion Backend / Seguridad |
+| SEC-009 | Disenar seguridad de API publica. | Diseno documental / pendiente implementacion futura | Alta | Integracion Backend / Seguridad |
 | SEC-010 | Disenar seguridad cloud, OAuth, IAM e identidades tecnicas. | Diseno documental / pendiente implementacion futura | Alta | Integracion Backend / Seguridad |
 | BE-018 | Separacion tecnica de ambientes. | Pendiente | Alta | Integracion Backend |
 | BE-019 | Estrategia de backup/restauracion. | Pendiente | Alta | Integracion Backend / Produccion |
@@ -866,17 +866,22 @@ Implementar el cierre de signup por ambiente y un procedimiento de provisioning/
 
 ### SEC-009 - Disenar seguridad de API publica
 
-**Estado:** Pendiente
+**Estado:** Diseno documental / pendiente implementacion futura
 **Prioridad:** Alta
 **Responsable:** Integracion Backend / Seguridad
 **Origen:** API-001 / DEC-033 / PROD-001
 **Fecha creacion:** 2026-06-30
+**Fecha diseno:** 2026-07-02
+**Rama usada:** `sec-009-diseno-seguridad-api-publica`
+**Informe:** `docs/control/auditorias/SEC-009_SEGURIDAD_API_PUBLICA.md`
 **Dependencias:** API-001, BE-012, BE-017, BE-018, BE-020, SEC-005, SEC-008, SEC-008B, DOC-001, DOC-003, QA-006, PROD-001
 
 #### Descripcion
 Definir el modelo de seguridad para la futura API publica que conectara la pagina publica con Agenda, consentimiento, sistema interno y Google Workspace.
 
-#### Criterios de aceptacion preliminares
+SEC-009 deja documentados los controles minimos para una implementacion futura: separacion de superficies publica/interna/servicio, CORS estricto por ambiente, rate limit, anti-spam, CAPTCHA o mecanismo equivalente, validacion, sanitizacion, minimizacion de datos, idempotencia, errores neutros, logs y auditoria.
+
+#### Criterios de aceptacion
 - Definir separacion entre endpoints publicos e internos.
 - Definir CORS estricto por ambiente y dominio.
 - Definir rate limit, anti-spam y CAPTCHA o mecanismo equivalente.
@@ -889,8 +894,12 @@ Definir el modelo de seguridad para la futura API publica que conectara la pagin
 - No crear endpoints, migraciones ni cambios RLS en esta tarea.
 - No tocar `.env`, Supabase remoto ni servicios Google reales sin autorizacion expresa.
 
+#### Restricciones
+
+SEC-009 no crea endpoints, no instala dependencias, no modifica codigo, no modifica migraciones, no ejecuta SQL, no toca `.env`, no toca Supabase remoto, no integra Google y no habilita produccion ni datos reales.
+
 #### Observaciones
-SEC-009 debe cerrarse antes de implementar cualquier endpoint publico operativo. No habilita produccion ni datos reales.
+SEC-009 debe cerrarse antes de implementar cualquier endpoint publico operativo. No habilita produccion ni datos reales. La implementacion futura debe esperar BE-020, SEC-005, BE-018, DOC-001, DOC-003, SEC-010 y PROD-001.
 
 ### API-001 - Disenar API publica segura e integracion Google Workspace
 
