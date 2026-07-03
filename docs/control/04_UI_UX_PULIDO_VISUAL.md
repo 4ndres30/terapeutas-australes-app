@@ -469,7 +469,7 @@ QA relacionada: `auditorias/QA-009_VALIDACION_UI020_UI021_AMBIENTE.md`
 
 ## UI-021 - Bloqueo visual de produccion no habilitada
 
-**Estado:** Implementada local / pendiente validacion bloqueo
+**Estado:** Validada local/demo
 **Prioridad:** Alta
 **Responsable:** UI / UX
 **Origen:** PROD-001 / DEC-030 / DEC-031 / UI-020
@@ -481,7 +481,7 @@ UI-021 define e implementa localmente una pantalla o barrera visual sin bypass p
 
 La barrera debe cubrir pacientes, casos, evaluaciones, revisiones, hallazgos, trabajos, agenda interna, finanzas, reportes, fotos y configuracion interna.
 
-QA-009 no cierra aun la validacion del bloqueo: la simulacion local con variables temporales de proceso levanto Vite, pero la lectura del DOM quedo bloqueada por timeout del navegador integrado. Queda pendiente validar `PRODUCCION NO HABILITADA` y la accion `Cerrar sesion`.
+QA-009 cierra la validacion del bloqueo: la simulacion local con variables temporales de proceso en `5173` muestra `PRODUCCION NO HABILITADA`, reemplaza la superficie interna, presenta el mensaje de PROD-001 y permite `Cerrar sesion`, que redirige a `/login`. No se modifica `.env` ni se habilita produccion real.
 
 ### Reglas clave
 

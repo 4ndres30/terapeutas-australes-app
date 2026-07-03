@@ -2,7 +2,7 @@
 
 ## Estado
 
-UI-020 validada local/demo / UI-021 pendiente bloqueo visual.
+UI-020/UI-021 validadas local/demo por QA-009.
 
 ## Fecha
 
@@ -88,16 +88,24 @@ El login queda fuera del bloqueo para permitir salida o correccion de acceso sin
 | `npm run build` | OK, con aviso Vite de chunk mayor a 500 kB |
 | Navegador integrado login local | OK, `/login` carga sin overflow observado |
 
-## Validacion pendiente
+## Validacion QA-009
 
 QA-009 ejecuto revision post-merge. La sesion autenticada local disponible permitio validar que el indicador `LOCAL - datos ficticios` aparece en `/agenda` con usuario `Administrador Local`, sin overflow horizontal en ancho mobile equivalente de 375 px ni en desktop de 1265 px.
 
-Sigue pendiente la revision visual completa:
+La validacion pendiente de UI-021 se cerro con el mismo puerto local `5173`, usando variables temporales de proceso y sin modificar `.env`:
 
-Debe validarse con sesion interna local/demo:
+```text
+VITE_APP_AMBIENTE=PRODUCCION
+VITE_PRODUCCION_HABILITADA=false
+```
 
-- bloqueo visible al ejecutar ambiente de prueba con `VITE_APP_AMBIENTE=PRODUCCION` y sin habilitacion;
-- cierre de sesion desde pantalla de bloqueo.
+Resultado:
+
+- bloqueo visible `PRODUCCION NO HABILITADA`;
+- mensaje PROD-001 visible;
+- superficie interna reemplazada por la barrera de ambiente;
+- accion `Cerrar sesion` validada y redirigida a `/login`;
+- servidor local restaurado a modo LOCAL normal despues de la prueba.
 
 Informe QA: `docs/control/auditorias/QA-009_VALIDACION_UI020_UI021_AMBIENTE.md`.
 
@@ -120,8 +128,8 @@ Informe QA: `docs/control/auditorias/QA-009_VALIDACION_UI020_UI021_AMBIENTE.md`.
 
 - El bloqueo visual no reemplaza controles backend, RLS, Auth, Storage ni separacion real de ambientes.
 - La habilitacion productiva por variable futura debe depender de procedimiento aprobado y cierre de PROD-001.
-- Falta QA visual autenticada antes de integrar como cierre completo.
+- La validacion local/demo no habilita produccion real.
 
 ## Recomendacion
 
-Crear PR draft y revisarlo como implementacion funcional acotada. Antes de pasarlo a Ready, ejecutar una pasada visual autenticada en desktop y mobile.
+Mantener UI-020/UI-021 como validadas local/demo y conservar PROD-001 como bloqueo antes de cualquier produccion real, datos reales, fotos reales o pagos reales.

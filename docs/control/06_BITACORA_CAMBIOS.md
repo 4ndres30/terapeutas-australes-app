@@ -2415,3 +2415,55 @@ La regla permite optimizar tiempo de desarrollo sin relajar restricciones sensib
 ### Resultado
 
 Codex queda instruido para agrupar tareas simples cuando sea seguro y para separar cualquier tarea que presente riesgo nuevo, alcance distinto o restriccion sensible.
+
+## LOG-056 - QA-009 cierre bloqueo UI-021
+
+**Estado:** Cerrada local/demo
+**Prioridad:** Alta
+**Responsable:** Control de desarrollo / QA / UI-UX
+**Origen:** QA-009 / UI-021 / PROD-001
+**Fecha creacion:** 2026-07-03
+**Rama usada:** `qa-009-validacion-bloqueo-ui021`
+
+### Resumen
+
+Se cierra la validacion visual pendiente de UI-021 usando el navegador integrado y Vite local en `5173`.
+
+La simulacion se hizo con variables temporales de proceso:
+
+```text
+VITE_APP_AMBIENTE=PRODUCCION
+VITE_PRODUCCION_HABILITADA=false
+```
+
+No se modifico `.env`.
+
+### Evidencia
+
+- `/agenda` con sesion autenticada local muestra `PRODUCCION NO HABILITADA`.
+- El mensaje indica que `PROD-001` sigue abierto y que el ambiente no puede operar datos reales.
+- La superficie interna queda reemplazada por la barrera de ambiente.
+- No se observo overflow horizontal en desktop de 1265 px.
+- La accion `Cerrar sesion` desde la pantalla de bloqueo redirige a `/login`.
+- El servidor local fue restaurado a modo LOCAL normal en `5173` despues de la prueba.
+
+### Restricciones respetadas
+
+- No se modifico codigo fuente.
+- No se modifico `.env`.
+- No se tocaron credenciales.
+- No se modificaron migraciones.
+- No se ejecuto SQL.
+- No se uso Supabase remoto.
+- No se ejecuto `supabase db push`.
+- No se modifico Auth/RLS.
+- No se creo API publica.
+- No se integro Google Calendar, Gmail ni Workspace.
+- No se habilito produccion.
+- No se usaron datos reales, fotos reales ni pagos reales.
+
+### Resultado
+
+QA-009 queda cerrada local/demo para UI-020 y UI-021.
+
+PROD-001 sigue bloqueante para produccion real, datos reales, fotos reales y pagos reales.
