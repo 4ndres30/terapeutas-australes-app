@@ -2467,3 +2467,46 @@ No se modifico `.env`.
 QA-009 queda cerrada local/demo para UI-020 y UI-021.
 
 PROD-001 sigue bloqueante para produccion real, datos reales, fotos reales y pagos reales.
+
+## LOG-057 - QA-006 plan base de pruebas por rol
+
+**Estado:** Plan base documental
+**Prioridad:** Alta
+**Responsable:** Control de desarrollo / QA
+**Origen:** QA-006 / PROD-001 / SEC-001 / QA-009
+**Fecha creacion:** 2026-07-03
+**Rama usada:** `qa-006-plan-base-pruebas-roles`
+
+### Resumen
+
+Se inicia QA-006 como plan base documental para ordenar pruebas por rol, navegacion, reportes, Finanzas, Auth y no exposicion sensible.
+
+El plan divide QA-006 en fases y mantiene la regla de no cubrir todo en un solo PR.
+
+### Archivos relacionados
+
+- `docs/control/auditorias/QA-006_PLAN_BASE_PRUEBAS_ROLES.md`
+- `docs/control/00_ESTADO_GENERAL_PROYECTO.md`
+- `docs/control/01_PENDIENTES_PROYECTO.md`
+- `docs/control/06_BITACORA_CAMBIOS.md`
+
+### Restricciones respetadas
+
+- No se modifico codigo fuente.
+- No se modificaron migraciones.
+- No se modifico `.env`.
+- No se tocaron credenciales.
+- No se ejecuto SQL.
+- No se uso Supabase remoto.
+- No se ejecuto `supabase db push`.
+- No se modifico Auth/RLS.
+- No se creo API publica.
+- No se integro Google Calendar, Gmail ni Workspace.
+- No se habilito produccion.
+- No se usaron datos reales, fotos reales ni pagos reales.
+
+### Resultado
+
+QA-006 queda iniciado como plan base documental / pendiente ejecucion progresiva.
+
+El primer bloque recomendado queda como `QA-006A - Matriz de rutas y superficies por rol`.

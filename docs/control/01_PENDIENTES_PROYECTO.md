@@ -31,7 +31,7 @@ Este documento es la lista maestra de pendientes. Cada pendiente debe tener un c
 | QA-002 | Validacion funcional de hallazgos operativos con caso demo. | Integrada | Alta | Control de desarrollo |
 | QA-004 | Validacion funcional local de BE-016 / Finanzas. | Integrada | Alta | Control de desarrollo |
 | QA-005 | Validacion funcional local UI-016 / Reportes por rol. | Integrada | Alta | Control de desarrollo |
-| QA-006 | Base minima de pruebas por rol y no exposicion sensible. | Pendiente | Alta | Control de desarrollo / QA |
+| QA-006 | Base minima de pruebas por rol y no exposicion sensible. | Plan base documental / pendiente ejecucion progresiva | Alta | Control de desarrollo / QA |
 | QA-007 | Checklist pre-migracion cloud. | Checklist documental / pendiente ejecucion futura | Alta | Control de desarrollo / QA |
 | QA-008 | Validacion funcional completa de Agenda interna. | Cerrada post-merge local/demo | Alta | Control de Desarrollo / QA / UI-UX / Integracion Backend |
 | QA-009 | Validacion visual UI-020/UI-021 ambiente. | Cerrada local/demo | Alta | Control de desarrollo / QA / UI-UX |
@@ -770,7 +770,7 @@ SEC-005 no crea tablas, triggers, policies, codigo, endpoints, `.env`, Supabase 
 
 ### SEC-006 - Politica de fotos, retencion y objetos huerfanos
 
-**Estado:** Pendiente
+**Estado:** Plan base documental / pendiente ejecucion progresiva
 **Prioridad:** Alta
 **Responsable:** Integracion Backend / Seguridad
 **Origen:** CTRL-008 / DEC-028 / SEC-001
@@ -1701,9 +1701,12 @@ Validar localmente que las fotos se cargan, registran y muestran asociadas al el
 **Origen:** CTRL-008 / SEC-001 / QA-004 / QA-005
 **Fecha creacion:** 2026-06-29
 **Dependencias:** SEC-003, SEC-005, SEC-008, SEC-008B, BE-021, UI-023, UI-024, BE-023, BE-025
+**Informe:** `docs/control/auditorias/QA-006_PLAN_BASE_PRUEBAS_ROLES.md`
 
 #### Descripcion
 Definir e implementar progresivamente una base minima de pruebas para roles, navegacion, reportes, finanzas y no exposicion de datos sensibles.
+
+El plan base documental divide QA-006 en fases para evitar cubrir todo en un solo PR. El primer bloque recomendado queda como `QA-006A - Matriz de rutas y superficies por rol`.
 
 #### Criterios de aceptacion preliminares
 - Cubrir rutas protegidas por rol.
@@ -1719,6 +1722,10 @@ Definir e implementar progresivamente una base minima de pruebas para roles, nav
 - Validar recuperacion/MFA cuando se implemente UI-024.
 - Evaluar pruebas RLS/Storage locales sin tocar remoto.
 - No intentar cubrir todo en un solo PR.
+
+#### Resultado actual
+
+QA-006 queda iniciado como plan base documental. No se ejecutan pruebas funcionales completas ni se modifica codigo. La ejecucion queda pendiente por fases, respetando dependencias de SEC-005, SEC-008B, UI-023, UI-024, BE-023 y BE-025.
 
 ### UI-013 - Disenar experiencia de trabajos, sesiones y acciones
 

@@ -71,6 +71,7 @@ El proyecto se mantiene alineado con el metodo acordado: primero documentar, aud
 - Mantener `QA008-OBS-003` como corregida por UI-027 y usar el cierre QA-008 como precondicion documental para evaluar `BE-026`.
 - Implementar UI-020/UI-021 antes de cualquier prueba real de staging, produccion o carga de datos reales.
 - Atender observaciones de SEC-001 antes de avanzar a datos reales, fotos reales, pagos reales o produccion.
+- Ejecutar QA-006 por fases: primero matriz de rutas y superficies por rol, luego navegacion, reportes, Finanzas, Auth y RLS/Storage segun dependencias.
 
 ## Estrategia futura de API publica
 
@@ -154,6 +155,8 @@ Antes de cargar pacientes reales deben cerrarse las tareas minimas de PROD-001 y
 - auditoría de cambios sensibles;
 - política de datos demo vs reales;
 - checklist pre-producción.
+
+QA-006 queda iniciado como plan base documental para ordenar pruebas por rol y no exposicion sensible, pero aun no cierra la validacion progresiva requerida antes de uso real.
 
 **Decisión:** No cargar datos reales todavía.
 
