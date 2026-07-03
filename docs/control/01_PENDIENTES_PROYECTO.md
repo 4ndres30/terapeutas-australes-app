@@ -31,7 +31,7 @@ Este documento es la lista maestra de pendientes. Cada pendiente debe tener un c
 | QA-002 | Validacion funcional de hallazgos operativos con caso demo. | Integrada | Alta | Control de desarrollo |
 | QA-004 | Validacion funcional local de BE-016 / Finanzas. | Integrada | Alta | Control de desarrollo |
 | QA-005 | Validacion funcional local UI-016 / Reportes por rol. | Integrada | Alta | Control de desarrollo |
-| QA-006 | Base minima de pruebas por rol y no exposicion sensible. | QA-006B parcial sin sesion / pendiente multirol | Alta | Control de desarrollo / QA |
+| QA-006 | Base minima de pruebas por rol y no exposicion sensible. | QA-006B autenticada local/demo / obs. UI-023 | Alta | Control de desarrollo / QA |
 | QA-007 | Checklist pre-migracion cloud. | Checklist documental / pendiente ejecucion futura | Alta | Control de desarrollo / QA |
 | QA-008 | Validacion funcional completa de Agenda interna. | Cerrada post-merge local/demo | Alta | Control de Desarrollo / QA / UI-UX / Integracion Backend |
 | QA-009 | Validacion visual UI-020/UI-021 ambiente. | Cerrada local/demo | Alta | Control de desarrollo / QA / UI-UX |
@@ -71,7 +71,7 @@ Este documento es la lista maestra de pendientes. Cada pendiente debe tener un c
 | SEC-005 | Disenar bitacora/auditoria de cambios sensibles. | Diseno documental / pendiente implementacion futura | Alta | Integracion Backend |
 | SEC-006 | Politica de fotos, retencion y objetos huerfanos. | Pendiente | Alta | Integracion Backend / Seguridad |
 | SEC-007 | Procedimiento de scripts manuales locales/demo y prohibicion en produccion. | Procedimiento documental / pendiente ejecucion local autorizada | Alta | Integracion Backend / Seguridad |
-| SEC-007B | Provisioning local/demo de usuarios de prueba. | Ejecutado local/demo / pendiente QA-006B | Alta | Integracion Backend / Seguridad |
+| SEC-007B | Provisioning local/demo de usuarios de prueba. | Ejecutado local/demo / usado en QA-006B | Alta | Integracion Backend / Seguridad |
 | SEC-008 | Implementacion controlada Hardening Auth. | Implementada parcial / pendiente PR | Alta | Integracion Backend / Seguridad |
 | SEC-008B | Cierre de signup y provisioning Auth controlado. | Pendiente | Alta | Integracion Backend / Seguridad |
 | SEC-009 | Disenar seguridad de API publica. | Diseno documental / pendiente implementacion futura | Alta | Integracion Backend / Seguridad |
@@ -819,7 +819,7 @@ SEC-007 define el procedimiento local/demo para preparar usuarios de prueba sin 
 
 ### SEC-007B - Provisioning local/demo de usuarios de prueba
 
-**Estado:** Ejecutado local/demo / pendiente QA-006B
+**Estado:** Ejecutado local/demo / usado en QA-006B
 **Prioridad:** Alta
 **Responsable:** Integracion Backend / Seguridad
 **Origen:** SEC-007 / DEC-029 / DEC-032 / QA-006B
@@ -894,7 +894,7 @@ PROD-001 sigue bloqueante.
 
 ### SEC-008B - Cierre de signup y provisioning Auth controlado
 
-**Estado:** Pendiente
+**Estado:** QA-006B autenticada local/demo / observaciones UI-023
 **Prioridad:** Alta
 **Responsable:** Integracion Backend / Seguridad
 **Origen:** SEC-008 / SEC-003 / DEC-032
@@ -1750,7 +1750,7 @@ Validar localmente que las fotos se cargan, registran y muestran asociadas al el
 #### Descripcion
 Definir e implementar progresivamente una base minima de pruebas para roles, navegacion, reportes, finanzas y no exposicion de datos sensibles.
 
-El plan base documental divide QA-006 en fases para evitar cubrir todo en un solo PR. `QA-006A - Matriz de rutas y superficies por rol` queda documentado como base y `QA-006B - Validacion visual autenticada de navegacion por rol` queda iniciada con cobertura parcial sin sesion.
+El plan base documental divide QA-006 en fases para evitar cubrir todo en un solo PR. `QA-006A - Matriz de rutas y superficies por rol` queda documentado como base y `QA-006B - Validacion visual autenticada de navegacion por rol` queda ejecutada local/demo con observaciones.
 
 #### Criterios de aceptacion preliminares
 - Cubrir rutas protegidas por rol.
@@ -1769,9 +1769,9 @@ El plan base documental divide QA-006 en fases para evitar cubrir todo en un sol
 
 #### Resultado actual
 
-QA-006 queda iniciado como plan base documental, QA-006A deja matriz de rutas/superficies por rol y QA-006B confirma que rutas internas sin sesion redirigen a `/login`. No se modifica codigo. La ejecucion autenticada multirol queda pendiente por falta de credenciales demo/provisioning documentado, respetando dependencias de SEC-005, SEC-007, SEC-008B, UI-023, UI-024, BE-023 y BE-025.
+QA-006 queda iniciado como plan base documental, QA-006A deja matriz de rutas/superficies por rol y QA-006B confirma que rutas internas sin sesion redirigen a `/login`. Tras SEC-007B, QA-006B valida local/demo redireccion por rol, Reportes por rol, Agenda para Admin/Terapeuta y bloqueo de usuarios inactivo/sin perfil.
 
-La siguiente fase recomendada es desbloquear `SEC-007` como procedimiento local/demo para usuarios de prueba antes de reintentar QA-006B autenticada multirol.
+La siguiente fase recomendada es ejecutar `UI-023 - Navegacion y superficies filtradas por rol`, porque el menu visible aun muestra superficies no autorizadas por rol aunque las rutas redirigen correctamente.
 
 ### UI-013 - Disenar experiencia de trabajos, sesiones y acciones
 

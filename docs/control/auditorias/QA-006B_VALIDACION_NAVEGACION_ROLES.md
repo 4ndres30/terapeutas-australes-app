@@ -2,7 +2,7 @@
 
 ## Estado
 
-Ejecucion parcial local / bloqueada para roles autenticados por falta de credenciales demo documentadas.
+Ejecucion autenticada local/demo con observaciones UI-023.
 
 ## Fecha
 
@@ -10,7 +10,7 @@ Ejecucion parcial local / bloqueada para roles autenticados por falta de credenc
 
 ## Rama
 
-`qa-006b-validacion-navegacion-roles`
+`qa-006b-validacion-autenticada-roles`
 
 ## Origen
 
@@ -20,27 +20,29 @@ Ejecucion parcial local / bloqueada para roles autenticados por falta de credenc
 - SEC-001.
 - SEC-003.
 - SEC-007.
+- SEC-007B.
 - SEC-008B.
 - PROD-001.
 
 ## Objetivo
 
-Validar visualmente la navegacion protegida por rol, partiendo desde la matriz QA-006A.
+Validar visualmente la navegacion protegida por rol, partiendo desde la matriz QA-006A y usando las identidades ficticias preparadas por SEC-007B.
 
-La ejecucion completa requiere usuarios demo/locales para `admin`, `terapeuta` y `finanzas`. En esta pasada no se crean ni modifican usuarios Auth, no se leen secretos y no se exponen credenciales.
+La validacion no registra credenciales, no modifica `.env`, no usa Supabase remoto y no toca produccion.
 
 ## Estado inicial
 
-- Rama base: `main`.
+- Rama base: `main` actualizado con PR #71 integrado.
 - Servidor local: activo en `http://127.0.0.1:5173`.
 - Navegador integrado: disponible.
-- Estado de sesion observado: `/login`, sin sesion activa.
-- Credenciales demo versionadas: no disponibles.
+- Supabase local: activo.
+- Usuarios demo/locales: preparados por SEC-007B.
+- Credenciales: disponibles solo en archivo local ignorado por Git.
 - Produccion: no habilitada.
 
-## Alcance ejecutado
+## Alcance mantenido de la pasada sin sesion
 
-Se valido navegacion sin sesion sobre rutas internas protegidas.
+La pasada anterior valido navegacion sin sesion sobre rutas internas protegidas.
 
 | Caso | Ruta solicitada | Resultado observado | Estado |
 | --- | --- | --- | --- |
@@ -52,80 +54,81 @@ Se valido navegacion sin sesion sobre rutas internas protegidas.
 | QA006B-001F | `/finanzas` | Redireccion a `/login`; pantalla `Acceso interno`. | OK |
 | QA006B-001G | `/reportes` | Redireccion a `/login`; pantalla `Acceso interno`. | OK |
 
-Resultado: 7/7 rutas protegidas redirigen correctamente a `/login` cuando no existe sesion activa.
+Resultado mantenido: 7/7 rutas protegidas redirigen correctamente a `/login` cuando no existe sesion activa.
 
-## Alcance no ejecutado
+## Alcance autenticado ejecutado
 
-| Caso | Rol | Ruta / superficie | Motivo |
-| --- | --- | --- | --- |
-| QA006B-002 | Finanzas | `/pacientes` -> `/finanzas` | Sin credenciales demo documentadas. |
-| QA006B-003 | Finanzas | `/casos/:id` -> `/finanzas` | Sin credenciales demo documentadas. |
-| QA006B-004 | Terapeuta | `/finanzas` -> `/pacientes` | Sin credenciales demo documentadas. |
-| QA006B-005 | Finanzas | `/reportes` financiero | Sin credenciales demo documentadas. |
-| QA006B-006 | Terapeuta | `/reportes` clinico | Sin credenciales demo documentadas. |
-| QA006B-007 | Admin | `/reportes` clinico + financiero | Sin sesion activa disponible en navegador. |
-| QA006B-008 | Admin/Terapeuta | `/agenda` | Sin credenciales demo documentadas para cobertura completa. |
-| QA006B-009 | Finanzas | Menu lateral | Sin credenciales demo documentadas. |
-| QA006B-010 | Usuario inactivo/sin perfil | `/login` y rutas internas | Requiere usuarios Auth/`usuarios_internos` preparados. |
+| Caso | Rol / identidad | Ruta / superficie | Resultado observado | Estado |
+| --- | --- | --- | --- | --- |
+| QA006B-002 | Finanzas / `QA-DEMO-FINANZAS` | `/pacientes` -> `/finanzas` | Redirecciona a `/finanzas`; encabezado `Cobros y Pagos`. | OK |
+| QA006B-003 | Finanzas / `QA-DEMO-FINANZAS` | `/casos/:id` -> `/finanzas` | Redirecciona a `/finanzas`; encabezado `Cobros y Pagos`. | OK |
+| QA006B-004 | Terapeuta / `QA-DEMO-TERAPEUTA` | `/finanzas` -> `/pacientes` | Redirecciona a `/pacientes`; encabezado `Pacientes`. | OK |
+| QA006B-005 | Finanzas / `QA-DEMO-FINANZAS` | `/reportes` financiero | Permanece en `/reportes`; encabezado `Reportes financieros`. | OK |
+| QA006B-006 | Terapeuta / `QA-DEMO-TERAPEUTA` | `/reportes` clinico | Permanece en `/reportes`; encabezado `Reportes clinicos`. | OK |
+| QA006B-007 | Admin / `QA-DEMO-ADMIN` | `/reportes` clinico + financiero | Permanece en `/reportes`; muestra secciones clinicas y financieras. | OK |
+| QA006B-008 | Admin / `QA-DEMO-ADMIN` | `/agenda` | Permanece en `/agenda`; encabezado `Agenda`. | OK |
+| QA006B-008B | Terapeuta / `QA-DEMO-TERAPEUTA` | `/agenda` | Permanece en `/agenda`; encabezado `Agenda`. | OK |
+| QA006B-009 | Finanzas / `QA-DEMO-FINANZAS` | Menu lateral | El menu muestra enlaces clinicos y Agenda, aunque las rutas bloqueadas redirigen. | OBS |
+| QA006B-010A | Usuario inactivo / `QA-DEMO-INACTIVO` | `/login` y `/pacientes` | Queda en `/login` con `Acceso interno no habilitado`. | OK |
+| QA006B-010B | Usuario sin perfil / `QA-DEMO-SIN-PERFIL` | `/login` y `/pacientes` | Queda en `/login` con `Acceso interno no habilitado`. | OK |
 
 ## Evidencia operacional
 
-El navegador integrado observo la pantalla:
+Se usaron identidades logicas ficticias, no credenciales versionadas.
 
-```text
-TERAPEUTAS AUSTRALES
-Acceso interno
-Email
-Contraseña
-Iniciar sesión
-```
+Rutas iniciales observadas tras login:
 
-Para cada ruta interna solicitada, `location.pathname` termino en:
+| Identidad | Ruta inicial |
+| --- | --- |
+| `QA-DEMO-ADMIN` | `/pacientes` |
+| `QA-DEMO-TERAPEUTA` | `/pacientes` |
+| `QA-DEMO-FINANZAS` | `/finanzas` |
+| `QA-DEMO-INACTIVO` | `/login` |
+| `QA-DEMO-SIN-PERFIL` | `/login` |
 
-```text
-/login
-```
+Entre identidades se limpio el almacenamiento local del navegador de pruebas para aislar sesiones. Esto no modifica base de datos, usuarios, `.env`, Supabase remoto ni archivos del proyecto.
 
 ## Hallazgos
 
 | Codigo | Hallazgo | Severidad | Estado recomendado |
 | --- | --- | --- | --- |
-| QA006B-OBS-001 | La proteccion sin sesion funciona en las rutas internas revisadas. | Media | Mantener como cobertura OK para QA-006. |
-| QA006B-OBS-002 | No existen credenciales demo versionadas para ejecutar cobertura visual por `admin`, `terapeuta` y `finanzas`. | Alta para QA | Activar `SEC-007` o procedimiento equivalente antes de exigir QA visual multirol. |
-| QA006B-OBS-003 | Crear usuarios Auth o cambiar roles para completar QA-006B implicaria tocar Auth/provisioning, fuera de alcance de esta tarea. | Alta | Requiere aprobacion explicita y procedimiento local/demo. |
-| QA006B-OBS-004 | La brecha UI-023 detectada en QA-006A no puede comprobarse visualmente para Finanzas sin login demo de ese rol. | Media-alta | Reintentar tras contar con usuario Finanzas demo. |
+| QA006B-OBS-001 | La proteccion sin sesion funciona en las rutas internas revisadas. | Media | Mantener cobertura OK. |
+| QA006B-OBS-002 | SEC-007B resolvio el bloqueo operativo de usuarios demo/locales para esta pasada. | Alta para QA | Cerrada para local/demo. |
+| QA006B-OBS-003 | Crear usuarios Auth quedo controlado por SEC-007/SEC-007B, sin secretos versionados ni remoto. | Alta | Cerrada para local/demo. |
+| QA006B-OBS-004 | Finanzas ve enlaces del menu a superficies clinicas y Agenda, aunque las rutas bloqueadas redirigen a `/finanzas`. | Media-alta | Ejecutar UI-023 para filtrar navegacion por rol. |
+| QA006B-OBS-005 | Terapeuta ve enlace de Finanzas en menu, aunque la ruta bloqueada redirige a `/pacientes`. | Media | Ejecutar UI-023 para filtrar navegacion por rol. |
 
 ## Decision de Control
 
-No se deben crear usuarios demo improvisados, modificar Auth, cambiar `usuarios_internos`, usar scripts manuales ni leer `.env` para completar esta fase sin aprobacion explicita.
+La proteccion por rutas y los reportes por rol quedan validados local/demo.
 
-La validacion visual multirol queda bloqueada de forma correcta por falta de credenciales/provisioning demo documentado.
+La navegacion visible sigue pendiente de pulido por UI-023: el menu debe ocultar o desactivar superficies no autorizadas por rol para no sugerir accesos que luego redirigen.
 
 ## Siguiente tarea recomendada
 
-Antes de reintentar la parte autenticada de QA-006B, ejecutar:
+Ejecutar:
 
 ```text
-SEC-007 - Procedimiento de scripts manuales locales/demo y prohibicion en produccion
+UI-023 - Navegacion y superficies filtradas por rol
 ```
 
-Alcance recomendado para desbloquear QA:
+Objetivo recomendado:
 
-- documentar procedimiento controlado para usuarios demo/locales;
-- definir roles demo requeridos;
-- prohibir credenciales versionadas;
-- mantener cualquier accion Auth limitada a local/demo y con aprobacion explicita;
-- no tocar produccion ni Supabase remoto.
+- filtrar enlaces del menu lateral y drawer movil por rol;
+- no mostrar Finanzas a Terapeuta;
+- no mostrar superficies clinicas ni Agenda a Finanzas;
+- mantener Admin con acceso amplio;
+- revalidar desktop/mobile sin datos reales.
 
 ## Restricciones respetadas
 
 - No se modifico codigo fuente.
 - No se modificaron migraciones.
 - No se modifico `.env`.
-- No se leyeron ni expusieron credenciales.
-- No se crearon ni modificaron usuarios Auth.
+- No se imprimieron ni documentaron credenciales.
+- No se modificaron usuarios Auth.
 - No se modifico `usuarios_internos`.
-- No se ejecuto SQL.
+- No se ejecuto SQL manual.
 - No se uso Supabase remoto.
 - No se ejecuto `supabase db push`.
 - No se modifico Auth/RLS.
@@ -136,8 +139,8 @@ Alcance recomendado para desbloquear QA:
 
 ## Resultado
 
-QA-006B queda iniciada con cobertura parcial OK para rutas internas sin sesion.
+QA-006B queda ejecutada con cobertura autenticada local/demo.
 
-La cobertura autenticada por rol queda pendiente hasta contar con procedimiento demo/local aprobado.
+Queda observacion abierta para UI-023 por navegacion visible no filtrada por rol.
 
 PROD-001 sigue bloqueante.
