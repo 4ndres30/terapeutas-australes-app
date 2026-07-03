@@ -2621,3 +2621,51 @@ QA-006B queda iniciada con cobertura parcial OK para rutas internas sin sesion.
 La siguiente tarea recomendada es `SEC-007 - Procedimiento de scripts manuales locales/demo y prohibicion en produccion`, para desbloquear usuarios demo/locales sin versionar secretos ni tocar produccion.
 
 PROD-001 sigue bloqueante.
+
+## LOG-060 - SEC-007 procedimiento usuarios demo/local
+
+**Estado:** Procedimiento documental / pendiente ejecucion local autorizada
+**Prioridad:** Alta
+**Responsable:** Integracion Backend / Seguridad
+**Origen:** SEC-007 / DEC-029 / QA-006B / PROD-001
+**Fecha creacion:** 2026-07-03
+**Rama usada:** `sec-007-procedimiento-usuarios-demo-local`
+
+### Resumen
+
+Se documenta el procedimiento seguro para preparar usuarios demo/locales que desbloqueen QA multirol sin versionar secretos ni tocar produccion.
+
+El procedimiento define identidades logicas para `admin`, `terapeuta`, `finanzas`, usuario inactivo, usuario sin perfil interno y casos negativos condicionados por constraints.
+
+### Archivos relacionados
+
+- `docs/control/auditorias/SEC-007_PROCEDIMIENTO_USUARIOS_DEMO_LOCAL.md`
+- `docs/control/00_ESTADO_GENERAL_PROYECTO.md`
+- `docs/control/01_PENDIENTES_PROYECTO.md`
+- `docs/control/05_DECISIONES_PROYECTO.md`
+- `docs/control/06_BITACORA_CAMBIOS.md`
+
+### Restricciones respetadas
+
+- No se modifico codigo fuente.
+- No se modificaron migraciones.
+- No se modifico `.env`.
+- No se leyeron ni expusieron credenciales.
+- No se crearon ni modificaron usuarios Auth.
+- No se modifico `usuarios_internos`.
+- No se ejecuto SQL.
+- No se uso Supabase remoto.
+- No se ejecuto `supabase db push`.
+- No se modifico Auth/RLS.
+- No se creo API publica.
+- No se integro Google Calendar, Gmail ni Workspace.
+- No se habilito produccion.
+- No se usaron datos reales, fotos reales ni pagos reales.
+
+### Resultado
+
+SEC-007 queda documentado como procedimiento local/demo.
+
+La siguiente tarea recomendada, si se desea completar QA-006B autenticada, es `SEC-007B - Provisioning local/demo de usuarios de prueba`, con aprobacion explicita antes de tocar Auth local.
+
+PROD-001 sigue bloqueante.
