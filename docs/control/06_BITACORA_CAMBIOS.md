@@ -2786,3 +2786,61 @@ QA-006B queda ejecutada local/demo con observacion abierta para UI-023.
 La siguiente tarea recomendada es `UI-023 - Navegacion y superficies filtradas por rol`.
 
 PROD-001 sigue bloqueante.
+
+## LOG-064 - UI-023 navegacion filtrada por rol
+
+**Estado:** Implementada local/demo / PR pendiente
+**Prioridad:** Alta
+**Responsable:** UI / UX / Control de desarrollo
+**Origen:** UI-023 / QA-006B / SEC-007B / PROD-001
+**Fecha creacion:** 2026-07-03
+**Rama usada:** `ui-023-navegacion-filtrada-roles`
+
+### Resumen
+
+Se implementa el filtrado visible de navegacion por rol en el shell interno.
+
+Se usa `LOG-064` para evitar colision con `LOG-062`, actualmente preparado en PR #72.
+
+### Resultado por rol
+
+- Admin ve la navegacion transversal esperada.
+- Terapeuta ve superficies clinicas, Agenda y Reportes; no ve Finanzas.
+- Finanzas ve Finanzas/Pagos y Reportes; no ve superficies clinicas ni Agenda.
+- El drawer movil usa el mismo filtro que el sidebar desktop.
+- Los guards de ruta se mantienen como barrera adicional.
+
+### Archivos relacionados
+
+- `src/App.tsx`
+- `docs/control/auditorias/UI-023_NAVEGACION_FILTRADA_ROLES.md`
+- `docs/control/00_ESTADO_GENERAL_PROYECTO.md`
+- `docs/control/01_PENDIENTES_PROYECTO.md`
+- `docs/control/04_UI_UX_PULIDO_VISUAL.md`
+- `docs/control/06_BITACORA_CAMBIOS.md`
+
+### Restricciones respetadas
+
+- No se modifico `.env`.
+- No se modificaron migraciones.
+- No se modifico Auth/RLS.
+- No se uso Supabase remoto.
+- No se ejecuto `supabase db push`.
+- No se creo API publica.
+- No se integro Google Calendar, Gmail ni Workspace.
+- No se habilito produccion.
+- No se usaron datos reales, fotos reales ni pagos reales.
+
+### Validaciones
+
+- `npm run lint`: OK.
+- `npm run build`: OK, con advertencia existente de chunk Vite mayor a 500 kB.
+- Validacion visual local/demo desktop/mobile por rol: OK.
+
+### Resultado
+
+UI-023 queda implementada y validada local/demo.
+
+La siguiente tarea recomendada es preparar PR draft, revisar y revalidar post-merge sobre `main`.
+
+PROD-001 sigue bloqueante.
