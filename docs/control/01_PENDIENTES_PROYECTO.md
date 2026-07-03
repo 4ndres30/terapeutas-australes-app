@@ -71,6 +71,7 @@ Este documento es la lista maestra de pendientes. Cada pendiente debe tener un c
 | SEC-005 | Disenar bitacora/auditoria de cambios sensibles. | Diseno documental / pendiente implementacion futura | Alta | Integracion Backend |
 | SEC-006 | Politica de fotos, retencion y objetos huerfanos. | Pendiente | Alta | Integracion Backend / Seguridad |
 | SEC-007 | Procedimiento de scripts manuales locales/demo y prohibicion en produccion. | Procedimiento documental / pendiente ejecucion local autorizada | Alta | Integracion Backend / Seguridad |
+| SEC-007B | Provisioning local/demo de usuarios de prueba. | Ejecutado local/demo / pendiente QA-006B | Alta | Integracion Backend / Seguridad |
 | SEC-008 | Implementacion controlada Hardening Auth. | Implementada parcial / pendiente PR | Alta | Integracion Backend / Seguridad |
 | SEC-008B | Cierre de signup y provisioning Auth controlado. | Pendiente | Alta | Integracion Backend / Seguridad |
 | SEC-009 | Disenar seguridad de API publica. | Diseno documental / pendiente implementacion futura | Alta | Integracion Backend / Seguridad |
@@ -815,6 +816,40 @@ Definir procedimiento seguro para scripts manuales de usuarios demo/local y proh
 #### Resultado documental
 
 SEC-007 define el procedimiento local/demo para preparar usuarios de prueba sin versionar secretos, sin crear cuentas en esta tarea y sin tocar produccion. La ejecucion tecnica queda pendiente de autorizacion explicita en una tarea separada.
+
+### SEC-007B - Provisioning local/demo de usuarios de prueba
+
+**Estado:** Ejecutado local/demo / pendiente QA-006B
+**Prioridad:** Alta
+**Responsable:** Integracion Backend / Seguridad
+**Origen:** SEC-007 / DEC-029 / DEC-032 / QA-006B
+**Fecha creacion:** 2026-07-03
+**Rama usada:** `sec-007b-provisioning-demo-local`
+**Informe:** `docs/control/auditorias/SEC-007B_PROVISIONING_USUARIOS_DEMO_LOCAL.md`
+**Dependencias:** SEC-007, SEC-003, SEC-008, QA-006B, PROD-001
+
+#### Descripcion
+
+Preparar usuarios Auth ficticios local/demo para completar validacion autenticada multirol sin versionar credenciales, sin modificar `.env`, sin Supabase remoto y sin produccion.
+
+#### Criterios de aceptacion
+
+- Script local-only e idempotente.
+- Rechazo automatico de URLs no locales.
+- Password y service role recibidos solo por variables temporales.
+- Usuarios demo para `admin`, `terapeuta`, `finanzas`, usuario inactivo y usuario sin perfil.
+- Registro de evidencia sin passwords, tokens ni service role keys.
+- Sin cambios de migraciones ni RLS.
+
+#### Resultado esperado
+
+SEC-007B deja desbloqueada la siguiente fase `QA-006B - Validacion visual autenticada de navegacion por rol`.
+
+#### Resultado local
+
+Se ejecuto provisioning local/demo para las identidades `QA-DEMO-ADMIN`, `QA-DEMO-TERAPEUTA`, `QA-DEMO-FINANZAS`, `QA-DEMO-INACTIVO` y `QA-DEMO-SIN-PERFIL`.
+
+Las credenciales quedaron fuera de Git en archivo local ignorado y no se registran en documentacion, PRs ni bitacora.
 
 ### SEC-008 - Implementacion controlada Hardening Auth
 

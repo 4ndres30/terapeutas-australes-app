@@ -2669,3 +2669,59 @@ SEC-007 queda documentado como procedimiento local/demo.
 La siguiente tarea recomendada, si se desea completar QA-006B autenticada, es `SEC-007B - Provisioning local/demo de usuarios de prueba`, con aprobacion explicita antes de tocar Auth local.
 
 PROD-001 sigue bloqueante.
+
+## LOG-061 - SEC-007B provisioning usuarios demo/local
+
+**Estado:** Ejecutado local/demo / pendiente QA-006B
+**Prioridad:** Alta
+**Responsable:** Integracion Backend / Seguridad
+**Origen:** SEC-007B / SEC-007 / QA-006B / DEC-029 / PROD-001
+**Fecha creacion:** 2026-07-03
+**Rama usada:** `sec-007b-provisioning-demo-local`
+
+### Resumen
+
+Se incorpora una herramienta controlada y se ejecuta provisioning local/demo para usuarios Auth con identidades ficticias para `admin`, `terapeuta`, `finanzas`, usuario inactivo y usuario sin perfil interno.
+
+La herramienta exige confirmacion explicita por variable temporal, limita la URL a Supabase local y no imprime credenciales.
+
+La ejecucion local devuelve:
+
+- `QA-DEMO-ADMIN`: Auth creado y perfil activo.
+- `QA-DEMO-TERAPEUTA`: Auth creado y perfil activo.
+- `QA-DEMO-FINANZAS`: Auth creado y perfil activo.
+- `QA-DEMO-INACTIVO`: Auth creado y perfil inactivo.
+- `QA-DEMO-SIN-PERFIL`: Auth creado y sin perfil interno.
+
+Se ejecuta una segunda pasada de idempotencia: las cinco identidades quedan actualizadas sin duplicacion.
+
+### Archivos relacionados
+
+- `scripts/provision-demo-users.mjs`
+- `package.json`
+- `docs/control/auditorias/SEC-007B_PROVISIONING_USUARIOS_DEMO_LOCAL.md`
+- `docs/control/00_ESTADO_GENERAL_PROYECTO.md`
+- `docs/control/01_PENDIENTES_PROYECTO.md`
+- `docs/control/06_BITACORA_CAMBIOS.md`
+
+### Restricciones respetadas
+
+- No se modifico `.env`.
+- No se versionaron passwords, tokens ni service role keys.
+- No se imprimieron credenciales en documentacion.
+- No se modificaron migraciones.
+- No se modifico RLS.
+- No se uso Supabase remoto.
+- No se ejecuto `supabase db push`.
+- No se habilito produccion.
+- No se creo API publica.
+- No se integro Google Calendar, Gmail ni Workspace.
+- No se usaron datos reales, fotos reales ni pagos reales.
+
+### Resultado
+
+SEC-007B deja ejecutado el provisioning local/demo para desbloquear QA-006B autenticada multirol.
+
+La siguiente tarea recomendada es ejecutar `QA-006B - Validacion visual autenticada de navegacion por rol` usando identidades ficticias y sin registrar credenciales.
+
+PROD-001 sigue bloqueante.
