@@ -78,6 +78,36 @@ Nivel 3: cambio critico.
 
 Mientras mayor sea el nivel, mas validacion y aprobacion requiere.
 
+## Agrupacion de tareas simples
+
+Para optimizar tiempo de desarrollo, Control puede agrupar tareas simples en una sola ejecucion cuando todas cumplan estas condiciones:
+
+- pertenecen al mismo objetivo operativo;
+- comparten rama, alcance y validaciones;
+- son documentales o de bajo riesgo;
+- no requieren aprobaciones distintas;
+- no tienen PRs abiertos incompatibles;
+- no tocan restricciones sensibles.
+
+Ejemplos razonables:
+
+- actualizar `AGENTS.md`, `docs/control/10_OPERACION_CODEX.md`, prompts y bitacora por una misma regla operativa;
+- corregir varios textos documentales pequenos relacionados;
+- registrar auditoria y bitacora de una tarea documental ya ejecutada;
+- ejecutar una sola pasada de `git diff --check`, `npm run lint` y `npm run build` para un bloque homogeneo.
+
+No se deben agrupar tareas si alguna toca produccion, datos reales, `.env`, secretos, Supabase remoto, `supabase db push`, migraciones, Auth/RLS, API publica, Google Calendar/Gmail/Workspace, infraestructura cloud o cambios funcionales con riesgo medio/alto.
+
+Cuando agrupe, Control debe declarar:
+
+1. objetivo del bloque;
+2. tareas incluidas;
+3. tareas excluidas;
+4. archivos permitidos;
+5. archivos prohibidos;
+6. validaciones comunes;
+7. criterio para separar el trabajo si aparece riesgo nuevo.
+
 ## Flujo de inicio
 
 Al iniciar una tarea, Control debe ejecutar:
