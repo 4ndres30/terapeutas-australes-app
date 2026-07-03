@@ -2,7 +2,7 @@
 
 ## Estado
 
-Diseno documental / pendiente implementacion futura.
+Implementada local / pendiente revision visual autenticada.
 
 ## Fecha
 
@@ -113,3 +113,11 @@ La fuente puede ser configuracion de frontend permitida o un endpoint interno se
 ## Recomendacion
 
 Implementar UI-020 junto con UI-021 en una rama funcional separada, despues de validar el origen seguro del estado de ambiente. Mantener PROD-001 bloqueante hasta que exista separacion tecnica real, pruebas y aprobacion formal.
+
+## Avance de implementacion local
+
+La rama `ui-020-ui021-implementacion-ambiente-produccion` implementa el indicador en `DashboardShell`.
+
+El indicador lee `VITE_APP_AMBIENTE` como variable Vite opcional no secreta. Si no existe en dev local, muestra `LOCAL - datos ficticios`; si no existe en build no-dev, trata el ambiente como `DESCONOCIDO`.
+
+Informe relacionado: `docs/control/auditorias/UI-020_UI-021_IMPLEMENTACION_AMBIENTE_PRODUCCION.md`.

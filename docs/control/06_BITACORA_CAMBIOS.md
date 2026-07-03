@@ -2214,3 +2214,58 @@ UI-021 define una barrera visual sin bypass para produccion no habilitada, produ
 UI-020 y UI-021 quedan como diseno documental / pendiente implementacion futura.
 
 La implementacion real debe realizarse en una rama funcional separada, con validacion visual desktop/mobile, `npm run lint`, `npm run build` y manteniendo PROD-001 bloqueante.
+
+## LOG-052 - Implementacion local UI-020 UI-021
+
+**Estado:** Implementada local / pendiente revision visual autenticada
+**Prioridad:** Alta
+**Responsable:** UI / UX / Control de desarrollo
+**Origen:** UI-020 / UI-021 / PR #61 / PROD-001
+**Fecha creacion:** 2026-07-02
+**Rama usada:** `ui-020-ui021-implementacion-ambiente-produccion`
+
+### Resumen
+
+Se implementa en `DashboardShell` el indicador visual de ambiente activo y el bloqueo visual de produccion no habilitada.
+
+La implementacion lee variables Vite opcionales no secretas, sin modificar `.env`:
+
+- `VITE_APP_AMBIENTE`;
+- `VITE_PRODUCCION_HABILITADA`.
+
+### Archivos relacionados
+
+- `src/App.tsx`
+- `src/ReferenceFinalPass.css`
+- `docs/control/auditorias/UI-020_INDICADOR_AMBIENTE_ACTIVO.md`
+- `docs/control/auditorias/UI-021_BLOQUEO_PRODUCCION_NO_HABILITADA.md`
+- `docs/control/auditorias/UI-020_UI-021_IMPLEMENTACION_AMBIENTE_PRODUCCION.md`
+- `docs/control/00_ESTADO_GENERAL_PROYECTO.md`
+- `docs/control/01_PENDIENTES_PROYECTO.md`
+- `docs/control/04_UI_UX_PULIDO_VISUAL.md`
+- `docs/control/06_BITACORA_CAMBIOS.md`
+
+### Validaciones
+
+- `npm run lint`: OK.
+- `npm run build`: OK, con aviso Vite de chunk mayor a 500 kB.
+- Navegador integrado: `/login` local carga sin overflow observado; revision visual autenticada del shell queda pendiente por falta de sesion activa y credenciales demo documentadas.
+
+### Restricciones respetadas
+
+- No se modifico `.env`.
+- No se crearon variables reales de ambiente.
+- No se tocaron credenciales.
+- No se modificaron migraciones.
+- No se ejecuto SQL.
+- No se uso Supabase remoto.
+- No se ejecuto `supabase db push`.
+- No se modifico Auth/RLS.
+- No se creo API publica.
+- No se integro Google Calendar, Gmail ni Workspace.
+- No se habilito produccion.
+- No se usaron datos reales, fotos reales ni pagos reales.
+
+### Resultado
+
+UI-020/UI-021 quedan implementadas localmente y listas para PR draft, con revision visual autenticada pendiente antes de Ready for review.

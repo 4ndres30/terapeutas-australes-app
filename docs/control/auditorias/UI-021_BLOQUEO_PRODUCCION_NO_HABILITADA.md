@@ -2,7 +2,7 @@
 
 ## Estado
 
-Diseno documental / pendiente implementacion futura.
+Implementada local / pendiente revision visual autenticada.
 
 ## Fecha
 
@@ -139,3 +139,11 @@ Esta tarea no define variables reales, no modifica `.env` y no crea infraestruct
 ## Recomendacion
 
 Implementar UI-021 junto con UI-020 como primera barrera visual antes de cualquier prueba de staging o produccion. Mantener el bloqueo sin bypass mientras PROD-001 siga abierto.
+
+## Avance de implementacion local
+
+La rama `ui-020-ui021-implementacion-ambiente-produccion` implementa una pantalla de bloqueo dentro de `DashboardShell` para `PRODUCCION` no habilitada o ambiente desconocido.
+
+El bloqueo reemplaza el contenido interno y mantiene accion de cierre de sesion. No modifica Auth, RLS, Supabase, `.env`, migraciones ni configuracion real de ambientes.
+
+Informe relacionado: `docs/control/auditorias/UI-020_UI-021_IMPLEMENTACION_AMBIENTE_PRODUCCION.md`.

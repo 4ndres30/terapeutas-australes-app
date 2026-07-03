@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import type { ReactNode } from 'react'
 import type { Session } from '@supabase/supabase-js'
-import { Menu, X } from 'lucide-react'
+import { Menu, ShieldAlert, X } from 'lucide-react'
 import { BrowserRouter, Navigate, NavLink, Route, Routes } from 'react-router-dom'
 import PacientesPage from './pages/PacientesPage'
 import ConsultasPage from './pages/ConsultasPage'
@@ -35,6 +35,19 @@ type UsuarioInternoRow = Omit<UsuarioInterno, 'rol'> & {
 
 type EstadoAuth = 'cargando' | 'sin_sesion' | 'autorizado' | 'sin_autorizacion' | 'inactivo' | 'error'
 
+type AmbienteApp = 'LOCAL' | 'DEMO' | 'STAGING' | 'PRODUCCION' | 'DESCONOCIDO'
+
+type NivelAmbiente = 'informativo' | 'advertencia' | 'bloqueado'
+
+type ConfiguracionAmbiente = {
+  ambiente: AmbienteApp
+  clase: string
+  etiqueta: string
+  detalle: string
+  nivel: NivelAmbiente
+  bloqueaUso: boolean
+}
+
 type NavegacionLateral = {
   etiqueta: string
   icono: string
@@ -50,6 +63,107 @@ const mensajeValidacionAcceso =
   'No se pudo validar el acceso interno. Intenta nuevamente o contacta a un administrador.'
 const mensajeSesionNoValidada =
   'No se pudo validar la sesión. Intenta iniciar sesión nuevamente.'
+
+const valoresVerdaderos = ['1', 'true', 'yes', 'habilitada']
+
+function normalizarAmbiente(valor?: string) {
+  if (!valor) {
+    return import.meta.env.DEV ? 'LOCAL' : 'DESCONOCIDO'
+  }
+
+  const ambiente = valor.trim().toUpperCase().replace(/[\s-]+/g, '_')
+
+  if (ambiente === 'LOCAL') {
+    return 'LOCAL'
+  }
+
+  if (ambiente === 'DEMO') {
+    return 'DEMO'
+  }
+
+  if (ambiente === 'STAGING') {
+    return 'STAGING'
+  }
+
+  if (ambiente === 'PRODUCCION' || ambiente === 'PRODUCTION' || ambiente === 'PROD') {
+    return 'PRODUCCION'
+  }
+
+  return 'DESCONOCIDO'
+}
+
+function obtenerConfiguracionAmbiente(): ConfiguracionAmbiente {
+  const ambiente = normalizarAmbiente(import.meta.env.VITE_APP_AMBIENTE)
+  const produccionHabilitada = valoresVerdaderos.includes(
+    String(import.meta.env.VITE_PRODUCCION_HABILITADA ?? '').trim().toLowerCase(),
+  )
+
+  if (ambiente === 'LOCAL') {
+    return {
+      ambiente,
+      clase: 'local',
+      etiqueta: 'LOCAL - datos ficticios',
+      detalle: 'Ambiente local habilitado solo para pruebas internas.',
+      nivel: 'informativo',
+      bloqueaUso: false,
+    }
+  }
+
+  if (ambiente === 'DEMO') {
+    return {
+      ambiente,
+      clase: 'demo',
+      etiqueta: 'DEMO - datos ficticios',
+      detalle: 'Ambiente demo habilitado solo para QA y demostraciones.',
+      nivel: 'informativo',
+      bloqueaUso: false,
+    }
+  }
+
+  if (ambiente === 'STAGING') {
+    return {
+      ambiente,
+      clase: 'staging',
+      etiqueta: 'STAGING - validacion',
+      detalle: 'Ambiente de validacion aislada. No cargar datos reales sin aprobacion.',
+      nivel: 'advertencia',
+      bloqueaUso: false,
+    }
+  }
+
+  if (ambiente === 'PRODUCCION' && produccionHabilitada) {
+    return {
+      ambiente,
+      clase: 'produccion',
+      etiqueta: 'PRODUCCION - habilitada',
+      detalle: 'Ambiente productivo habilitado por configuracion explicita.',
+      nivel: 'advertencia',
+      bloqueaUso: false,
+    }
+  }
+
+  if (ambiente === 'PRODUCCION') {
+    return {
+      ambiente,
+      clase: 'bloqueado',
+      etiqueta: 'PRODUCCION NO HABILITADA',
+      detalle: 'PROD-001 sigue abierto. Este ambiente no puede operar con datos reales.',
+      nivel: 'bloqueado',
+      bloqueaUso: true,
+    }
+  }
+
+  return {
+    ambiente: 'DESCONOCIDO',
+    clase: 'desconocido',
+    etiqueta: 'AMBIENTE NO IDENTIFICADO',
+    detalle: 'No se pudo validar el ambiente activo. No usar datos reales.',
+    nivel: 'bloqueado',
+    bloqueaUso: true,
+  }
+}
+
+const configuracionAmbiente = obtenerConfiguracionAmbiente()
 
 const navegacionPrincipal: NavegacionLateral[] = [
   { etiqueta: 'Inicio', icono: '⌂', estado: 'pronto' },
@@ -97,6 +211,53 @@ function formatearRol(rol: RolUsuario) {
   }
 
   return 'Terapeuta'
+}
+
+function IndicadorAmbiente({ configuracion }: { configuracion: ConfiguracionAmbiente }) {
+  return (
+    <div
+      aria-label={`Ambiente activo: ${configuracion.etiqueta}`}
+      className={`dashboard-environment-badge dashboard-environment-badge--${configuracion.clase}`}
+      title={configuracion.detalle}
+    >
+      <span className="dashboard-environment-badge__dot" aria-hidden="true" />
+      <span>{configuracion.etiqueta}</span>
+    </div>
+  )
+}
+
+function BloqueoAmbiente({
+  configuracion,
+  onCerrarSesion,
+}: {
+  configuracion: ConfiguracionAmbiente
+  onCerrarSesion: () => Promise<void>
+}) {
+  return (
+    <section className="dashboard-environment-lock" role="alert" aria-live="assertive">
+      <div className="dashboard-environment-lock__icon" aria-hidden="true">
+        <ShieldAlert />
+      </div>
+
+      <div className="dashboard-environment-lock__content">
+        <span>Control de ambiente</span>
+        <h1>{configuracion.etiqueta}</h1>
+        <p>{configuracion.detalle}</p>
+        <p>
+          Deten el uso interno y contacta a Control de Desarrollo antes de operar pacientes,
+          fotos, pagos o datos reales.
+        </p>
+      </div>
+
+      <button
+        className="dashboard-environment-lock__action"
+        onClick={() => void onCerrarSesion()}
+        type="button"
+      >
+        Cerrar sesion
+      </button>
+    </section>
+  )
 }
 
 function PantallaCarga() {
@@ -233,6 +394,8 @@ function DashboardShell({ usuarioInterno, onCerrarSesion, children }: {
             <p>Gestión interna de Terapeutas Australes</p>
           </div>
 
+          <IndicadorAmbiente configuracion={configuracionAmbiente} />
+
           <div className="dashboard-userbar">
             <button className="dashboard-notification" aria-label="Notificaciones" type="button">
               <span aria-hidden="true">⌁</span>
@@ -246,7 +409,14 @@ function DashboardShell({ usuarioInterno, onCerrarSesion, children }: {
           </div>
         </header>
 
-        {children}
+        {configuracionAmbiente.bloqueaUso
+          ? (
+            <BloqueoAmbiente
+              configuracion={configuracionAmbiente}
+              onCerrarSesion={onCerrarSesion}
+            />
+          )
+          : children}
       </main>
     </div>
   )
