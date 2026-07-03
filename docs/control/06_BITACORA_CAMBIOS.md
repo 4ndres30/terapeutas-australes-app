@@ -2269,3 +2269,65 @@ La implementacion lee variables Vite opcionales no secretas, sin modificar `.env
 ### Resultado
 
 UI-020/UI-021 quedan implementadas localmente y listas para PR draft, con revision visual autenticada pendiente antes de Ready for review.
+
+## LOG-053 - QA-009 validacion UI-020 UI-021 ambiente
+
+**Estado:** Validacion parcial autenticada / pendiente mobile y bloqueo
+**Prioridad:** Alta
+**Responsable:** Control de desarrollo / QA / UI-UX
+**Origen:** PR #62 / UI-020 / UI-021 / PROD-001
+**Fecha creacion:** 2026-07-03
+**Rama usada:** `qa-009-validacion-ui020-ui021-ambiente`
+
+### Resumen
+
+Se ejecuta validacion post-merge de UI-020/UI-021 sobre `main` actualizado tras integrar PR #62.
+
+La sesion autenticada local disponible permitio confirmar que el shell interno muestra `LOCAL - datos ficticios` con usuario `Administrador Local` y sin overflow horizontal en el viewport activo del navegador integrado.
+
+### Evidencia
+
+- `main` post PR #62: commit `4dca739`.
+- PRs abiertos al iniciar QA: ninguno.
+- `npm run lint`: OK.
+- `npm run build`: OK, con aviso Vite de chunk mayor a 500 kB.
+- Navegador integrado autenticado: indicador LOCAL visible.
+- Viewport activo: 843 px de ancho.
+- Overflow horizontal en viewport activo: no observado.
+
+### Bloqueos de validacion
+
+- La prueba multi-viewport quedo bloqueada por timeout del navegador integrado.
+- La navegacion posterior a `/agenda` quedo bloqueada por timeout.
+- La simulacion local de `VITE_APP_AMBIENTE=PRODUCCION` con `VITE_PRODUCCION_HABILITADA=false` levanto Vite sin modificar `.env`, pero la lectura DOM del bloqueo quedo bloqueada por timeout.
+- No se valido el boton `Cerrar sesion` desde la pantalla de bloqueo.
+
+### Archivos relacionados
+
+- `docs/control/auditorias/QA-009_VALIDACION_UI020_UI021_AMBIENTE.md`
+- `docs/control/auditorias/UI-020_UI-021_IMPLEMENTACION_AMBIENTE_PRODUCCION.md`
+- `docs/control/00_ESTADO_GENERAL_PROYECTO.md`
+- `docs/control/01_PENDIENTES_PROYECTO.md`
+- `docs/control/04_UI_UX_PULIDO_VISUAL.md`
+- `docs/control/06_BITACORA_CAMBIOS.md`
+
+### Restricciones respetadas
+
+- No se modifico codigo fuente.
+- No se modifico `.env`.
+- No se tocaron credenciales.
+- No se modificaron migraciones.
+- No se ejecuto SQL.
+- No se uso Supabase remoto.
+- No se ejecuto `supabase db push`.
+- No se modifico Auth/RLS.
+- No se creo API publica.
+- No se integro Google Calendar, Gmail ni Workspace.
+- No se habilito produccion.
+- No se usaron datos reales, fotos reales ni pagos reales.
+
+### Resultado
+
+QA-009 deja evidencia parcial positiva para UI-020 en sesion autenticada local. UI-021 sigue pendiente de validacion visual de bloqueo.
+
+La recomendacion de Control es ejecutar una siguiente pasada con navegador estable para validar `/agenda`, mobile y bloqueo de produccion no habilitada antes de marcar UI-020/UI-021 como cerradas.

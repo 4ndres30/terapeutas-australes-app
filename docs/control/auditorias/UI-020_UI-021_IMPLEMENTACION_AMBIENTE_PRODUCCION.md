@@ -90,7 +90,9 @@ El login queda fuera del bloqueo para permitir salida o correccion de acceso sin
 
 ## Validacion pendiente
 
-La revision visual autenticada del shell queda pendiente porque la pestaña disponible no tenia sesion activa y no hay credenciales demo documentadas en el repositorio.
+QA-009 ejecuto una primera revision post-merge. La sesion autenticada local disponible permitio validar que el indicador `LOCAL - datos ficticios` aparece en el shell con usuario `Administrador Local` y sin overflow horizontal en el viewport activo del navegador integrado.
+
+Sigue pendiente la revision visual completa:
 
 Debe validarse con sesion interna local/demo:
 
@@ -99,6 +101,8 @@ Debe validarse con sesion interna local/demo:
 - sin overflow horizontal;
 - bloqueo visible al ejecutar ambiente de prueba con `VITE_APP_AMBIENTE=PRODUCCION` y sin habilitacion;
 - cierre de sesion desde pantalla de bloqueo.
+
+Informe QA: `docs/control/auditorias/QA-009_VALIDACION_UI020_UI021_AMBIENTE.md`.
 
 ## Restricciones respetadas
 

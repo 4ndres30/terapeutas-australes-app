@@ -439,7 +439,7 @@ Resultado relacionado: QA-008 confirmo alta, edicion, reagendamiento, completado
 
 ## UI-020 - Indicador visual de ambiente activo
 
-**Estado:** Implementada local / pendiente revision visual autenticada
+**Estado:** Validacion parcial autenticada / pendiente mobile
 **Prioridad:** Alta
 **Responsable:** UI / UX
 **Origen:** PROD-001 / DEC-030 / BE-018 / DOC-001
@@ -448,6 +448,8 @@ Resultado relacionado: QA-008 confirmo alta, edicion, reagendamiento, completado
 ### Resultado documental
 
 UI-020 define e implementa localmente un indicador persistente para los ambientes `LOCAL`, `DEMO`, `STAGING`, `PRODUCCION` y `DESCONOCIDO`.
+
+QA-009 valida parcialmente el indicador en shell autenticado local: `LOCAL - datos ficticios` aparece con sesion `Administrador Local` y sin overflow horizontal en el viewport activo del navegador integrado. Queda pendiente validar mobile y `/agenda` especificamente.
 
 El indicador debe estar visible dentro del shell autenticado en desktop y mobile, no debe generar overflow, no debe tapar informacion clinica y no debe exponer secretos, URLs privadas, project ids ni service role.
 
@@ -463,9 +465,11 @@ Informe relacionado: `auditorias/UI-020_INDICADOR_AMBIENTE_ACTIVO.md`
 
 Implementacion relacionada: `auditorias/UI-020_UI-021_IMPLEMENTACION_AMBIENTE_PRODUCCION.md`
 
+QA relacionada: `auditorias/QA-009_VALIDACION_UI020_UI021_AMBIENTE.md`
+
 ## UI-021 - Bloqueo visual de produccion no habilitada
 
-**Estado:** Implementada local / pendiente revision visual autenticada
+**Estado:** Implementada local / pendiente validacion bloqueo
 **Prioridad:** Alta
 **Responsable:** UI / UX
 **Origen:** PROD-001 / DEC-030 / DEC-031 / UI-020
@@ -477,6 +481,8 @@ UI-021 define e implementa localmente una pantalla o barrera visual sin bypass p
 
 La barrera debe cubrir pacientes, casos, evaluaciones, revisiones, hallazgos, trabajos, agenda interna, finanzas, reportes, fotos y configuracion interna.
 
+QA-009 no cierra aun la validacion del bloqueo: la simulacion local con variables temporales de proceso levanto Vite, pero la lectura del DOM quedo bloqueada por timeout del navegador integrado.
+
 ### Reglas clave
 
 - No permitir `Continuar de todos modos` mientras PROD-001 siga abierto.
@@ -487,6 +493,8 @@ La barrera debe cubrir pacientes, casos, evaluaciones, revisiones, hallazgos, tr
 Informe relacionado: `auditorias/UI-021_BLOQUEO_PRODUCCION_NO_HABILITADA.md`
 
 Implementacion relacionada: `auditorias/UI-020_UI-021_IMPLEMENTACION_AMBIENTE_PRODUCCION.md`
+
+QA relacionada: `auditorias/QA-009_VALIDACION_UI020_UI021_AMBIENTE.md`
 
 ## UI-027 - Ajuste responsive de shell y Agenda interna
 
