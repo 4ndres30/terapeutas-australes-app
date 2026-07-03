@@ -44,7 +44,7 @@ Este documento registra decisiones estables. No reemplaza la conversacion, pero 
 | DEC-026 | Produccion debe usar anulacion logica, no delete fisico operativo. | Propuesta bloqueante | 2026-06-29 |
 | DEC-027 | Finanzas solo debe ver textos administrativos financieros. | Propuesta pendiente aprobacion | 2026-06-29 |
 | DEC-028 | Fotos reales quedan bloqueadas hasta politica, QA, auditoria y anulacion. | Propuesta bloqueante | 2026-06-29 |
-| DEC-029 | Scripts manuales sobre Auth solo local/demo y prohibidos en produccion. | Propuesta pendiente aprobacion | 2026-06-29 |
+| DEC-029 | Scripts manuales sobre Auth solo local/demo y prohibidos en produccion. | Procedimiento documental / pendiente ejecucion controlada | 2026-06-29 |
 | DEC-030 | El proyecto debe reconocer LOCAL, DEMO, STAGING y PRODUCCION. | Propuesta pendiente aprobacion | 2026-06-29 |
 | DEC-031 | Carga real requiere aprobacion explicita y checklist. | Pregunta abierta bloqueante | 2026-06-29 |
 | DEC-032 | Auth productivo por invitacion/provisioning y MFA por rol. | Propuesta pendiente aprobacion | 2026-06-29 |
@@ -761,7 +761,7 @@ Informe relacionado: `docs/control/auditorias/CTRL-008_DECISIONES_CRITICAS_POST_
 
 ## DEC-029 - Scripts manuales sobre Auth solo local/demo y prohibidos en produccion
 
-**Estado:** Propuesta pendiente aprobacion
+**Estado:** Procedimiento documental / pendiente ejecucion controlada
 **Origen:** CTRL-008 / SEC-003
 **Fecha:** 2026-06-29
 
@@ -783,6 +783,8 @@ Manipular Auth manualmente puede dejar usuarios huerfanos, roles inconsistentes,
 ### Observaciones
 
 Informe relacionado: `docs/control/auditorias/CTRL-008_DECISIONES_CRITICAS_POST_AUDITORIA.md`.
+
+Procedimiento relacionado: `docs/control/auditorias/SEC-007_PROCEDIMIENTO_USUARIOS_DEMO_LOCAL.md`.
 
 ## DEC-030 - El proyecto debe reconocer LOCAL, DEMO, STAGING y PRODUCCION
 

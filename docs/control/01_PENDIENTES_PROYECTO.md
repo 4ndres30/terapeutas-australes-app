@@ -70,7 +70,7 @@ Este documento es la lista maestra de pendientes. Cada pendiente debe tener un c
 | SEC-004 | Definir alcance del rol Finanzas. | Validada runtime / obs. | Alta | Control de desarrollo / Integracion Backend |
 | SEC-005 | Disenar bitacora/auditoria de cambios sensibles. | Diseno documental / pendiente implementacion futura | Alta | Integracion Backend |
 | SEC-006 | Politica de fotos, retencion y objetos huerfanos. | Pendiente | Alta | Integracion Backend / Seguridad |
-| SEC-007 | Procedimiento de scripts manuales locales/demo y prohibicion en produccion. | Pendiente | Alta | Integracion Backend / Seguridad |
+| SEC-007 | Procedimiento de scripts manuales locales/demo y prohibicion en produccion. | Procedimiento documental / pendiente ejecucion local autorizada | Alta | Integracion Backend / Seguridad |
 | SEC-008 | Implementacion controlada Hardening Auth. | Implementada parcial / pendiente PR | Alta | Integracion Backend / Seguridad |
 | SEC-008B | Cierre de signup y provisioning Auth controlado. | Pendiente | Alta | Integracion Backend / Seguridad |
 | SEC-009 | Disenar seguridad de API publica. | Diseno documental / pendiente implementacion futura | Alta | Integracion Backend / Seguridad |
@@ -791,11 +791,14 @@ Definir politica operativa y tecnica para fotos de elementos del caso antes de c
 
 ### SEC-007 - Procedimiento de scripts manuales locales/demo y prohibicion en produccion
 
-**Estado:** Pendiente
+**Estado:** Procedimiento documental / pendiente ejecucion local autorizada
 **Prioridad:** Alta
 **Responsable:** Integracion Backend / Seguridad
 **Origen:** CTRL-008 / DEC-029 / SEC-003
 **Fecha creacion:** 2026-06-29
+**Fecha documentacion:** 2026-07-03
+**Rama usada:** `sec-007-procedimiento-usuarios-demo-local`
+**Informe:** `docs/control/auditorias/SEC-007_PROCEDIMIENTO_USUARIOS_DEMO_LOCAL.md`
 **Dependencias:** SEC-003, DOC-001, PROD-001
 
 #### Descripcion
@@ -808,6 +811,10 @@ Definir procedimiento seguro para scripts manuales de usuarios demo/local y proh
 - Definir alta, baja y cambio de rol por procedimiento aprobado.
 - Evitar convertir archivos tipo `console.sql` en practica operativa normal.
 - No tocar `.env`, Supabase remoto ni datos reales.
+
+#### Resultado documental
+
+SEC-007 define el procedimiento local/demo para preparar usuarios de prueba sin versionar secretos, sin crear cuentas en esta tarea y sin tocar produccion. La ejecucion tecnica queda pendiente de autorizacion explicita en una tarea separada.
 
 ### SEC-008 - Implementacion controlada Hardening Auth
 
