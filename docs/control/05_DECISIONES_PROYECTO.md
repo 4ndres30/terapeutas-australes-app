@@ -836,7 +836,7 @@ La carga real requiere aprobacion explicita de Javier / Control de Desarrollo y 
 - SEC-005 documentado e implementado para uso real.
 - BE-021 documentado e implementado para uso real.
 - BE-018 documentado e implementado para uso real.
-- BE-019 cerrado.
+- BE-019 documentado y prueba de restauracion pendiente antes de uso real.
 - BE-020 cerrado.
 - QA-006 cerrado.
 - QA-003 cerrado si habra fotos reales.
@@ -845,6 +845,7 @@ La carga real requiere aprobacion explicita de Javier / Control de Desarrollo y 
 - UI-020 y UI-021 cerrados.
 - Matriz de permisos vigente y validada.
 - DOC-001 y DOC-003 documentados y aprobados.
+- DOC-002 documentado y restauracion probada antes de produccion.
 - Procedimiento de carga real documentado.
 - Prohibicion de seeds demo en produccion confirmada.
 
@@ -864,6 +865,10 @@ PROD-001 sigue bloqueante.
 Informe relacionado: `docs/control/auditorias/CTRL-008_DECISIONES_CRITICAS_POST_AUDITORIA.md`.
 
 Politica relacionada: `docs/control/auditorias/DOC-003_POLITICA_CARGA_DATOS_REALES.md`.
+
+Backup relacionado: `docs/control/auditorias/BE-019_ESTRATEGIA_BACKUP_RESTAURACION.md`.
+
+Restauracion relacionada: `docs/control/auditorias/DOC-002_PROCEDIMIENTO_BACKUP_RESTAURACION.md`.
 
 ## DEC-032 - Auth productivo por invitacion/provisioning y MFA por rol
 
