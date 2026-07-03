@@ -439,7 +439,7 @@ Resultado relacionado: QA-008 confirmo alta, edicion, reagendamiento, completado
 
 ## UI-020 - Indicador visual de ambiente activo
 
-**Estado:** Validacion parcial autenticada / pendiente mobile
+**Estado:** Validada local/demo en Agenda desktop/mobile
 **Prioridad:** Alta
 **Responsable:** UI / UX
 **Origen:** PROD-001 / DEC-030 / BE-018 / DOC-001
@@ -449,7 +449,7 @@ Resultado relacionado: QA-008 confirmo alta, edicion, reagendamiento, completado
 
 UI-020 define e implementa localmente un indicador persistente para los ambientes `LOCAL`, `DEMO`, `STAGING`, `PRODUCCION` y `DESCONOCIDO`.
 
-QA-009 valida parcialmente el indicador en shell autenticado local: `LOCAL - datos ficticios` aparece con sesion `Administrador Local` y sin overflow horizontal en el viewport activo del navegador integrado. Queda pendiente validar mobile y `/agenda` especificamente.
+QA-009 valida el indicador en `/agenda` con sesion autenticada local `Administrador Local`: `LOCAL - datos ficticios` aparece en ancho mobile equivalente de 375 px y desktop de 1265 px, sin overflow horizontal observado.
 
 El indicador debe estar visible dentro del shell autenticado en desktop y mobile, no debe generar overflow, no debe tapar informacion clinica y no debe exponer secretos, URLs privadas, project ids ni service role.
 
@@ -481,7 +481,7 @@ UI-021 define e implementa localmente una pantalla o barrera visual sin bypass p
 
 La barrera debe cubrir pacientes, casos, evaluaciones, revisiones, hallazgos, trabajos, agenda interna, finanzas, reportes, fotos y configuracion interna.
 
-QA-009 no cierra aun la validacion del bloqueo: la simulacion local con variables temporales de proceso levanto Vite, pero la lectura del DOM quedo bloqueada por timeout del navegador integrado.
+QA-009 no cierra aun la validacion del bloqueo: la simulacion local con variables temporales de proceso levanto Vite, pero la lectura del DOM quedo bloqueada por timeout del navegador integrado. Queda pendiente validar `PRODUCCION NO HABILITADA` y la accion `Cerrar sesion`.
 
 ### Reglas clave
 
