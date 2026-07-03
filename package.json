@@ -7,6 +7,7 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
+    "sec007b:provision-demo-users": "node scripts/provision-demo-users.mjs --execute",
     "preview": "vite preview"
   },
   "dependencies": {
