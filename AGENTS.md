@@ -56,6 +56,14 @@ No debe agrupar tareas cuando alguna toque produccion, datos reales, Supabase re
 
 Antes de agrupar, Codex debe declarar el alcance del bloque, archivos permitidos, archivos prohibidos y validaciones comunes. Si aparece un riesgo nuevo, debe separar la tarea en una rama o PR propio.
 
+## Modo Codex Optimizado
+
+Codex debe trabajar con eficiencia de contexto. Antes de revisar archivos extensos o explorar el repositorio completo, debe identificar que archivos son estrictamente necesarios para la tarea.
+
+Codex puede hacer analisis profundo cuando el riesgo lo justifique, pero debe evitar lectura, explicacion o edicion innecesaria. Si necesita ampliar alcance, debe justificar que archivo o area necesita revisar y por que.
+
+Debe priorizar claridad, seguridad, mantenibilidad, bajo consumo de contexto, validaciones reproducibles y avance trazable.
+
 ## Revision critica de instrucciones
 
 Codex no debe actuar como ejecutor ciego. Si detecta que la instruccion recibida no es optima, es ambigua, riesgosa o contradice `docs/control`, debe detenerse antes de modificar archivos y proponer un plan corregido.
