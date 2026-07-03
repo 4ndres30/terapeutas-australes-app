@@ -2,7 +2,7 @@
 
 ## Estado
 
-Validacion local autenticada UI-020 / pendiente bloqueo produccion UI-021.
+Validacion local/demo cerrada para UI-020 y UI-021.
 
 ## Fecha
 
@@ -10,7 +10,7 @@ Validacion local autenticada UI-020 / pendiente bloqueo produccion UI-021.
 
 ## Rama
 
-`qa-009-cierre-visual-ui020-ui021`
+`qa-009-validacion-bloqueo-ui021`
 
 ## Origen
 
@@ -31,7 +31,9 @@ Validar post-merge que el indicador de ambiente activo y el bloqueo visual de pr
 - Revision de overflow horizontal en el viewport activo del navegador integrado.
 - Revision especifica de `/agenda` en ancho mobile equivalente de 375 px.
 - Revision especifica de `/agenda` en ancho desktop de 1265 px.
-- Intento de validacion de bloqueo con variables temporales de proceso, sin modificar `.env`.
+- Validacion de bloqueo con variables temporales de proceso, sin modificar `.env`.
+- Validacion de accion `Cerrar sesion` desde la pantalla de bloqueo.
+- Restauracion del servidor local a modo LOCAL despues de la prueba.
 
 ## Evidencia obtenida
 
@@ -47,14 +49,31 @@ Validar post-merge que el indicador de ambiente activo y el bloqueo visual de pr
 | `/agenda` mobile equivalente | OK, 375 px, indicador visible y sin overflow |
 | `/agenda` desktop | OK, 1265 px, indicador visible y sin overflow |
 | Overflow horizontal en `/agenda` | No observado en 375 px ni 1265 px |
+| Simulacion `PRODUCCION` no habilitada | OK, servidor local en `5173` con variables temporales de proceso |
+| Pantalla de bloqueo | OK, `PRODUCCION NO HABILITADA` visible |
+| Mensaje PROD-001 | OK, indica que PROD-001 sigue abierto y no permite operar datos reales |
+| Boton `Cerrar sesion` | OK, redirige a `/login` tras la salida |
+| Restauracion LOCAL | OK, `5173` vuelve a `/login` sin bloqueo de produccion |
 
-## Validaciones no cerradas
+## Validacion UI-021 cerrada
 
-No se pudo cerrar la validacion completa por limitacion de herramienta del navegador integrado:
+La validacion pendiente se cerro usando el mismo puerto local `5173` para conservar la sesion autenticada del navegador.
 
-- la pasada mobile/desktop de `/agenda` se completo correctamente con 375 px y 1265 px;
-- la simulacion de `VITE_APP_AMBIENTE=PRODUCCION` con `VITE_PRODUCCION_HABILITADA=false` levanto Vite localmente, pero la lectura DOM del bloqueo quedo bloqueada por timeout;
-- no se valido el boton `Cerrar sesion` desde la pantalla de bloqueo.
+La simulacion se ejecuto con variables temporales de proceso:
+
+```text
+VITE_APP_AMBIENTE=PRODUCCION
+VITE_PRODUCCION_HABILITADA=false
+```
+
+No se modifico `.env` ni configuracion privada. La pantalla interna fue bloqueada y mostro:
+
+```text
+PRODUCCION NO HABILITADA
+PROD-001 sigue abierto. Este ambiente no puede operar con datos reales.
+```
+
+El boton `Cerrar sesion` desde el bloqueo redirigio correctamente a `/login`. Luego se reinicio el servidor local normal en `5173` sin variables de produccion y se confirmo que ya no aparecia el bloqueo.
 
 ## Restricciones respetadas
 
@@ -75,17 +94,14 @@ No se pudo cerrar la validacion completa por limitacion de herramienta del naveg
 
 UI-020 queda validada localmente en sesion autenticada para `/agenda`, tanto en ancho mobile equivalente como en desktop, sin overflow horizontal observado.
 
-UI-021 sigue pendiente de validacion visual autenticada porque no se pudo confirmar el DOM de la pantalla de bloqueo tras simular produccion no habilitada.
+UI-021 queda validada localmente: la pantalla `PRODUCCION NO HABILITADA` bloquea la superficie interna cuando el ambiente se simula como produccion sin habilitacion explicita, y la accion `Cerrar sesion` funciona desde la pantalla de bloqueo.
 
 ## Riesgos pendientes
 
-- Falta validar la pantalla de bloqueo `PRODUCCION NO HABILITADA`.
-- Falta validar accion `Cerrar sesion` desde bloqueo.
 - El bloqueo visual no reemplaza controles backend, Auth, RLS, Storage ni separacion real de ambientes.
+- PROD-001 sigue bloqueante para cualquier uso real con datos sensibles.
+- La sesion local del navegador quedo cerrada como parte de la validacion de `Cerrar sesion`.
 
 ## Recomendacion
 
-Marcar UI-020 como validada local/demo en `/agenda` para desktop y mobile equivalente. Mantener UI-021 como implementada pero pendiente de validacion visual de bloqueo. La siguiente pasada debe validar:
-
-1. bloqueo por produccion no habilitada.
-2. cierre de sesion desde bloqueo.
+Marcar QA-009 como cerrada en local/demo para UI-020 y UI-021. Mantener PROD-001 como bloqueo para produccion real, datos reales, fotos reales y pagos reales.

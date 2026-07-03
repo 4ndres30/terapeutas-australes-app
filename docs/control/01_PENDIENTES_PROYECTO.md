@@ -34,7 +34,7 @@ Este documento es la lista maestra de pendientes. Cada pendiente debe tener un c
 | QA-006 | Base minima de pruebas por rol y no exposicion sensible. | Pendiente | Alta | Control de desarrollo / QA |
 | QA-007 | Checklist pre-migracion cloud. | Checklist documental / pendiente ejecucion futura | Alta | Control de desarrollo / QA |
 | QA-008 | Validacion funcional completa de Agenda interna. | Cerrada post-merge local/demo | Alta | Control de Desarrollo / QA / UI-UX / Integracion Backend |
-| QA-009 | Validacion visual UI-020/UI-021 ambiente. | UI-020 validada local / UI-021 pendiente bloqueo | Alta | Control de desarrollo / QA / UI-UX |
+| QA-009 | Validacion visual UI-020/UI-021 ambiente. | Cerrada local/demo | Alta | Control de desarrollo / QA / UI-UX |
 | API-001 | Disenar API publica segura e integracion Google Workspace. | Diseno documental / pendiente implementacion | Alta | Control de desarrollo / Integracion Backend |
 | DEC-035 | Migracion progresiva a plataforma Google Cloud. | Propuesta documental / pendiente validacion Javier | Alta | Control de desarrollo |
 | BE-001 | Inventariar estructura backend y Supabase local. | Integrada | Alta | Integracion Backend/Estructura |
@@ -89,7 +89,7 @@ Este documento es la lista maestra de pendientes. Cada pendiente debe tener un c
 | BE-029 | Validar runtime local de Agenda operativa. | Integrada por PR #42 / validada local | Alta | Integracion Backend / Seguridad |
 | BE-030 | Disenar arquitectura de plataforma Google Cloud. | Diseno documental / pendiente implementacion futura | Alta | Integracion Backend/Estructura |
 | UI-020 | Indicador visual de ambiente activo. | Validada local/demo en Agenda desktop/mobile | Alta | UI / UX |
-| UI-021 | Bloqueo visual de produccion no habilitada. | Implementada local / pendiente validacion bloqueo | Alta | UI / UX |
+| UI-021 | Bloqueo visual de produccion no habilitada. | Validada local/demo | Alta | UI / UX |
 | UI-022 | Integracion visual minima de fotos dentro de Elementos del caso. | Implementada local / pend. QA | Alta | UI / UX / Pulido visual |
 | UI-023 | Navegacion y superficies filtradas por rol. | Pendiente | Alta | UI / UX |
 | UI-024 | Recuperacion de cuenta, MFA y estados Auth no tecnicos. | Pendiente | Alta | UI / UX / Integracion Backend |
@@ -1089,7 +1089,7 @@ La implementacion local agrega indicador en `DashboardShell`. QA-009 confirma in
 
 ### UI-021 - Bloqueo visual de produccion no habilitada
 
-**Estado:** Implementada local / pendiente validacion bloqueo
+**Estado:** Validada local/demo
 **Prioridad:** Alta
 **Responsable:** UI / UX
 **Origen:** Auditoria PROD-001 / SEC-001
@@ -1118,7 +1118,7 @@ UI-021 define que produccion no habilitada, produccion sin aprobacion explicita 
 
 #### Observaciones
 
-UI-021 queda implementada localmente como barrera visual en `DashboardShell`. QA-009 no logro cerrar la validacion del bloqueo porque el navegador integrado quedo en timeout tras reiniciar Vite con variables temporales de proceso para simular produccion no habilitada. No habilita produccion ni sustituye controles server-side. Mantiene fuera `.env`, Supabase remoto, migraciones, API publica, Google, datos reales, fotos reales y pagos reales. Queda pendiente validar pantalla `PRODUCCION NO HABILITADA` y accion `Cerrar sesion`.
+UI-021 queda implementada localmente como barrera visual en `DashboardShell`. QA-009 valida el bloqueo `PRODUCCION NO HABILITADA` en `5173` usando variables temporales de proceso para simular produccion no habilitada, sin modificar `.env`. Tambien valida la accion `Cerrar sesion`, que redirige a `/login`. No habilita produccion ni sustituye controles server-side. Mantiene fuera `.env`, Supabase remoto, migraciones, API publica, Google, datos reales, fotos reales y pagos reales.
 
 ### DOC-001 - Manual de ambientes
 
