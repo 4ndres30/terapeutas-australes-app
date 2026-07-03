@@ -16,7 +16,7 @@ UI-026 incorpora selector de fecha, selector de hora, duracion controlada, fin c
 
 La estrategia progresiva Google Cloud queda incorporada como propuesta documental en revision: Supabase/PostgreSQL sigue siendo la base actual y Google Cloud queda como plataforma futura para API segura, integracion Google Workspace, despliegue, automatizacion y operacion por ambientes.
 
-QA-006 ya cuenta con plan base documental y QA-006A deja matriz de rutas y superficies por rol. La lectura estatica confirma proteccion de rutas por `admin`, `terapeuta` y `finanzas`, pero mantiene como riesgo visible que el menu lateral aun no filtra enlaces por rol; UI-023 sigue pendiente antes de datos reales.
+QA-006 ya cuenta con plan base documental, QA-006A deja matriz de rutas y superficies por rol y QA-006B inicia validacion visual de navegacion. La lectura estatica confirma proteccion de rutas por `admin`, `terapeuta` y `finanzas`; la ejecucion visual sin sesion confirma redireccion a `/login` para rutas internas. La cobertura autenticada multirol queda pendiente por falta de credenciales demo/provisioning documentado. UI-023 sigue pendiente antes de datos reales.
 
 IMP-001 dejo disponible una implementacion funcional minima de hallazgos operativos dentro de `DetalleRevisionesPanel`. DATA-001 dejo un seed local demo integral ejecutado correctamente en Supabase local. BE-011 confirmo que la primera version de trazabilidad hallazgo a trabajo puede usar `trabajos.revision_hallazgo_origen_id` sin migracion inicial. QA-002 valido funcionalmente el flujo de hallazgos operativos con el caso demo DATA-001 en ambiente local. BE-016 incorporo la vista financiera minima para Finanzas, QA-004 la valido localmente y UI-016 separo `ReportesPage` por rol en main mediante PR #33.
 
@@ -62,7 +62,7 @@ El proyecto se mantiene alineado con el metodo acordado: primero documentar, aud
 - API-001, BE-026, BE-027, SEC-009 y DOC-004: estrategia futura para API publica segura, contrato de agendamiento, integracion Google Workspace, seguridad API y flujo pagina publica -> API -> sistema interno -> Google.
 - CTRL-009, DEC-035, BE-030, SEC-010, DOC-005 y QA-007: estrategia progresiva Google Cloud en revision documental; no migra base de datos, Auth ni produccion.
 - UI-020/UI-021: implementacion local del indicador visual de ambiente activo y bloqueo de produccion no habilitada; QA-009 valida UI-020 en `/agenda` local desktop/mobile equivalente y UI-021 con bloqueo `PRODUCCION NO HABILITADA` y accion `Cerrar sesion`.
-- QA-006/QA-006A: plan base de pruebas por rol y matriz de rutas/superficies documentada; pendiente validacion visual autenticada por rol.
+- QA-006/QA-006A/QA-006B: plan base de pruebas por rol, matriz de rutas/superficies y validacion visual parcial sin sesion documentadas; pendiente validacion autenticada multirol.
 - RFC-002: deteccion de duplicidades entre entidades clinicas.
 
 ## Pendiente operativo
@@ -74,7 +74,7 @@ El proyecto se mantiene alineado con el metodo acordado: primero documentar, aud
 - Mantener `QA008-OBS-003` como corregida por UI-027 y usar el cierre QA-008 como precondicion documental para evaluar `BE-026`.
 - Implementar UI-020/UI-021 antes de cualquier prueba real de staging, produccion o carga de datos reales.
 - Atender observaciones de SEC-001 antes de avanzar a datos reales, fotos reales, pagos reales o produccion.
-- Ejecutar QA-006 por fases: con QA-006A documentada, continuar con navegacion visual autenticada por rol, reportes, Finanzas, Auth y RLS/Storage segun dependencias.
+- Ejecutar QA-006 por fases: con QA-006A documentada y QA-006B parcialmente ejecutada sin sesion, desbloquear credenciales/provisioning demo antes de continuar navegacion visual autenticada por rol; luego reportes, Finanzas, Auth y RLS/Storage segun dependencias.
 
 ## Estrategia futura de API publica
 
@@ -159,7 +159,7 @@ Antes de cargar pacientes reales deben cerrarse las tareas minimas de PROD-001 y
 - política de datos demo vs reales;
 - checklist pre-producción.
 
-QA-006 queda iniciado como plan base documental para ordenar pruebas por rol y no exposicion sensible. QA-006A agrega matriz de rutas/superficies, pero aun no cierra la validacion progresiva requerida antes de uso real.
+QA-006 queda iniciado como plan base documental para ordenar pruebas por rol y no exposicion sensible. QA-006A agrega matriz de rutas/superficies y QA-006B confirma redireccion a login sin sesion, pero aun no cierra la validacion progresiva requerida antes de uso real.
 
 **Decisión:** No cargar datos reales todavía.
 

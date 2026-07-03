@@ -2556,3 +2556,68 @@ QA-006A queda documentada como matriz base.
 La siguiente fase recomendada es `QA-006B - Validacion visual autenticada de navegacion por rol`.
 
 PROD-001 sigue bloqueante.
+
+## LOG-059 - QA-006B validacion parcial navegacion por rol
+
+**Estado:** Ejecucion parcial local / bloqueada para roles autenticados
+**Prioridad:** Alta
+**Responsable:** Control de desarrollo / QA
+**Origen:** QA-006 / QA-006A / UI-023 / SEC-007 / PROD-001
+**Fecha creacion:** 2026-07-03
+**Rama usada:** `qa-006b-validacion-navegacion-roles`
+
+### Resumen
+
+Se inicia `QA-006B - Validacion visual autenticada de navegacion por rol`.
+
+La ejecucion confirma en navegador integrado que siete rutas internas protegidas sin sesion redirigen a `/login` y muestran la pantalla `Acceso interno`.
+
+### Evidencia
+
+Rutas revisadas:
+
+- `/pacientes`
+- `/consultas`
+- `/evaluaciones`
+- `/casos`
+- `/agenda`
+- `/finanzas`
+- `/reportes`
+
+Resultado: 7/7 OK para redireccion sin sesion.
+
+La cobertura autenticada por `admin`, `terapeuta` y `finanzas` no se ejecuta en esta pasada porque no hay credenciales demo documentadas ni sesion activa multirol disponible.
+
+### Archivos relacionados
+
+- `docs/control/auditorias/QA-006B_VALIDACION_NAVEGACION_ROLES.md`
+- `docs/control/auditorias/QA-006A_MATRIZ_RUTAS_SUPERFICIES_ROL.md`
+- `docs/control/auditorias/QA-006_PLAN_BASE_PRUEBAS_ROLES.md`
+- `docs/control/00_ESTADO_GENERAL_PROYECTO.md`
+- `docs/control/01_PENDIENTES_PROYECTO.md`
+- `docs/control/06_BITACORA_CAMBIOS.md`
+
+### Restricciones respetadas
+
+- No se modifico codigo fuente.
+- No se modificaron migraciones.
+- No se modifico `.env`.
+- No se leyeron ni expusieron credenciales.
+- No se crearon ni modificaron usuarios Auth.
+- No se modifico `usuarios_internos`.
+- No se ejecuto SQL.
+- No se uso Supabase remoto.
+- No se ejecuto `supabase db push`.
+- No se modifico Auth/RLS.
+- No se creo API publica.
+- No se integro Google Calendar, Gmail ni Workspace.
+- No se habilito produccion.
+- No se usaron datos reales, fotos reales ni pagos reales.
+
+### Resultado
+
+QA-006B queda iniciada con cobertura parcial OK para rutas internas sin sesion.
+
+La siguiente tarea recomendada es `SEC-007 - Procedimiento de scripts manuales locales/demo y prohibicion en produccion`, para desbloquear usuarios demo/locales sin versionar secretos ni tocar produccion.
+
+PROD-001 sigue bloqueante.

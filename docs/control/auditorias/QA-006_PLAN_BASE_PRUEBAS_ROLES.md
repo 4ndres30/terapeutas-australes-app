@@ -147,6 +147,31 @@ Alcance cubierto:
 
 La siguiente fase recomendada es `QA-006B - Validacion visual autenticada de navegacion por rol`.
 
+## Bloque QA-006B
+
+El segundo bloque queda iniciado como:
+
+```text
+QA-006B - Validacion visual autenticada de navegacion por rol
+```
+
+Informe:
+
+```text
+docs/control/auditorias/QA-006B_VALIDACION_NAVEGACION_ROLES.md
+```
+
+Alcance cubierto:
+
+- validar en navegador integrado que rutas internas sin sesion redirigen a `/login`;
+- registrar bloqueo de cobertura autenticada multirol por falta de credenciales demo documentadas;
+- no crear usuarios Auth;
+- no modificar `usuarios_internos`;
+- no leer ni exponer secretos;
+- no tocar Supabase remoto.
+
+La siguiente fase recomendada es desbloquear `SEC-007` para contar con procedimiento local/demo aprobado antes de reintentar la cobertura visual por `admin`, `terapeuta` y `finanzas`.
+
 ## Resultado
 
 QA-006 queda iniciado como plan base documental. La ejecucion queda dividida en fases para evitar un PR demasiado grande o riesgoso.

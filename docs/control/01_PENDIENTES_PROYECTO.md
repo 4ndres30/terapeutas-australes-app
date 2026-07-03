@@ -31,7 +31,7 @@ Este documento es la lista maestra de pendientes. Cada pendiente debe tener un c
 | QA-002 | Validacion funcional de hallazgos operativos con caso demo. | Integrada | Alta | Control de desarrollo |
 | QA-004 | Validacion funcional local de BE-016 / Finanzas. | Integrada | Alta | Control de desarrollo |
 | QA-005 | Validacion funcional local UI-016 / Reportes por rol. | Integrada | Alta | Control de desarrollo |
-| QA-006 | Base minima de pruebas por rol y no exposicion sensible. | Plan base + matriz QA-006A / pendiente pruebas funcionales | Alta | Control de desarrollo / QA |
+| QA-006 | Base minima de pruebas por rol y no exposicion sensible. | QA-006B parcial sin sesion / pendiente multirol | Alta | Control de desarrollo / QA |
 | QA-007 | Checklist pre-migracion cloud. | Checklist documental / pendiente ejecucion futura | Alta | Control de desarrollo / QA |
 | QA-008 | Validacion funcional completa de Agenda interna. | Cerrada post-merge local/demo | Alta | Control de Desarrollo / QA / UI-UX / Integracion Backend |
 | QA-009 | Validacion visual UI-020/UI-021 ambiente. | Cerrada local/demo | Alta | Control de desarrollo / QA / UI-UX |
@@ -1703,11 +1703,12 @@ Validar localmente que las fotos se cargan, registran y muestran asociadas al el
 **Dependencias:** SEC-003, SEC-005, SEC-008, SEC-008B, BE-021, UI-023, UI-024, BE-023, BE-025
 **Informe:** `docs/control/auditorias/QA-006_PLAN_BASE_PRUEBAS_ROLES.md`
 **Informe QA-006A:** `docs/control/auditorias/QA-006A_MATRIZ_RUTAS_SUPERFICIES_ROL.md`
+**Informe QA-006B:** `docs/control/auditorias/QA-006B_VALIDACION_NAVEGACION_ROLES.md`
 
 #### Descripcion
 Definir e implementar progresivamente una base minima de pruebas para roles, navegacion, reportes, finanzas y no exposicion de datos sensibles.
 
-El plan base documental divide QA-006 en fases para evitar cubrir todo en un solo PR. El primer bloque, `QA-006A - Matriz de rutas y superficies por rol`, queda documentado como base para las pruebas funcionales siguientes.
+El plan base documental divide QA-006 en fases para evitar cubrir todo en un solo PR. `QA-006A - Matriz de rutas y superficies por rol` queda documentado como base y `QA-006B - Validacion visual autenticada de navegacion por rol` queda iniciada con cobertura parcial sin sesion.
 
 #### Criterios de aceptacion preliminares
 - Cubrir rutas protegidas por rol.
@@ -1726,9 +1727,9 @@ El plan base documental divide QA-006 en fases para evitar cubrir todo en un sol
 
 #### Resultado actual
 
-QA-006 queda iniciado como plan base documental y QA-006A deja matriz de rutas/superficies por rol. No se ejecutan pruebas funcionales completas ni se modifica codigo. La ejecucion queda pendiente por fases, respetando dependencias de SEC-005, SEC-008B, UI-023, UI-024, BE-023 y BE-025.
+QA-006 queda iniciado como plan base documental, QA-006A deja matriz de rutas/superficies por rol y QA-006B confirma que rutas internas sin sesion redirigen a `/login`. No se modifica codigo. La ejecucion autenticada multirol queda pendiente por falta de credenciales demo/provisioning documentado, respetando dependencias de SEC-005, SEC-007, SEC-008B, UI-023, UI-024, BE-023 y BE-025.
 
-La siguiente fase recomendada es `QA-006B - Validacion visual autenticada de navegacion por rol`.
+La siguiente fase recomendada es desbloquear `SEC-007` como procedimiento local/demo para usuarios de prueba antes de reintentar QA-006B autenticada multirol.
 
 ### UI-013 - Disenar experiencia de trabajos, sesiones y acciones
 
