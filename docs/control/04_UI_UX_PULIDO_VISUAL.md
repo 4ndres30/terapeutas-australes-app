@@ -437,6 +437,53 @@ Informe relacionado: `auditorias/UI-026_SELECTOR_CALENDARIO_HORARIO_AGENDA.md`
 
 Resultado relacionado: QA-008 confirmo alta, edicion, reagendamiento, completado, cancelacion y bloqueo de solapamiento desde UI autenticada en desktop. El overflow horizontal movil observado en 390x844 quedo corregido por UI-027 y validado post-merge.
 
+## UI-020 - Indicador visual de ambiente activo
+
+**Estado:** Diseno documental / pendiente implementacion futura
+**Prioridad:** Alta
+**Responsable:** UI / UX
+**Origen:** PROD-001 / DEC-030 / BE-018 / DOC-001
+**Fecha:** 2026-07-02
+
+### Resultado documental
+
+UI-020 define un indicador persistente para los ambientes `LOCAL`, `DEMO`, `STAGING`, `PRODUCCION` y `DESCONOCIDO`.
+
+El indicador debe estar visible dentro del shell autenticado en desktop y mobile, no debe generar overflow, no debe tapar informacion clinica y no debe exponer secretos, URLs privadas, project ids ni service role.
+
+### Reglas clave
+
+- LOCAL y DEMO deben indicar datos ficticios.
+- STAGING debe indicar validacion y requerir autorizacion futura.
+- PRODUCCION solo puede mostrarse como habilitada cuando PROD-001 este cerrado.
+- Ambiente desconocido debe tratarse como estado de riesgo.
+- El indicador no reemplaza controles tecnicos de ambientes.
+
+Informe relacionado: `auditorias/UI-020_INDICADOR_AMBIENTE_ACTIVO.md`
+
+## UI-021 - Bloqueo visual de produccion no habilitada
+
+**Estado:** Diseno documental / pendiente implementacion futura
+**Prioridad:** Alta
+**Responsable:** UI / UX
+**Origen:** PROD-001 / DEC-030 / DEC-031 / UI-020
+**Fecha:** 2026-07-02
+
+### Resultado documental
+
+UI-021 define una pantalla o barrera visual sin bypass para impedir uso interno cuando el ambiente sea produccion no habilitada, produccion sin aprobacion explicita o ambiente desconocido en rutas sensibles.
+
+La barrera debe cubrir pacientes, casos, evaluaciones, revisiones, hallazgos, trabajos, agenda interna, finanzas, reportes, fotos y configuracion interna.
+
+### Reglas clave
+
+- No permitir `Continuar de todos modos` mientras PROD-001 siga abierto.
+- Permitir LOCAL/DEMO solo con datos ficticios y aviso visual.
+- No mostrar detalles tecnicos, secretos ni identificadores internos.
+- No sustituir controles backend, RLS, Auth, Storage ni separacion real de ambientes.
+
+Informe relacionado: `auditorias/UI-021_BLOQUEO_PRODUCCION_NO_HABILITADA.md`
+
 ## UI-027 - Ajuste responsive de shell y Agenda interna
 
 **Estado:** Integrada por PR #50 / validada post-merge

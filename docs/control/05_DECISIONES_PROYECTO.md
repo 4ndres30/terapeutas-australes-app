@@ -819,6 +819,10 @@ Separacion relacionada: `docs/control/auditorias/BE-018_SEPARACION_TECNICA_AMBIE
 
 Manual relacionado: `docs/control/auditorias/DOC-001_MANUAL_AMBIENTES.md`.
 
+Indicador relacionado: `docs/control/auditorias/UI-020_INDICADOR_AMBIENTE_ACTIVO.md`.
+
+Bloqueo relacionado: `docs/control/auditorias/UI-021_BLOQUEO_PRODUCCION_NO_HABILITADA.md`.
+
 ## DEC-031 - Carga real requiere aprobacion explicita y checklist
 
 **Estado:** Politica documental / pendiente implementacion futura
@@ -842,7 +846,7 @@ La carga real requiere aprobacion explicita de Javier / Control de Desarrollo y 
 - QA-003 cerrado si habra fotos reales.
 - BE-023 cerrado si Finanzas no debe ver `paciente_id`.
 - BE-025 cerrado si Finanzas operara textos financieros.
-- UI-020 y UI-021 cerrados.
+- UI-020 y UI-021 documentados, implementados y validados antes de habilitar produccion.
 - Matriz de permisos vigente y validada.
 - DOC-001 y DOC-003 documentados y aprobados.
 - DOC-002 documentado y restauracion probada antes de produccion.

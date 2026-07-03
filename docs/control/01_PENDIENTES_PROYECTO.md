@@ -87,8 +87,8 @@ Este documento es la lista maestra de pendientes. Cada pendiente debe tener un c
 | BE-028 | Implementar modelo DB de Agenda operativa. | Integrada por PR #41 | Alta | Integracion Backend/Estructura |
 | BE-029 | Validar runtime local de Agenda operativa. | Integrada por PR #42 / validada local | Alta | Integracion Backend / Seguridad |
 | BE-030 | Disenar arquitectura de plataforma Google Cloud. | Diseno documental / pendiente implementacion futura | Alta | Integracion Backend/Estructura |
-| UI-020 | Indicador visual de ambiente activo. | Pendiente | Alta | UI / UX |
-| UI-021 | Bloqueo visual de produccion no habilitada. | Pendiente | Alta | UI / UX |
+| UI-020 | Indicador visual de ambiente activo. | Diseno documental / pendiente implementacion futura | Alta | UI / UX |
+| UI-021 | Bloqueo visual de produccion no habilitada. | Diseno documental / pendiente implementacion futura | Alta | UI / UX |
 | UI-022 | Integracion visual minima de fotos dentro de Elementos del caso. | Implementada local / pend. QA | Alta | UI / UX / Pulido visual |
 | UI-023 | Navegacion y superficies filtradas por rol. | Pendiente | Alta | UI / UX |
 | UI-024 | Recuperacion de cuenta, MFA y estados Auth no tecnicos. | Pendiente | Alta | UI / UX / Integracion Backend |
@@ -1055,39 +1055,63 @@ BE-021 no implementa columnas, estados, triggers, policies, migraciones, codigo,
 
 ### UI-020 - Indicador visual de ambiente activo
 
-**Estado:** Pendiente
+**Estado:** Diseno documental / pendiente implementacion futura
 **Prioridad:** Alta
 **Responsable:** UI / UX
 **Origen:** Auditoria PROD-001 / SEC-001
 **Fecha creacion:** 2026-06-19
+**Fecha documentacion:** 2026-07-02
+**Rama usada:** `ui-020-ui021-diseno-ambiente-produccion`
+**Informe:** `docs/control/auditorias/UI-020_INDICADOR_AMBIENTE_ACTIVO.md`
 
 #### Descripcion
 Disenar un indicador visible del ambiente activo para reducir el riesgo de operar en el contexto equivocado.
 
-#### Criterios de aceptacion preliminares
+UI-020 define estados visuales para LOCAL, DEMO, STAGING, PRODUCCION y ambiente desconocido. El indicador debe ser persistente, responsive, accesible, no depender solo del color y no exponer secretos ni identificadores tecnicos sensibles.
+
+#### Criterios de aceptacion
 - Definir estados visuales para local, demo, staging y produccion.
 - Evitar que el indicador tape informacion clinica.
 - Considerar version mobile y desktop.
 - Documentar comportamiento esperado antes de implementar.
 - No modificar codigo fuente ni CSS en esta tarea documental.
+- Tratar ambiente desconocido como estado conservador.
+- No exponer claves, project ids, URLs privadas ni service role.
+- Mantener PROD-001 como bloqueo para produccion real.
+
+#### Observaciones
+
+La implementacion futura debe coordinarse con UI-021 y con la separacion tecnica de ambientes definida por BE-018/DOC-001/DOC-003. Esta tarea no modifica codigo, `.env`, migraciones, Supabase remoto ni produccion.
 
 ### UI-021 - Bloqueo visual de produccion no habilitada
 
-**Estado:** Pendiente
+**Estado:** Diseno documental / pendiente implementacion futura
 **Prioridad:** Alta
 **Responsable:** UI / UX
 **Origen:** Auditoria PROD-001 / SEC-001
 **Fecha creacion:** 2026-06-19
+**Fecha documentacion:** 2026-07-02
+**Rama usada:** `ui-020-ui021-diseno-ambiente-produccion`
+**Informe:** `docs/control/auditorias/UI-021_BLOQUEO_PRODUCCION_NO_HABILITADA.md`
 
 #### Descripcion
 Disenar una advertencia o bloqueo visual para impedir uso productivo cuando PROD-001 siga abierto.
 
-#### Criterios de aceptacion preliminares
+UI-021 define que produccion no habilitada, produccion sin aprobacion explicita o ambiente desconocido deben bloquear rutas internas sensibles. LOCAL/DEMO quedan permitidos solo para datos ficticios con indicador UI-020.
+
+#### Criterios de aceptacion
 - Definir mensaje de produccion no habilitada.
 - Definir condiciones para mostrar advertencia o bloqueo.
 - Considerar rutas clinicas, financieras y administrativas.
 - Asegurar que no se confunda demo con produccion.
 - No modificar codigo fuente ni CSS en esta tarea documental.
+- No ofrecer bypass operativo mientras PROD-001 siga abierto.
+- No reemplazar controles backend, Auth, RLS, Storage ni separacion real de ambientes.
+- Validar mobile y desktop cuando se implemente.
+
+#### Observaciones
+
+UI-021 es una barrera visual futura. No habilita produccion ni sustituye controles server-side. La implementacion real debe esperar una tarea tecnica separada y mantener fuera `.env`, Supabase remoto, migraciones, API publica, Google, datos reales, fotos reales y pagos reales.
 
 ### DOC-001 - Manual de ambientes
 

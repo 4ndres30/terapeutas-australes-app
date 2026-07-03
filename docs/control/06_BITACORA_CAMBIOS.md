@@ -2167,3 +2167,50 @@ BE-019 define alcance, ambientes, frecuencia futura, responsabilidades, segurida
 BE-019 y DOC-002 quedan como diseno/documentacion base / pendiente implementacion y prueba futura.
 
 La implementacion real debe esperar una prueba de restauracion en ambiente aislado con datos ficticios o anonimizados aprobados, UI-020/UI-021, QA runtime de ambientes y cierre de PROD-001.
+
+## LOG-051 - UI-020 UI-021 ambiente activo y bloqueo produccion
+
+**Estado:** Documentado
+**Prioridad:** Alta
+**Responsable:** UI / UX / Control de desarrollo
+**Origen:** UI-020 / UI-021 / PROD-001 / DEC-030 / DEC-031 / BE-018 / DOC-001
+**Fecha creacion:** 2026-07-02
+**Rama usada:** `ui-020-ui021-diseno-ambiente-produccion`
+
+### Resumen
+
+Se documenta el diseno visual del indicador de ambiente activo y del bloqueo de produccion no habilitada.
+
+UI-020 define estados para LOCAL, DEMO, STAGING, PRODUCCION y DESCONOCIDO, con reglas para no exponer secretos ni depender solo del color.
+
+UI-021 define una barrera visual sin bypass para produccion no habilitada, produccion sin aprobacion explicita o ambiente desconocido en rutas sensibles.
+
+### Archivos relacionados
+
+- `docs/control/auditorias/UI-020_INDICADOR_AMBIENTE_ACTIVO.md`
+- `docs/control/auditorias/UI-021_BLOQUEO_PRODUCCION_NO_HABILITADA.md`
+- `docs/control/00_ESTADO_GENERAL_PROYECTO.md`
+- `docs/control/01_PENDIENTES_PROYECTO.md`
+- `docs/control/04_UI_UX_PULIDO_VISUAL.md`
+- `docs/control/05_DECISIONES_PROYECTO.md`
+- `docs/control/06_BITACORA_CAMBIOS.md`
+
+### Restricciones respetadas
+
+- No se modifico codigo fuente.
+- No se modifico CSS.
+- No se modificaron migraciones.
+- No se ejecuto SQL.
+- No se modifico `.env`.
+- No se uso Supabase remoto.
+- No se ejecuto `supabase db push`.
+- No se creo API publica.
+- No se integro Google Calendar, Gmail ni Workspace.
+- No se habilito produccion.
+- No se usaron datos reales, fotos reales ni pagos reales.
+
+### Resultado
+
+UI-020 y UI-021 quedan como diseno documental / pendiente implementacion futura.
+
+La implementacion real debe realizarse en una rama funcional separada, con validacion visual desktop/mobile, `npm run lint`, `npm run build` y manteniendo PROD-001 bloqueante.
