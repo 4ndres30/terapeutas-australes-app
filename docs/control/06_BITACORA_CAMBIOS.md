@@ -2272,7 +2272,7 @@ UI-020/UI-021 quedan implementadas localmente y listas para PR draft, con revisi
 
 ## LOG-053 - QA-009 validacion UI-020 UI-021 ambiente
 
-**Estado:** Validacion parcial autenticada / pendiente mobile y bloqueo
+**Estado:** UI-020 validada local / UI-021 pendiente bloqueo
 **Prioridad:** Alta
 **Responsable:** Control de desarrollo / QA / UI-UX
 **Origen:** PR #62 / UI-020 / UI-021 / PROD-001
@@ -2330,4 +2330,45 @@ La sesion autenticada local disponible permitio confirmar que el shell interno m
 
 QA-009 deja evidencia parcial positiva para UI-020 en sesion autenticada local. UI-021 sigue pendiente de validacion visual de bloqueo.
 
-La recomendacion de Control es ejecutar una siguiente pasada con navegador estable para validar `/agenda`, mobile y bloqueo de produccion no habilitada antes de marcar UI-020/UI-021 como cerradas.
+La recomendacion de Control es ejecutar una siguiente pasada con navegador estable para validar el bloqueo de produccion no habilitada antes de marcar UI-021 como cerrada.
+
+## LOG-054 - QA-009 cierre parcial visual de indicador ambiente
+
+**Estado:** UI-020 validada local/demo / UI-021 pendiente bloqueo
+**Prioridad:** Alta
+**Responsable:** Control de desarrollo / QA / UI-UX
+**Origen:** QA-009 / UI-020 / UI-021 / PROD-001
+**Fecha creacion:** 2026-07-03
+**Rama usada:** `qa-009-cierre-visual-ui020-ui021`
+
+### Resumen
+
+Se completa la validacion visual local del indicador UI-020 en `/agenda` con sesion autenticada `Administrador Local`.
+
+### Evidencia
+
+- `/agenda` mobile equivalente: 375 px, indicador `LOCAL - datos ficticios` visible, sin overflow horizontal.
+- `/agenda` desktop: 1265 px, indicador `LOCAL - datos ficticios` visible, sin overflow horizontal.
+- Usuario visible: `Administrador Local`.
+- Bloqueo de produccion: no cerrado por timeout del navegador integrado tras reiniciar Vite con variables temporales de proceso.
+
+### Restricciones respetadas
+
+- No se modifico codigo fuente.
+- No se modifico `.env`.
+- No se tocaron credenciales.
+- No se modificaron migraciones.
+- No se ejecuto SQL.
+- No se uso Supabase remoto.
+- No se ejecuto `supabase db push`.
+- No se modifico Auth/RLS.
+- No se creo API publica.
+- No se integro Google Calendar, Gmail ni Workspace.
+- No se habilito produccion.
+- No se usaron datos reales, fotos reales ni pagos reales.
+
+### Resultado
+
+UI-020 queda validada local/demo en Agenda desktop/mobile equivalente.
+
+UI-021 sigue pendiente de validacion visual del bloqueo `PRODUCCION NO HABILITADA` y de la accion `Cerrar sesion` desde la pantalla de bloqueo.

@@ -2,7 +2,7 @@
 
 ## Estado
 
-Implementada local / pendiente revision visual autenticada.
+UI-020 validada local/demo / UI-021 pendiente bloqueo visual.
 
 ## Fecha
 
@@ -90,15 +90,12 @@ El login queda fuera del bloqueo para permitir salida o correccion de acceso sin
 
 ## Validacion pendiente
 
-QA-009 ejecuto una primera revision post-merge. La sesion autenticada local disponible permitio validar que el indicador `LOCAL - datos ficticios` aparece en el shell con usuario `Administrador Local` y sin overflow horizontal en el viewport activo del navegador integrado.
+QA-009 ejecuto revision post-merge. La sesion autenticada local disponible permitio validar que el indicador `LOCAL - datos ficticios` aparece en `/agenda` con usuario `Administrador Local`, sin overflow horizontal en ancho mobile equivalente de 375 px ni en desktop de 1265 px.
 
 Sigue pendiente la revision visual completa:
 
 Debe validarse con sesion interna local/demo:
 
-- indicador visible en desktop;
-- indicador visible en mobile;
-- sin overflow horizontal;
 - bloqueo visible al ejecutar ambiente de prueba con `VITE_APP_AMBIENTE=PRODUCCION` y sin habilitacion;
 - cierre de sesion desde pantalla de bloqueo.
 

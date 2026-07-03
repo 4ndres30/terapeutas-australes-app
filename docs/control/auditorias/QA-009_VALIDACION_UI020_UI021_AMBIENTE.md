@@ -2,7 +2,7 @@
 
 ## Estado
 
-Validacion parcial autenticada / pendiente mobile y bloqueo produccion.
+Validacion local autenticada UI-020 / pendiente bloqueo produccion UI-021.
 
 ## Fecha
 
@@ -10,7 +10,7 @@ Validacion parcial autenticada / pendiente mobile y bloqueo produccion.
 
 ## Rama
 
-`qa-009-validacion-ui020-ui021-ambiente`
+`qa-009-cierre-visual-ui020-ui021`
 
 ## Origen
 
@@ -29,6 +29,8 @@ Validar post-merge que el indicador de ambiente activo y el bloqueo visual de pr
 - Verificacion autenticada del shell interno con sesion `Administrador Local`.
 - Revision de presencia del indicador `LOCAL - datos ficticios`.
 - Revision de overflow horizontal en el viewport activo del navegador integrado.
+- Revision especifica de `/agenda` en ancho mobile equivalente de 375 px.
+- Revision especifica de `/agenda` en ancho desktop de 1265 px.
 - Intento de validacion de bloqueo con variables temporales de proceso, sin modificar `.env`.
 
 ## Evidencia obtenida
@@ -41,15 +43,16 @@ Validar post-merge que el indicador de ambiente activo y el bloqueo visual de pr
 | `npm run build` | OK, con aviso Vite de chunk mayor a 500 kB |
 | Sesion autenticada local | OK, usuario visible `Administrador Local` |
 | Indicador ambiente LOCAL | OK, texto visible `LOCAL - datos ficticios` |
-| Viewport activo navegador integrado | 843 px de ancho |
-| Overflow horizontal viewport activo | No observado, `scrollWidth` igual a `clientWidth` |
+| Viewport activo navegador integrado inicial | 843 px de ancho |
+| `/agenda` mobile equivalente | OK, 375 px, indicador visible y sin overflow |
+| `/agenda` desktop | OK, 1265 px, indicador visible y sin overflow |
+| Overflow horizontal en `/agenda` | No observado en 375 px ni 1265 px |
 
 ## Validaciones no cerradas
 
 No se pudo cerrar la validacion completa por limitacion de herramienta del navegador integrado:
 
-- la pasada multi-viewport `1280x720`, `390x844` y `360x740` quedo bloqueada por timeout al cambiar viewport;
-- la navegacion posterior a `/agenda` quedo bloqueada por timeout;
+- la pasada mobile/desktop de `/agenda` se completo correctamente con 375 px y 1265 px;
 - la simulacion de `VITE_APP_AMBIENTE=PRODUCCION` con `VITE_PRODUCCION_HABILITADA=false` levanto Vite localmente, pero la lectura DOM del bloqueo quedo bloqueada por timeout;
 - no se valido el boton `Cerrar sesion` desde la pantalla de bloqueo.
 
@@ -70,23 +73,19 @@ No se pudo cerrar la validacion completa por limitacion de herramienta del naveg
 
 ## Resultado
 
-UI-020 queda parcialmente validada en sesion autenticada local para el viewport activo del navegador integrado.
+UI-020 queda validada localmente en sesion autenticada para `/agenda`, tanto en ancho mobile equivalente como en desktop, sin overflow horizontal observado.
 
 UI-021 sigue pendiente de validacion visual autenticada porque no se pudo confirmar el DOM de la pantalla de bloqueo tras simular produccion no habilitada.
 
 ## Riesgos pendientes
 
-- Falta validar mobile real o equivalente.
-- Falta validar `/agenda` especificamente post-merge con indicador visible.
 - Falta validar la pantalla de bloqueo `PRODUCCION NO HABILITADA`.
 - Falta validar accion `Cerrar sesion` desde bloqueo.
 - El bloqueo visual no reemplaza controles backend, Auth, RLS, Storage ni separacion real de ambientes.
 
 ## Recomendacion
 
-Mantener UI-020/UI-021 como implementadas pero no cerradas. La siguiente pasada debe usar una sesion autenticada estable y validar:
+Marcar UI-020 como validada local/demo en `/agenda` para desktop y mobile equivalente. Mantener UI-021 como implementada pero pendiente de validacion visual de bloqueo. La siguiente pasada debe validar:
 
-1. `/agenda` desktop.
-2. `/agenda` mobile.
-3. bloqueo por produccion no habilitada.
-4. cierre de sesion desde bloqueo.
+1. bloqueo por produccion no habilitada.
+2. cierre de sesion desde bloqueo.
