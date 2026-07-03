@@ -382,6 +382,137 @@
   border: 1px solid rgba(109, 63, 211, 0.10);
 }
 
+.dashboard-environment-badge {
+  align-items: center;
+  background: rgba(255, 255, 255, 0.88);
+  border: 1px solid rgba(85, 55, 125, 0.12);
+  border-radius: 999px;
+  box-shadow: 0 10px 24px rgba(53, 28, 86, 0.08);
+  color: var(--ta-ink);
+  display: inline-flex;
+  flex: 0 0 auto;
+  font-size: 12px;
+  font-weight: 750;
+  gap: 8px;
+  line-height: 1.2;
+  max-width: 100%;
+  min-height: 38px;
+  overflow-wrap: anywhere;
+  padding: 8px 12px;
+  white-space: normal;
+}
+
+.dashboard-environment-badge__dot {
+  border-radius: 999px;
+  display: inline-flex;
+  flex: 0 0 auto;
+  height: 9px;
+  width: 9px;
+}
+
+.dashboard-environment-badge--local .dashboard-environment-badge__dot,
+.dashboard-environment-badge--demo .dashboard-environment-badge__dot {
+  background: #1cad66;
+  box-shadow: 0 0 0 5px rgba(28, 173, 102, 0.12);
+}
+
+.dashboard-environment-badge--staging {
+  border-color: rgba(195, 131, 22, 0.28);
+  color: #704808;
+}
+
+.dashboard-environment-badge--staging .dashboard-environment-badge__dot {
+  background: #c38316;
+  box-shadow: 0 0 0 5px rgba(195, 131, 22, 0.13);
+}
+
+.dashboard-environment-badge--produccion,
+.dashboard-environment-badge--bloqueado,
+.dashboard-environment-badge--desconocido {
+  border-color: rgba(183, 31, 64, 0.26);
+  color: #7d1a32;
+}
+
+.dashboard-environment-badge--produccion .dashboard-environment-badge__dot,
+.dashboard-environment-badge--bloqueado .dashboard-environment-badge__dot,
+.dashboard-environment-badge--desconocido .dashboard-environment-badge__dot {
+  background: #be3455;
+  box-shadow: 0 0 0 5px rgba(190, 52, 85, 0.12);
+}
+
+.dashboard-environment-lock {
+  align-items: start;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.94), rgba(255, 244, 247, 0.90));
+  border: 1px solid rgba(190, 52, 85, 0.22);
+  border-radius: 24px;
+  box-shadow: 0 18px 42px rgba(53, 28, 86, 0.10);
+  color: var(--ta-ink);
+  display: grid;
+  gap: 18px;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  max-width: 880px;
+  padding: 24px;
+}
+
+.dashboard-environment-lock__icon {
+  align-items: center;
+  background: #fff0f3;
+  border: 1px solid rgba(190, 52, 85, 0.22);
+  border-radius: 18px;
+  color: #be3455;
+  display: inline-flex;
+  height: 48px;
+  justify-content: center;
+  width: 48px;
+}
+
+.dashboard-environment-lock__icon svg {
+  height: 24px;
+  width: 24px;
+}
+
+.dashboard-environment-lock__content {
+  min-width: 0;
+}
+
+.dashboard-environment-lock__content span {
+  color: #be3455;
+  display: block;
+  font-size: 11px;
+  font-weight: 850;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.dashboard-environment-lock__content h1 {
+  color: #201033;
+  font-size: 30px;
+  font-weight: 650;
+  letter-spacing: 0;
+  line-height: 1.05;
+  margin: 8px 0 10px;
+}
+
+.dashboard-environment-lock__content p {
+  color: #5f5270;
+  font-size: 14px;
+  line-height: 1.55;
+  margin: 8px 0 0;
+}
+
+.dashboard-environment-lock__action {
+  background: #201033;
+  border: 0;
+  border-radius: 14px;
+  color: #ffffff;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 800;
+  min-height: 42px;
+  padding: 0 18px;
+  white-space: nowrap;
+}
+
 @media (min-width: 1501px) {
   .dashboard-main .pacientes-cards--compact {
     max-height: calc(100vh - 390px);
@@ -488,10 +619,38 @@
     grid-template-columns: auto minmax(0, 1fr) auto;
   }
 
+  .dashboard-menu-toggle {
+    grid-column: 1;
+    grid-row: 1;
+  }
+
   .dashboard-topbar-copy {
     display: block;
+    grid-column: 2;
+    grid-row: 1;
     min-width: 0;
     text-align: left;
+  }
+
+  .dashboard-userbar {
+    grid-column: 3;
+    grid-row: 1;
+    justify-self: end;
+  }
+
+  .dashboard-environment-badge {
+    grid-column: 1 / -1;
+    grid-row: 2;
+    justify-self: start;
+  }
+
+  .dashboard-environment-lock {
+    grid-template-columns: auto minmax(0, 1fr);
+  }
+
+  .dashboard-environment-lock__action {
+    grid-column: 2;
+    justify-self: start;
   }
 }
 
@@ -516,5 +675,23 @@
     min-height: 40px;
     overflow-wrap: anywhere;
     padding: 9px 10px;
+  }
+
+  .dashboard-environment-badge {
+    align-items: flex-start;
+    border-radius: 14px;
+    font-size: 11px;
+    justify-self: stretch;
+  }
+
+  .dashboard-environment-lock {
+    grid-template-columns: 1fr;
+    padding: 18px;
+  }
+
+  .dashboard-environment-lock__action {
+    grid-column: auto;
+    justify-self: stretch;
+    width: 100%;
   }
 }

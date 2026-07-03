@@ -439,7 +439,7 @@ Resultado relacionado: QA-008 confirmo alta, edicion, reagendamiento, completado
 
 ## UI-020 - Indicador visual de ambiente activo
 
-**Estado:** Diseno documental / pendiente implementacion futura
+**Estado:** Implementada local / pendiente revision visual autenticada
 **Prioridad:** Alta
 **Responsable:** UI / UX
 **Origen:** PROD-001 / DEC-030 / BE-018 / DOC-001
@@ -447,7 +447,7 @@ Resultado relacionado: QA-008 confirmo alta, edicion, reagendamiento, completado
 
 ### Resultado documental
 
-UI-020 define un indicador persistente para los ambientes `LOCAL`, `DEMO`, `STAGING`, `PRODUCCION` y `DESCONOCIDO`.
+UI-020 define e implementa localmente un indicador persistente para los ambientes `LOCAL`, `DEMO`, `STAGING`, `PRODUCCION` y `DESCONOCIDO`.
 
 El indicador debe estar visible dentro del shell autenticado en desktop y mobile, no debe generar overflow, no debe tapar informacion clinica y no debe exponer secretos, URLs privadas, project ids ni service role.
 
@@ -461,9 +461,11 @@ El indicador debe estar visible dentro del shell autenticado en desktop y mobile
 
 Informe relacionado: `auditorias/UI-020_INDICADOR_AMBIENTE_ACTIVO.md`
 
+Implementacion relacionada: `auditorias/UI-020_UI-021_IMPLEMENTACION_AMBIENTE_PRODUCCION.md`
+
 ## UI-021 - Bloqueo visual de produccion no habilitada
 
-**Estado:** Diseno documental / pendiente implementacion futura
+**Estado:** Implementada local / pendiente revision visual autenticada
 **Prioridad:** Alta
 **Responsable:** UI / UX
 **Origen:** PROD-001 / DEC-030 / DEC-031 / UI-020
@@ -471,7 +473,7 @@ Informe relacionado: `auditorias/UI-020_INDICADOR_AMBIENTE_ACTIVO.md`
 
 ### Resultado documental
 
-UI-021 define una pantalla o barrera visual sin bypass para impedir uso interno cuando el ambiente sea produccion no habilitada, produccion sin aprobacion explicita o ambiente desconocido en rutas sensibles.
+UI-021 define e implementa localmente una pantalla o barrera visual sin bypass para impedir uso interno cuando el ambiente sea produccion no habilitada, produccion sin aprobacion explicita o ambiente desconocido en rutas sensibles.
 
 La barrera debe cubrir pacientes, casos, evaluaciones, revisiones, hallazgos, trabajos, agenda interna, finanzas, reportes, fotos y configuracion interna.
 
@@ -483,6 +485,8 @@ La barrera debe cubrir pacientes, casos, evaluaciones, revisiones, hallazgos, tr
 - No sustituir controles backend, RLS, Auth, Storage ni separacion real de ambientes.
 
 Informe relacionado: `auditorias/UI-021_BLOQUEO_PRODUCCION_NO_HABILITADA.md`
+
+Implementacion relacionada: `auditorias/UI-020_UI-021_IMPLEMENTACION_AMBIENTE_PRODUCCION.md`
 
 ## UI-027 - Ajuste responsive de shell y Agenda interna
 

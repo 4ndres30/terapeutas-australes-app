@@ -87,8 +87,8 @@ Este documento es la lista maestra de pendientes. Cada pendiente debe tener un c
 | BE-028 | Implementar modelo DB de Agenda operativa. | Integrada por PR #41 | Alta | Integracion Backend/Estructura |
 | BE-029 | Validar runtime local de Agenda operativa. | Integrada por PR #42 / validada local | Alta | Integracion Backend / Seguridad |
 | BE-030 | Disenar arquitectura de plataforma Google Cloud. | Diseno documental / pendiente implementacion futura | Alta | Integracion Backend/Estructura |
-| UI-020 | Indicador visual de ambiente activo. | Diseno documental / pendiente implementacion futura | Alta | UI / UX |
-| UI-021 | Bloqueo visual de produccion no habilitada. | Diseno documental / pendiente implementacion futura | Alta | UI / UX |
+| UI-020 | Indicador visual de ambiente activo. | Implementada local / pendiente revision visual autenticada | Alta | UI / UX |
+| UI-021 | Bloqueo visual de produccion no habilitada. | Implementada local / pendiente revision visual autenticada | Alta | UI / UX |
 | UI-022 | Integracion visual minima de fotos dentro de Elementos del caso. | Implementada local / pend. QA | Alta | UI / UX / Pulido visual |
 | UI-023 | Navegacion y superficies filtradas por rol. | Pendiente | Alta | UI / UX |
 | UI-024 | Recuperacion de cuenta, MFA y estados Auth no tecnicos. | Pendiente | Alta | UI / UX / Integracion Backend |
@@ -191,7 +191,7 @@ Pendiente validacion de Javier. Supabase/PostgreSQL sigue siendo la base actual 
 
 ### BE-030 - Disenar arquitectura de plataforma Google Cloud
 
-**Estado:** Diseno documental / pendiente implementacion futura
+**Estado:** Implementada local / pendiente revision visual autenticada
 **Prioridad:** Alta
 **Responsable:** Integracion Backend/Estructura
 **Origen:** DEC-035 / API-001 / BE-027
@@ -1063,6 +1063,8 @@ BE-021 no implementa columnas, estados, triggers, policies, migraciones, codigo,
 **Fecha documentacion:** 2026-07-02
 **Rama usada:** `ui-020-ui021-diseno-ambiente-produccion`
 **Informe:** `docs/control/auditorias/UI-020_INDICADOR_AMBIENTE_ACTIVO.md`
+**Rama implementacion:** `ui-020-ui021-implementacion-ambiente-produccion`
+**Informe implementacion:** `docs/control/auditorias/UI-020_UI-021_IMPLEMENTACION_AMBIENTE_PRODUCCION.md`
 
 #### Descripcion
 Disenar un indicador visible del ambiente activo para reducir el riesgo de operar en el contexto equivocado.
@@ -1081,11 +1083,11 @@ UI-020 define estados visuales para LOCAL, DEMO, STAGING, PRODUCCION y ambiente 
 
 #### Observaciones
 
-La implementacion futura debe coordinarse con UI-021 y con la separacion tecnica de ambientes definida por BE-018/DOC-001/DOC-003. Esta tarea no modifica codigo, `.env`, migraciones, Supabase remoto ni produccion.
+La implementacion local agrega indicador en `DashboardShell` y mantiene pendiente revision visual autenticada desktop/mobile. No modifica `.env`, migraciones, Supabase remoto ni produccion.
 
 ### UI-021 - Bloqueo visual de produccion no habilitada
 
-**Estado:** Diseno documental / pendiente implementacion futura
+**Estado:** Implementada local / pendiente revision visual autenticada
 **Prioridad:** Alta
 **Responsable:** UI / UX
 **Origen:** Auditoria PROD-001 / SEC-001
@@ -1093,6 +1095,8 @@ La implementacion futura debe coordinarse con UI-021 y con la separacion tecnica
 **Fecha documentacion:** 2026-07-02
 **Rama usada:** `ui-020-ui021-diseno-ambiente-produccion`
 **Informe:** `docs/control/auditorias/UI-021_BLOQUEO_PRODUCCION_NO_HABILITADA.md`
+**Rama implementacion:** `ui-020-ui021-implementacion-ambiente-produccion`
+**Informe implementacion:** `docs/control/auditorias/UI-020_UI-021_IMPLEMENTACION_AMBIENTE_PRODUCCION.md`
 
 #### Descripcion
 Disenar una advertencia o bloqueo visual para impedir uso productivo cuando PROD-001 siga abierto.
@@ -1111,7 +1115,7 @@ UI-021 define que produccion no habilitada, produccion sin aprobacion explicita 
 
 #### Observaciones
 
-UI-021 es una barrera visual futura. No habilita produccion ni sustituye controles server-side. La implementacion real debe esperar una tarea tecnica separada y mantener fuera `.env`, Supabase remoto, migraciones, API publica, Google, datos reales, fotos reales y pagos reales.
+UI-021 queda implementada localmente como barrera visual en `DashboardShell`, pendiente revision visual autenticada. No habilita produccion ni sustituye controles server-side. Mantiene fuera `.env`, Supabase remoto, migraciones, API publica, Google, datos reales, fotos reales y pagos reales.
 
 ### DOC-001 - Manual de ambientes
 
