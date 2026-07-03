@@ -82,6 +82,26 @@ Al cierre ejecuta git diff --check, npm run lint, npm run build y git status si 
 Crea o actualiza PR draft contra main. No hagas merge.
 ```
 
+## Prompt - Ejecutar bloque simple agrupado
+
+```text
+Control, agrupa y ejecuta en una sola rama las tareas simples relacionadas con [OBJETIVO].
+
+Antes de modificar archivos, confirma:
+
+1. tareas incluidas;
+2. tareas excluidas;
+3. archivos permitidos;
+4. archivos prohibidos;
+5. restricciones aplicables;
+6. validaciones comunes;
+7. criterio para separar el trabajo si aparece riesgo nuevo.
+
+Solo agrupa tareas documentales o de bajo riesgo. No agrupes nada que toque produccion, datos reales, .env, secretos, Supabase remoto, migraciones, Auth/RLS, API publica, Google Workspace, infraestructura cloud o cambios funcionales sensibles.
+
+Al cierre valida, crea commit, sube rama y prepara PR draft. No hagas merge.
+```
+
 ## Prompt - Generar prompt para Codex JetBrains/WebStorm
 
 ```text

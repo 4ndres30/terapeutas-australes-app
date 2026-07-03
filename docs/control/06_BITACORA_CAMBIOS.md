@@ -2372,3 +2372,46 @@ Se completa la validacion visual local del indicador UI-020 en `/agenda` con ses
 UI-020 queda validada local/demo en Agenda desktop/mobile equivalente.
 
 UI-021 sigue pendiente de validacion visual del bloqueo `PRODUCCION NO HABILITADA` y de la accion `Cerrar sesion` desde la pantalla de bloqueo.
+
+## LOG-055 - CTRL-011 optimizacion operativa Codex
+
+**Estado:** Documentado
+**Prioridad:** Alta
+**Responsable:** Control de desarrollo
+**Origen:** Javier / operacion Codex
+**Fecha creacion:** 2026-07-03
+**Rama usada:** `ctrl-011-optimizacion-operacion-codex`
+
+### Resumen
+
+Se registra la regla operativa para agrupar tareas simples en una sola ejecucion cuando compartan objetivo, rama, alcance, validaciones y bajo riesgo.
+
+La regla permite optimizar tiempo de desarrollo sin relajar restricciones sensibles ni mezclar tareas incompatibles.
+
+### Archivos relacionados
+
+- `AGENTS.md`
+- `.codex/README.md`
+- `docs/control/10_OPERACION_CODEX.md`
+- `docs/control/prompts/CODEX_CONTROL_DESARROLLO.md`
+- `docs/control/auditorias/CTRL-011_OPTIMIZACION_OPERACION_CODEX.md`
+- `docs/control/06_BITACORA_CAMBIOS.md`
+
+### Restricciones respetadas
+
+- No se modifico codigo fuente.
+- No se modificaron migraciones.
+- No se modifico `.env`.
+- No se tocaron credenciales.
+- No se ejecuto SQL.
+- No se uso Supabase remoto.
+- No se ejecuto `supabase db push`.
+- No se modifico Auth/RLS.
+- No se creo API publica.
+- No se integro Google Calendar, Gmail ni Workspace.
+- No se habilito produccion.
+- No se usaron datos reales, fotos reales ni pagos reales.
+
+### Resultado
+
+Codex queda instruido para agrupar tareas simples cuando sea seguro y para separar cualquier tarea que presente riesgo nuevo, alcance distinto o restriccion sensible.

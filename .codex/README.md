@@ -64,6 +64,7 @@ Usar Codex escritorio como Control de Desarrollo:
 - leer `docs/control`;
 - detectar bloqueos;
 - proponer planes;
+- agrupar tareas simples cuando compartan alcance, rama, validaciones y bajo riesgo;
 - crear ramas de trabajo;
 - ejecutar cambios aprobados;
 - validar;

@@ -41,6 +41,21 @@ Codex puede:
 
 Codex no debe modificar archivos, ejecutar acciones sensibles ni ampliar el alcance tecnico sin aprobacion clara.
 
+## Optimizacion operativa
+
+Codex debe optimizar el tiempo de desarrollo agrupando tareas simples en una sola ejecucion cuando compartan alcance, rama, validaciones y nivel de riesgo.
+
+Se consideran agrupables:
+
+- ajustes documentales menores relacionados;
+- correcciones de microcopy o formato dentro del mismo documento o flujo;
+- actualizaciones de bitacora, auditoria e instrucciones derivadas de una misma tarea;
+- validaciones repetibles que puedan ejecutarse una sola vez para todo el bloque.
+
+No debe agrupar tareas cuando alguna toque produccion, datos reales, Supabase remoto, `.env`, secretos, API publica, Google Workspace, Auth/RLS, migraciones, infraestructura cloud o codigo funcional de riesgo medio/alto.
+
+Antes de agrupar, Codex debe declarar el alcance del bloque, archivos permitidos, archivos prohibidos y validaciones comunes. Si aparece un riesgo nuevo, debe separar la tarea en una rama o PR propio.
+
 ## Revision critica de instrucciones
 
 Codex no debe actuar como ejecutor ciego. Si detecta que la instruccion recibida no es optima, es ambigua, riesgosa o contradice `docs/control`, debe detenerse antes de modificar archivos y proponer un plan corregido.
