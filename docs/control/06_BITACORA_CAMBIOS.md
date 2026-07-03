@@ -2510,3 +2510,49 @@ El plan divide QA-006 en fases y mantiene la regla de no cubrir todo en un solo 
 QA-006 queda iniciado como plan base documental / pendiente ejecucion progresiva.
 
 El primer bloque recomendado queda como `QA-006A - Matriz de rutas y superficies por rol`.
+
+## LOG-058 - QA-006A matriz de rutas y superficies por rol
+
+**Estado:** Matriz documental / pendiente validacion funcional
+**Prioridad:** Alta
+**Responsable:** Control de desarrollo / QA
+**Origen:** QA-006 / UI-023 / SEC-001 / PROD-001
+**Fecha creacion:** 2026-07-03
+**Rama usada:** `qa-006a-matriz-rutas-roles`
+
+### Resumen
+
+Se documenta la matriz base de rutas protegidas y superficies visibles por rol para `admin`, `terapeuta`, `finanzas`, usuarios sin sesion y usuarios sin perfil interno.
+
+La revision es estatica y no modifica codigo. Deja como riesgo principal que el menu lateral aun no filtra enlaces por rol: la proteccion de rutas redirige, pero Finanzas puede ver nombres de modulos clinicos hasta que se cierre UI-023 o una fase equivalente.
+
+### Archivos relacionados
+
+- `docs/control/auditorias/QA-006A_MATRIZ_RUTAS_SUPERFICIES_ROL.md`
+- `docs/control/auditorias/QA-006_PLAN_BASE_PRUEBAS_ROLES.md`
+- `docs/control/00_ESTADO_GENERAL_PROYECTO.md`
+- `docs/control/01_PENDIENTES_PROYECTO.md`
+- `docs/control/06_BITACORA_CAMBIOS.md`
+
+### Restricciones respetadas
+
+- No se modifico codigo fuente.
+- No se modificaron migraciones.
+- No se modifico `.env`.
+- No se tocaron credenciales.
+- No se ejecuto SQL.
+- No se uso Supabase remoto.
+- No se ejecuto `supabase db push`.
+- No se modifico Auth/RLS.
+- No se creo API publica.
+- No se integro Google Calendar, Gmail ni Workspace.
+- No se habilito produccion.
+- No se usaron datos reales, fotos reales ni pagos reales.
+
+### Resultado
+
+QA-006A queda documentada como matriz base.
+
+La siguiente fase recomendada es `QA-006B - Validacion visual autenticada de navegacion por rol`.
+
+PROD-001 sigue bloqueante.

@@ -122,22 +122,30 @@ QA-006 no debe:
 - habilitar produccion;
 - mezclar ejecucion funcional, hardening y documentacion en un solo PR.
 
-## Primer bloque recomendado
+## Bloque QA-006A
 
-El primer bloque ejecutable despues de este plan debe ser:
+El primer bloque ejecutable despues de este plan queda documentado como:
 
 ```text
 QA-006A - Matriz de rutas y superficies por rol
 ```
 
-Alcance recomendado:
+Informe:
+
+```text
+docs/control/auditorias/QA-006A_MATRIZ_RUTAS_SUPERFICIES_ROL.md
+```
+
+Alcance cubierto:
 
 - inventariar rutas internas actuales;
 - mapear rutas por rol esperado;
 - identificar superficies que requieren prueba manual o automatizada;
 - no modificar codigo;
 - no ejecutar datos reales;
-- dejar PR documental o de tests segun corresponda.
+- dejar PR documental.
+
+La siguiente fase recomendada es `QA-006B - Validacion visual autenticada de navegacion por rol`.
 
 ## Resultado
 
