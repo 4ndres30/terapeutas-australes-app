@@ -75,7 +75,7 @@ Este documento es la lista maestra de pendientes. Cada pendiente debe tener un c
 | SEC-009 | Disenar seguridad de API publica. | Diseno documental / pendiente implementacion futura | Alta | Integracion Backend / Seguridad |
 | SEC-010 | Disenar seguridad cloud, OAuth, IAM e identidades tecnicas. | Diseno documental / pendiente implementacion futura | Alta | Integracion Backend / Seguridad |
 | BE-018 | Separacion tecnica de ambientes. | Diseno documental / pendiente implementacion futura | Alta | Integracion Backend |
-| BE-019 | Estrategia de backup/restauracion. | Pendiente | Alta | Integracion Backend / Produccion |
+| BE-019 | Estrategia de backup/restauracion. | Diseno documental / pendiente implementacion futura | Alta | Integracion Backend / Produccion |
 | BE-020 | Consentimiento informado y tratamiento de datos. | Diseno documental base / pendiente validacion clinica/legal | Alta | Control de desarrollo / Revision Clinica / Backend |
 | BE-021 | Politica de anulacion vs eliminacion. | Diseno documental / pendiente implementacion futura | Media-alta | Control de desarrollo / Backend |
 | BE-022 | Soporte de fotos para elementos del caso con Supabase Storage. | Implementada local / pend. QA | Alta | Integracion Backend/Estructura |
@@ -97,7 +97,7 @@ Este documento es la lista maestra de pendientes. Cada pendiente debe tener un c
 | UI-026 | Selector calendario/horario y duracion estandar de consulta en Agenda interna. | Integrada por PR #48 / QA-008 cerrada local/demo | Alta | UI / UX / Integracion Backend |
 | UI-027 | Ajuste responsive de shell y Agenda interna. | Integrada por PR #50 / validada post-merge | Media-alta | UI / UX / Pulido visual |
 | DOC-001 | Manual de ambientes. | Documental / pendiente implementacion futura | Alta | Control de desarrollo |
-| DOC-002 | Procedimiento de backup/restauracion. | Pendiente | Alta | Control de desarrollo / Integracion Backend |
+| DOC-002 | Procedimiento de backup/restauracion. | Documental / pendiente prueba futura | Alta | Control de desarrollo / Integracion Backend |
 | DOC-003 | Politica de carga de datos reales. | Documental / pendiente implementacion futura | Alta | Control de desarrollo |
 | DOC-004 | Documentar flujo pagina publica -> API -> sistema interno -> Google. | Documental / pendiente implementacion futura | Alta | Control de desarrollo |
 | DOC-005 | Documentar estrategia de migracion progresiva a Google Cloud. | Documental / pendiente validacion | Alta | Control de desarrollo |
@@ -968,21 +968,30 @@ BE-018 no crea ambientes, no modifica `.env`, no toca Supabase remoto, no crea c
 
 ### BE-019 - Estrategia de backup/restauracion
 
-**Estado:** Pendiente
+**Estado:** Diseno documental / pendiente implementacion futura
 **Prioridad:** Alta
 **Responsable:** Integracion Backend / Produccion
 **Origen:** Auditoria PROD-001 / SEC-001
 **Fecha creacion:** 2026-06-19
+**Fecha documentacion:** 2026-07-02
+**Rama usada:** `be-019-doc002-backup-restauracion`
+**Informe:** `docs/control/auditorias/BE-019_ESTRATEGIA_BACKUP_RESTAURACION.md`
 
 #### Descripcion
 Definir estrategia de respaldo y restauracion antes de operar con datos reales.
 
-#### Criterios de aceptacion preliminares
+BE-019 define alcance, ambientes, frecuencia futura, responsabilidades, seguridad y criterios antes de produccion para backup/restauracion.
+
+#### Criterios de aceptacion
 - Definir frecuencia, responsable y alcance de backups.
 - Definir procedimiento de restauracion.
 - Probar restauracion antes de produccion.
 - Documentar resultado de prueba de restauracion.
 - No tocar Supabase remoto sin autorizacion expresa.
+
+#### Observaciones
+
+BE-019 no ejecuta backups, no restaura bases, no toca Supabase remoto, no modifica `.env` y no habilita datos reales ni produccion.
 
 ### BE-020 - Consentimiento informado y tratamiento de datos
 
@@ -1107,21 +1116,28 @@ DOC-001 no crea ambientes ni modifica configuracion. Define operacion, responsab
 
 ### DOC-002 - Procedimiento de backup/restauracion
 
-**Estado:** Pendiente
+**Estado:** Documental / pendiente prueba futura
 **Prioridad:** Alta
 **Responsable:** Control de desarrollo / Integracion Backend
 **Origen:** Auditoria PROD-001 / SEC-001
 **Fecha creacion:** 2026-06-19
+**Fecha documentacion:** 2026-07-02
+**Rama usada:** `be-019-doc002-backup-restauracion`
+**Informe:** `docs/control/auditorias/DOC-002_PROCEDIMIENTO_BACKUP_RESTAURACION.md`
 
 #### Descripcion
 Documentar el procedimiento de respaldo y restauracion que debe probarse antes de produccion.
 
-#### Criterios de aceptacion preliminares
+#### Criterios de aceptacion
 - Describir pasos de respaldo.
 - Describir pasos de restauracion.
 - Definir responsable y evidencia requerida.
 - Registrar resultado esperado de prueba.
 - No tocar Supabase remoto sin autorizacion expresa.
+
+#### Observaciones
+
+DOC-002 no ejecuta comandos ni toca datos. La prueba real de restauracion debe ejecutarse despues en ambiente aislado con datos ficticios o anonimizados aprobados.
 
 ### DOC-003 - Politica de carga de datos reales
 

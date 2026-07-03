@@ -567,6 +567,32 @@ Informes relacionados:
 - `docs/control/auditorias/DOC-001_MANUAL_AMBIENTES.md`
 - `docs/control/auditorias/DOC-003_POLITICA_CARGA_DATOS_REALES.md`
 
+## BE-019 / DOC-002 - Backup y restauracion
+
+**Estado:** Diseno documental / pendiente implementacion futura
+**Origen:** PROD-001 / SEC-001 / BE-018 / DOC-003
+**Fecha:** 2026-07-02
+
+Se documenta la estrategia y procedimiento base para respaldo y restauracion antes de operar con datos reales o produccion.
+
+### Reglas definidas
+
+- Local y demo no requieren respaldo formal de datos reales.
+- Staging requiere respaldo antes de pruebas destructivas o migraciones.
+- Produccion requiere respaldo obligatorio, protegido, monitoreado y probado.
+- Toda carga real futura exige respaldo previo y restauracion probada.
+- No copiar backups productivos a local/demo.
+- No ejecutar restauraciones sobre produccion sin autorizacion explicita.
+
+### Restricciones
+
+BE-019/DOC-002 no ejecutan backups, no restauran bases, no modifican `.env`, no tocan Supabase remoto, no ejecutan SQL, no integran Google, no habilitan produccion y no usan datos reales.
+
+Informes relacionados:
+
+- `docs/control/auditorias/BE-019_ESTRATEGIA_BACKUP_RESTAURACION.md`
+- `docs/control/auditorias/DOC-002_PROCEDIMIENTO_BACKUP_RESTAURACION.md`
+
 ## BE-001 - Inventariar estructura backend y Supabase local
 
 **Estado:** Integrada

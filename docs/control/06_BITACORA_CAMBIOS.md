@@ -2121,4 +2121,49 @@ El bloque define LOCAL, DEMO, STAGING y PRODUCCION; proposito y restricciones de
 
 BE-018, DOC-001 y DOC-003 quedan como diseno/documentacion base / pendiente implementacion futura.
 
-La implementacion real debe esperar DOC-002/BE-019 backup-restauracion, UI-020/UI-021, QA runtime de ambientes, validacion clinica/legal de BE-020 y cierre de PROD-001.
+La implementacion real debe esperar prueba efectiva de restauracion, UI-020/UI-021, QA runtime de ambientes, validacion clinica/legal de BE-020 y cierre de PROD-001.
+
+## LOG-050 - BE-019 DOC-002 backup y restauracion
+
+**Estado:** Documentado
+**Prioridad:** Alta
+**Responsable:** Control de desarrollo / Integracion Backend / Produccion
+**Origen:** BE-019 / DOC-002 / PROD-001 / SEC-001 / BE-018 / DOC-003
+**Fecha creacion:** 2026-07-02
+**Rama usada:** `be-019-doc002-backup-restauracion`
+
+### Resumen
+
+Se documenta la estrategia y procedimiento de backup/restauracion antes de operar con datos reales o produccion.
+
+BE-019 define alcance, ambientes, frecuencia futura, responsabilidades, seguridad y criterios previos a produccion. DOC-002 define procedimiento base de respaldo, restauracion, evidencia requerida y prueba minima futura.
+
+### Archivos relacionados
+
+- `docs/control/auditorias/BE-019_ESTRATEGIA_BACKUP_RESTAURACION.md`
+- `docs/control/auditorias/DOC-002_PROCEDIMIENTO_BACKUP_RESTAURACION.md`
+- `docs/control/00_ESTADO_GENERAL_PROYECTO.md`
+- `docs/control/01_PENDIENTES_PROYECTO.md`
+- `docs/control/03_INTEGRACION_BACKEND_ESTRUCTURA.md`
+- `docs/control/05_DECISIONES_PROYECTO.md`
+- `docs/control/06_BITACORA_CAMBIOS.md`
+
+### Restricciones respetadas
+
+- No se ejecutaron backups.
+- No se ejecutaron restauraciones.
+- No se modifico `.env`.
+- No se modifico codigo fuente.
+- No se modificaron migraciones.
+- No se ejecuto SQL.
+- No se uso Supabase remoto.
+- No se ejecuto `supabase db push`.
+- No se integro Google Calendar, Gmail ni Workspace.
+- No se habilito produccion.
+- No se usaron datos reales.
+
+### Resultado
+
+BE-019 y DOC-002 quedan como diseno/documentacion base / pendiente implementacion y prueba futura.
+
+La implementacion real debe esperar una prueba de restauracion en ambiente aislado con datos ficticios o anonimizados aprobados, UI-020/UI-021, QA runtime de ambientes y cierre de PROD-001.
