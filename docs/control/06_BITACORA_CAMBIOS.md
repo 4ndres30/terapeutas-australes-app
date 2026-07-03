@@ -2725,3 +2725,64 @@ SEC-007B deja ejecutado el provisioning local/demo para desbloquear QA-006B aute
 La siguiente tarea recomendada es ejecutar `QA-006B - Validacion visual autenticada de navegacion por rol` usando identidades ficticias y sin registrar credenciales.
 
 PROD-001 sigue bloqueante.
+
+## LOG-063 - QA-006B validacion autenticada por rol
+
+**Estado:** Ejecutada local/demo con observaciones UI-023
+**Prioridad:** Alta
+**Responsable:** Control de desarrollo / QA
+**Origen:** QA-006B / QA-006A / SEC-007B / UI-023 / PROD-001
+**Fecha creacion:** 2026-07-03
+**Rama usada:** `qa-006b-validacion-autenticada-roles`
+
+### Resumen
+
+Se ejecuta la validacion visual autenticada de navegacion por rol usando las identidades ficticias locales preparadas por SEC-007B.
+
+Se usa `LOG-063` para evitar colision con `LOG-062`, actualmente preparado en PR #72.
+
+### Resultado por rol
+
+- Admin inicia en `/pacientes`, accede a `/finanzas`, `/agenda` y `/reportes`.
+- Terapeuta inicia en `/pacientes`, accede a `/agenda` y `/reportes`; al solicitar `/finanzas` redirige a `/pacientes`.
+- Finanzas inicia en `/finanzas`, accede a `/reportes`; al solicitar `/pacientes`, `/casos` y `/casos/:id` redirige a `/finanzas`.
+- Usuario inactivo queda en `/login` con acceso interno no habilitado.
+- Usuario sin perfil interno queda en `/login` con acceso interno no habilitado.
+
+### Observaciones
+
+- Las rutas protegidas y Reportes por rol funcionan local/demo.
+- El menu visible aun muestra enlaces no autorizados por rol: Finanzas ve superficies clinicas/Agenda y Terapeuta ve Finanzas.
+- La observacion se deriva a `UI-023 - Navegacion y superficies filtradas por rol`.
+
+### Archivos relacionados
+
+- `docs/control/auditorias/QA-006B_VALIDACION_NAVEGACION_ROLES.md`
+- `docs/control/00_ESTADO_GENERAL_PROYECTO.md`
+- `docs/control/01_PENDIENTES_PROYECTO.md`
+- `docs/control/06_BITACORA_CAMBIOS.md`
+
+### Restricciones respetadas
+
+- No se modifico codigo fuente.
+- No se modificaron migraciones.
+- No se modifico `.env`.
+- No se imprimieron ni documentaron credenciales.
+- No se modificaron usuarios Auth.
+- No se modifico `usuarios_internos`.
+- No se ejecuto SQL manual.
+- No se uso Supabase remoto.
+- No se ejecuto `supabase db push`.
+- No se modifico Auth/RLS.
+- No se creo API publica.
+- No se integro Google Calendar, Gmail ni Workspace.
+- No se habilito produccion.
+- No se usaron datos reales, fotos reales ni pagos reales.
+
+### Resultado
+
+QA-006B queda ejecutada local/demo con observacion abierta para UI-023.
+
+La siguiente tarea recomendada es `UI-023 - Navegacion y superficies filtradas por rol`.
+
+PROD-001 sigue bloqueante.
