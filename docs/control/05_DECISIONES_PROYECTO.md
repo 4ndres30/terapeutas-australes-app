@@ -755,13 +755,16 @@ Las fotos son archivos clinicos sensibles y requieren retencion, anulacion, audi
 
 ### Impacto
 
-- SEC-006 debe definir politica de fotos, retencion y objetos huerfanos.
+- SEC-006 define la politica documental de fotos, retencion y objetos huerfanos.
 - QA-003 debe validar funcionalidad local con imagen ficticia.
 - No se habilitan fotos reales.
 
 ### Observaciones
 
-Informe relacionado: `docs/control/auditorias/CTRL-008_DECISIONES_CRITICAS_POST_AUDITORIA.md`.
+Informes relacionados:
+
+- `docs/control/auditorias/CTRL-008_DECISIONES_CRITICAS_POST_AUDITORIA.md`.
+- `docs/control/auditorias/SEC-006_POLITICA_FOTOS_RETENCION_OBJETOS_HUERFANOS.md`.
 
 ## DEC-029 - Scripts manuales sobre Auth solo local/demo y prohibidos en produccion
 

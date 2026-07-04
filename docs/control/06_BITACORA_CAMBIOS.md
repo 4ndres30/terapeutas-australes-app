@@ -3238,3 +3238,49 @@ QA-006F queda ejecutada local/demo y documentada como evidencia de RLS/Storage p
 La siguiente tarea recomendada es `SEC-006 - Politica de fotos, retencion y objetos huerfanos`, antes de QA funcional de fotos o uso con archivos reales.
 
 PROD-001 sigue bloqueante.
+
+## LOG-073 - SEC-006 politica de fotos, retencion y objetos huerfanos
+
+**Estado:** Politica documental / pendiente implementacion tecnica
+**Prioridad:** Alta
+**Responsable:** Integracion Backend / Seguridad / Control de desarrollo
+**Origen:** SEC-006 / DEC-018 / DEC-028 / SEC-001 / SEC-005 / BE-021 / BE-022 / UI-022 / QA-006F / PROD-001
+**Fecha creacion:** 2026-07-04
+**Rama usada:** `sec-006-politica-fotos-retencion`
+
+### Resumen
+
+Se documenta la politica de fotos de elementos del caso antes de cualquier uso con fotos reales.
+
+La politica define roles permitidos, estados logicos, retencion, objetos huerfanos, auditoria minima, datos prohibidos en logs y criterios requeridos antes de operar archivos reales.
+
+### Archivos relacionados
+
+- `docs/control/auditorias/SEC-006_POLITICA_FOTOS_RETENCION_OBJETOS_HUERFANOS.md`
+- `docs/control/00_ESTADO_GENERAL_PROYECTO.md`
+- `docs/control/01_PENDIENTES_PROYECTO.md`
+- `docs/control/05_DECISIONES_PROYECTO.md`
+- `docs/control/06_BITACORA_CAMBIOS.md`
+
+### Restricciones respetadas
+
+- No se modifico codigo fuente funcional.
+- No se modifico `src/`.
+- No se modifico `.env`.
+- No se modificaron migraciones.
+- No se modifico Auth/RLS.
+- No se modifico Storage local ni remoto.
+- No se uso Supabase remoto.
+- No se ejecuto `supabase db push`.
+- No se creo API publica.
+- No se integro Google Calendar, Gmail ni Workspace.
+- No se habilito produccion.
+- No se usaron datos reales, fotos reales ni pagos reales.
+
+### Resultado
+
+SEC-006 queda como politica documental base. La implementacion tecnica futura debe separarse en tareas de hardening, auditoria, anulacion logica y QA.
+
+La siguiente tarea recomendada es `QA-003 - Validacion funcional local de fotos de elementos del caso` con imagen ficticia.
+
+PROD-001 sigue bloqueante.
