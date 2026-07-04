@@ -31,7 +31,7 @@ Este documento es la lista maestra de pendientes. Cada pendiente debe tener un c
 | QA-002 | Validacion funcional de hallazgos operativos con caso demo. | Integrada | Alta | Control de desarrollo |
 | QA-004 | Validacion funcional local de BE-016 / Finanzas. | Integrada | Alta | Control de desarrollo |
 | QA-005 | Validacion funcional local UI-016 / Reportes por rol. | Integrada | Alta | Control de desarrollo |
-| QA-006 | Base minima de pruebas por rol y no exposicion sensible. | QA-006C post-merge UI-023 OK / fases restantes | Alta | Control de desarrollo / QA |
+| QA-006 | Base minima de pruebas por rol y no exposicion sensible. | QA-006D Reportes/Finanzas OK / Auth-RLS pendientes | Alta | Control de desarrollo / QA |
 | QA-007 | Checklist pre-migracion cloud. | Checklist documental / pendiente ejecucion futura | Alta | Control de desarrollo / QA |
 | QA-008 | Validacion funcional completa de Agenda interna. | Cerrada post-merge local/demo | Alta | Control de Desarrollo / QA / UI-UX / Integracion Backend |
 | QA-009 | Validacion visual UI-020/UI-021 ambiente. | Cerrada local/demo | Alta | Control de desarrollo / QA / UI-UX |
@@ -1762,11 +1762,12 @@ Validar localmente que las fotos se cargan, registran y muestran asociadas al el
 **Informe QA-006A:** `docs/control/auditorias/QA-006A_MATRIZ_RUTAS_SUPERFICIES_ROL.md`
 **Informe QA-006B:** `docs/control/auditorias/QA-006B_VALIDACION_NAVEGACION_ROLES.md`
 **Informe QA-006C:** `docs/control/auditorias/QA-006C_REVALIDACION_NAVEGACION_FILTRADA_ROLES_POSTMERGE.md`
+**Informe QA-006D:** `docs/control/auditorias/QA-006D_VALIDACION_REPORTES_FINANZAS_ROLES.md`
 
 #### Descripcion
 Definir e implementar progresivamente una base minima de pruebas para roles, navegacion, reportes, finanzas y no exposicion de datos sensibles.
 
-El plan base documental divide QA-006 en fases para evitar cubrir todo en un solo PR. `QA-006A - Matriz de rutas y superficies por rol` queda documentado como base, `QA-006B - Validacion visual autenticada de navegacion por rol` queda ejecutada local/demo y `QA-006C - Revalidacion post-merge navegacion filtrada por rol` confirma que UI-023 resolvio la observacion visible del menu.
+El plan base documental divide QA-006 en fases para evitar cubrir todo en un solo PR. `QA-006A - Matriz de rutas y superficies por rol` queda documentado como base, `QA-006B - Validacion visual autenticada de navegacion por rol` queda ejecutada local/demo, `QA-006C - Revalidacion post-merge navegacion filtrada por rol` confirma que UI-023 resolvio la observacion visible del menu y `QA-006D - Reportes y Finanzas por rol` confirma separacion visual de Reportes/Finanzas.
 
 #### Criterios de aceptacion preliminares
 - Cubrir rutas protegidas por rol.
@@ -1785,9 +1786,9 @@ El plan base documental divide QA-006 en fases para evitar cubrir todo en un sol
 
 #### Resultado actual
 
-QA-006 queda iniciado como plan base documental, QA-006A deja matriz de rutas/superficies por rol y QA-006B confirma que rutas internas sin sesion redirigen a `/login`. Tras SEC-007B, QA-006B valida local/demo redireccion por rol, Reportes por rol, Agenda para Admin/Terapeuta y bloqueo de usuarios inactivo/sin perfil. QA-006C valida post-merge que el menu visible ya queda filtrado por rol en desktop/mobile.
+QA-006 queda iniciado como plan base documental, QA-006A deja matriz de rutas/superficies por rol y QA-006B confirma que rutas internas sin sesion redirigen a `/login`. Tras SEC-007B, QA-006B valida local/demo redireccion por rol, Reportes por rol, Agenda para Admin/Terapeuta y bloqueo de usuarios inactivo/sin perfil. QA-006C valida post-merge que el menu visible ya queda filtrado por rol en desktop/mobile. QA-006D valida Reportes/Finanzas por rol: Admin ve superficie mixta autorizada, Terapeuta queda clinico y Finanzas queda financiero/administrativo.
 
-La siguiente fase recomendada es continuar QA-006 con cobertura de Reportes, Finanzas, Auth y RLS/Storage segun dependencias, sin datos reales ni produccion.
+La siguiente fase recomendada es continuar QA-006 con Auth y RLS/Storage segun dependencias, sin datos reales ni produccion.
 
 ### UI-013 - Disenar experiencia de trabajos, sesiones y acciones
 
