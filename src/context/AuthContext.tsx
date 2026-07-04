@@ -1,5 +1,5 @@
 /* eslint-disable react-refresh/only-export-components */
-import { createContext, useContext, useEffect, useState, type ReactNode, type Dispatch, type SetStateAction } from 'react'
+import { createContext, useContext, useEffect, useState, type ReactNode } from 'react'
 import type { Session } from '@supabase/supabase-js'
 import { supabase } from '../lib/supabase'
 import type { RolUsuario, UsuarioInterno, UsuarioInternoRow, EstadoAuth } from './authTypes'
@@ -9,10 +9,6 @@ type AuthContextType = {
   session: Session | null
   usuarioInterno: UsuarioInterno | null
   mensajeAuth: string
-  setEstadoAuth: Dispatch<SetStateAction<EstadoAuth>>
-  setSession: Dispatch<SetStateAction<Session | null>>
-  setUsuarioInterno: Dispatch<SetStateAction<UsuarioInterno | null>>
-  setMensajeAuth: Dispatch<SetStateAction<string>>
   cerrarSesion: () => Promise<void>
 }
 
@@ -138,10 +134,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     session,
     usuarioInterno,
     mensajeAuth,
-    setEstadoAuth,
-    setSession,
-    setUsuarioInterno,
-    setMensajeAuth,
     cerrarSesion,
   }
 
