@@ -2946,3 +2946,54 @@ UI-023 queda cerrada post-merge para navegacion visible por rol.
 La siguiente fase recomendada es continuar QA-006 con bloques separados para Reportes, Finanzas, Auth y RLS/Storage segun dependencias.
 
 PROD-001 sigue bloqueante.
+
+## LOG-067 - QA-006D Reportes y Finanzas por rol
+
+**Estado:** Ejecutada local/demo
+**Prioridad:** Alta
+**Responsable:** Control de desarrollo / QA
+**Origen:** QA-006D / QA-006 / UI-016 / BE-016 / SEC-004 / SEC-007B / PROD-001
+**Fecha creacion:** 2026-07-03
+**Rama usada:** `qa-006d-reportes-finanzas-roles`
+
+### Resumen
+
+Se valida `/reportes` y `/finanzas` con usuarios ficticios locales por rol.
+
+La validacion confirma que Admin ve superficie mixta autorizada, Terapeuta queda en reportes clinicos y Finanzas queda en reportes/finanzas administrativos sin superficies clinicas visibles.
+
+### Resultado por rol
+
+- Admin `/reportes`: encabezado `Reportes`, secciones clinicas/operativas/financieras autorizadas.
+- Terapeuta `/reportes`: encabezado `Reportes clinicos`, sin secciones financieras.
+- Terapeuta `/finanzas`: redirige a `/pacientes`.
+- Finanzas `/reportes`: encabezado `Reportes financieros`, sin secciones clinicas.
+- Finanzas `/finanzas`: encabezado `Cobros y Pagos`, con metricas financieras, cobros y pagos.
+
+### Archivos relacionados
+
+- `docs/control/auditorias/QA-006D_VALIDACION_REPORTES_FINANZAS_ROLES.md`
+- `docs/control/00_ESTADO_GENERAL_PROYECTO.md`
+- `docs/control/01_PENDIENTES_PROYECTO.md`
+- `docs/control/06_BITACORA_CAMBIOS.md`
+
+### Restricciones respetadas
+
+- No se modifico codigo fuente funcional.
+- No se modifico `.env`.
+- No se modificaron migraciones.
+- No se modifico Auth/RLS.
+- No se uso Supabase remoto.
+- No se ejecuto `supabase db push`.
+- No se creo API publica.
+- No se integro Google Calendar, Gmail ni Workspace.
+- No se habilito produccion.
+- No se usaron datos reales, fotos reales ni pagos reales.
+
+### Resultado
+
+QA-006D queda ejecutada local/demo.
+
+La siguiente fase recomendada es continuar QA-006 con Auth y RLS/Storage en bloques separados.
+
+PROD-001 sigue bloqueante.
