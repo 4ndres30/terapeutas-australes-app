@@ -3052,3 +3052,50 @@ QA-006E queda ejecutada local/demo.
 La siguiente fase recomendada de QA-006 es RLS/Storage en bloque separado. Antes de ejecutarla, Control recomienda cerrar BE-023 y BE-025 como tareas documentales para precisar la superficie financiera permitida.
 
 PROD-001 sigue bloqueante.
+
+## LOG-069 - BE-023 alias/codigo financiero persistente
+
+**Estado:** Diseno documental / pendiente implementacion futura
+**Prioridad:** Alta
+**Responsable:** Integracion Backend/Estructura / Control de desarrollo
+**Origen:** BE-023 / DEC-022 / SEC-004 / BE-016 / QA-006D / PROD-001
+**Fecha creacion:** 2026-07-03
+**Rama usada:** `be-023-alias-codigo-finanzas`
+
+### Resumen
+
+Se documenta la estrategia recomendada para que Finanzas opere con alias/codigo administrativo persistente sin recibir `paciente_id` real por defecto.
+
+El diseno confirma que el estado actual local/demo no muestra el UUID clinico en UI, pero la vista financiera y los contratos frontend aun lo reciben. Para datos reales, la recomendacion es implementar una identidad financiera separada, codigo financiero no derivado del UUID y vista financiera futura sin `paciente_id` visible para Finanzas.
+
+### Archivos relacionados
+
+- `docs/control/auditorias/BE-023_ALIAS_CODIGO_ADMINISTRATIVO_FINANZAS.md`
+- `docs/control/00_ESTADO_GENERAL_PROYECTO.md`
+- `docs/control/01_PENDIENTES_PROYECTO.md`
+- `docs/control/05_DECISIONES_PROYECTO.md`
+- `docs/control/06_BITACORA_CAMBIOS.md`
+
+### Restricciones respetadas
+
+- No se modifico codigo fuente funcional.
+- No se modifico `src/`.
+- No se modifico `.env`.
+- No se modificaron migraciones.
+- No se modifico Auth/RLS.
+- No se crearon usuarios.
+- No se modifico base de datos local ni remota.
+- No se uso Supabase remoto.
+- No se ejecuto `supabase db push`.
+- No se creo API publica.
+- No se integro Google Calendar, Gmail ni Workspace.
+- No se habilito produccion.
+- No se usaron datos reales, fotos reales ni pagos reales.
+
+### Resultado
+
+BE-023 queda como diseno documental. La implementacion tecnica debe ser una tarea futura con migracion local, actualizacion de vista, ajuste de frontend y QA runtime local.
+
+La siguiente tarea recomendada es BE-025 para definir campos financieros permitidos/prohibidos antes de implementar cambios de Finanzas.
+
+PROD-001 sigue bloqueante.
