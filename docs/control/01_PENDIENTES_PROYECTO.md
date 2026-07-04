@@ -83,7 +83,7 @@ Este documento es la lista maestra de pendientes. Cada pendiente debe tener un c
 | BE-022 | Soporte de fotos para elementos del caso con Supabase Storage. | Implementada local / pend. QA | Alta | Integracion Backend/Estructura |
 | BE-023 | Alias/codigo administrativo persistente para Finanzas. | Diseno documental / pendiente implementacion futura | Alta | Integracion Backend/Estructura |
 | BE-024 | Regla de hallazgo unico/multiple por aspecto revisado. | Pendiente | Alta | Integracion Backend/Estructura |
-| BE-025 | Campos financieros permitidos/prohibidos para Finanzas. | Pendiente | Alta | Integracion Backend/Estructura |
+| BE-025 | Campos financieros permitidos/prohibidos para Finanzas. | Diseno documental / pendiente implementacion futura | Alta | Integracion Backend/Estructura |
 | BE-026 | Disenar contrato de API publica de agendamiento. | Diseno documental / pendiente implementacion futura | Alta | Integracion Backend/Estructura |
 | BE-027 | Disenar integracion Google Calendar / Gmail / Workspace. | Pendiente | Alta | Integracion Backend/Estructura |
 | BE-028 | Implementar modelo DB de Agenda operativa. | Integrada por PR #41 | Alta | Integracion Backend/Estructura |
@@ -1346,22 +1346,29 @@ Definir si `revision_hallazgos` debe permitir un hallazgo activo por aspecto o m
 
 ### BE-025 - Campos financieros permitidos/prohibidos para Finanzas
 
-**Estado:** Pendiente
+**Estado:** Diseno documental / pendiente implementacion futura
 **Prioridad:** Alta
 **Responsable:** Integracion Backend/Estructura
 **Origen:** CTRL-008 / DEC-027 / SEC-001
 **Fecha creacion:** 2026-06-29
 **Dependencias:** BE-016, SEC-004, BE-020, UI-015
+**Informe:** `docs/control/auditorias/BE-025_CAMPOS_FINANCIEROS_PERMITIDOS_PROHIBIDOS.md`
 
 #### Descripcion
 Definir contrato de campos financieros visibles para Finanzas y prohibir contenido clinico en campos libres de cobros/pagos.
 
 #### Criterios de aceptacion preliminares
-- Clasificar campos permitidos y prohibidos en `cobros` y `pagos`.
-- Definir microcopy para evitar texto clinico en finanzas.
-- Evaluar si se requieren checks, vistas o campos administrativos separados.
-- Considerar `concepto_cobro`, `descripcion_cobro`, `observaciones`, `notas_internas` y `referencia_pago`.
-- No crear migracion sin tarea posterior aprobada.
+- Clasificar campos permitidos y prohibidos en `cobros` y `pagos`: cumplido documentalmente.
+- Definir microcopy para evitar texto clinico en finanzas: cumplido documentalmente.
+- Evaluar si se requieren checks, vistas o campos administrativos separados: cumplido documentalmente.
+- Considerar `concepto_cobro`, `descripcion_cobro`, `observaciones`, `notas_internas` y `referencia_pago`: cumplido documentalmente.
+- No crear migracion sin tarea posterior aprobada: respetado.
+
+#### Resultado documental
+
+BE-025 define una whitelist financiera para Finanzas: identidad financiera no clinica, unidad cobrable, montos, fechas, estados, metodos y referencias administrativas.
+
+`descripcion_cobro`, `observaciones` y `notas_internas` no deben exponerse a Finanzas por defecto. `referencia_pago` queda permitida solo como referencia administrativa breve. La implementacion real queda pendiente para UI-015, vista financiera, posibles campos administrativos separados y QA runtime local.
 
 ### BE-026 - Disenar contrato de API publica de agendamiento
 
