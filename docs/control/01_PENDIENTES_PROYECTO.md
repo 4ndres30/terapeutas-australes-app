@@ -71,7 +71,7 @@ Este documento es la lista maestra de pendientes. Cada pendiente debe tener un c
 | SEC-003 | Hardening Auth para produccion. | Integrada | Alta | Integracion Backend / Seguridad |
 | SEC-004 | Definir alcance del rol Finanzas. | Validada runtime / obs. | Alta | Control de desarrollo / Integracion Backend |
 | SEC-005 | Disenar bitacora/auditoria de cambios sensibles. | Diseno documental / pendiente implementacion futura | Alta | Integracion Backend |
-| SEC-006 | Politica de fotos, retencion y objetos huerfanos. | Pendiente | Alta | Integracion Backend / Seguridad |
+| SEC-006 | Politica de fotos, retencion y objetos huerfanos. | Politica documental / pendiente implementacion tecnica | Alta | Integracion Backend / Seguridad |
 | SEC-007 | Procedimiento de scripts manuales locales/demo y prohibicion en produccion. | Procedimiento documental / pendiente ejecucion local autorizada | Alta | Integracion Backend / Seguridad |
 | SEC-007B | Provisioning local/demo de usuarios de prueba. | Ejecutado local/demo / usado en QA-006B | Alta | Integracion Backend / Seguridad |
 | SEC-008 | Implementacion controlada Hardening Auth. | Implementada parcial / pendiente PR | Alta | Integracion Backend / Seguridad |
@@ -216,7 +216,7 @@ La validacion runtime local confirma que `finanzas` no accede a pacientes, metad
 
 No se modifico codigo, migraciones, Auth/RLS, `.env`, Supabase remoto ni datos reales.
 
-La siguiente tarea recomendada es `SEC-006 - Politica de fotos, retencion y objetos huerfanos`, antes de QA funcional de fotos o cualquier uso con archivos reales.
+SEC-006 queda como siguiente politica relacionada y se documenta en esta sincronizacion. La recomendacion vigente posterior es `QA-003 - Validacion funcional local de fotos`, con imagen ficticia.
 
 ### DEC-035 - Migracion progresiva a plataforma Google Cloud
 
@@ -814,11 +814,14 @@ SEC-005 no crea tablas, triggers, policies, codigo, endpoints, `.env`, Supabase 
 
 ### SEC-006 - Politica de fotos, retencion y objetos huerfanos
 
-**Estado:** Plan base documental / pendiente ejecucion progresiva
+**Estado:** Politica documental / pendiente implementacion tecnica
 **Prioridad:** Alta
 **Responsable:** Integracion Backend / Seguridad
 **Origen:** CTRL-008 / DEC-028 / SEC-001
 **Fecha creacion:** 2026-06-29
+**Fecha documentacion:** 2026-07-04
+**Rama usada:** `sec-006-politica-fotos-retencion`
+**Informe:** `docs/control/auditorias/SEC-006_POLITICA_FOTOS_RETENCION_OBJETOS_HUERFANOS.md`
 **Dependencias:** BE-022, UI-022, QA-003, SEC-005, BE-021, PROD-001
 
 #### Descripcion
@@ -832,6 +835,12 @@ Definir politica operativa y tecnica para fotos de elementos del caso antes de c
 - Definir auditoria minima de cambios y accesos sensibles.
 - Confirmar que Finanzas no ve fotos, miniaturas, rutas ni `storage_path`.
 - No tocar Storage remoto ni usar fotos reales.
+
+#### Resultado
+
+SEC-006 define politica documental para fotos de elementos del caso: roles permitidos, estados logicos, retencion, objetos huerfanos, auditoria minima, datos prohibidos en logs y criterios obligatorios antes de fotos reales.
+
+No implementa migraciones, RLS/Auth, Storage, codigo, `.env`, Supabase remoto ni produccion. La siguiente tarea recomendada es `QA-003` con imagen ficticia local o hardening tecnico de grants en tarea separada.
 
 ### SEC-007 - Procedimiento de scripts manuales locales/demo y prohibicion en produccion
 
@@ -1847,7 +1856,7 @@ El plan base documental divide QA-006 en fases para evitar cubrir todo en un sol
 
 QA-006 queda iniciado como plan base documental, QA-006A deja matriz de rutas/superficies por rol y QA-006B confirma que rutas internas sin sesion redirigen a `/login`. Tras SEC-007B, QA-006B valida local/demo redireccion por rol, Reportes por rol, Agenda para Admin/Terapeuta y bloqueo de usuarios inactivo/sin perfil. QA-006C valida post-merge que el menu visible ya queda filtrado por rol en desktop/mobile. QA-006D valida Reportes/Finanzas por rol: Admin ve superficie mixta autorizada, Terapeuta queda clinico y Finanzas queda financiero/administrativo. QA-006E valida estados Auth minimos local/demo: sin sesion, credenciales invalidas, usuario inactivo, usuario sin perfil interno y login admin valido. QA-006F valida runtime local que Finanzas no accede a clinica, fotos ni Storage, que Terapeuta no accede a cobros/pagos directos y que el bucket `elementos-caso` sigue privado.
 
-La siguiente fase recomendada es `SEC-006 - Politica de fotos, retencion y objetos huerfanos`, seguida de `QA-003 - Validacion funcional local de fotos`, manteniendo PROD-001 bloqueante.
+La siguiente fase recomendada es `QA-003 - Validacion funcional local de fotos`, manteniendo PROD-001 bloqueante.
 
 ### UI-013 - Disenar experiencia de trabajos, sesiones y acciones
 
