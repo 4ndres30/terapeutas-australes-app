@@ -81,7 +81,7 @@ Este documento es la lista maestra de pendientes. Cada pendiente debe tener un c
 | BE-020 | Consentimiento informado y tratamiento de datos. | Diseno documental base / pendiente validacion clinica/legal | Alta | Control de desarrollo / Revision Clinica / Backend |
 | BE-021 | Politica de anulacion vs eliminacion. | Diseno documental / pendiente implementacion futura | Media-alta | Control de desarrollo / Backend |
 | BE-022 | Soporte de fotos para elementos del caso con Supabase Storage. | Implementada local / pend. QA | Alta | Integracion Backend/Estructura |
-| BE-023 | Alias/codigo administrativo persistente para Finanzas. | Pendiente | Alta | Integracion Backend/Estructura |
+| BE-023 | Alias/codigo administrativo persistente para Finanzas. | Diseno documental / pendiente implementacion futura | Alta | Integracion Backend/Estructura |
 | BE-024 | Regla de hallazgo unico/multiple por aspecto revisado. | Pendiente | Alta | Integracion Backend/Estructura |
 | BE-025 | Campos financieros permitidos/prohibidos para Finanzas. | Pendiente | Alta | Integracion Backend/Estructura |
 | BE-026 | Disenar contrato de API publica de agendamiento. | Diseno documental / pendiente implementacion futura | Alta | Integracion Backend/Estructura |
@@ -1300,23 +1300,30 @@ Implementacion local preparada en esta rama. Informe relacionado en `docs/contro
 
 ### BE-023 - Alias/codigo administrativo persistente para Finanzas
 
-**Estado:** Pendiente
+**Estado:** Diseno documental / pendiente implementacion futura
 **Prioridad:** Alta
 **Responsable:** Integracion Backend/Estructura
 **Origen:** CTRL-008 / DEC-022 / BE-016
 **Fecha creacion:** 2026-06-29
 **Dependencias:** BE-016, SEC-004, QA-004, QA-005
+**Informe:** `docs/control/auditorias/BE-023_ALIAS_CODIGO_ADMINISTRATIVO_FINANZAS.md`
 
 #### Descripcion
 Definir si Finanzas debe dejar de recibir `paciente_id` real y operar solo con alias/codigo administrativo persistente o identificador financiero no clinico.
 
 #### Criterios de aceptacion preliminares
-- Revisar `public.vista_finanzas_unidades_cobrables`.
-- Revisar consumo de `FinanzasPage` y `ReportesPage`.
-- Proponer alternativa sin exponer `paciente_id` en contratos visibles para Finanzas.
-- Definir si el alias/codigo vive en `pacientes` o tabla administrativa separada.
-- No crear migracion sin aprobacion posterior.
-- No tocar Supabase remoto.
+- Revisar `public.vista_finanzas_unidades_cobrables`: cumplido documentalmente.
+- Revisar consumo de `FinanzasPage` y `ReportesPage`: cumplido documentalmente.
+- Proponer alternativa sin exponer `paciente_id` en contratos visibles para Finanzas: cumplido documentalmente.
+- Definir si el alias/codigo vive en `pacientes` o tabla administrativa separada: recomendada tabla administrativa separada.
+- No crear migracion sin aprobacion posterior: respetado.
+- No tocar Supabase remoto: respetado.
+
+#### Resultado documental
+
+BE-023 recomienda una identidad financiera persistente separada, con codigo financiero no derivado del UUID clinico, alias administrativo visible y futura vista financiera sin `paciente_id` para consumo de Finanzas.
+
+La implementacion real queda pendiente de migracion futura, pruebas RLS/grants y QA local. El estado actual local/demo sigue siendo util para QA controlada, pero no suficiente para datos reales.
 
 ### BE-024 - Regla de hallazgo unico/multiple por aspecto revisado
 

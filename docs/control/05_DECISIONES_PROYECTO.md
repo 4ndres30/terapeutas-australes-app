@@ -37,7 +37,7 @@ Este documento registra decisiones estables. No reemplaza la conversacion, pero 
 | DEC-019 | SEC-001 valida RLS local pero no habilita datos reales. | Validada | 2026-06-27 |
 | DEC-020 | Finanzas usa vista financiera minima dedicada. | Validada localmente | 2026-06-27 |
 | DEC-021 | Reportes se separan por rol y Finanzas no consulta clinica. | Integrada | 2026-06-29 |
-| DEC-022 | Finanzas no debe ver `paciente_id` real por defecto. | Propuesta pendiente aprobacion | 2026-06-29 |
+| DEC-022 | Finanzas no debe ver `paciente_id` real por defecto. | Diseno documental / pendiente implementacion | 2026-06-29 |
 | DEC-023 | Terapeuta no administra pagos desde ficha clinica. | Propuesta pendiente aprobacion | 2026-06-29 |
 | DEC-024 | Un aspecto revisado debe tener maximo un hallazgo activo en v1. | Propuesta pendiente aprobacion clinica | 2026-06-29 |
 | DEC-025 | Hallazgo a trabajo mantiene origen principal sin automatismos. | Estable v1 / abierta evolucion | 2026-06-29 |
@@ -568,7 +568,7 @@ Informe relacionado: `docs/control/auditorias/UI-016_REPORTES_POR_ROL.md`.
 
 ## DEC-022 - Finanzas no debe ver `paciente_id` real por defecto
 
-**Estado:** Propuesta pendiente aprobacion
+**Estado:** Diseno documental / pendiente implementacion
 **Origen:** CTRL-008
 **Fecha:** 2026-06-29
 
@@ -585,12 +585,14 @@ El `paciente_id` puede seguir existiendo como clave tecnica interna para joins, 
 ### Impacto
 
 - BE-016 sigue valido para local/demo.
-- BE-023 debe definir alias/codigo administrativo persistente y evaluar ocultar `paciente_id` en la vista financiera.
+- BE-023 define documentalmente identidad financiera persistente separada y recomienda ocultar `paciente_id` en la vista financiera futura.
 - QA-006 debe validar no exposicion de identificadores clinicos al rol Finanzas.
 
 ### Observaciones
 
 Informe relacionado: `docs/control/auditorias/CTRL-008_DECISIONES_CRITICAS_POST_AUDITORIA.md`.
+
+Diseno relacionado: `docs/control/auditorias/BE-023_ALIAS_CODIGO_ADMINISTRATIVO_FINANZAS.md`.
 
 ## DEC-023 - Terapeuta no administra pagos desde ficha clinica
 
