@@ -383,7 +383,7 @@ function DashboardShell({ children }: {
             </button>
             <div className="dashboard-userbar__avatar" aria-hidden="true">{inicialesUsuario}</div>
             <div className="dashboard-userbar__meta">
-              <strong>{usuarioInterno.nombre_completo}</strong>
+              <strong>{usuarioInterno?.nombre_completo}</strong>
               <span>{rolVisible}</span>
             </div>
           </div>
