@@ -25,6 +25,7 @@ Este documento es la lista maestra de pendientes. Cada pendiente debe tener un c
 | CTRL-007 | Sincronizar documentacion maestra post BE-016, QA-004 y UI-016. | Integrada | Alta | Control de desarrollo |
 | CTRL-008 | Registrar decisiones criticas post auditoria. | Integrada | Alta | Control de desarrollo |
 | CTRL-009 | Sincronizacion documental Google Cloud. | Integrada documentalmente / pendiente revision | Alta | Control de desarrollo |
+| CTRL-012 | Cierre documental bloque QA/Finanzas. | Preparada / pendiente PR | Alta | Control de desarrollo |
 | PEND-001 | Levantar inventario real del proyecto desde `main`. | Integrada | Alta | Control de desarrollo |
 | PEND-002 | Clasificar pendientes por chat responsable. | Integrada | Alta | Control de desarrollo |
 | QA-001 | Auditoria inicial del proyecto. | Integrada | Alta | Control de desarrollo |
@@ -174,6 +175,25 @@ Sincronizar los documentos maestros con la estrategia progresiva Google Cloud, m
 
 #### Resultado
 Documentacion integrada en la rama del PR #43 y pendiente de revision de Javier. No implementa infraestructura, credenciales, endpoints, migraciones ni despliegues.
+
+### CTRL-012 - Cierre documental bloque QA/Finanzas
+
+**Estado:** Preparada / pendiente PR
+**Prioridad:** Alta
+**Responsable:** Control de desarrollo
+**Origen:** QA-006D / QA-006E / BE-023 / BE-025
+**Fecha creacion:** 2026-07-03
+**Rama usada:** `ctrl-012-cierre-bloque-qa-finanzas`
+**Informe:** `docs/control/auditorias/CTRL-012_CIERRE_BLOQUE_QA_FINANZAS.md`
+**Dependencias:** QA-006, BE-023, BE-025, SEC-004, PROD-001
+
+#### Descripcion
+Cerrar documentalmente el bloque QA/Finanzas ya integrado y dejar una recomendacion unica para la siguiente fase.
+
+#### Resultado
+El bloque QA/Finanzas queda ordenado con QA-006D, QA-006E, BE-023 y BE-025 integrados en `main`.
+
+La siguiente tarea recomendada queda como `QA-006F - Validacion RLS/Storage local por rol`, en bloque separado, sin remoto, sin `supabase db push`, sin migraciones nuevas y sin datos reales.
 
 ### DEC-035 - Migracion progresiva a plataforma Google Cloud
 
