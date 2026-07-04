@@ -108,6 +108,28 @@ Cuando agrupe, Control debe declarar:
 6. validaciones comunes;
 7. criterio para separar el trabajo si aparece riesgo nuevo.
 
+## Modo Codex Optimizado
+
+El Modo Codex Optimizado debe usarse por defecto en tareas de bajo y medio riesgo, y especialmente cuando Javier quiera ahorrar contexto, evitar prompts gigantes repetidos o mantener reportes breves.
+
+La regla principal es:
+
+```text
+Codex debe pensar profundo cuando la tarea lo requiere, pero no debe leer ni modificar mas de lo necesario.
+```
+
+Para reducir consumo, Control debe:
+
+- usar `AGENTS.md` como base persistente y no repetir sus reglas completas en cada respuesta;
+- separar diagnostico, plan, ejecucion y cierre;
+- revisar primero solo archivos directamente relacionados con la tarea;
+- ampliar contexto solo cuando exista una razon tecnica, de seguridad o de trazabilidad;
+- explicar que archivo o carpeta necesita revisar y por que cuando el alcance inicial no baste;
+- evitar explicaciones largas cuando la tarea no tenga riesgo relevante;
+- conservar analisis profundo para cambios sensibles, decisiones de arquitectura, seguridad, Auth/RLS, datos, produccion o integraciones futuras.
+
+Si una tarea requiere leer mas archivos que los inicialmente permitidos, Control debe justificarlo antes de avanzar, salvo que la lectura sea diagnostica, acotada y necesaria para no romper una restriccion del proyecto.
+
 ## Flujo de inicio
 
 Al iniciar una tarea, Control debe ejecutar:

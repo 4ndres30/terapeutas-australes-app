@@ -9,6 +9,67 @@ Usar junto con:
 - `docs/control/00_ESTADO_GENERAL_PROYECTO.md`
 - `docs/control/01_PENDIENTES_PROYECTO.md`
 
+## Prompt - Modo Codex Optimizado
+
+```text
+Control, aplica `AGENTS.md` y trabaja en Modo Codex Optimizado.
+
+Objetivo:
+[DESCRIBIR TAREA]
+
+Reglas de eficiencia:
+
+1. No revises todo el repositorio por defecto.
+2. Revisa primero solo los archivos directamente relacionados con la tarea.
+3. Si necesitas ampliar contexto, dime que archivos o carpetas necesitas revisar y por que.
+4. No repitas instrucciones ya contenidas en `AGENTS.md`.
+5. No generes explicaciones largas si no hay riesgo.
+6. Separa diagnostico, plan, ejecucion y cierre.
+7. No modifiques archivos hasta que apruebe el plan.
+8. Si detectas que la instruccion no es optima, detente y propone una alternativa.
+9. Si existen varias alternativas, compara:
+   - opcion mas segura;
+   - opcion mas rapida;
+   - opcion mas mantenible;
+   - opcion con menor deuda tecnica;
+   - opcion recomendada.
+10. Ejecuta solo dentro del alcance aprobado.
+
+Archivos permitidos inicialmente:
+[LISTA DE ARCHIVOS]
+
+Archivos prohibidos:
+[LISTA DE ARCHIVOS O CARPETAS]
+
+Respuesta inicial esperada:
+
+1. Estado actual.
+2. Archivos minimos que necesitas revisar.
+3. Riesgo de la tarea.
+4. Plan recomendado.
+5. Validaciones necesarias.
+6. Si necesitas ampliar alcance, justificar por que.
+```
+
+## Prompt corto - Modo Codex Optimizado
+
+```text
+Control, aplica `AGENTS.md` y trabaja en Modo Codex Optimizado.
+
+Tarea: [DESCRIBIR TAREA]
+
+No revises todo el repo. Revisa solo lo necesario. Si necesitas ampliar contexto, dime que archivo necesitas y por que.
+
+No modifiques archivos hasta aprobar el plan.
+
+Entrega:
+1. diagnostico breve;
+2. archivos minimos a revisar;
+3. plan recomendado;
+4. validaciones;
+5. riesgos.
+```
+
 ## Prompt base - Revisar estado del repositorio
 
 ```text

@@ -2844,3 +2844,53 @@ UI-023 queda implementada y validada local/demo.
 La siguiente tarea recomendada es preparar PR draft, revisar y revalidar post-merge sobre `main`.
 
 PROD-001 sigue bloqueante.
+
+## LOG-065 - CTRL-011 modo Codex Optimizado
+
+**Estado:** Propuesta documental / pendiente revision de Javier
+**Prioridad:** Alta
+**Responsable:** Control de desarrollo
+**Origen:** Javier / operacion Codex / optimizacion de contexto
+**Fecha creacion:** 2026-07-03
+**Rama usada:** `ctrl-011-modo-codex-optimizado`
+
+### Resumen
+
+Se integra el Modo Codex Optimizado como regla permanente para reducir lectura, explicacion y exploracion innecesaria sin limitar el criterio tecnico de Control.
+
+El modo separa diagnostico, plan, ejecucion y cierre; usa `AGENTS.md` como base persistente; y exige justificar ampliaciones de contexto cuando la tarea lo requiera.
+
+Se usa `LOG-065` para evitar colision con `LOG-062`, `LOG-063` y `LOG-064`, ya ocupados por integraciones posteriores.
+
+### Archivos relacionados
+
+- `AGENTS.md`
+- `docs/control/10_OPERACION_CODEX.md`
+- `docs/control/prompts/CODEX_CONTROL_DESARROLLO.md`
+- `docs/control/auditorias/CTRL-011_MODO_CODEX_OPTIMIZADO.md`
+- `docs/control/06_BITACORA_CAMBIOS.md`
+
+### Restricciones respetadas
+
+- Solo cambio documental/instrucciones de operacion.
+- No se modifico codigo fuente funcional.
+- No se modifico `src/`.
+- No se modifico `supabase/`.
+- No se modificaron migraciones.
+- No se modifico `.env`.
+- No se toco configuracion privada.
+- No se ejecuto SQL.
+- No se uso Supabase remoto.
+- No se ejecuto `supabase db push`.
+- No se creo API publica.
+- No se integro Google Calendar, Gmail ni Workspace.
+- No se habilito produccion.
+- No se usaron datos reales, fotos reales ni pagos reales.
+
+### Resultado
+
+El proyecto queda con un modo operativo reutilizable para trabajar con menor consumo de contexto, reportes breves y analisis profundo solo cuando el riesgo lo justifique.
+
+La siguiente tarea recomendada es integrar este PR documental y continuar con la siguiente tarea vigente de la lista posterior a UI-023.
+
+PROD-001 sigue bloqueante.
