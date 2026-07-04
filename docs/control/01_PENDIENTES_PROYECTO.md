@@ -82,7 +82,7 @@ Este documento es la lista maestra de pendientes. Cada pendiente debe tener un c
 | BE-019 | Estrategia de backup/restauracion. | Diseno documental / pendiente implementacion futura | Alta | Integracion Backend / Produccion |
 | BE-020 | Consentimiento informado y tratamiento de datos. | Diseno documental base / pendiente validacion clinica/legal | Alta | Control de desarrollo / Revision Clinica / Backend |
 | BE-021 | Politica de anulacion vs eliminacion. | Diseno documental / pendiente implementacion futura | Media-alta | Control de desarrollo / Backend |
-| BE-022 | Soporte de fotos para elementos del caso con Supabase Storage. | Implementada local / pend. QA | Alta | Integracion Backend/Estructura |
+| BE-022 | Soporte de fotos para elementos del caso con Supabase Storage. | QA-003 local/demo con observacion | Alta | Integracion Backend/Estructura |
 | BE-023 | Alias/codigo administrativo persistente para Finanzas. | Diseno documental / pendiente implementacion futura | Alta | Integracion Backend/Estructura |
 | BE-024 | Regla de hallazgo unico/multiple por aspecto revisado. | Pendiente | Alta | Integracion Backend/Estructura |
 | BE-025 | Campos financieros permitidos/prohibidos para Finanzas. | Diseno documental / pendiente implementacion futura | Alta | Integracion Backend/Estructura |
@@ -93,7 +93,7 @@ Este documento es la lista maestra de pendientes. Cada pendiente debe tener un c
 | BE-030 | Disenar arquitectura de plataforma Google Cloud. | Diseno documental / pendiente implementacion futura | Alta | Integracion Backend/Estructura |
 | UI-020 | Indicador visual de ambiente activo. | Validada local/demo en Agenda desktop/mobile | Alta | UI / UX |
 | UI-021 | Bloqueo visual de produccion no habilitada. | Validada local/demo | Alta | UI / UX |
-| UI-022 | Integracion visual minima de fotos dentro de Elementos del caso. | Implementada local / pend. QA | Alta | UI / UX / Pulido visual |
+| UI-022 | Integracion visual minima de fotos dentro de Elementos del caso. | QA-003 local/demo con observacion | Alta | UI / UX / Pulido visual |
 | UI-023 | Navegacion y superficies filtradas por rol. | Integrada por PR #74 / validada post-merge | Alta | UI / UX |
 | UI-024 | Recuperacion de cuenta, MFA y estados Auth no tecnicos. | Pendiente | Alta | UI / UX / Integracion Backend |
 | UI-025 | Integrar AgendaPage con modelo DB de Agenda operativa. | Integrada lectura por PR #44 | Alta | UI / UX / Integracion Backend |
@@ -105,7 +105,7 @@ Este documento es la lista maestra de pendientes. Cada pendiente debe tener un c
 | DOC-003 | Politica de carga de datos reales. | Documental / pendiente implementacion futura | Alta | Control de desarrollo |
 | DOC-004 | Documentar flujo pagina publica -> API -> sistema interno -> Google. | Documental / pendiente implementacion futura | Alta | Control de desarrollo |
 | DOC-005 | Documentar estrategia de migracion progresiva a Google Cloud. | Documental / pendiente validacion | Alta | Control de desarrollo |
-| QA-003 | Validacion funcional local de fotos de elementos del caso. | Pendiente | Alta | Control de desarrollo |
+| QA-003 | Validacion funcional local de fotos de elementos del caso. | Ejecutada local/demo con observacion | Alta | Control de desarrollo |
 | IMP-002 | Implementacion funcional hallazgo a trabajo. | Pendiente | Alta | Implementacion |
 | PROD-001 | Preparacion para uso real con datos sensibles. | Mantener pendiente / bloqueante | Alta | Control de desarrollo / Integracion Backend |
 
@@ -1348,7 +1348,7 @@ Crear soporte backend/local para asociar fotos a elementos del caso usando bucke
 - No cargar datos reales ni imagenes reales.
 
 #### Resultado
-Implementacion local preparada en esta rama. Informe relacionado en `docs/control/auditorias/BE-022_UI-022_FOTOS_ELEMENTOS_CASO.md`.
+Implementacion local preparada en esta rama. Informe relacionado en `docs/control/auditorias/BE-022_UI-022_FOTOS_ELEMENTOS_CASO.md`. QA-003 valida local/demo carga programatica de imagen ficticia, registro, visualizacion UI admin y bloqueo para Finanzas, con observacion sobre input de archivo no automatizado.
 
 ### BE-023 - Alias/codigo administrativo persistente para Finanzas
 
@@ -1578,7 +1578,7 @@ Integrar carga, listado y visualizacion basica de fotos dentro de `ElementosCaso
 - No modificar datos reales ni datos demo.
 
 #### Resultado
-Implementacion local preparada en esta rama. Queda pendiente QA-003 para validacion funcional manual local.
+Implementacion local preparada en esta rama. QA-003 queda ejecutada local/demo con observacion: visualizacion UI validada y carga local realizada por cliente Supabase, no por input de archivo automatizado.
 
 ### UI-023 - Navegacion y superficies filtradas por rol
 
@@ -1619,7 +1619,7 @@ Implementar navegacion coherente por rol y revisar superficies visibles dentro d
 
 ### UI-024 - Recuperacion de cuenta, MFA y estados Auth no tecnicos
 
-**Estado:** Pendiente
+**Estado:** Ejecutada local/demo con observacion
 **Prioridad:** Alta
 **Responsable:** UI / UX / Integracion Backend
 **Origen:** SEC-008 / SEC-003 / DEC-032
@@ -1800,6 +1800,9 @@ La observacion responsive movil por overflow horizontal del shell queda corregid
 **Origen:** BE-022 / UI-022
 **Fecha creacion:** 2026-06-19
 **Rama sugerida:** `feature/fotos-elementos-caso`
+**Fecha validacion:** 2026-07-04
+**Rama usada:** `qa-003-validacion-fotos-local`
+**Informe:** `docs/control/auditorias/QA-003_VALIDACION_FUNCIONAL_FOTOS_ELEMENTOS_CASO.md`
 **Dependencias:** BE-022, UI-022, Supabase local
 
 #### Descripcion
@@ -1813,6 +1816,12 @@ Validar localmente que las fotos se cargan, registran y muestran asociadas al el
 - Confirmar que aparece asociada al elemento correcto.
 - Confirmar que no aparece en otros casos.
 - Confirmar que Finanzas no accede a fotos ni rutas de Storage.
+
+#### Resultado
+
+QA-003 valida local/demo una imagen ficticia PNG: carga a bucket privado `elementos-caso`, registro en `public.fotos_elementos_caso`, signed URL, render UI en detalle de caso para admin y bloqueo de fotos/Storage para Finanzas.
+
+Observacion: el input de archivo de la UI no fue automatizado directamente por limitacion del runtime de navegador; la carga se realizo con cliente Supabase local autenticado como demo admin y la visualizacion si se verifico en UI.
 - Confirmar que no se rompen revisiones, detalle de revisiones, trabajos ni pagos.
 - No usar datos reales ni imagenes reales.
 
@@ -1856,7 +1865,7 @@ El plan base documental divide QA-006 en fases para evitar cubrir todo en un sol
 
 QA-006 queda iniciado como plan base documental, QA-006A deja matriz de rutas/superficies por rol y QA-006B confirma que rutas internas sin sesion redirigen a `/login`. Tras SEC-007B, QA-006B valida local/demo redireccion por rol, Reportes por rol, Agenda para Admin/Terapeuta y bloqueo de usuarios inactivo/sin perfil. QA-006C valida post-merge que el menu visible ya queda filtrado por rol en desktop/mobile. QA-006D valida Reportes/Finanzas por rol: Admin ve superficie mixta autorizada, Terapeuta queda clinico y Finanzas queda financiero/administrativo. QA-006E valida estados Auth minimos local/demo: sin sesion, credenciales invalidas, usuario inactivo, usuario sin perfil interno y login admin valido. QA-006F valida runtime local que Finanzas no accede a clinica, fotos ni Storage, que Terapeuta no accede a cobros/pagos directos y que el bucket `elementos-caso` sigue privado.
 
-La siguiente fase recomendada es `QA-003 - Validacion funcional local de fotos`, manteniendo PROD-001 bloqueante.
+La siguiente fase recomendada es hardening tecnico de grants/auditoria de fotos o una revalidacion manual del input de archivo si se quiere cerrar QA-003 sin observacion. PROD-001 sigue bloqueante.
 
 ### UI-013 - Disenar experiencia de trabajos, sesiones y acciones
 

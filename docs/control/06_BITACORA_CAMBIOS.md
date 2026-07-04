@@ -3284,3 +3284,50 @@ SEC-006 queda como politica documental base. La implementacion tecnica futura de
 La siguiente tarea recomendada es `QA-003 - Validacion funcional local de fotos de elementos del caso` con imagen ficticia.
 
 PROD-001 sigue bloqueante.
+
+## LOG-074 - QA-003 validacion funcional local de fotos
+
+**Estado:** Ejecutada local/demo con observacion
+**Prioridad:** Alta
+**Responsable:** Control de desarrollo / QA
+**Origen:** QA-003 / BE-022 / UI-022 / SEC-001 / SEC-004 / SEC-006 / QA-006F / PROD-001
+**Fecha creacion:** 2026-07-04
+**Rama usada:** `qa-003-validacion-fotos-local`
+
+### Resumen
+
+Se valida local/demo una imagen ficticia de 1 pixel asociada a un elemento del caso.
+
+La evidencia confirma carga a Storage local privado, registro en `public.fotos_elementos_caso`, signed URL, render UI en detalle de caso para admin y bloqueo de fotos/Storage para Finanzas.
+
+### Archivos relacionados
+
+- `docs/control/auditorias/QA-003_VALIDACION_FUNCIONAL_FOTOS_ELEMENTOS_CASO.md`
+- `docs/control/00_ESTADO_GENERAL_PROYECTO.md`
+- `docs/control/01_PENDIENTES_PROYECTO.md`
+- `docs/control/06_BITACORA_CAMBIOS.md`
+
+### Restricciones respetadas
+
+- No se modifico codigo fuente funcional.
+- No se modifico `src/`.
+- No se modifico `.env`.
+- No se modificaron migraciones.
+- No se modifico Auth/RLS.
+- No se modifico Supabase remoto.
+- No se uso Supabase remoto.
+- No se ejecuto `supabase db push`.
+- No se creo API publica.
+- No se integro Google Calendar, Gmail ni Workspace.
+- No se habilito produccion.
+- No se usaron datos reales, fotos reales ni pagos reales.
+
+### Observacion
+
+El input de archivo de la UI no fue automatizado directamente por limitacion del runtime de navegador. La carga se ejecuto con cliente Supabase local autenticado como demo admin; la visualizacion posterior si se verifico en la UI.
+
+### Resultado
+
+QA-003 queda ejecutada local/demo con observacion. La siguiente recomendacion es hardening tecnico de grants/auditoria de fotos o revalidacion manual del input de archivo si se requiere cierre sin observacion.
+
+PROD-001 sigue bloqueante.
