@@ -109,6 +109,10 @@ Este documento es la lista maestra de pendientes. Cada pendiente debe tener un c
 | QA-003 | Validacion funcional local de fotos de elementos del caso. | Ejecutada local/demo con observacion | Alta | Control de desarrollo |
 | IMP-002 | Implementacion funcional hallazgo a trabajo. | Pendiente | Alta | Implementacion |
 | PROD-001 | Preparacion para uso real con datos sensibles. | Mantener pendiente / bloqueante | Alta | Control de desarrollo / Integracion Backend |
+| AUDIT-2026-07-04 | Revision integral de estructura y arquitectura; roadmap 5 bloques. | Aprobada por Javier (DEC-036 a DEC-039) | Alta | Control de desarrollo |
+| BLOQUE-1-RLS | 3 migraciones RLS para DEC-038 en ramas fix/rls-*. | Corregidas y separadas / pendiente validacion local y PR | Alta | Integracion Backend / Seguridad |
+| BLOQUE-2-UTIL | Extraccion de lib/format.ts, lib/queries.ts, lib/constants.ts para DEC-037. | Archivos correctos y validados / imports en paginas aun pendientes | Media | Integracion Backend/Estructura |
+| BLOQUE-3-AUTH | POC AuthContext para DEC-036. | Validado tecnicamente (tsc/lint/build) / pendiente validacion visual Javier | Media | Integracion Backend/Estructura |
 
 ## Pendientes integrados
 
@@ -2238,6 +2242,67 @@ No usar datos reales todavia. Antes de produccion debe cerrarse PROD-001.
 - No ejecutar `supabase db push`.
 - No tocar Supabase remoto.
 - No usar datos reales hasta cerrar PROD-001.
+
+### AUDIT-2026-07-04 - Revision integral de estructura y arquitectura
+
+**Estado:** Aprobada por Javier (DEC-036 a DEC-039); DEC-040 reservada sin contenido
+**Prioridad:** Alta
+**Responsable:** Control de desarrollo
+**Origen:** Auditoria tecnica automatizada
+**Fecha creacion:** 2026-07-04
+**Ramas relacionadas:** `docs/audit-2026-07-04-revision-estructura`, `refactor/extract-utilities`, `fix/rls-vista-cobros-finanzas`, `fix/rls-fotos-auditoria-finanzas`, `fix/rls-delete-policies`, `poc/auth-context`
+**Informe:** `docs/control/auditorias/AUDIT-2026-07-04_REVISION_ESTRUCTURA_CODIGO.md`
+
+#### Descripcion
+
+Auditoria de estructura React, migraciones Supabase, RLS y duplicacion de codigo. Detecto 3 brechas RLS, prop drilling de autenticacion y ~40% de duplicacion en utilidades. Propuso el roadmap de 5 bloques que se detalla en `BLOQUE-1-RLS`, `BLOQUE-2-UTIL`, `BLOQUE-3-AUTH` y las decisiones DEC-036 a DEC-039.
+
+#### Resultado
+
+Javier aprobo el roadmap completo. Ver `LOG-076` y `LOG-077` en `06_BITACORA_CAMBIOS.md` para el detalle de ejecucion, incluyendo los errores encontrados y corregidos en los Bloques 1 y 2 respecto del intento inicial.
+
+### BLOQUE-1-RLS - Migraciones RLS para DEC-038
+
+**Estado:** Corregidas y separadas en ramas dedicadas / pendiente validacion local con SEC-007B y PR
+**Prioridad:** Alta
+**Responsable:** Integracion Backend / Seguridad
+**Origen:** AUDIT-2026-07-04 / DEC-038
+**Fecha creacion:** 2026-07-04
+**Ramas:** `fix/rls-vista-cobros-finanzas`, `fix/rls-fotos-auditoria-finanzas`, `fix/rls-delete-policies`
+
+#### Resultado
+
+Las 3 migraciones quedaron separadas en sus ramas dedicadas para PRs independientes. La migracion de DELETE policies se corrigio: usaba la columna inexistente `pacientes.estado_activo` y valores de estado en minuscula (`'anulada'`/`'anulado'`) que no existen en los CHECK constraints reales (que usan `'Cancelada'`/`'Anulada'`/`'Anulado'` capitalizados). Sin las correcciones, la migracion de pacientes habria fallado al aplicarse.
+
+Migraciones sin aplicar. No se ejecuto `supabase db push`.
+
+### BLOQUE-2-UTIL - Extraccion de utilidades compartidas para DEC-037
+
+**Estado:** Archivos correctos y validados (tsc/eslint) / imports en paginas consumidoras pendientes
+**Prioridad:** Media
+**Responsable:** Integracion Backend/Estructura
+**Origen:** AUDIT-2026-07-04 / DEC-037
+**Fecha creacion:** 2026-07-04
+**Rama:** `refactor/extract-utilities`
+
+#### Resultado
+
+`src/lib/constants.ts`, `format.ts` y `queries.ts` fueron reescritos como extraccion fiel de las implementaciones reales duplicadas en `src/pages/` (verificado contra 10+ copias de cada funcion y contra los CHECK constraints de las migraciones). El intento anterior en la misma rama habia sido inventado desde cero y no compilaba.
+
+Pendiente: migrar los imports de cada pagina consumidora, revisando caso por caso porque se detectaron inconsistencias reales de comportamiento entre copias que son decisiones de producto (no solo deduplicacion mecanica).
+
+### BLOQUE-3-AUTH - POC AuthContext para DEC-036
+
+**Estado:** Validado tecnicamente (tsc, eslint, npm run build) / pendiente validacion visual de Javier
+**Prioridad:** Media
+**Responsable:** Integracion Backend/Estructura
+**Origen:** AUDIT-2026-07-04 / DEC-036
+**Fecha creacion:** 2026-07-04
+**Rama:** `poc/auth-context`
+
+#### Resultado
+
+El POC extrae fielmente la logica de autenticacion de `App.tsx` hacia `AuthContext`/`useAuth()`, eliminando el prop drilling hacia `RutaProtegida`/`AppPrivada`/`DashboardShell`. Se corrigio un bug de compilacion (`usuarioInterno.nombre_completo` sin guard opcional). Sin merge a `main`: requiere validacion visual en navegador antes de cualquier PR.
 
 ## Tareas sugeridas no activas
 

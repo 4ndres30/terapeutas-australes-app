@@ -3443,3 +3443,57 @@ AUDIT-2026-07-04 queda documentado y listo para revision de Javier. Se proponen 
 Siguiente paso: Aprobacion de decisiones DEC-036 a DEC-040 antes de proceder con implementacion.
 
 PROD-001 sigue bloqueante. Cambios propuestos respetan todas las restricciones operativas del proyecto.
+
+## LOG-077 - Continuacion AUDIT-2026-07-04: correccion y reordenamiento de Bloques 1-3
+
+**Estado:** Bloque 1 y 2 corregidos y reordenados / Bloque 3 validado tecnicamente, pendiente validacion visual
+**Prioridad:** Alta
+**Responsable:** Control de desarrollo (Claude - continuacion de sesion interrumpida)
+**Origen:** AUDIT-2026-07-04 / DEC-036 / DEC-037 / DEC-038 / Javier
+**Fecha creacion:** 2026-07-04
+
+### Resumen
+
+Javier aprobo el roadmap completo de AUDIT-2026-07-04 (DEC-036 a DEC-039; DEC-040 queda reservada sin contenido). Al retomar la implementacion se encontro que la sesion anterior habia empezado a ejecutar los Bloques 1, 2 y 3 sin esperar esa aprobacion, y que el trabajo de los Bloques 1 y 2 tenia errores reales:
+
+- **Bloque 1 (DEC-038, RLS):** las 3 migraciones quedaron en un solo commit en la rama `refactor/extract-utilities` (rama de Bloque 2) en lugar de las 3 ramas `fix/rls-*` ya creadas para PRs independientes. Ademas, la migracion de DELETE policies referenciaba una columna inexistente (`pacientes.estado_activo`; la columna real es `pacientes.estado in ('activo','inactivo')`) y comparaba `estado_consulta`/`estado_evaluacion`/`estado_caso` contra valores en minuscula (`'anulada'`/`'anulado'`) que nunca existen: los CHECK constraints reales usan `'Cancelada'` (consultas), `'Anulada'` (evaluaciones) y `'Anulado'` (casos), capitalizados. Con los valores originales, la migracion de pacientes habria fallado al aplicarse y las otras 3 policies nunca habrian sido satisfacibles para terapeuta/admin no-superadmin.
+- **Bloque 2 (DEC-037, utilidades):** `src/lib/constants.ts`, `format.ts` y `queries.ts` habian sido escritos desde cero en vez de extraidos: no compilaban, no pasaban lint, y usaban estados/columnas inventados que no existen en el esquema real (ver tambien memoria de sesion `refactor-extract-utilities-jul-2026`).
+- **Bloque 3 (DEC-036, POC AuthContext):** a diferencia de los anteriores, `poc/auth-context` era una extraccion fiel de la logica real de `App.tsx`, verificada linea por linea. Se encontro y corrigio un unico bug de compilacion (`usuarioInterno.nombre_completo` sin guard opcional tras mover el estado a contexto).
+
+### Trabajo realizado en esta sesion
+
+1. Registradas DEC-036 a DEC-039 en `05_DECISIONES_PROYECTO.md` (DEC-040 reservada, sin contenido).
+2. Bloque 1: las 3 migraciones se separaron y corrigieron en sus ramas dedicadas:
+   - `fix/rls-vista-cobros-finanzas` (vista_cobros_estado accesible a finanzas)
+   - `fix/rls-fotos-auditoria-finanzas` (vista_finanzas_fotos_auditoria)
+   - `fix/rls-delete-policies` (DELETE policies, con los valores de estado corregidos)
+   `refactor/extract-utilities` se reseteo a la base de `main` para que solo contenga el alcance de Bloque 2.
+3. Bloque 2: se investigaron las implementaciones reales duplicadas en `src/pages/*.tsx` y `src/hooks/` (formatearFecha, normalizarTexto, textoCorto, aNumero, formatearMoneda, obtenerInicialesNombre, y los `*_SELECT` por tabla) y se reescribieron los 3 archivos como extraccion fiel. Se excluyeron del archivo original `VALIDACIONES`, `LIMITES`, `MENSAJES_ERROR`, `DURACIONES` y `formatearHora` por no corresponder a ninguna duplicacion real en el codigo. `tsc -p tsconfig.app.json` y `eslint` pasan sin errores.
+4. Bloque 3: se corrigio el bug de compilacion en `poc/auth-context` y se verifico `tsc`, `eslint` y `npm run build` sin errores.
+
+### Archivos relacionados
+
+- `docs/control/05_DECISIONES_PROYECTO.md`
+- `docs/control/00_ESTADO_GENERAL_PROYECTO.md`
+- `docs/control/01_PENDIENTES_PROYECTO.md`
+- `src/lib/constants.ts`, `src/lib/format.ts`, `src/lib/queries.ts` (rama `refactor/extract-utilities`)
+- `supabase/migrations/20260704_000000_fix_vista_cobros_estado_finanzas.sql` (rama `fix/rls-vista-cobros-finanzas`)
+- `supabase/migrations/20260704_000001_crear_vista_fotos_auditoria_finanzas.sql` (rama `fix/rls-fotos-auditoria-finanzas`)
+- `supabase/migrations/20260704_000002_agregar_delete_policies_tablas_operativas.sql` (rama `fix/rls-delete-policies`)
+- `src/context/AuthContext.tsx`, `src/context/authTypes.ts`, `src/App.tsx` (rama `poc/auth-context`)
+
+### Restricciones respetadas
+
+- No se ejecuto `supabase db push`. No se aplicaron las migraciones a ninguna base de datos.
+- No se toco Supabase remoto ni `.env`.
+- No se mergeo nada a `main`: cada bloque queda en su propia rama, pendiente de PR y aprobacion de Javier.
+- No se modifico el comportamiento observable de ninguna pagina: los 3 archivos de `lib/` aun no estan importados por ninguna pagina.
+
+### Pendiente
+
+- Bloque 1: validar localmente las 3 migraciones con los usuarios demo de SEC-007B antes de PR.
+- Bloque 2: migrar los imports de las paginas que hoy duplican esta logica localmente, pagina por pagina. Se detectaron inconsistencias reales de comportamiento entre copias (ej. `ReportesPage` vs `TrabajosCasoPanel` usan criterios distintos de "trabajo abierto"; distintas paginas usan proyecciones de columnas distintas para la misma tabla) que son decisiones de producto y no se resolvieron unilateralmente en esta sesion.
+- Bloque 3: validacion visual en navegador por Javier antes de cualquier PR a `main`.
+- Bloque 4 (testing) y Bloque 5 (documentacion): sin trabajo iniciado.
+
+PROD-001 sigue bloqueante.
