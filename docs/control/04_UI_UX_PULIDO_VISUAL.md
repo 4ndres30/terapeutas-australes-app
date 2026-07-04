@@ -549,6 +549,20 @@ Nota de control: `UI-017` ya existe como checklist responsive de pantallas clini
 
 Informe relacionado: `auditorias/CTRL-008_DECISIONES_CRITICAS_POST_AUDITORIA.md`
 
+## UI-023 - Navegacion y superficies filtradas por rol
+
+**Estado:** Implementada local/demo / PR pendiente.
+
+El shell interno filtra la navegacion visible por rol:
+
+- Admin ve modulos transversales.
+- Terapeuta ve superficies clinicas, Agenda y Reportes; no ve Finanzas.
+- Finanzas ve Finanzas/Pagos y Reportes; no ve superficies clinicas ni Agenda.
+
+El mismo filtro aplica a sidebar desktop y drawer movil. La proteccion por rutas se mantiene como barrera adicional.
+
+Informe relacionado: `auditorias/UI-023_NAVEGACION_FILTRADA_ROLES.md`
+
 ## UI-022 - Fotos dentro de Elementos del caso
 
 **Estado:** Implementada local / pendiente QA.

@@ -53,6 +53,7 @@ type NavegacionLateral = {
   icono: string
   ruta?: string
   estado?: 'activo' | 'pronto'
+  rolesPermitidos?: RolUsuario[]
 }
 
 const rolesValidos: RolUsuario[] = ['admin', 'terapeuta', 'finanzas']
@@ -166,15 +167,15 @@ function obtenerConfiguracionAmbiente(): ConfiguracionAmbiente {
 const configuracionAmbiente = obtenerConfiguracionAmbiente()
 
 const navegacionPrincipal: NavegacionLateral[] = [
-  { etiqueta: 'Inicio', icono: '⌂', estado: 'pronto' },
-  { etiqueta: 'Pacientes', icono: '♙', ruta: '/pacientes', estado: 'activo' },
-  { etiqueta: 'Consultas', icono: '✧', ruta: '/consultas', estado: 'activo' },
-  { etiqueta: 'Evaluaciones', icono: '□', ruta: '/evaluaciones', estado: 'activo' },
-  { etiqueta: 'Casos', icono: '◇', ruta: '/casos', estado: 'activo' },
-  { etiqueta: 'Agenda', icono: '☷', ruta: '/agenda', estado: 'activo' },
-  { etiqueta: 'Finanzas / Pagos', icono: '$', ruta: '/finanzas', estado: 'activo' },
-  { etiqueta: 'Reportes', icono: '↗', ruta: '/reportes', estado: 'activo' },
-  { etiqueta: 'Configuración', icono: '⚙', estado: 'pronto' },
+  { etiqueta: 'Inicio', icono: '⌂', estado: 'pronto', rolesPermitidos: rolesValidos },
+  { etiqueta: 'Pacientes', icono: '♙', ruta: '/pacientes', estado: 'activo', rolesPermitidos: ['admin', 'terapeuta'] },
+  { etiqueta: 'Consultas', icono: '✧', ruta: '/consultas', estado: 'activo', rolesPermitidos: ['admin', 'terapeuta'] },
+  { etiqueta: 'Evaluaciones', icono: '□', ruta: '/evaluaciones', estado: 'activo', rolesPermitidos: ['admin', 'terapeuta'] },
+  { etiqueta: 'Casos', icono: '◇', ruta: '/casos', estado: 'activo', rolesPermitidos: ['admin', 'terapeuta'] },
+  { etiqueta: 'Agenda', icono: '☷', ruta: '/agenda', estado: 'activo', rolesPermitidos: ['admin', 'terapeuta'] },
+  { etiqueta: 'Finanzas / Pagos', icono: '$', ruta: '/finanzas', estado: 'activo', rolesPermitidos: ['admin', 'finanzas'] },
+  { etiqueta: 'Reportes', icono: '↗', ruta: '/reportes', estado: 'activo', rolesPermitidos: rolesValidos },
+  { etiqueta: 'Configuración', icono: '⚙', estado: 'pronto', rolesPermitidos: ['admin'] },
 ]
 
 function esRolUsuario(rol: string): rol is RolUsuario {
@@ -187,6 +188,12 @@ function rutaInicial(usuarioInterno: UsuarioInterno | null) {
   }
 
   return '/pacientes'
+}
+
+function obtenerNavegacionPorRol(rol: RolUsuario) {
+  return navegacionPrincipal.filter((item) => (
+    !item.rolesPermitidos || item.rolesPermitidos.includes(rol)
+  ))
 }
 
 function obtenerInicialesUsuario(nombreCompleto: string) {
@@ -278,6 +285,7 @@ function DashboardShell({ usuarioInterno, onCerrarSesion, children }: {
 }) {
   const inicialesUsuario = obtenerInicialesUsuario(usuarioInterno.nombre_completo)
   const rolVisible = formatearRol(usuarioInterno.rol)
+  const navegacionVisible = obtenerNavegacionPorRol(usuarioInterno.rol)
   const [menuMovilAbierto, setMenuMovilAbierto] = useState(false)
 
   useEffect(() => {
@@ -336,7 +344,7 @@ function DashboardShell({ usuarioInterno, onCerrarSesion, children }: {
         </div>
 
         <nav className="sidebar-nav" aria-label="Módulos disponibles">
-          {navegacionPrincipal.map((item) => (
+          {navegacionVisible.map((item) => (
             item.ruta ? (
               <NavLink
                 className={({ isActive }) => (

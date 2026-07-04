@@ -92,7 +92,7 @@ Este documento es la lista maestra de pendientes. Cada pendiente debe tener un c
 | UI-020 | Indicador visual de ambiente activo. | Validada local/demo en Agenda desktop/mobile | Alta | UI / UX |
 | UI-021 | Bloqueo visual de produccion no habilitada. | Validada local/demo | Alta | UI / UX |
 | UI-022 | Integracion visual minima de fotos dentro de Elementos del caso. | Implementada local / pend. QA | Alta | UI / UX / Pulido visual |
-| UI-023 | Navegacion y superficies filtradas por rol. | Pendiente | Alta | UI / UX |
+| UI-023 | Navegacion y superficies filtradas por rol. | Implementada local/demo / PR pendiente | Alta | UI / UX |
 | UI-024 | Recuperacion de cuenta, MFA y estados Auth no tecnicos. | Pendiente | Alta | UI / UX / Integracion Backend |
 | UI-025 | Integrar AgendaPage con modelo DB de Agenda operativa. | Integrada lectura por PR #44 | Alta | UI / UX / Integracion Backend |
 | UI-025B | Alta y edicion controlada de Agenda operativa interna. | Integrada por PR #45 / QA-008 cerrada local/demo | Alta | UI / UX / Integracion Backend |
@@ -1516,15 +1516,22 @@ Implementacion local preparada en esta rama. Queda pendiente QA-003 para validac
 
 ### UI-023 - Navegacion y superficies filtradas por rol
 
-**Estado:** Pendiente
+**Estado:** Implementada local/demo / PR pendiente
 **Prioridad:** Alta
 **Responsable:** UI / UX
-**Origen:** CTRL-008 / DEC-023 / UI-016 / QA-005
+**Origen:** CTRL-008 / DEC-023 / UI-016 / QA-005 / QA-006B
 **Fecha creacion:** 2026-06-29
-**Dependencias:** SEC-002, SEC-004, UI-016, QA-005
+**Dependencias:** SEC-002, SEC-004, UI-016, QA-005, QA-006B, SEC-007B
 
 #### Descripcion
-Definir e implementar posteriormente navegacion coherente por rol y revisar superficies visibles dentro de cada modulo.
+Implementar navegacion coherente por rol y revisar superficies visibles dentro de cada modulo.
+
+#### Implementacion local/demo
+- `src/App.tsx` define permisos por item de navegacion y filtra sidebar/drawer segun `usuarioInterno.rol`.
+- Admin mantiene acceso transversal a los modulos internos habilitados.
+- Terapeuta ve superficies clinicas, Agenda y Reportes, sin entrada a Finanzas.
+- Finanzas ve Finanzas/Pagos y Reportes, sin entradas clinicas ni Agenda.
+- Configuracion permanece como item futuro solo visible para Admin.
 
 #### Criterios de aceptacion preliminares
 - No reutilizar `UI-017`, porque ya existe como checklist responsive clinico.
@@ -1532,8 +1539,10 @@ Definir e implementar posteriormente navegacion coherente por rol y revisar supe
 - Terapeuta ve modulos clinicos autorizados.
 - Finanzas ve Finanzas/Pagos y Reportes financieros.
 - Finanzas no ve entradas clinicas en navegacion.
+- Terapeuta no ve entrada a Finanzas en navegacion.
+- Drawer movil usa el mismo filtro que sidebar desktop.
+- Mantener guards de ruta como barrera adicional.
 - Revisar `PagosCasoPanel` dentro de ficha clinica para definir si Terapeuta ve estado minimo o nada.
-- No modificar codigo en esta tarea documental.
 - No tocar `.env`, migraciones ni Supabase remoto.
 
 ### UI-024 - Recuperacion de cuenta, MFA y estados Auth no tecnicos
