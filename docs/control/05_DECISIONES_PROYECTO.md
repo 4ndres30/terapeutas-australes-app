@@ -1162,7 +1162,7 @@ Un primer intento en la rama `refactor/extract-utilities` genero los 3 archivos 
 
 ## DEC-038 - Migraciones SQL para cerrar brechas RLS
 
-**Estado:** Aprobada / migraciones sin aplicar
+**Estado:** Aprobada / las 3 migraciones corregidas y validadas localmente, sin aplicar a ningun ambiente
 **Origen:** AUDIT-2026-07-04 / Javier
 **Fecha:** 2026-07-04
 
@@ -1190,7 +1190,9 @@ No se ejecuta `supabase db push`. No se aplica a Supabase remoto. Debe validarse
 
 ### Observaciones
 
-Las 3 migraciones quedaron escritas en un solo commit y en la rama equivocada (`refactor/extract-utilities`, que corresponde a DEC-037). Se reorganizan en las ramas dedicadas `fix/rls-vista-cobros-finanzas`, `fix/rls-fotos-auditoria-finanzas` y `fix/rls-delete-policies` para PRs independientes, tal como establecia el roadmap original del audit.
+Las 3 migraciones quedaron escritas en un solo commit y en la rama equivocada (`refactor/extract-utilities`, que corresponde a DEC-037). Se reorganizaron en las ramas dedicadas `fix/rls-vista-cobros-finanzas`, `fix/rls-fotos-auditoria-finanzas` y `fix/rls-delete-policies` para PRs independientes, tal como establecia el roadmap original del audit.
+
+Al separarlas se detecto que la reorganizacion no habia corregido el contenido de 2 de las 3: `vista_cobros_estado` y `vista_finanzas_fotos_auditoria` seguian identicas al commit original, con PK generica `id` inventada (real: `id_cobro`/`id_pago`/`id_foto_elemento_caso`) y columnas inexistentes (`monto_pagado` en vez de `monto_pago`, `fecha_carga` en vez de `created_at`). Se corrigieron ambas contra el esquema real y las 3 se validaron con `supabase db reset` local (ver LOG-078 en `06_BITACORA_CAMBIOS.md`). Falta la validacion funcional con usuarios demo SEC-007B (login como finanzas) antes de PR.
 
 ## DEC-039 - Testing minimo requerido (E2E + unit)
 

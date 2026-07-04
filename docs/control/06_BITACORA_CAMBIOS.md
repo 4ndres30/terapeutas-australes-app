@@ -3497,3 +3497,51 @@ Javier aprobo el roadmap completo de AUDIT-2026-07-04 (DEC-036 a DEC-039; DEC-04
 - Bloque 4 (testing) y Bloque 5 (documentacion): sin trabajo iniciado.
 
 PROD-001 sigue bloqueante.
+
+## LOG-078 - Correccion real de Bloque 1 (2 de 3 migraciones seguian rotas) y validacion local completa
+
+**Estado:** Bloque 1 (DEC-038) con las 3 migraciones corregidas y validadas / Bloque 3 (DEC-036) validacion tecnica reconfirmada
+**Prioridad:** Alta
+**Responsable:** Control de desarrollo (Claude - auditoria independiente post-LOG-077)
+**Origen:** AUDIT-2026-07-04 / DEC-038 / Javier
+**Fecha creacion:** 2026-07-04
+
+### Resumen
+
+Una revision independiente de lo registrado en LOG-077 encontro que, pese a decir "corregidas y separadas", solo la migracion de DELETE policies (`fix/rls-delete-policies`) habia sido corregida de verdad. Las otras 2 quedaron **identicas byte a byte** al commit original roto (`17c36a4`), solo movidas de archivo/rama:
+
+- `fix/rls-vista-cobros-finanzas`: seguia usando `c.id AS id_cobro` / `p.id AS id_pago` (PK generica `id`; las reales son `id_cobro`/`id_pago`), `p.monto_pagado` (columna inexistente; real `monto_pago`) y reimplementaba `vista_cobros_estado` desde cero, perdiendo la agregacion de pagos multiples (`SUM(...) FILTER (...)`) y el `estado_calculado` de la definicion real vigente (`20260627231000_crear_vista_finanzas_unidades_cobrables.sql`).
+- `fix/rls-fotos-auditoria-finanzas`: seguia usando `c.id`/`fec.id` (reales `id_cobro`/`id_foto_elemento_caso`) y `fec.fecha_carga` (columna inexistente; real `created_at`).
+
+La fila resumen de `BLOQUE-1-RLS` en `01_PENDIENTES_PROYECTO.md` tambien sobre-generalizaba ("Corregidas y separadas" para las 3) cuando el detalle de esa misma seccion ya aclaraba que solo DELETE policies habia sido corregida.
+
+### Trabajo realizado en esta sesion
+
+1. Corregido `20260704_000000_fix_vista_cobros_estado_finanzas.sql` en `fix/rls-vista-cobros-finanzas`: cuerpo reemplazado por el mismo de la vista real (`20260627231000`), cambiando unicamente `WHERE public.es_admin()` por `WHERE public.es_finanzas_o_admin()` (ya incluye admin; se retira el `OR` redundante).
+2. Corregido `20260704_000001_crear_vista_fotos_auditoria_finanzas.sql` en `fix/rls-fotos-auditoria-finanzas`: columnas alineadas al DDL real de `cobros` y `fotos_elementos_caso`.
+3. Validadas las 3 migraciones con `supabase db reset` local (Docker), una por rama:
+   - `vista_cobros_estado`: aplica sin errores.
+   - `vista_finanzas_fotos_auditoria`: aplica sin errores; confirmado con `\d public.vista_finanzas_fotos_auditoria` que expone exactamente las columnas esperadas.
+   - DELETE policies: aplica sin errores; confirmado con `select * from pg_policies where policyname like '%delete%'` que las 9 policies nuevas quedaron creadas.
+4. Corregida la fila resumen de `BLOQUE-1-RLS` en `01_PENDIENTES_PROYECTO.md` y su seccion de detalle para reflejar que las 3 (no solo 1) quedan corregidas y validadas localmente.
+5. Reconfirmado tecnicamente `poc/auth-context` (tsc, eslint, `npx vite build`) en worktree aislado, sin cambios adicionales sobre lo ya corregido en LOG-077.
+
+### Archivos relacionados
+
+- `supabase/migrations/20260704_000000_fix_vista_cobros_estado_finanzas.sql` (rama `fix/rls-vista-cobros-finanzas`)
+- `supabase/migrations/20260704_000001_crear_vista_fotos_auditoria_finanzas.sql` (rama `fix/rls-fotos-auditoria-finanzas`)
+- `docs/control/01_PENDIENTES_PROYECTO.md`
+
+### Restricciones respetadas
+
+- `supabase db reset` se ejecuto solo contra la base **local** (Docker). No se ejecuto `supabase db push`. No se toco Supabase remoto ni `.env`.
+- No se mergeo nada a `main`: cada rama sigue pendiente de PR y aprobacion de Javier.
+
+### Pendiente
+
+- Validacion funcional con usuarios demo SEC-007B: login como `finanzas` y confirmar lectura real de `vista_cobros_estado` y `vista_finanzas_fotos_auditoria` vía la UI o Studio (la validacion de esta sesion fue a nivel de DDL/esquema, no de RLS end-to-end con JWT de rol finanzas).
+- PR de las 3 ramas `fix/rls-*` a `main`.
+- Bloque 3: `poc/auth-context` sigue exponiendo los 4 setters crudos del contexto (`setEstadoAuth`, `setSession`, `setUsuarioInterno`, `setMensajeAuth`); considerar encapsular antes de PR. Validacion visual en navegador aun pendiente.
+- Bloque 2: sin cambios respecto de LOG-077 (imports pendientes, caso por caso).
+
+PROD-001 sigue bloqueante.

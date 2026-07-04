@@ -110,7 +110,7 @@ Este documento es la lista maestra de pendientes. Cada pendiente debe tener un c
 | IMP-002 | Implementacion funcional hallazgo a trabajo. | Pendiente | Alta | Implementacion |
 | PROD-001 | Preparacion para uso real con datos sensibles. | Mantener pendiente / bloqueante | Alta | Control de desarrollo / Integracion Backend |
 | AUDIT-2026-07-04 | Revision integral de estructura y arquitectura; roadmap 5 bloques. | Aprobada por Javier (DEC-036 a DEC-039) | Alta | Control de desarrollo |
-| BLOQUE-1-RLS | 3 migraciones RLS para DEC-038 en ramas fix/rls-*. | Corregidas y separadas / pendiente validacion local y PR | Alta | Integracion Backend / Seguridad |
+| BLOQUE-1-RLS | 3 migraciones RLS para DEC-038 en ramas fix/rls-*. | Las 3 corregidas y validadas con `supabase db reset` local / pendiente PR | Alta | Integracion Backend / Seguridad |
 | BLOQUE-2-UTIL | Extraccion de lib/format.ts, lib/queries.ts, lib/constants.ts para DEC-037. | Archivos correctos y validados / imports en paginas aun pendientes | Media | Integracion Backend/Estructura |
 | BLOQUE-3-AUTH | POC AuthContext para DEC-036. | Validado tecnicamente (tsc/lint/build) / pendiente validacion visual Javier | Media | Integracion Backend/Estructura |
 
@@ -2263,7 +2263,7 @@ Javier aprobo el roadmap completo. Ver `LOG-076` y `LOG-077` en `06_BITACORA_CAM
 
 ### BLOQUE-1-RLS - Migraciones RLS para DEC-038
 
-**Estado:** Corregidas y separadas en ramas dedicadas / pendiente validacion local con SEC-007B y PR
+**Estado:** Las 3 corregidas y validadas localmente con `supabase db reset` / pendiente PR
 **Prioridad:** Alta
 **Responsable:** Integracion Backend / Seguridad
 **Origen:** AUDIT-2026-07-04 / DEC-038
@@ -2272,9 +2272,11 @@ Javier aprobo el roadmap completo. Ver `LOG-076` y `LOG-077` en `06_BITACORA_CAM
 
 #### Resultado
 
-Las 3 migraciones quedaron separadas en sus ramas dedicadas para PRs independientes. La migracion de DELETE policies se corrigio: usaba la columna inexistente `pacientes.estado_activo` y valores de estado en minuscula (`'anulada'`/`'anulado'`) que no existen en los CHECK constraints reales (que usan `'Cancelada'`/`'Anulada'`/`'Anulado'` capitalizados). Sin las correcciones, la migracion de pacientes habria fallado al aplicarse.
+Las 3 migraciones quedaron separadas en sus ramas dedicadas para PRs independientes. Al separarlas se detecto que solo la migracion de DELETE policies habia sido corregida de verdad: usaba la columna inexistente `pacientes.estado_activo` y valores de estado en minuscula (`'anulada'`/`'anulado'`) que no existen en los CHECK constraints reales (que usan `'Cancelada'`/`'Anulada'`/`'Anulado'` capitalizados).
 
-Migraciones sin aplicar. No se ejecuto `supabase db push`.
+Las otras 2 (`vista_cobros_estado`, `vista_finanzas_fotos_auditoria`) habian quedado identicas al commit original roto: asumian PK generica `id` en `cobros`/`pagos`/`fotos_elementos_caso` (las reales son `id_cobro`, `id_pago`, `id_foto_elemento_caso`), columnas inexistentes (`p.monto_pagado` en vez de `monto_pago`, `fec.fecha_carga` en vez de `created_at`) y, en el caso de `vista_cobros_estado`, reimplementaban la vista completa perdiendo la agregacion de pagos multiples y el `estado_calculado` de la definicion real (`20260627231000_crear_vista_finanzas_unidades_cobrables.sql`). Se corrigieron ambas contra el esquema real.
+
+Las 3 se validaron con `supabase db reset` local: aplican sin errores sobre el esquema completo. Se confirmo ademas con `\d` sobre la base local que `vista_finanzas_fotos_auditoria` expone las columnas esperadas, y con `pg_policies` que las 9 DELETE policies nuevas quedaron creadas. Falta: validacion funcional con usuarios demo SEC-007B (login como finanzas y confirmar lectura de ambas vistas) y PR a `main`. Migraciones sin aplicar a ningun ambiente remoto. No se ejecuto `supabase db push`.
 
 ### BLOQUE-2-UTIL - Extraccion de utilidades compartidas para DEC-037
 
