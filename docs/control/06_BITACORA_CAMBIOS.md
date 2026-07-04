@@ -3375,3 +3375,71 @@ El diseno ordena fases de inventario local, hardening de grants, anulacion logic
 SEC-011 queda como contrato documental previo. La implementacion tecnica debe ser una rama separada con aprobacion explicita para tocar migraciones, grants o policies locales.
 
 PROD-001 sigue bloqueante.
+
+## LOG-076 - AUDIT-2026-07-04: Revision integral de estructura y arquitectura
+
+**Estado:** Completada / Pendiente aprobacion Javier
+**Prioridad:** Alta
+**Responsable:** Control de desarrollo (Claude - Revision Tecnica)
+**Origen:** Control progresivo del proyecto
+**Fecha creacion:** 2026-07-04
+**Rama usada:** `docs/audit-2026-07-04-revision-estructura`
+
+### Resumen
+
+Se ejecuta auditoria completa de estructura React, migraciones Supabase, seguridad RLS, state management, patrones de codigo y duplicacion de logica.
+
+El analisis detecta:
+- 3 brechas RLS que limitan acceso a Finanzas (MEDIA)
+- Prop drilling de autenticacion (BAJO-MEDIO)
+- 40% de reduccion posible en duplicacion de utilidades (BAJO)
+
+Propone 5 decisiones nuevas (DEC-036 a DEC-040) y un roadmap de 5 bloques de implementacion (RLS fixes, utilidades, state management, tests, documentacion).
+
+### Archivos relacionados
+
+- `docs/control/auditorias/AUDIT-2026-07-04_REVISION_ESTRUCTURA_CODIGO.md` (documento completo)
+- `docs/control/00_ESTADO_GENERAL_PROYECTO.md`
+- `docs/control/01_PENDIENTES_PROYECTO.md`
+- `docs/control/05_DECISIONES_PROYECTO.md`
+- `docs/control/06_BITACORA_CAMBIOS.md`
+
+### Tareas Paralelas Ejecutadas
+
+1. **Limpieza de ramas Git**
+   - Eliminadas 35 ramas locales/remotas mergeadas a main
+   - De 148 a 113 ramas totales (74% reduccion de ruido)
+   - Branch count: local 51→37, remote 97→76
+
+2. **Creacion de rama documental**
+   - `git checkout -b docs/audit-2026-07-04-revision-estructura`
+   - Rama aislada para documentacion, sin impacto a main
+
+3. **Documento de auditoria**
+   - Documento completo con hallazgos detallados
+   - Propuestas de fix por brecha RLS
+   - Decisiones propuestas (DEC-036 a DEC-040)
+   - Roadmap de implementacion (5 bloques)
+
+### Restricciones respetadas
+
+- No se modifico codigo fuente funcional.
+- No se modifico `src/`.
+- No se modifico `.env`.
+- No se modificaron migraciones.
+- No se modifico Auth/RLS.
+- No se modifico base de datos local ni remota.
+- No se uso Supabase remoto.
+- No se ejecuto `supabase db push`.
+- No se creo API publica.
+- No se habilito produccion.
+- No se usaron datos reales ni fotos reales.
+- NOTA: Limpieza de ramas es operacion Git-only, segura y reversible.
+
+### Resultado
+
+AUDIT-2026-07-04 queda documentado y listo para revision de Javier. Se proponen 5 decisiones nuevas como marco de implementacion futura.
+
+Siguiente paso: Aprobacion de decisiones DEC-036 a DEC-040 antes de proceder con implementacion.
+
+PROD-001 sigue bloqueante. Cambios propuestos respetan todas las restricciones operativas del proyecto.
