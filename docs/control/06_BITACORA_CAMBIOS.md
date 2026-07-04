@@ -3149,7 +3149,7 @@ PROD-001 sigue bloqueante.
 
 ## LOG-071 - CTRL-012 cierre bloque QA/Finanzas
 
-**Estado:** Preparada / pendiente PR
+**Estado:** Integrada
 **Prioridad:** Alta
 **Responsable:** Control de desarrollo
 **Origen:** CTRL-012 / QA-006D / QA-006E / BE-023 / BE-025 / PROD-001
@@ -3187,8 +3187,54 @@ El cierre deja registrado que el bloque queda ordenado a nivel documental: Repor
 
 ### Resultado
 
-CTRL-012 queda preparado para revision mediante PR.
+CTRL-012 queda integrado mediante PR #80.
 
 La siguiente tarea recomendada es `QA-006F - Validacion RLS/Storage local por rol`, separada de este cierre documental y sin tocar remoto ni produccion.
+
+PROD-001 sigue bloqueante.
+
+## LOG-072 - QA-006F RLS/Storage local por rol
+
+**Estado:** Ejecutada local/demo
+**Prioridad:** Alta
+**Responsable:** Control de desarrollo / QA
+**Origen:** QA-006 / SEC-001 / SEC-002 / SEC-004 / BE-022 / UI-022 / PROD-001
+**Fecha creacion:** 2026-07-04
+**Rama usada:** `qa-006f-validacion-rls-storage`
+
+### Resumen
+
+Se revalida en Supabase local/demo la separacion RLS/Storage por rol despues del bloque QA/Finanzas y Auth local/demo.
+
+La matriz runtime confirma que `finanzas` no accede a pacientes, metadatos de fotos ni objetos Storage del bucket `elementos-caso`; que `terapeuta` accede a clinica/fotos/Storage pero no a cobros/pagos directos; y que `admin` mantiene acceso transversal esperado.
+
+### Archivos relacionados
+
+- `docs/control/auditorias/QA-006F_VALIDACION_RLS_STORAGE_ROLES.md`
+- `docs/control/00_ESTADO_GENERAL_PROYECTO.md`
+- `docs/control/01_PENDIENTES_PROYECTO.md`
+- `docs/control/06_BITACORA_CAMBIOS.md`
+
+### Restricciones respetadas
+
+- No se modifico codigo fuente funcional.
+- No se modifico `src/`.
+- No se modifico `.env`.
+- No se modificaron migraciones.
+- No se modifico Auth/RLS.
+- No se crearon usuarios.
+- No se modifico Supabase remoto.
+- No se uso Supabase remoto.
+- No se ejecuto `supabase db push`.
+- No se creo API publica.
+- No se integro Google Calendar, Gmail ni Workspace.
+- No se habilito produccion.
+- No se usaron datos reales, fotos reales ni pagos reales.
+
+### Resultado
+
+QA-006F queda ejecutada local/demo y documentada como evidencia de RLS/Storage por rol.
+
+La siguiente tarea recomendada es `SEC-006 - Politica de fotos, retencion y objetos huerfanos`, antes de QA funcional de fotos o uso con archivos reales.
 
 PROD-001 sigue bloqueante.

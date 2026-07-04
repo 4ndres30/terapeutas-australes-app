@@ -1,6 +1,6 @@
 # Estado general del proyecto
 
-Fecha de corte: `2026-07-03`
+Fecha de corte: `2026-07-04`
 Responsable del documento: Control de desarrollo
 Estado general documental: En control activo
 
@@ -16,7 +16,7 @@ UI-026 incorpora selector de fecha, selector de hora, duracion controlada, fin c
 
 La estrategia progresiva Google Cloud queda incorporada como propuesta documental en revision: Supabase/PostgreSQL sigue siendo la base actual y Google Cloud queda como plataforma futura para API segura, integracion Google Workspace, despliegue, automatizacion y operacion por ambientes.
 
-QA-006 ya cuenta con plan base documental, QA-006A deja matriz de rutas y superficies por rol, QA-006B ejecuta validacion visual de navegacion sin sesion y autenticada local/demo, QA-006C revalida post-merge la navegacion filtrada por rol, QA-006D valida Reportes/Finanzas por rol y QA-006E valida estados Auth minimos local/demo con mensajes no tecnicos. BE-023 deja definido documentalmente que Finanzas debe evolucionar hacia alias/codigo financiero persistente no derivado del UUID clinico y sin `paciente_id` visible por defecto. BE-025 define la whitelist de campos financieros permitidos/prohibidos para evitar textos clinicos en Finanzas. CTRL-012 cierra documentalmente el bloque QA/Finanzas y recomienda continuar con `QA-006F - Validacion RLS/Storage local por rol` como tarea separada. La lectura estatica confirma proteccion de rutas por `admin`, `terapeuta` y `finanzas`; la ejecucion visual confirma redireccion a `/login` sin sesion, redireccion por rol para rutas no autorizadas, reportes por rol, filtrado visible de sidebar/drawer, separacion Finanzas/Reportes y bloqueo controlado para usuario inactivo o sin perfil interno. SEC-007B agrega herramienta local-only y ejecuta provisioning local de usuarios ficticios, sin `.env`, sin remoto y sin credenciales versionadas. UI-023 queda integrada por PR #74 y validada post-merge: Terapeuta no ve Finanzas y Finanzas no ve superficies clinicas ni Agenda en sidebar o drawer movil.
+QA-006 ya cuenta con plan base documental, QA-006A deja matriz de rutas y superficies por rol, QA-006B ejecuta validacion visual de navegacion sin sesion y autenticada local/demo, QA-006C revalida post-merge la navegacion filtrada por rol, QA-006D valida Reportes/Finanzas por rol, QA-006E valida estados Auth minimos local/demo con mensajes no tecnicos y QA-006F revalida RLS/Storage local por rol. BE-023 deja definido documentalmente que Finanzas debe evolucionar hacia alias/codigo financiero persistente no derivado del UUID clinico y sin `paciente_id` visible por defecto. BE-025 define la whitelist de campos financieros permitidos/prohibidos para evitar textos clinicos en Finanzas. CTRL-012 cierra documentalmente el bloque QA/Finanzas. La lectura estatica confirma proteccion de rutas por `admin`, `terapeuta` y `finanzas`; la ejecucion visual confirma redireccion a `/login` sin sesion, redireccion por rol para rutas no autorizadas, reportes por rol, filtrado visible de sidebar/drawer, separacion Finanzas/Reportes y bloqueo controlado para usuario inactivo o sin perfil interno. QA-006F confirma localmente que `finanzas` no accede a clinica, fotos ni Storage `elementos-caso`, que `terapeuta` no accede a cobros/pagos directos y que el bucket sigue privado. SEC-007B agrega herramienta local-only y ejecuta provisioning local de usuarios ficticios, sin `.env`, sin remoto y sin credenciales versionadas. UI-023 queda integrada por PR #74 y validada post-merge: Terapeuta no ve Finanzas y Finanzas no ve superficies clinicas ni Agenda en sidebar o drawer movil.
 
 IMP-001 dejo disponible una implementacion funcional minima de hallazgos operativos dentro de `DetalleRevisionesPanel`. DATA-001 dejo un seed local demo integral ejecutado correctamente en Supabase local. BE-011 confirmo que la primera version de trazabilidad hallazgo a trabajo puede usar `trabajos.revision_hallazgo_origen_id` sin migracion inicial. QA-002 valido funcionalmente el flujo de hallazgos operativos con el caso demo DATA-001 en ambiente local. BE-016 incorporo la vista financiera minima para Finanzas, QA-004 la valido localmente y UI-016 separo `ReportesPage` por rol en main mediante PR #33.
 
@@ -63,9 +63,9 @@ El proyecto se mantiene alineado con el metodo acordado: primero documentar, aud
 - BE-025: diseno documental de campos financieros permitidos/prohibidos para Finanzas, pendiente implementacion futura en vista/UI/QA.
 - API-001, BE-026, BE-027, SEC-009 y DOC-004: estrategia futura para API publica segura, contrato de agendamiento, integracion Google Workspace, seguridad API y flujo pagina publica -> API -> sistema interno -> Google.
 - CTRL-009, DEC-035, BE-030, SEC-010, DOC-005 y QA-007: estrategia progresiva Google Cloud en revision documental; no migra base de datos, Auth ni produccion.
-- CTRL-012: cierre documental del bloque QA/Finanzas preparado para revision; deja `QA-006F` como siguiente tarea recomendada.
+- CTRL-012: cierre documental del bloque QA/Finanzas integrado; dejo `QA-006F` como siguiente tarea recomendada.
 - UI-020/UI-021: implementacion local del indicador visual de ambiente activo y bloqueo de produccion no habilitada; QA-009 valida UI-020 en `/agenda` local desktop/mobile equivalente y UI-021 con bloqueo `PRODUCCION NO HABILITADA` y accion `Cerrar sesion`.
-- QA-006/QA-006A/QA-006B/QA-006C/QA-006D/QA-006E: plan base de pruebas por rol, matriz de rutas/superficies, validacion visual sin sesion/autenticada local-demo, UI-023 post-merge, Reportes/Finanzas por rol y estados Auth minimos documentados.
+- QA-006/QA-006A/QA-006B/QA-006C/QA-006D/QA-006E/QA-006F: plan base de pruebas por rol, matriz de rutas/superficies, validacion visual sin sesion/autenticada local-demo, UI-023 post-merge, Reportes/Finanzas por rol, estados Auth minimos y RLS/Storage local por rol documentados.
 - SEC-007: procedimiento documental para usuarios demo/locales, sin crear cuentas ni scripts y con prohibicion de uso en produccion.
 - SEC-007B: herramienta local-only y provisioning local de usuarios demo ficticios, sin secretos versionados ni Supabase remoto.
 - RFC-002: deteccion de duplicidades entre entidades clinicas.
@@ -79,10 +79,10 @@ El proyecto se mantiene alineado con el metodo acordado: primero documentar, aud
 - Mantener `QA008-OBS-003` como corregida por UI-027 y usar el cierre QA-008 como precondicion documental para evaluar `BE-026`.
 - Implementar UI-020/UI-021 antes de cualquier prueba real de staging, produccion o carga de datos reales.
 - Atender observaciones de SEC-001 antes de avanzar a datos reales, fotos reales, pagos reales o produccion.
-- Ejecutar QA-006 por fases: con QA-006A documentada, QA-006B autenticada ejecutada local/demo, SEC-007B integrado, QA-006C validando post-merge UI-023, QA-006D validando Reportes/Finanzas y QA-006E validando Auth local/demo, continuar con RLS/Storage segun dependencias.
+- Ejecutar QA-006 por fases: con QA-006A documentada, QA-006B autenticada ejecutada local/demo, SEC-007B integrado, QA-006C validando post-merge UI-023, QA-006D validando Reportes/Finanzas, QA-006E validando Auth local/demo y QA-006F revalidando RLS/Storage local por rol.
 - Implementar BE-023 en tarea tecnica futura antes de exponer Finanzas con datos reales: identidad financiera persistente, vista sin `paciente_id` visible y QA runtime local.
 - Implementar BE-025 en tarea tecnica futura antes de exponer Finanzas con datos reales: whitelist de campos, microcopy UI-015, separacion de textos libres y QA de no exposicion clinica.
-- Ejecutar `QA-006F - Validacion RLS/Storage local por rol` en tarea separada, sin Supabase remoto, sin `supabase db push`, sin migraciones nuevas y sin datos reales.
+- Continuar con `SEC-006 - Politica de fotos, retencion y objetos huerfanos` y `QA-003 - Validacion funcional local de fotos`, sin Supabase remoto, sin `supabase db push`, sin migraciones nuevas y sin datos reales.
 
 ## Estrategia futura de API publica
 

@@ -1,7 +1,7 @@
 # Pendientes del proyecto
 
 Fecha de apertura: `2026-06-11`
-Ultima actualizacion: `2026-07-02`
+Ultima actualizacion: `2026-07-04`
 Responsable del documento: Control de desarrollo
 
 Este documento es la lista maestra de pendientes. Cada pendiente debe tener un codigo, un responsable y un estado permitido. Los detalles tecnicos o clinicos pueden vivir en los documentos especializados, pero este archivo debe permitir ver rapidamente que falta.
@@ -25,14 +25,15 @@ Este documento es la lista maestra de pendientes. Cada pendiente debe tener un c
 | CTRL-007 | Sincronizar documentacion maestra post BE-016, QA-004 y UI-016. | Integrada | Alta | Control de desarrollo |
 | CTRL-008 | Registrar decisiones criticas post auditoria. | Integrada | Alta | Control de desarrollo |
 | CTRL-009 | Sincronizacion documental Google Cloud. | Integrada documentalmente / pendiente revision | Alta | Control de desarrollo |
-| CTRL-012 | Cierre documental bloque QA/Finanzas. | Preparada / pendiente PR | Alta | Control de desarrollo |
+| CTRL-012 | Cierre documental bloque QA/Finanzas. | Integrada | Alta | Control de desarrollo |
 | PEND-001 | Levantar inventario real del proyecto desde `main`. | Integrada | Alta | Control de desarrollo |
 | PEND-002 | Clasificar pendientes por chat responsable. | Integrada | Alta | Control de desarrollo |
 | QA-001 | Auditoria inicial del proyecto. | Integrada | Alta | Control de desarrollo |
 | QA-002 | Validacion funcional de hallazgos operativos con caso demo. | Integrada | Alta | Control de desarrollo |
 | QA-004 | Validacion funcional local de BE-016 / Finanzas. | Integrada | Alta | Control de desarrollo |
 | QA-005 | Validacion funcional local UI-016 / Reportes por rol. | Integrada | Alta | Control de desarrollo |
-| QA-006 | Base minima de pruebas por rol y no exposicion sensible. | QA-006E Auth local/demo OK / RLS-Storage pendientes | Alta | Control de desarrollo / QA |
+| QA-006 | Base minima de pruebas por rol y no exposicion sensible. | QA-006F RLS/Storage local OK / PROD-001 pendiente | Alta | Control de desarrollo / QA |
+| QA-006F | Validacion RLS/Storage local por rol. | Ejecutada local/demo | Alta | Control de desarrollo / QA |
 | QA-007 | Checklist pre-migracion cloud. | Checklist documental / pendiente ejecucion futura | Alta | Control de desarrollo / QA |
 | QA-008 | Validacion funcional completa de Agenda interna. | Cerrada post-merge local/demo | Alta | Control de Desarrollo / QA / UI-UX / Integracion Backend |
 | QA-009 | Validacion visual UI-020/UI-021 ambiente. | Cerrada local/demo | Alta | Control de desarrollo / QA / UI-UX |
@@ -178,12 +179,13 @@ Documentacion integrada en la rama del PR #43 y pendiente de revision de Javier.
 
 ### CTRL-012 - Cierre documental bloque QA/Finanzas
 
-**Estado:** Preparada / pendiente PR
+**Estado:** Integrada
 **Prioridad:** Alta
 **Responsable:** Control de desarrollo
 **Origen:** QA-006D / QA-006E / BE-023 / BE-025
 **Fecha creacion:** 2026-07-03
 **Rama usada:** `ctrl-012-cierre-bloque-qa-finanzas`
+**PR:** #80
 **Informe:** `docs/control/auditorias/CTRL-012_CIERRE_BLOQUE_QA_FINANZAS.md`
 **Dependencias:** QA-006, BE-023, BE-025, SEC-004, PROD-001
 
@@ -194,6 +196,27 @@ Cerrar documentalmente el bloque QA/Finanzas ya integrado y dejar una recomendac
 El bloque QA/Finanzas queda ordenado con QA-006D, QA-006E, BE-023 y BE-025 integrados en `main`.
 
 La siguiente tarea recomendada queda como `QA-006F - Validacion RLS/Storage local por rol`, en bloque separado, sin remoto, sin `supabase db push`, sin migraciones nuevas y sin datos reales.
+
+### QA-006F - Validacion RLS/Storage local por rol
+
+**Estado:** Ejecutada local/demo
+**Prioridad:** Alta
+**Responsable:** Control de desarrollo / QA
+**Origen:** QA-006 / SEC-001 / SEC-002 / SEC-004 / BE-022 / UI-022 / PROD-001
+**Fecha creacion:** 2026-07-04
+**Rama usada:** `qa-006f-validacion-rls-storage`
+**Informe:** `docs/control/auditorias/QA-006F_VALIDACION_RLS_STORAGE_ROLES.md`
+**Dependencias:** QA-006D, QA-006E, SEC-001, SEC-002, SEC-004, BE-022, UI-022, PROD-001
+
+#### Descripcion
+Revalidar en Supabase local/demo que RLS y Storage mantienen la separacion por rol despues del bloque QA/Finanzas y Auth local/demo.
+
+#### Resultado
+La validacion runtime local confirma que `finanzas` no accede a pacientes, metadatos de fotos ni objetos Storage del bucket `elementos-caso`; `terapeuta` accede a clinica/fotos/Storage pero no a cobros/pagos directos; `admin` mantiene acceso transversal esperado.
+
+No se modifico codigo, migraciones, Auth/RLS, `.env`, Supabase remoto ni datos reales.
+
+La siguiente tarea recomendada es `SEC-006 - Politica de fotos, retencion y objetos huerfanos`, antes de QA funcional de fotos o cualquier uso con archivos reales.
 
 ### DEC-035 - Migracion progresiva a plataforma Google Cloud
 
@@ -1798,11 +1821,12 @@ Validar localmente que las fotos se cargan, registran y muestran asociadas al el
 **Informe QA-006C:** `docs/control/auditorias/QA-006C_REVALIDACION_NAVEGACION_FILTRADA_ROLES_POSTMERGE.md`
 **Informe QA-006D:** `docs/control/auditorias/QA-006D_VALIDACION_REPORTES_FINANZAS_ROLES.md`
 **Informe QA-006E:** `docs/control/auditorias/QA-006E_VALIDACION_AUTH_LOCAL_DEMO.md`
+**Informe QA-006F:** `docs/control/auditorias/QA-006F_VALIDACION_RLS_STORAGE_ROLES.md`
 
 #### Descripcion
 Definir e implementar progresivamente una base minima de pruebas para roles, navegacion, reportes, finanzas y no exposicion de datos sensibles.
 
-El plan base documental divide QA-006 en fases para evitar cubrir todo en un solo PR. `QA-006A - Matriz de rutas y superficies por rol` queda documentado como base, `QA-006B - Validacion visual autenticada de navegacion por rol` queda ejecutada local/demo, `QA-006C - Revalidacion post-merge navegacion filtrada por rol` confirma que UI-023 resolvio la observacion visible del menu, `QA-006D - Reportes y Finanzas por rol` confirma separacion visual de Reportes/Finanzas y `QA-006E - Validacion Auth local/demo` confirma estados Auth minimos con mensajes no tecnicos.
+El plan base documental divide QA-006 en fases para evitar cubrir todo en un solo PR. `QA-006A - Matriz de rutas y superficies por rol` queda documentado como base, `QA-006B - Validacion visual autenticada de navegacion por rol` queda ejecutada local/demo, `QA-006C - Revalidacion post-merge navegacion filtrada por rol` confirma que UI-023 resolvio la observacion visible del menu, `QA-006D - Reportes y Finanzas por rol` confirma separacion visual de Reportes/Finanzas, `QA-006E - Validacion Auth local/demo` confirma estados Auth minimos con mensajes no tecnicos y `QA-006F - Validacion RLS/Storage local por rol` confirma separacion runtime para clinica, finanzas, fotos y Storage.
 
 #### Criterios de aceptacion preliminares
 - Cubrir rutas protegidas por rol.
@@ -1821,9 +1845,9 @@ El plan base documental divide QA-006 en fases para evitar cubrir todo en un sol
 
 #### Resultado actual
 
-QA-006 queda iniciado como plan base documental, QA-006A deja matriz de rutas/superficies por rol y QA-006B confirma que rutas internas sin sesion redirigen a `/login`. Tras SEC-007B, QA-006B valida local/demo redireccion por rol, Reportes por rol, Agenda para Admin/Terapeuta y bloqueo de usuarios inactivo/sin perfil. QA-006C valida post-merge que el menu visible ya queda filtrado por rol en desktop/mobile. QA-006D valida Reportes/Finanzas por rol: Admin ve superficie mixta autorizada, Terapeuta queda clinico y Finanzas queda financiero/administrativo. QA-006E valida estados Auth minimos local/demo: sin sesion, credenciales invalidas, usuario inactivo, usuario sin perfil interno y login admin valido.
+QA-006 queda iniciado como plan base documental, QA-006A deja matriz de rutas/superficies por rol y QA-006B confirma que rutas internas sin sesion redirigen a `/login`. Tras SEC-007B, QA-006B valida local/demo redireccion por rol, Reportes por rol, Agenda para Admin/Terapeuta y bloqueo de usuarios inactivo/sin perfil. QA-006C valida post-merge que el menu visible ya queda filtrado por rol en desktop/mobile. QA-006D valida Reportes/Finanzas por rol: Admin ve superficie mixta autorizada, Terapeuta queda clinico y Finanzas queda financiero/administrativo. QA-006E valida estados Auth minimos local/demo: sin sesion, credenciales invalidas, usuario inactivo, usuario sin perfil interno y login admin valido. QA-006F valida runtime local que Finanzas no accede a clinica, fotos ni Storage, que Terapeuta no accede a cobros/pagos directos y que el bucket `elementos-caso` sigue privado.
 
-La siguiente fase recomendada de QA-006 es RLS/Storage en bloque separado. Antes de ejecutarla, Control recomienda cerrar BE-023 y BE-025 en modo documental para precisar identificadores y campos financieros permitidos/prohibidos.
+La siguiente fase recomendada es `SEC-006 - Politica de fotos, retencion y objetos huerfanos`, seguida de `QA-003 - Validacion funcional local de fotos`, manteniendo PROD-001 bloqueante.
 
 ### UI-013 - Disenar experiencia de trabajos, sesiones y acciones
 
