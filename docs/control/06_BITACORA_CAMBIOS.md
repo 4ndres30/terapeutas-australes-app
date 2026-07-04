@@ -3146,3 +3146,49 @@ BE-025 queda como diseno documental. La implementacion tecnica debe separarse en
 La siguiente recomendacion de Control es preparar una sincronizacion breve de cierre del bloque Finanzas/QA o avanzar a una fase QA-006 RLS/Storage local, manteniendo produccion y datos reales bloqueados.
 
 PROD-001 sigue bloqueante.
+
+## LOG-071 - CTRL-012 cierre bloque QA/Finanzas
+
+**Estado:** Preparada / pendiente PR
+**Prioridad:** Alta
+**Responsable:** Control de desarrollo
+**Origen:** CTRL-012 / QA-006D / QA-006E / BE-023 / BE-025 / PROD-001
+**Fecha creacion:** 2026-07-03
+**Rama usada:** `ctrl-012-cierre-bloque-qa-finanzas`
+
+### Resumen
+
+Se prepara el cierre documental del bloque QA/Finanzas posterior a la integracion de PR #76, #77, #78 y #79.
+
+El cierre deja registrado que el bloque queda ordenado a nivel documental: Reportes/Finanzas por rol, Auth local/demo, alias/codigo financiero persistente y campos financieros permitidos/prohibidos.
+
+### Archivos relacionados
+
+- `docs/control/auditorias/CTRL-012_CIERRE_BLOQUE_QA_FINANZAS.md`
+- `docs/control/00_ESTADO_GENERAL_PROYECTO.md`
+- `docs/control/01_PENDIENTES_PROYECTO.md`
+- `docs/control/06_BITACORA_CAMBIOS.md`
+
+### Restricciones respetadas
+
+- No se modifico codigo fuente funcional.
+- No se modifico `src/`.
+- No se modifico `.env`.
+- No se modificaron migraciones.
+- No se modifico Auth/RLS.
+- No se crearon usuarios.
+- No se modifico base de datos local ni remota.
+- No se uso Supabase remoto.
+- No se ejecuto `supabase db push`.
+- No se creo API publica.
+- No se integro Google Calendar, Gmail ni Workspace.
+- No se habilito produccion.
+- No se usaron datos reales, fotos reales ni pagos reales.
+
+### Resultado
+
+CTRL-012 queda preparado para revision mediante PR.
+
+La siguiente tarea recomendada es `QA-006F - Validacion RLS/Storage local por rol`, separada de este cierre documental y sin tocar remoto ni produccion.
+
+PROD-001 sigue bloqueante.
