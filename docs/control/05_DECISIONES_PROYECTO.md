@@ -42,7 +42,7 @@ Este documento registra decisiones estables. No reemplaza la conversacion, pero 
 | DEC-024 | Un aspecto revisado debe tener maximo un hallazgo activo en v1. | Propuesta pendiente aprobacion clinica | 2026-06-29 |
 | DEC-025 | Hallazgo a trabajo mantiene origen principal sin automatismos. | Estable v1 / abierta evolucion | 2026-06-29 |
 | DEC-026 | Produccion debe usar anulacion logica, no delete fisico operativo. | Propuesta bloqueante | 2026-06-29 |
-| DEC-027 | Finanzas solo debe ver textos administrativos financieros. | Propuesta pendiente aprobacion | 2026-06-29 |
+| DEC-027 | Finanzas solo debe ver textos administrativos financieros. | Diseno documental / pendiente implementacion | 2026-06-29 |
 | DEC-028 | Fotos reales quedan bloqueadas hasta politica, QA, auditoria y anulacion. | Propuesta bloqueante | 2026-06-29 |
 | DEC-029 | Scripts manuales sobre Auth solo local/demo y prohibidos en produccion. | Procedimiento documental / pendiente ejecucion controlada | 2026-06-29 |
 | DEC-030 | El proyecto debe reconocer LOCAL, DEMO, STAGING y PRODUCCION. | Propuesta pendiente aprobacion | 2026-06-29 |
@@ -596,7 +596,7 @@ Diseno relacionado: `docs/control/auditorias/BE-023_ALIAS_CODIGO_ADMINISTRATIVO_
 
 ## DEC-023 - Terapeuta no administra pagos desde ficha clinica
 
-**Estado:** Propuesta pendiente aprobacion
+**Estado:** Diseno documental / pendiente implementacion
 **Origen:** CTRL-008
 **Fecha:** 2026-06-29
 
@@ -721,13 +721,15 @@ Aunque BE-016 usa una vista minima, `cobros` y `pagos` tienen campos libres que 
 
 ### Impacto
 
-- BE-025 debe definir campos permitidos/prohibidos.
+- BE-025 define documentalmente campos permitidos/prohibidos.
 - UI-015 debe ajustar microcopy para evitar contenido clinico en finanzas.
 - QA-006 debe incluir validacion de textos sensibles.
 
 ### Observaciones
 
 Informe relacionado: `docs/control/auditorias/CTRL-008_DECISIONES_CRITICAS_POST_AUDITORIA.md`.
+
+Contrato relacionado: `docs/control/auditorias/BE-025_CAMPOS_FINANCIEROS_PERMITIDOS_PROHIBIDOS.md`.
 
 ## DEC-028 - Fotos reales quedan bloqueadas hasta politica, QA, auditoria y anulacion
 
