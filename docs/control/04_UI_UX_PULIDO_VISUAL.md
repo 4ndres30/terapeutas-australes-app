@@ -551,7 +551,7 @@ Informe relacionado: `auditorias/CTRL-008_DECISIONES_CRITICAS_POST_AUDITORIA.md`
 
 ## UI-023 - Navegacion y superficies filtradas por rol
 
-**Estado:** Implementada local/demo / PR pendiente.
+**Estado:** Integrada por PR #74 / validada post-merge.
 
 El shell interno filtra la navegacion visible por rol:
 
@@ -561,7 +561,11 @@ El shell interno filtra la navegacion visible por rol:
 
 El mismo filtro aplica a sidebar desktop y drawer movil. La proteccion por rutas se mantiene como barrera adicional.
 
+QA-006C confirma post-merge que Admin, Terapeuta y Finanzas ven la navegacion esperada y que Finanzas mobile `390x844` abre drawer sin mostrar superficies clinicas ni Agenda.
+
 Informe relacionado: `auditorias/UI-023_NAVEGACION_FILTRADA_ROLES.md`
+
+Validacion relacionada: `auditorias/QA-006C_REVALIDACION_NAVEGACION_FILTRADA_ROLES_POSTMERGE.md`
 
 ## UI-022 - Fotos dentro de Elementos del caso
 

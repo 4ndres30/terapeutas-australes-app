@@ -2894,3 +2894,55 @@ El proyecto queda con un modo operativo reutilizable para trabajar con menor con
 La siguiente tarea recomendada es integrar este PR documental y continuar con la siguiente tarea vigente de la lista posterior a UI-023.
 
 PROD-001 sigue bloqueante.
+
+## LOG-066 - QA-006C revalidacion post-merge UI-023
+
+**Estado:** Ejecutada local/demo post-merge
+**Prioridad:** Alta
+**Responsable:** Control de desarrollo / QA
+**Origen:** QA-006C / QA-006B / UI-023 / SEC-007B / PROD-001
+**Fecha creacion:** 2026-07-03
+**Rama usada:** `qa-006c-revalidacion-ui023-postmerge`
+
+### Resumen
+
+Se ejecuta revalidacion post-merge sobre `main` tras integrar PR #74.
+
+La validacion confirma que el menu visible queda filtrado por rol en desktop y drawer mobile, manteniendo redirecciones por guard de ruta.
+
+### Resultado por rol
+
+- Admin ve navegacion transversal y accede a `/agenda`.
+- Terapeuta no ve Finanzas y `/finanzas` redirige a `/pacientes`.
+- Finanzas no ve superficies clinicas ni Agenda y rutas clinicas redirigen a `/finanzas`.
+- Finanzas mobile `390x844` abre drawer con Inicio, Finanzas/Pagos y Reportes.
+
+### Archivos relacionados
+
+- `docs/control/auditorias/QA-006C_REVALIDACION_NAVEGACION_FILTRADA_ROLES_POSTMERGE.md`
+- `docs/control/auditorias/UI-023_NAVEGACION_FILTRADA_ROLES.md`
+- `docs/control/00_ESTADO_GENERAL_PROYECTO.md`
+- `docs/control/01_PENDIENTES_PROYECTO.md`
+- `docs/control/04_UI_UX_PULIDO_VISUAL.md`
+- `docs/control/06_BITACORA_CAMBIOS.md`
+
+### Restricciones respetadas
+
+- No se modifico codigo fuente funcional.
+- No se modifico `.env`.
+- No se modificaron migraciones.
+- No se modifico Auth/RLS.
+- No se uso Supabase remoto.
+- No se ejecuto `supabase db push`.
+- No se creo API publica.
+- No se integro Google Calendar, Gmail ni Workspace.
+- No se habilito produccion.
+- No se usaron datos reales, fotos reales ni pagos reales.
+
+### Resultado
+
+UI-023 queda cerrada post-merge para navegacion visible por rol.
+
+La siguiente fase recomendada es continuar QA-006 con bloques separados para Reportes, Finanzas, Auth y RLS/Storage segun dependencias.
+
+PROD-001 sigue bloqueante.

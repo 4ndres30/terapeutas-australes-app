@@ -2,7 +2,7 @@
 
 ## Estado
 
-Implementada local/demo / PR pendiente.
+Integrada por PR #74 / validada post-merge por QA-006C.
 
 ## Fecha
 
@@ -91,6 +91,6 @@ Se valido en navegador integrado con identidades ficticias locales preparadas po
 
 ## Resultado
 
-UI-023 queda implementada y validada local/demo para navegacion visible por rol.
+UI-023 queda implementada, integrada por PR #74 y validada post-merge para navegacion visible por rol.
 
-La siguiente accion recomendada es preparar PR draft, revisar y luego revalidar post-merge sobre `main`.
+QA-006C confirma que la navegacion visible queda filtrada por rol sobre `main`.
