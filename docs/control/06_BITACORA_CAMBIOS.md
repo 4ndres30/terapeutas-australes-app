@@ -3331,3 +3331,47 @@ El input de archivo de la UI no fue automatizado directamente por limitacion del
 QA-003 queda ejecutada local/demo con observacion. La siguiente recomendacion es hardening tecnico de grants/auditoria de fotos o revalidacion manual del input de archivo si se requiere cierre sin observacion.
 
 PROD-001 sigue bloqueante.
+
+## LOG-075 - SEC-011 diseno hardening fotos Storage
+
+**Estado:** Diseno documental / pendiente implementacion tecnica
+**Prioridad:** Alta
+**Responsable:** Integracion Backend / Seguridad / Control de desarrollo
+**Origen:** SEC-011 / SEC-001 / SEC-005 / SEC-006 / QA-003 / QA-006F / BE-021 / BE-022 / UI-022 / PROD-001
+**Fecha creacion:** 2026-07-04
+**Rama usada:** `sec-011-diseno-hardening-fotos-storage`
+
+### Resumen
+
+Se documenta el diseno de hardening tecnico futuro para fotos y Storage.
+
+El diseno ordena fases de inventario local, hardening de grants, anulacion logica, auditoria sensible, control de objetos huerfanos y QA posterior por rol.
+
+### Archivos relacionados
+
+- `docs/control/auditorias/SEC-011_DISENO_HARDENING_FOTOS_STORAGE.md`
+- `docs/control/00_ESTADO_GENERAL_PROYECTO.md`
+- `docs/control/01_PENDIENTES_PROYECTO.md`
+- `docs/control/05_DECISIONES_PROYECTO.md`
+- `docs/control/06_BITACORA_CAMBIOS.md`
+
+### Restricciones respetadas
+
+- No se modifico codigo fuente funcional.
+- No se modifico `src/`.
+- No se modifico `.env`.
+- No se modificaron migraciones.
+- No se modifico Auth/RLS.
+- No se modifico Storage local ni remoto.
+- No se uso Supabase remoto.
+- No se ejecuto `supabase db push`.
+- No se creo API publica.
+- No se integro Google Calendar, Gmail ni Workspace.
+- No se habilito produccion.
+- No se usaron datos reales, fotos reales ni pagos reales.
+
+### Resultado
+
+SEC-011 queda como contrato documental previo. La implementacion tecnica debe ser una rama separada con aprobacion explicita para tocar migraciones, grants o policies locales.
+
+PROD-001 sigue bloqueante.

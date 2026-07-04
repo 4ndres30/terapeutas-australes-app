@@ -499,7 +499,7 @@ RLS se comporta correctamente por rol en Supabase local, incluyendo fotos y Stor
 - UI-016 ya separo reportes por rol.
 - SEC-005 debe definir auditoria de accesos/cambios sensibles.
 - BE-021 debe definir anulacion logica vs delete fisico.
-- Un hardening posterior debe revisar grants amplios de `fotos_elementos_caso` y Storage.
+- SEC-011 define el diseno documental del hardening posterior para revisar grants de `fotos_elementos_caso`, Storage, auditoria y objetos huerfanos.
 
 ### Observaciones
 
@@ -757,6 +757,7 @@ Las fotos son archivos clinicos sensibles y requieren retencion, anulacion, audi
 
 - SEC-006 define la politica documental de fotos, retencion y objetos huerfanos.
 - QA-003 debe validar funcionalidad local con imagen ficticia.
+- SEC-011 debe guiar la implementacion tecnica futura de hardening de grants, auditoria, anulacion logica y objetos huerfanos.
 - No se habilitan fotos reales.
 
 ### Observaciones

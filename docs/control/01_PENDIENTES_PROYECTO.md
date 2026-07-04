@@ -78,6 +78,7 @@ Este documento es la lista maestra de pendientes. Cada pendiente debe tener un c
 | SEC-008B | Cierre de signup y provisioning Auth controlado. | Pendiente | Alta | Integracion Backend / Seguridad |
 | SEC-009 | Disenar seguridad de API publica. | Diseno documental / pendiente implementacion futura | Alta | Integracion Backend / Seguridad |
 | SEC-010 | Disenar seguridad cloud, OAuth, IAM e identidades tecnicas. | Diseno documental / pendiente implementacion futura | Alta | Integracion Backend / Seguridad |
+| SEC-011 | Disenar hardening tecnico de fotos y Storage. | Diseno documental / pendiente implementacion tecnica | Alta | Integracion Backend / Seguridad |
 | BE-018 | Separacion tecnica de ambientes. | Diseno documental / pendiente implementacion futura | Alta | Integracion Backend |
 | BE-019 | Estrategia de backup/restauracion. | Diseno documental / pendiente implementacion futura | Alta | Integracion Backend / Produccion |
 | BE-020 | Consentimiento informado y tratamiento de datos. | Diseno documental base / pendiente validacion clinica/legal | Alta | Control de desarrollo / Revision Clinica / Backend |
@@ -1865,7 +1866,26 @@ El plan base documental divide QA-006 en fases para evitar cubrir todo en un sol
 
 QA-006 queda iniciado como plan base documental, QA-006A deja matriz de rutas/superficies por rol y QA-006B confirma que rutas internas sin sesion redirigen a `/login`. Tras SEC-007B, QA-006B valida local/demo redireccion por rol, Reportes por rol, Agenda para Admin/Terapeuta y bloqueo de usuarios inactivo/sin perfil. QA-006C valida post-merge que el menu visible ya queda filtrado por rol en desktop/mobile. QA-006D valida Reportes/Finanzas por rol: Admin ve superficie mixta autorizada, Terapeuta queda clinico y Finanzas queda financiero/administrativo. QA-006E valida estados Auth minimos local/demo: sin sesion, credenciales invalidas, usuario inactivo, usuario sin perfil interno y login admin valido. QA-006F valida runtime local que Finanzas no accede a clinica, fotos ni Storage, que Terapeuta no accede a cobros/pagos directos y que el bucket `elementos-caso` sigue privado.
 
-La siguiente fase recomendada es hardening tecnico de grants/auditoria de fotos o una revalidacion manual del input de archivo si se quiere cerrar QA-003 sin observacion. PROD-001 sigue bloqueante.
+La siguiente fase recomendada es SEC-011 como diseno documental de hardening tecnico de fotos/Storage, o una revalidacion manual del input de archivo si se quiere cerrar QA-003 sin observacion. PROD-001 sigue bloqueante.
+
+### SEC-011 - Disenar hardening tecnico de fotos y Storage
+
+**Estado:** Diseno documental / pendiente implementacion tecnica
+**Prioridad:** Alta
+**Responsable:** Integracion Backend / Seguridad
+**Origen:** SEC-001 / SEC-005 / SEC-006 / QA-003 / QA-006F / BE-021 / BE-022 / UI-022 / PROD-001
+**Fecha creacion:** 2026-07-04
+**Rama usada:** `sec-011-diseno-hardening-fotos-storage`
+**Informe:** `docs/control/auditorias/SEC-011_DISENO_HARDENING_FOTOS_STORAGE.md`
+**Dependencias:** SEC-001, SEC-005, SEC-006, QA-003, QA-006F, BE-021, BE-022, UI-022, PROD-001
+
+#### Descripcion
+Definir la tarea tecnica futura para endurecer grants, auditoria, anulacion logica y control de objetos huerfanos de fotos de elementos del caso.
+
+#### Resultado
+SEC-011 deja un contrato tecnico por fases: inventario local no destructivo, hardening de grants, anulacion logica, auditoria sensible, control de objetos huerfanos y QA posterior por rol.
+
+No implementa migraciones, RLS/Auth, Storage, codigo, `.env`, Supabase remoto ni produccion. La implementacion tecnica futura requiere aprobacion explicita y rama separada.
 
 ### UI-013 - Disenar experiencia de trabajos, sesiones y acciones
 
