@@ -2997,3 +2997,58 @@ QA-006D queda ejecutada local/demo.
 La siguiente fase recomendada es continuar QA-006 con Auth y RLS/Storage en bloques separados.
 
 PROD-001 sigue bloqueante.
+
+## LOG-068 - QA-006E Auth local/demo
+
+**Estado:** Ejecutada local/demo
+**Prioridad:** Alta
+**Responsable:** Control de desarrollo / QA
+**Origen:** QA-006E / QA-006 / SEC-007B / SEC-008 / SEC-008B / UI-024 / PROD-001
+**Fecha creacion:** 2026-07-03
+**Rama usada:** `qa-006e-auth-estados-local-demo`
+
+### Resumen
+
+Se valida en navegador integrado la experiencia Auth local/demo para estados minimos de acceso interno.
+
+La validacion confirma redireccion a login sin sesion, mensaje generico ante credenciales invalidas, bloqueo no tecnico para usuario inactivo y usuario sin perfil interno, y login valido de Admin hacia `/pacientes`.
+
+### Resultado por caso
+
+- Sin sesion en `/pacientes`: redirige a `/login` con encabezado `Acceso interno`.
+- Credenciales invalidas: permanece en `/login` y muestra mensaje generico no tecnico.
+- Usuario inactivo: permanece en `/login` y muestra `Acceso interno no habilitado`.
+- Usuario sin perfil interno: permanece en `/login` y muestra `Acceso interno no habilitado`.
+- Admin valido: inicia sesion y llega a `/pacientes`.
+
+### Archivos relacionados
+
+- `docs/control/auditorias/QA-006E_VALIDACION_AUTH_LOCAL_DEMO.md`
+- `docs/control/00_ESTADO_GENERAL_PROYECTO.md`
+- `docs/control/01_PENDIENTES_PROYECTO.md`
+- `docs/control/06_BITACORA_CAMBIOS.md`
+
+### Restricciones respetadas
+
+- No se modifico codigo fuente funcional.
+- No se modifico `.env`.
+- No se modificaron migraciones.
+- No se modifico Auth/RLS.
+- No se crearon usuarios.
+- No se modifico `usuarios_internos`.
+- No se ejecuto SQL manual.
+- No se uso Supabase remoto.
+- No se ejecuto `supabase db push`.
+- No se creo API publica.
+- No se integro Google Calendar, Gmail ni Workspace.
+- No se habilito produccion.
+- No se usaron datos reales, fotos reales ni pagos reales.
+- No se documentaron credenciales.
+
+### Resultado
+
+QA-006E queda ejecutada local/demo.
+
+La siguiente fase recomendada de QA-006 es RLS/Storage en bloque separado. Antes de ejecutarla, Control recomienda cerrar BE-023 y BE-025 como tareas documentales para precisar la superficie financiera permitida.
+
+PROD-001 sigue bloqueante.

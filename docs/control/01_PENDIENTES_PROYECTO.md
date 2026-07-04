@@ -31,7 +31,7 @@ Este documento es la lista maestra de pendientes. Cada pendiente debe tener un c
 | QA-002 | Validacion funcional de hallazgos operativos con caso demo. | Integrada | Alta | Control de desarrollo |
 | QA-004 | Validacion funcional local de BE-016 / Finanzas. | Integrada | Alta | Control de desarrollo |
 | QA-005 | Validacion funcional local UI-016 / Reportes por rol. | Integrada | Alta | Control de desarrollo |
-| QA-006 | Base minima de pruebas por rol y no exposicion sensible. | QA-006D Reportes/Finanzas OK / Auth-RLS pendientes | Alta | Control de desarrollo / QA |
+| QA-006 | Base minima de pruebas por rol y no exposicion sensible. | QA-006E Auth local/demo OK / RLS-Storage pendientes | Alta | Control de desarrollo / QA |
 | QA-007 | Checklist pre-migracion cloud. | Checklist documental / pendiente ejecucion futura | Alta | Control de desarrollo / QA |
 | QA-008 | Validacion funcional completa de Agenda interna. | Cerrada post-merge local/demo | Alta | Control de Desarrollo / QA / UI-UX / Integracion Backend |
 | QA-009 | Validacion visual UI-020/UI-021 ambiente. | Cerrada local/demo | Alta | Control de desarrollo / QA / UI-UX |
@@ -1763,11 +1763,12 @@ Validar localmente que las fotos se cargan, registran y muestran asociadas al el
 **Informe QA-006B:** `docs/control/auditorias/QA-006B_VALIDACION_NAVEGACION_ROLES.md`
 **Informe QA-006C:** `docs/control/auditorias/QA-006C_REVALIDACION_NAVEGACION_FILTRADA_ROLES_POSTMERGE.md`
 **Informe QA-006D:** `docs/control/auditorias/QA-006D_VALIDACION_REPORTES_FINANZAS_ROLES.md`
+**Informe QA-006E:** `docs/control/auditorias/QA-006E_VALIDACION_AUTH_LOCAL_DEMO.md`
 
 #### Descripcion
 Definir e implementar progresivamente una base minima de pruebas para roles, navegacion, reportes, finanzas y no exposicion de datos sensibles.
 
-El plan base documental divide QA-006 en fases para evitar cubrir todo en un solo PR. `QA-006A - Matriz de rutas y superficies por rol` queda documentado como base, `QA-006B - Validacion visual autenticada de navegacion por rol` queda ejecutada local/demo, `QA-006C - Revalidacion post-merge navegacion filtrada por rol` confirma que UI-023 resolvio la observacion visible del menu y `QA-006D - Reportes y Finanzas por rol` confirma separacion visual de Reportes/Finanzas.
+El plan base documental divide QA-006 en fases para evitar cubrir todo en un solo PR. `QA-006A - Matriz de rutas y superficies por rol` queda documentado como base, `QA-006B - Validacion visual autenticada de navegacion por rol` queda ejecutada local/demo, `QA-006C - Revalidacion post-merge navegacion filtrada por rol` confirma que UI-023 resolvio la observacion visible del menu, `QA-006D - Reportes y Finanzas por rol` confirma separacion visual de Reportes/Finanzas y `QA-006E - Validacion Auth local/demo` confirma estados Auth minimos con mensajes no tecnicos.
 
 #### Criterios de aceptacion preliminares
 - Cubrir rutas protegidas por rol.
@@ -1786,9 +1787,9 @@ El plan base documental divide QA-006 en fases para evitar cubrir todo en un sol
 
 #### Resultado actual
 
-QA-006 queda iniciado como plan base documental, QA-006A deja matriz de rutas/superficies por rol y QA-006B confirma que rutas internas sin sesion redirigen a `/login`. Tras SEC-007B, QA-006B valida local/demo redireccion por rol, Reportes por rol, Agenda para Admin/Terapeuta y bloqueo de usuarios inactivo/sin perfil. QA-006C valida post-merge que el menu visible ya queda filtrado por rol en desktop/mobile. QA-006D valida Reportes/Finanzas por rol: Admin ve superficie mixta autorizada, Terapeuta queda clinico y Finanzas queda financiero/administrativo.
+QA-006 queda iniciado como plan base documental, QA-006A deja matriz de rutas/superficies por rol y QA-006B confirma que rutas internas sin sesion redirigen a `/login`. Tras SEC-007B, QA-006B valida local/demo redireccion por rol, Reportes por rol, Agenda para Admin/Terapeuta y bloqueo de usuarios inactivo/sin perfil. QA-006C valida post-merge que el menu visible ya queda filtrado por rol en desktop/mobile. QA-006D valida Reportes/Finanzas por rol: Admin ve superficie mixta autorizada, Terapeuta queda clinico y Finanzas queda financiero/administrativo. QA-006E valida estados Auth minimos local/demo: sin sesion, credenciales invalidas, usuario inactivo, usuario sin perfil interno y login admin valido.
 
-La siguiente fase recomendada es continuar QA-006 con Auth y RLS/Storage segun dependencias, sin datos reales ni produccion.
+La siguiente fase recomendada de QA-006 es RLS/Storage en bloque separado. Antes de ejecutarla, Control recomienda cerrar BE-023 y BE-025 en modo documental para precisar identificadores y campos financieros permitidos/prohibidos.
 
 ### UI-013 - Disenar experiencia de trabajos, sesiones y acciones
 
