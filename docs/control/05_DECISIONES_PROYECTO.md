@@ -1136,7 +1136,7 @@ Validado con `npm run dev` y los usuarios demo SEC-007B: login, logout y sidebar
 
 ## DEC-037 - Utilidades compartidas en `lib/`
 
-**Estado:** Aprobada / implementacion en curso
+**Estado:** Aprobada / 12 de 14 paginas migradas, validadas tecnica y visualmente, pendiente PR
 **Origen:** AUDIT-2026-07-04 / Javier
 **Fecha:** 2026-07-04
 
@@ -1161,6 +1161,8 @@ No modifica el comportamiento observable de ninguna pagina. No modifica migracio
 ### Observaciones
 
 Un primer intento en la rama `refactor/extract-utilities` genero los 3 archivos escritos desde cero en lugar de extraidos: no compilaban, no pasaban lint y usaban columnas/estados que no existen en el esquema real. Ese intento se descarta y se rehace por extraccion real. Ver [[refactor-extract-utilities-jul-2026]] en memoria de sesion para el detalle de los errores encontrados.
+
+Se migraron los imports en `CasoDetallePage`, `CasosPage`, `ConsultasPage`, `EvaluacionesPage`, `FinanzasPage`, `PacientesPage`, `ReportesPage`, `DetalleRevisionesPanel`, `ElementosCasoPanel`, `PagosCasoPanel`, `RevisionesCasoPanel` y `TrabajosCasoPanel` (12 de 14 paginas con `*_SELECT`/formatters locales). `AgendaPage` queda fuera del alcance: sus formatters de fecha/hora son genuinamente distintos y no duplican `lib/format.ts`. Donde el largo por defecto de `textoCorto` difería del de `lib/format.ts`, se preservo el valor original explicito en el call site en vez de normalizar el comportamiento. Validado con `tsc -b`, `eslint` y prueba visual completa con datos reales (seed local DATA-001): mismos valores de fecha/moneda/texto que antes del cambio.
 
 ## DEC-038 - Migraciones SQL para cerrar brechas RLS
 

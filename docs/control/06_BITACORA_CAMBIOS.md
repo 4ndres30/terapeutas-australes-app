@@ -3582,3 +3582,43 @@ Se cerro el pendiente de LOG-078 sobre `poc/auth-context`: encapsular el context
 - Bloque 1, 2, 4 y 5: sin cambios respecto de LOG-078.
 
 PROD-001 sigue bloqueante.
+
+## LOG-080 - PRs de Bloques 1 y 3 abiertos; migracion de imports Bloque 2
+
+**Estado:** Bloque 1 y 3 con PR abierto a `main` / Bloque 2 con 12 de 14 paginas migradas, pendiente PR
+**Prioridad:** Alta
+**Responsable:** Control de desarrollo (Claude, con autorizacion de Javier)
+**Origen:** AUDIT-2026-07-04 / DEC-036 / DEC-037 / DEC-038 / Javier
+**Fecha creacion:** 2026-07-04
+
+### Resumen
+
+Javier confirmo conformidad con el trabajo revisado en WebStorm y autorizo proceder. Se abrieron los PRs de los bloques ya validados y se completo la migracion de imports de Bloque 2 (utilidades).
+
+### Trabajo realizado en esta sesion
+
+1. Se empujaron `fix/rls-vista-cobros-finanzas`, `fix/rls-fotos-auditoria-finanzas`, `fix/rls-delete-policies`, `docs/audit-2026-07-04-revision-estructura` y `poc/auth-context` a `origin`.
+2. Se abrieron 4 PRs contra `main`: #85 (vista_cobros_estado), #86 (vista_finanzas_fotos_auditoria), #87 (DELETE policies), #88 (AuthContext).
+3. Bloque 2: se migraron los imports de `formatearFecha`/`normalizarTexto`/`aNumero`/`formatearMoneda`/`textoCorto` desde `lib/format.ts` en 12 paginas (ver detalle en `BLOQUE-2-UTIL` de `01_PENDIENTES_PROYECTO.md` y DEC-037). Verificado con `tsc -b`, `eslint` y validacion visual completa en navegador con datos del seed local DATA-001 (login admin): Pacientes, Casos, Consultas, Evaluaciones, Finanzas, Reportes y los 5 paneles de detalle de caso muestran los mismos valores que antes de la migracion.
+4. Se detecto que Docker Desktop se habia cerrado durante la sesion (interrumpiendo Supabase local); se reinicio, y se cargo el seed `supabase/dev-seeds/caso_demo_integral.sql` para tener datos reales con los que validar visualmente el formato de fecha/moneda/texto.
+
+### Archivos relacionados
+
+- `supabase/migrations/20260704_000000_fix_vista_cobros_estado_finanzas.sql`, `20260704_000001_crear_vista_fotos_auditoria_finanzas.sql`, `20260704_000002_agregar_delete_policies_tablas_operativas.sql`
+- `src/context/AuthContext.tsx`
+- 12 paginas listadas en `BLOQUE-2-UTIL`
+- `docs/control/01_PENDIENTES_PROYECTO.md`, `05_DECISIONES_PROYECTO.md`
+
+### Restricciones respetadas
+
+- No se ejecuto `supabase db push`. No se toco Supabase remoto ni `.env`.
+- Los PRs abiertos no se mergearon a `main`; quedan pendientes de revision y aprobacion en GitHub.
+- El seed cargado (`caso_demo_integral.sql`) es exclusivamente local, ya documentado y validado en DATA-001.
+
+### Pendiente
+
+- Revision y merge de PRs #85, #86, #87, #88 en GitHub.
+- Bloque 2: PR de las 12 paginas migradas; evaluar a futuro si migrar `AgendaPage` y unificar los `largo` de `textoCorto` es deseable (decision de producto, no mecanica).
+- Bloque 4 (testing) y Bloque 5 (documentacion): sin trabajo iniciado.
+
+PROD-001 sigue bloqueante.

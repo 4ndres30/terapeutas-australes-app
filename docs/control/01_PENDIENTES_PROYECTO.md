@@ -110,9 +110,9 @@ Este documento es la lista maestra de pendientes. Cada pendiente debe tener un c
 | IMP-002 | Implementacion funcional hallazgo a trabajo. | Pendiente | Alta | Implementacion |
 | PROD-001 | Preparacion para uso real con datos sensibles. | Mantener pendiente / bloqueante | Alta | Control de desarrollo / Integracion Backend |
 | AUDIT-2026-07-04 | Revision integral de estructura y arquitectura; roadmap 5 bloques. | Aprobada por Javier (DEC-036 a DEC-039) | Alta | Control de desarrollo |
-| BLOQUE-1-RLS | 3 migraciones RLS para DEC-038 en ramas fix/rls-*. | Las 3 corregidas y validadas con `supabase db reset` local / pendiente PR | Alta | Integracion Backend / Seguridad |
-| BLOQUE-2-UTIL | Extraccion de lib/format.ts, lib/queries.ts, lib/constants.ts para DEC-037. | Archivos correctos y validados / imports en paginas aun pendientes | Media | Integracion Backend/Estructura |
-| BLOQUE-3-AUTH | POC AuthContext para DEC-036. | Validado tecnica y visualmente (3 roles, login/logout) / pendiente revision final Javier y PR | Media | Integracion Backend/Estructura |
+| BLOQUE-1-RLS | 3 migraciones RLS para DEC-038 en ramas fix/rls-*. | Las 3 corregidas y validadas con `supabase db reset` local / PR #85, #86, #87 abiertos | Alta | Integracion Backend / Seguridad |
+| BLOQUE-2-UTIL | Extraccion de lib/format.ts, lib/queries.ts, lib/constants.ts para DEC-037. | Archivos validados e importados en 12 de 14 paginas consumidoras / pendiente PR | Media | Integracion Backend/Estructura |
+| BLOQUE-3-AUTH | POC AuthContext para DEC-036. | Validado tecnica y visualmente (3 roles, login/logout) / PR #88 abierto | Media | Integracion Backend/Estructura |
 
 ## Pendientes integrados
 
@@ -2280,7 +2280,7 @@ Las 3 se validaron con `supabase db reset` local: aplican sin errores sobre el e
 
 ### BLOQUE-2-UTIL - Extraccion de utilidades compartidas para DEC-037
 
-**Estado:** Archivos correctos y validados (tsc/eslint) / imports en paginas consumidoras pendientes
+**Estado:** Archivos validados (tsc/eslint) e importados en 12 paginas / pendiente PR
 **Prioridad:** Media
 **Responsable:** Integracion Backend/Estructura
 **Origen:** AUDIT-2026-07-04 / DEC-037
@@ -2291,7 +2291,11 @@ Las 3 se validaron con `supabase db reset` local: aplican sin errores sobre el e
 
 `src/lib/constants.ts`, `format.ts` y `queries.ts` fueron reescritos como extraccion fiel de las implementaciones reales duplicadas en `src/pages/` (verificado contra 10+ copias de cada funcion y contra los CHECK constraints de las migraciones). El intento anterior en la misma rama habia sido inventado desde cero y no compilaba.
 
-Pendiente: migrar los imports de cada pagina consumidora, revisando caso por caso porque se detectaron inconsistencias reales de comportamiento entre copias que son decisiones de producto (no solo deduplicacion mecanica).
+Se migraron los imports de `formatearFecha`/`normalizarTexto`/`aNumero`/`formatearMoneda`/`textoCorto` en `CasoDetallePage`, `CasosPage`, `ConsultasPage`, `EvaluacionesPage`, `FinanzasPage`, `PacientesPage`, `ReportesPage`, `DetalleRevisionesPanel`, `ElementosCasoPanel`, `PagosCasoPanel`, `RevisionesCasoPanel` y `TrabajosCasoPanel`, verificando cada funcion linea por linea contra la copia local antes de eliminarla. Donde el `largo` por defecto de `textoCorto` no coincidia con el de `lib/format.ts` (96, 110, 112, 128 vs 120), se dejo intacta o se paso el valor original explicito en el call site para no cambiar el comportamiento observable. `AgendaPage` no se toco: sus formatters de fecha/hora son genuinamente distintos, no duplicados.
+
+Validado con `tsc -b`, `eslint` y prueba visual completa (`npm run dev` + seed local DATA-001, usuario admin) en las 7 paginas y 5 paneles de detalle de caso: fechas y montos identicos a antes del cambio, sin errores de consola.
+
+Pendiente: `AgendaPage` y las paginas donde `textoCorto`/otras utilidades tienen variantes de comportamiento no triviales quedan fuera de este alcance; revisar caso por caso si se decide unificarlas a futuro.
 
 ### BLOQUE-3-AUTH - POC AuthContext para DEC-036
 
