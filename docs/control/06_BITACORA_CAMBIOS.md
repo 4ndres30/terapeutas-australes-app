@@ -3545,3 +3545,40 @@ La fila resumen de `BLOQUE-1-RLS` en `01_PENDIENTES_PROYECTO.md` tambien sobre-g
 - Bloque 2: sin cambios respecto de LOG-077 (imports pendientes, caso por caso).
 
 PROD-001 sigue bloqueante.
+
+## LOG-079 - Validacion visual Bloque 3 y encapsulacion de AuthContext
+
+**Estado:** Bloque 3 (DEC-036) validado tecnica y visualmente / pendiente revision final Javier y PR
+**Prioridad:** Media
+**Responsable:** Control de desarrollo (Claude - continuacion de sesion)
+**Origen:** AUDIT-2026-07-04 / DEC-036 / Javier
+**Fecha creacion:** 2026-07-04
+
+### Resumen
+
+Se cerro el pendiente de LOG-078 sobre `poc/auth-context`: encapsular el contexto y ejecutar la validacion visual en navegador que exigia DEC-036 antes de cualquier PR.
+
+### Trabajo realizado en esta sesion
+
+1. Se levanto `npm run dev` y se reprovisionaron los usuarios demo SEC-007B (habian quedado sin auth tras los `supabase db reset` de LOG-078, que solo reaplican migraciones, no el provisioning imperativo de Auth).
+2. Se valido login/logout y sidebar filtrado por rol para `admin` (todos los modulos + Configuracion), `terapeuta` (modulos clinicos, sin Finanzas) y `finanzas` (solo Finanzas/Pagos y Reportes), sin errores de consola.
+3. Se detecto que `src/context/AuthContext.tsx` exponia los 4 setters crudos de estado (`setEstadoAuth`, `setSession`, `setUsuarioInterno`, `setMensajeAuth`) sin que ningun consumidor los usara (confirmado por grep). Se retiraron del tipo `AuthContextType` y del `value` del provider; el contexto ahora solo expone estado de lectura + `cerrarSesion`.
+4. Se revalido `tsc -b` (limpio) y, tras recargar el navegador, que la sesion persistida y el flujo de los 3 roles seguian funcionando igual tras encapsular.
+
+### Archivos relacionados
+
+- `src/context/AuthContext.tsx` (rama `poc/auth-context`)
+- `docs/control/01_PENDIENTES_PROYECTO.md`
+- `docs/control/05_DECISIONES_PROYECTO.md`
+
+### Restricciones respetadas
+
+- Los usuarios demo reprovisionados son estrictamente locales (`SEC007B_ALLOW_PROVISIONING=LOCAL_DEMO_ONLY`, contra `http://127.0.0.1:54321`), siguiendo el procedimiento documentado en SEC-007B. Las variables de entorno sensibles se limpiaron tras la ejecucion.
+- No se toco Supabase remoto ni `.env`. No se mergeo nada a `main`.
+
+### Pendiente
+
+- Revision final de Javier y PR de `poc/auth-context` a `main`.
+- Bloque 1, 2, 4 y 5: sin cambios respecto de LOG-078.
+
+PROD-001 sigue bloqueante.

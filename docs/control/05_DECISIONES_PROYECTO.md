@@ -1105,7 +1105,7 @@ Informe relacionado: `docs/control/auditorias/DEC-035_MIGRACION_PROGRESIVA_GOOGL
 
 ## DEC-036 - State management centralizado con Context + useReducer
 
-**Estado:** Aprobada / POC en validacion tecnica
+**Estado:** Aprobada / POC validado tecnica y visualmente, pendiente revision final de Javier
 **Origen:** AUDIT-2026-07-04 / Javier
 **Fecha:** 2026-07-04
 
@@ -1130,7 +1130,9 @@ No modifica RLS, Auth de Supabase, `.env`, ni datos reales. No habilita producci
 
 ### Observaciones
 
-Existe un POC funcional en la rama `poc/auth-context` que extrae fielmente la logica existente de `App.tsx` (verificado por comparacion linea por linea). Queda pendiente la validacion visual en navegador por Javier antes de cualquier PR a `main`.
+Existe un POC funcional en la rama `poc/auth-context` que extrae fielmente la logica existente de `App.tsx` (verificado por comparacion linea por linea). Se corrigio un bug de compilacion (`usuarioInterno.nombre_completo` sin guard opcional) y se encapsulo el contexto: ya no expone `setEstadoAuth`/`setSession`/`setUsuarioInterno`/`setMensajeAuth` (nadie fuera de `AuthContext.tsx` los usaba), solo estado de lectura + `cerrarSesion`.
+
+Validado con `npm run dev` y los usuarios demo SEC-007B: login, logout y sidebar filtrado correctos para `admin`, `terapeuta` y `finanzas`, sin errores de consola. Queda pendiente la revision final de Javier antes de cualquier PR a `main`.
 
 ## DEC-037 - Utilidades compartidas en `lib/`
 

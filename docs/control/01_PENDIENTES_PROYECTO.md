@@ -112,7 +112,7 @@ Este documento es la lista maestra de pendientes. Cada pendiente debe tener un c
 | AUDIT-2026-07-04 | Revision integral de estructura y arquitectura; roadmap 5 bloques. | Aprobada por Javier (DEC-036 a DEC-039) | Alta | Control de desarrollo |
 | BLOQUE-1-RLS | 3 migraciones RLS para DEC-038 en ramas fix/rls-*. | Las 3 corregidas y validadas con `supabase db reset` local / pendiente PR | Alta | Integracion Backend / Seguridad |
 | BLOQUE-2-UTIL | Extraccion de lib/format.ts, lib/queries.ts, lib/constants.ts para DEC-037. | Archivos correctos y validados / imports en paginas aun pendientes | Media | Integracion Backend/Estructura |
-| BLOQUE-3-AUTH | POC AuthContext para DEC-036. | Validado tecnicamente (tsc/lint/build) / pendiente validacion visual Javier | Media | Integracion Backend/Estructura |
+| BLOQUE-3-AUTH | POC AuthContext para DEC-036. | Validado tecnica y visualmente (3 roles, login/logout) / pendiente revision final Javier y PR | Media | Integracion Backend/Estructura |
 
 ## Pendientes integrados
 
@@ -2295,7 +2295,7 @@ Pendiente: migrar los imports de cada pagina consumidora, revisando caso por cas
 
 ### BLOQUE-3-AUTH - POC AuthContext para DEC-036
 
-**Estado:** Validado tecnicamente (tsc, eslint, npm run build) / pendiente validacion visual de Javier
+**Estado:** Validado tecnica y visualmente / pendiente revision final de Javier y PR
 **Prioridad:** Media
 **Responsable:** Integracion Backend/Estructura
 **Origen:** AUDIT-2026-07-04 / DEC-036
@@ -2304,7 +2304,9 @@ Pendiente: migrar los imports de cada pagina consumidora, revisando caso por cas
 
 #### Resultado
 
-El POC extrae fielmente la logica de autenticacion de `App.tsx` hacia `AuthContext`/`useAuth()`, eliminando el prop drilling hacia `RutaProtegida`/`AppPrivada`/`DashboardShell`. Se corrigio un bug de compilacion (`usuarioInterno.nombre_completo` sin guard opcional). Sin merge a `main`: requiere validacion visual en navegador antes de cualquier PR.
+El POC extrae fielmente la logica de autenticacion de `App.tsx` hacia `AuthContext`/`useAuth()`, eliminando el prop drilling hacia `RutaProtegida`/`AppPrivada`/`DashboardShell`. Se corrigio un bug de compilacion (`usuarioInterno.nombre_completo` sin guard opcional) y se encapsulo el contexto (ya no expone `setEstadoAuth`/`setSession`/`setUsuarioInterno`/`setMensajeAuth`, sin consumidores que los usaran).
+
+Validacion visual completa con `npm run dev` y los usuarios demo SEC-007B: login/logout y sidebar filtrado correctos para los 3 roles (`admin` ve todos los modulos incl. Configuracion; `terapeuta` ve modulos clinicos sin Finanzas; `finanzas` ve solo Finanzas/Pagos y Reportes), sin errores de consola. Sin merge a `main`: pendiente revision final de Javier y PR.
 
 ## Tareas sugeridas no activas
 
