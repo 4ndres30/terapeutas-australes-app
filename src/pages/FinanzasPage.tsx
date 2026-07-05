@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
+import { aNumero, formatearFecha, formatearMoneda, normalizarTexto, textoCorto } from '../lib/format'
 import { supabase } from '../lib/supabase'
 import './ClinicalModuleBase.css'
 
@@ -52,50 +53,6 @@ const UNIDAD_COBRABLE_SELECT = [
   'referencia_pago',
 ].join(', ')
 
-function normalizarTexto(texto: string) {
-  return texto.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '')
-}
-
-function formatearFecha(fecha: string | null) {
-  if (!fecha) {
-    return 'Sin fecha'
-  }
-
-  const normalizada = fecha.includes('T') ? fecha : `${fecha}T00:00:00`
-  const fechaFinanzas = new Date(normalizada)
-
-  if (Number.isNaN(fechaFinanzas.getTime())) {
-    return 'Sin fecha'
-  }
-
-  return new Intl.DateTimeFormat('es-CL', {
-    day: '2-digit',
-    month: 'short',
-    year: 'numeric',
-  }).format(fechaFinanzas)
-}
-
-function aNumero(valor: number | string | null | undefined) {
-  if (valor === null || valor === undefined || valor === '') {
-    return 0
-  }
-
-  const numero = typeof valor === 'number' ? valor : Number(valor)
-  return Number.isFinite(numero) ? numero : 0
-}
-
-function formatearMoneda(valor: number) {
-  return new Intl.NumberFormat('es-CL', {
-    currency: 'CLP',
-    maximumFractionDigits: 0,
-    style: 'currency',
-  }).format(valor)
-}
-
-function textoCorto(texto: string, largo = 110) {
-  const limpio = texto.trim()
-  return limpio.length > largo ? `${limpio.slice(0, largo - 1)}...` : limpio
-}
 
 function FinanzasPage() {
   const [unidadesCobrables, setUnidadesCobrables] = useState<UnidadCobrableFinanzas[]>([])
@@ -227,7 +184,7 @@ function FinanzasPage() {
                     </div>
                     <span className="clinical-badge">{unidad.estado_cobro || 'Sin estado'}</span>
                   </div>
-                  <p>{textoCorto([unidad.tipo_unidad_cobrable, unidad.referencia_unidad_administrativa].filter(Boolean).join(' · ') || 'Sin referencia administrativa')}</p>
+                  <p>{textoCorto([unidad.tipo_unidad_cobrable, unidad.referencia_unidad_administrativa].filter(Boolean).join(' · ') || 'Sin referencia administrativa', 110)}</p>
                   <dl className="clinical-details">
                     <div>
                       <dt>Total</dt>

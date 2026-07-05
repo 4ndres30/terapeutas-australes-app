@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from 'react'
 import { Link, Navigate, useParams } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
+import { formatearFecha } from '../lib/format'
 import DetalleRevisionesPanel from './casos/DetalleRevisionesPanel'
 import ElementosCasoPanel from './casos/ElementosCasoPanel'
 import PagosCasoPanel from './casos/PagosCasoPanel'
@@ -122,25 +123,6 @@ const EVALUACION_SELECT = [
   'notas_internas',
   'estado_evaluacion',
 ].join(', ')
-
-function formatearFecha(fecha: string | null) {
-  if (!fecha) {
-    return 'Sin fecha'
-  }
-
-  const normalizada = fecha.includes('T') ? fecha : `${fecha}T00:00:00`
-  const fechaCaso = new Date(normalizada)
-
-  if (Number.isNaN(fechaCaso.getTime())) {
-    return 'Sin fecha'
-  }
-
-  return new Intl.DateTimeFormat('es-CL', {
-    day: '2-digit',
-    month: 'short',
-    year: 'numeric',
-  }).format(fechaCaso)
-}
 
 function obtenerNombrePaciente(paciente: Paciente | null) {
   if (!paciente) {
