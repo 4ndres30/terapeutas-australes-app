@@ -110,9 +110,9 @@ Este documento es la lista maestra de pendientes. Cada pendiente debe tener un c
 | IMP-002 | Implementacion funcional hallazgo a trabajo. | Pendiente | Alta | Implementacion |
 | PROD-001 | Preparacion para uso real con datos sensibles. | Mantener pendiente / bloqueante | Alta | Control de desarrollo / Integracion Backend |
 | AUDIT-2026-07-04 | Revision integral de estructura y arquitectura; roadmap 5 bloques. | Aprobada por Javier (DEC-036 a DEC-039) | Alta | Control de desarrollo |
-| BLOQUE-1-RLS | 3 migraciones RLS para DEC-038 en ramas fix/rls-*. | Las 3 corregidas y validadas con `supabase db reset` local / PR #85, #86, #87 abiertos | Alta | Integracion Backend / Seguridad |
-| BLOQUE-2-UTIL | Extraccion de lib/format.ts, lib/queries.ts, lib/constants.ts para DEC-037. | Archivos validados e importados en 12 de 14 paginas consumidoras / pendiente PR | Media | Integracion Backend/Estructura |
-| BLOQUE-3-AUTH | POC AuthContext para DEC-036. | Validado tecnica y visualmente (3 roles, login/logout) / PR #88 abierto | Media | Integracion Backend/Estructura |
+| BLOQUE-1-RLS | 3 migraciones RLS para DEC-038 en ramas fix/rls-*. | Mergeado a `main` (PR #85, #86, #87) | Alta | Integracion Backend / Seguridad |
+| BLOQUE-2-UTIL | Extraccion de lib/format.ts, lib/queries.ts, lib/constants.ts para DEC-037. | Mergeado a `main` (PR #89), 12 de 14 paginas | Media | Integracion Backend/Estructura |
+| BLOQUE-3-AUTH | POC AuthContext para DEC-036. | Mergeado a `main` (PR #88) | Media | Integracion Backend/Estructura |
 
 ## Pendientes integrados
 

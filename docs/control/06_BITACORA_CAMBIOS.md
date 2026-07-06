@@ -3622,3 +3622,43 @@ Javier confirmo conformidad con el trabajo revisado en WebStorm y autorizo proce
 - Bloque 4 (testing) y Bloque 5 (documentacion): sin trabajo iniciado.
 
 PROD-001 sigue bloqueante.
+
+## LOG-081 - Merge de Bloques 1, 2 y 3 a main; bug de naming de migraciones encontrado y corregido
+
+**Estado:** Bloques 1, 2 y 3 (DEC-036/037/038) mergeados a `main` (PR #85-#90). Bloque 4 y 5 sin iniciar.
+**Prioridad:** Alta
+**Responsable:** Control de desarrollo (Claude, con autorizacion explicita de Javier)
+**Origen:** AUDIT-2026-07-04 / DEC-036 / DEC-037 / DEC-038 / Javier
+**Fecha creacion:** 2026-07-06
+
+### Resumen
+
+Javier autorizo mergear los 5 PRs abiertos, uno a la vez, verificando que cada merge no rompiera la aplicacion antes de integrar el siguiente.
+
+### Trabajo realizado
+
+1. Merge PR #85 (vista_cobros_estado): verificado con `tsc`, `eslint`, `supabase db reset` y prueba visual en vivo del panel Pagos (usa la vista) con datos del seed local.
+2. Merge PR #86 (vista_finanzas_fotos_auditoria): al aplicar `db reset` con ambas migraciones juntas aparecio `ERROR: duplicate key value violates unique constraint "schema_migrations_pkey", Key (version)=(20260704) already exists`. Causa: los archivos `20260704_000000_...` y `20260704_000001_...` usaban guion bajo entre fecha y hora, distinto a la convencion del resto del proyecto (`YYYYMMDDHHMMSS` corrido, ej. `20260701040000`). El CLI de Supabase toma como version solo los digitos antes del primer guion bajo, asi que ambas migraciones quedaban con la misma version `20260704`.
+3. Se renombraron `20260704_000000` y `20260704_000001` a `20260704000000`/`20260704000001` (commit directo en `main`), y se aplico el mismo fix en la rama de PR #87 (`20260704_000002` a `20260704000002`) antes de mergearla, para evitar la misma colision.
+4. Merge PR #87 (DELETE policies): verificado con `tsc`, `eslint`, `db reset` (las 3 migraciones ya renombradas aplican juntas sin error) y `pg_policies` (10 policies DELETE creadas). Se confirmo ademas que no hay ningun `.delete(` en `src/`, por lo que esta migracion no puede romper ninguna funcionalidad existente.
+5. Merge PR #88 (AuthContext): verificado con `tsc`, `eslint`, `vite build` y prueba visual completa en navegador (login/logout/sidebar para admin, terapeuta y finanzas) contra el `main` ya actualizado con Bloque 1.
+6. Merge PR #89 (utilidades compartidas): verificado con `tsc`, `eslint`, `vite build` y prueba visual completa (Pacientes, Casos, Consultas, Evaluaciones, Reportes y detalle de caso) con los mismos valores de fecha/moneda que antes del merge.
+7. Se detecto que la rama de documentacion (`docs/audit-2026-07-04-revision-estructura`, con DEC-036 a DEC-039 y LOG-076 a LOG-080) nunca habia tenido un PR abierto. Se abrio PR #90 y se mergeo tambien.
+8. Durante la sesion, Docker Desktop se cerro solo dos veces (una a mitad de la verificacion de PR #85/86, otra entre el merge de #87 y #88); ambas veces se reinicio con `Start-Process` de PowerShell (el `&`/`disown` de Bash no mantenia el proceso vivo entre invocaciones de la herramienta) y se reprovisionaron usuarios demo + seed cuando fue necesario.
+
+### Archivos relacionados
+
+- `supabase/migrations/20260704000000_fix_vista_cobros_estado_finanzas.sql`, `20260704000001_crear_vista_fotos_auditoria_finanzas.sql`, `20260704000002_agregar_delete_policies_tablas_operativas.sql` (renombrados)
+- `docs/control/01_PENDIENTES_PROYECTO.md`
+
+### Restricciones respetadas
+
+- No se ejecuto `supabase db push`. No se toco Supabase remoto ni `.env`.
+- Cada merge se verifico de forma aislada (pull + tsc + eslint + build/db reset + prueba visual) antes de proceder al siguiente PR, sin excepcion.
+
+### Pendiente
+
+- Bloque 4 (testing con Vitest/Playwright) y Bloque 5 (documentacion de arquitectura): sin trabajo iniciado.
+- Evaluar a futuro si migrar `AgendaPage` y unificar los `largo` de `textoCorto` en las 2 paginas restantes es deseable.
+
+PROD-001 sigue bloqueante.
