@@ -1,6 +1,6 @@
 import { useState, useEffect, type ReactNode } from 'react'
 import { Menu, ShieldAlert, X } from 'lucide-react'
-import { BrowserRouter, Navigate, NavLink, Route, Routes } from 'react-router-dom'
+import { BrowserRouter, Navigate, NavLink, Outlet, Route, Routes } from 'react-router-dom'
 import PacientesPage from './pages/PacientesPage'
 import ConsultasPage from './pages/ConsultasPage'
 import EvaluacionesPage from './pages/EvaluacionesPage'
@@ -397,23 +397,7 @@ function DashboardShell({ children }: {
   )
 }
 
-function AppPrivada({ children }: {
-  children: ReactNode
-}) {
-  return (
-    <DashboardShell>
-      {children}
-    </DashboardShell>
-  )
-}
-
-function RutaProtegida({
-  rolesPermitidos,
-  children,
-}: {
-  rolesPermitidos: RolUsuario[]
-  children: ReactNode
-}) {
+function RutaProtegidaLayout({ rolesPermitidos }: { rolesPermitidos: RolUsuario[] }) {
   const { estadoAuth, usuarioInterno } = useAuth()
 
   if (estadoAuth === 'cargando') {
@@ -428,7 +412,11 @@ function RutaProtegida({
     return <Navigate to={rutaInicial(usuarioInterno)} replace />
   }
 
-  return children
+  return (
+    <DashboardShell>
+      <Outlet />
+    </DashboardShell>
+  )
 }
 
 function RouterApp() {
@@ -445,116 +433,23 @@ function RouterApp() {
               : <LoginPage estadoAuth={estadoAuth} mensajeAuth={mensajeAuth} session={session} onCerrarSesion={cerrarSesion} />
           }
         />
-        <Route
-          path="/pacientes"
-          element={
-            <RutaProtegida rolesPermitidos={['admin', 'terapeuta']}>
-              <AppPrivada>
-                <PacientesPage />
-              </AppPrivada>
-            </RutaProtegida>
-          }
-        />
-        <Route
-          path="/consultas"
-          element={
-            <RutaProtegida rolesPermitidos={['admin', 'terapeuta']}>
-              <AppPrivada>
-                <ConsultasPage />
-              </AppPrivada>
-            </RutaProtegida>
-          }
-        />
-        <Route
-          path="/evaluaciones"
-          element={
-            <RutaProtegida rolesPermitidos={['admin', 'terapeuta']}>
-              <AppPrivada>
-                <EvaluacionesPage />
-              </AppPrivada>
-            </RutaProtegida>
-          }
-        />
-        <Route
-          path="/casos"
-          element={
-            <RutaProtegida rolesPermitidos={['admin', 'terapeuta']}>
-              <AppPrivada>
-                <CasosPage />
-              </AppPrivada>
-            </RutaProtegida>
-          }
-        />
-        <Route
-          path="/casos/:id"
-          element={
-            <RutaProtegida rolesPermitidos={['admin', 'terapeuta']}>
-              <AppPrivada>
-                <CasoDetallePage />
-              </AppPrivada>
-            </RutaProtegida>
-          }
-        />
-        <Route
-          path="/elementos-caso"
-          element={
-            <RutaProtegida rolesPermitidos={['admin', 'terapeuta']}>
-              <AppPrivada>
-                <Navigate to="/casos" replace />
-              </AppPrivada>
-            </RutaProtegida>
-          }
-        />
-        <Route
-          path="/revisiones"
-          element={
-            <RutaProtegida rolesPermitidos={['admin', 'terapeuta']}>
-              <AppPrivada>
-                <Navigate to="/casos" replace />
-              </AppPrivada>
-            </RutaProtegida>
-          }
-        />
-        <Route
-          path="/detalle-revisiones"
-          element={
-            <RutaProtegida rolesPermitidos={['admin', 'terapeuta']}>
-              <AppPrivada>
-                <Navigate to="/casos" replace />
-              </AppPrivada>
-            </RutaProtegida>
-          }
-        />
-        <Route
-          path="/finanzas"
-          element={
-            <RutaProtegida rolesPermitidos={['admin', 'finanzas']}>
-              <AppPrivada>
-                <FinanzasPage />
-              </AppPrivada>
-            </RutaProtegida>
-          }
-        />
-        <Route
-          path="/agenda"
-          element={
-            <RutaProtegida rolesPermitidos={['admin', 'terapeuta']}>
-              <AppPrivada>
-                <AgendaPage />
-              </AppPrivada>
-            </RutaProtegida>
-          }
-        />
-        <Route
-          path="/reportes"
-          element={
-            <RutaProtegida rolesPermitidos={['admin', 'terapeuta', 'finanzas']}>
-              <AppPrivada>
-                <ReportesPage />
-              </AppPrivada>
-            </RutaProtegida>
-          }
-        />
+        <Route element={<RutaProtegidaLayout rolesPermitidos={['admin', 'terapeuta']} />}>
+          <Route path="/pacientes" element={<PacientesPage />} />
+          <Route path="/consultas" element={<ConsultasPage />} />
+          <Route path="/evaluaciones" element={<EvaluacionesPage />} />
+          <Route path="/casos" element={<CasosPage />} />
+          <Route path="/casos/:id" element={<CasoDetallePage />} />
+          <Route path="/elementos-caso" element={<Navigate to="/casos" replace />} />
+          <Route path="/revisiones" element={<Navigate to="/casos" replace />} />
+          <Route path="/detalle-revisiones" element={<Navigate to="/casos" replace />} />
+          <Route path="/agenda" element={<AgendaPage />} />
+        </Route>
+        <Route element={<RutaProtegidaLayout rolesPermitidos={['admin', 'finanzas']} />}>
+          <Route path="/finanzas" element={<FinanzasPage />} />
+        </Route>
+        <Route element={<RutaProtegidaLayout rolesPermitidos={rolesValidos} />}>
+          <Route path="/reportes" element={<ReportesPage />} />
+        </Route>
         <Route
           path="*"
           element={
