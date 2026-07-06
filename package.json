@@ -12,7 +12,8 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
-    "test:e2e": "playwright test"
+    "test:e2e": "playwright test",
+    "gen:types": "supabase gen types typescript --local | grep -v -E \"^(Connecting to db|A new version|We recommend updating)\" > src/lib/database.types.ts"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.4.0",
