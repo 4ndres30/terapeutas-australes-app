@@ -51,6 +51,11 @@ Este documento registra decisiones estables. No reemplaza la conversacion, pero 
 | DEC-033 | API segura como frontera entre pagina publica, sistema interno y servicios Google. | Propuesta arquitectonica / pendiente implementacion | 2026-06-30 |
 | DEC-034 | Agenda operativa separada de consulta clinica confirmada. | Arquitectura aprobada / DB validada localmente | 2026-07-01 |
 | DEC-035 | Migracion progresiva a plataforma Google Cloud. | Propuesta documental / pendiente validacion Javier | 2026-07-01 |
+| DEC-036 | State management centralizado con Context + useReducer. | Aprobada / POC en validacion tecnica | 2026-07-04 |
+| DEC-037 | Utilidades compartidas en `lib/`. | Aprobada / implementacion en curso | 2026-07-04 |
+| DEC-038 | Migraciones SQL para cerrar brechas RLS. | Aprobada / migraciones sin aplicar | 2026-07-04 |
+| DEC-039 | Testing minimo requerido (E2E + unit). | Aprobada / pendiente implementacion | 2026-07-04 |
+| DEC-040 | Reservada. | Sin definir | - |
 
 ## DEC-001 - Repositorio oficial del proyecto
 
@@ -1097,3 +1102,132 @@ Esta decision no crea infraestructura ni credenciales, no modifica `.env`, no cr
 DEC-035 complementa DEC-033 y DEC-034. No las reemplaza: la API segura sigue siendo la frontera futura y Agenda sigue separada de consulta clinica confirmada.
 
 Informe relacionado: `docs/control/auditorias/DEC-035_MIGRACION_PROGRESIVA_GOOGLE_CLOUD.md`.
+
+## DEC-036 - State management centralizado con Context + useReducer
+
+**Estado:** Aprobada / POC validado tecnica y visualmente, pendiente revision final de Javier
+**Origen:** AUDIT-2026-07-04 / Javier
+**Fecha:** 2026-07-04
+
+### Decision propuesta
+
+Centralizar el manejo de estado de autenticacion (y, a futuro, de formularios complejos como Agenda) usando Context API + useReducer en lugar de prop drilling manual a traves de 4+ niveles de componentes (`App` → `RutaProtegida` → `AppPrivada` → `DashboardShell` → paginas).
+
+### Razon
+
+El prop drilling actual obliga a tocar 4+ componentes cada vez que cambia la forma del estado de auth, dificulta testear y agrega boilerplate sin beneficio funcional.
+
+### Impacto
+
+- Se crea `src/context/AuthContext.tsx` + `src/context/authTypes.ts` con `AuthProvider`/`useAuth()`.
+- `App.tsx`, `RutaProtegida`, `AppPrivada` y `DashboardShell` dejan de recibir `estadoAuth`/`usuarioInterno`/`onCerrarSesion` como props.
+- No cambia la logica de autenticacion ni las consultas a `usuarios_internos`.
+- `useFormularioAgenda` (useReducer para `AgendaPage`) queda para una fase posterior, no incluida en el POC actual.
+
+### Restricciones
+
+No modifica RLS, Auth de Supabase, `.env`, ni datos reales. No habilita produccion.
+
+### Observaciones
+
+Existe un POC funcional en la rama `poc/auth-context` que extrae fielmente la logica existente de `App.tsx` (verificado por comparacion linea por linea). Se corrigio un bug de compilacion (`usuarioInterno.nombre_completo` sin guard opcional) y se encapsulo el contexto: ya no expone `setEstadoAuth`/`setSession`/`setUsuarioInterno`/`setMensajeAuth` (nadie fuera de `AuthContext.tsx` los usaba), solo estado de lectura + `cerrarSesion`.
+
+Validado con `npm run dev` y los usuarios demo SEC-007B: login, logout y sidebar filtrado correctos para `admin`, `terapeuta` y `finanzas`, sin errores de consola. Queda pendiente la revision final de Javier antes de cualquier PR a `main`.
+
+## DEC-037 - Utilidades compartidas en `lib/`
+
+**Estado:** Aprobada / 12 de 14 paginas migradas, validadas tecnica y visualmente, pendiente PR
+**Origen:** AUDIT-2026-07-04 / Javier
+**Fecha:** 2026-07-04
+
+### Decision propuesta
+
+Extraer a `src/lib/format.ts`, `src/lib/queries.ts` y `src/lib/constants.ts` las utilidades e identificadores duplicados en multiples paginas: `formatearFecha`, `normalizarTexto`, `textoCorto`, `aNumero`, `formatearMoneda`, `formatearHora`, los `*_SELECT` de columnas SQL y las constantes de roles/estados/validaciones.
+
+### Razon
+
+El mismo formateo de fecha vive en 6 archivos y `normalizarTexto` en 8; un cambio de comportamiento (por ejemplo, el manejo de fechas nulas o el ajuste de timezone) requiere editar cada copia por separado, con riesgo de que queden inconsistentes entre si.
+
+### Impacto
+
+- Los archivos deben extraerse fielmente desde las implementaciones reales ya probadas en produccion interna (por ejemplo, `FinanzasPage.tsx` para fecha/moneda/texto), no reescribirse desde cero.
+- Los estados y columnas deben derivarse de las migraciones SQL reales, no inventarse.
+- Debe compilar (`tsc -p tsconfig.app.json`) y pasar `npm run lint` sin errores.
+
+### Restricciones
+
+No modifica el comportamiento observable de ninguna pagina. No modifica migraciones ni RLS.
+
+### Observaciones
+
+Un primer intento en la rama `refactor/extract-utilities` genero los 3 archivos escritos desde cero en lugar de extraidos: no compilaban, no pasaban lint y usaban columnas/estados que no existen en el esquema real. Ese intento se descarta y se rehace por extraccion real. Ver [[refactor-extract-utilities-jul-2026]] en memoria de sesion para el detalle de los errores encontrados.
+
+Se migraron los imports en `CasoDetallePage`, `CasosPage`, `ConsultasPage`, `EvaluacionesPage`, `FinanzasPage`, `PacientesPage`, `ReportesPage`, `DetalleRevisionesPanel`, `ElementosCasoPanel`, `PagosCasoPanel`, `RevisionesCasoPanel` y `TrabajosCasoPanel` (12 de 14 paginas con `*_SELECT`/formatters locales). `AgendaPage` queda fuera del alcance: sus formatters de fecha/hora son genuinamente distintos y no duplican `lib/format.ts`. Donde el largo por defecto de `textoCorto` difería del de `lib/format.ts`, se preservo el valor original explicito en el call site en vez de normalizar el comportamiento. Validado con `tsc -b`, `eslint` y prueba visual completa con datos reales (seed local DATA-001): mismos valores de fecha/moneda/texto que antes del cambio.
+
+## DEC-038 - Migraciones SQL para cerrar brechas RLS
+
+**Estado:** Aprobada / las 3 migraciones corregidas y validadas localmente, sin aplicar a ningun ambiente
+**Origen:** AUDIT-2026-07-04 / Javier
+**Fecha:** 2026-07-04
+
+### Decision propuesta
+
+Agregar 3 migraciones SQL para cerrar brechas de seguridad detectadas en el audit:
+
+1. `vista_cobros_estado` pasa a ser accesible tambien para `finanzas` (antes solo `admin`).
+2. Nueva vista `vista_finanzas_fotos_auditoria` para que Finanzas pueda auditar que fotos estan asociadas a un cobro, sin exponer descarga directa.
+3. DELETE policies explicitas en tablas operativas (`pacientes`, `consultas`, etc.), restringidas a registros ya anulados logicamente y solo para el rol correspondiente.
+
+### Razon
+
+Sin estas policies, Finanzas dependia de queries directas menos seguras para el historial de cobros, no existia forma de auditar fotos asociadas a un cobro, y no habia proteccion contra un DELETE fisico que rompiera la politica de anulacion logica exigida por PROD-001.
+
+### Impacto
+
+- `supabase/migrations/20260704_000000_fix_vista_cobros_estado_finanzas.sql`
+- `supabase/migrations/20260704_000001_crear_vista_fotos_auditoria_finanzas.sql`
+- `supabase/migrations/20260704_000002_agregar_delete_policies_tablas_operativas.sql`
+
+### Restricciones
+
+No se ejecuta `supabase db push`. No se aplica a Supabase remoto. Debe validarse localmente con los usuarios demo de SEC-007B antes de cualquier PR.
+
+### Observaciones
+
+Las 3 migraciones quedaron escritas en un solo commit y en la rama equivocada (`refactor/extract-utilities`, que corresponde a DEC-037). Se reorganizaron en las ramas dedicadas `fix/rls-vista-cobros-finanzas`, `fix/rls-fotos-auditoria-finanzas` y `fix/rls-delete-policies` para PRs independientes, tal como establecia el roadmap original del audit.
+
+Al separarlas se detecto que la reorganizacion no habia corregido el contenido de 2 de las 3: `vista_cobros_estado` y `vista_finanzas_fotos_auditoria` seguian identicas al commit original, con PK generica `id` inventada (real: `id_cobro`/`id_pago`/`id_foto_elemento_caso`) y columnas inexistentes (`monto_pagado` en vez de `monto_pago`, `fecha_carga` en vez de `created_at`). Se corrigieron ambas contra el esquema real y las 3 se validaron con `supabase db reset` local (ver LOG-078 en `06_BITACORA_CAMBIOS.md`). Falta la validacion funcional con usuarios demo SEC-007B (login como finanzas) antes de PR.
+
+## DEC-039 - Testing minimo requerido (E2E + unit)
+
+**Estado:** Aprobada / pendiente implementacion
+**Origen:** AUDIT-2026-07-04 / Javier
+**Fecha:** 2026-07-04
+
+### Decision propuesta
+
+Incorporar testing automatizado minimo: Vitest para unit tests (empezando por `lib/format.ts` y `lib/queries.ts`), Playwright para E2E criticos (login/logout, crear caso, crear evento de agenda) y un workflow de GitHub Actions que corra lint/build/test en cada PR.
+
+### Razon
+
+Sin tests automatizados, cada refactor (incluyendo DEC-036 y DEC-037) depende solo de revision manual para detectar regresiones.
+
+### Impacto
+
+- Nuevo `.github/workflows/test.yml`.
+- Tests unitarios sobre las utilidades de DEC-037 una vez esten correctamente extraidas.
+- Tests E2E sobre los flujos criticos existentes, sin modificar su comportamiento.
+
+### Restricciones
+
+No modifica datos reales ni Supabase remoto. No habilita produccion.
+
+### Observaciones
+
+Esta decision queda como Bloque 4 del roadmap, independiente de los Bloques 1-3 y ejecutable en paralelo. Sin trabajo iniciado a la fecha de este registro.
+
+## DEC-040 - Reservada
+
+**Estado:** Sin definir
+
+Codigo reservado por el audit AUDIT-2026-07-04 sin una decision asociada. No usar hasta que se defina un contenido concreto.

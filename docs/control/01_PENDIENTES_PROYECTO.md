@@ -109,6 +109,10 @@ Este documento es la lista maestra de pendientes. Cada pendiente debe tener un c
 | QA-003 | Validacion funcional local de fotos de elementos del caso. | Ejecutada local/demo con observacion | Alta | Control de desarrollo |
 | IMP-002 | Implementacion funcional hallazgo a trabajo. | Pendiente | Alta | Implementacion |
 | PROD-001 | Preparacion para uso real con datos sensibles. | Mantener pendiente / bloqueante | Alta | Control de desarrollo / Integracion Backend |
+| AUDIT-2026-07-04 | Revision integral de estructura y arquitectura; roadmap 5 bloques. | Aprobada por Javier (DEC-036 a DEC-039) | Alta | Control de desarrollo |
+| BLOQUE-1-RLS | 3 migraciones RLS para DEC-038 en ramas fix/rls-*. | Las 3 corregidas y validadas con `supabase db reset` local / PR #85, #86, #87 abiertos | Alta | Integracion Backend / Seguridad |
+| BLOQUE-2-UTIL | Extraccion de lib/format.ts, lib/queries.ts, lib/constants.ts para DEC-037. | Archivos validados e importados en 12 de 14 paginas consumidoras / pendiente PR | Media | Integracion Backend/Estructura |
+| BLOQUE-3-AUTH | POC AuthContext para DEC-036. | Validado tecnica y visualmente (3 roles, login/logout) / PR #88 abierto | Media | Integracion Backend/Estructura |
 
 ## Pendientes integrados
 
@@ -2238,6 +2242,75 @@ No usar datos reales todavia. Antes de produccion debe cerrarse PROD-001.
 - No ejecutar `supabase db push`.
 - No tocar Supabase remoto.
 - No usar datos reales hasta cerrar PROD-001.
+
+### AUDIT-2026-07-04 - Revision integral de estructura y arquitectura
+
+**Estado:** Aprobada por Javier (DEC-036 a DEC-039); DEC-040 reservada sin contenido
+**Prioridad:** Alta
+**Responsable:** Control de desarrollo
+**Origen:** Auditoria tecnica automatizada
+**Fecha creacion:** 2026-07-04
+**Ramas relacionadas:** `docs/audit-2026-07-04-revision-estructura`, `refactor/extract-utilities`, `fix/rls-vista-cobros-finanzas`, `fix/rls-fotos-auditoria-finanzas`, `fix/rls-delete-policies`, `poc/auth-context`
+**Informe:** `docs/control/auditorias/AUDIT-2026-07-04_REVISION_ESTRUCTURA_CODIGO.md`
+
+#### Descripcion
+
+Auditoria de estructura React, migraciones Supabase, RLS y duplicacion de codigo. Detecto 3 brechas RLS, prop drilling de autenticacion y ~40% de duplicacion en utilidades. Propuso el roadmap de 5 bloques que se detalla en `BLOQUE-1-RLS`, `BLOQUE-2-UTIL`, `BLOQUE-3-AUTH` y las decisiones DEC-036 a DEC-039.
+
+#### Resultado
+
+Javier aprobo el roadmap completo. Ver `LOG-076` y `LOG-077` en `06_BITACORA_CAMBIOS.md` para el detalle de ejecucion, incluyendo los errores encontrados y corregidos en los Bloques 1 y 2 respecto del intento inicial.
+
+### BLOQUE-1-RLS - Migraciones RLS para DEC-038
+
+**Estado:** Las 3 corregidas y validadas localmente con `supabase db reset` / pendiente PR
+**Prioridad:** Alta
+**Responsable:** Integracion Backend / Seguridad
+**Origen:** AUDIT-2026-07-04 / DEC-038
+**Fecha creacion:** 2026-07-04
+**Ramas:** `fix/rls-vista-cobros-finanzas`, `fix/rls-fotos-auditoria-finanzas`, `fix/rls-delete-policies`
+
+#### Resultado
+
+Las 3 migraciones quedaron separadas en sus ramas dedicadas para PRs independientes. Al separarlas se detecto que solo la migracion de DELETE policies habia sido corregida de verdad: usaba la columna inexistente `pacientes.estado_activo` y valores de estado en minuscula (`'anulada'`/`'anulado'`) que no existen en los CHECK constraints reales (que usan `'Cancelada'`/`'Anulada'`/`'Anulado'` capitalizados).
+
+Las otras 2 (`vista_cobros_estado`, `vista_finanzas_fotos_auditoria`) habian quedado identicas al commit original roto: asumian PK generica `id` en `cobros`/`pagos`/`fotos_elementos_caso` (las reales son `id_cobro`, `id_pago`, `id_foto_elemento_caso`), columnas inexistentes (`p.monto_pagado` en vez de `monto_pago`, `fec.fecha_carga` en vez de `created_at`) y, en el caso de `vista_cobros_estado`, reimplementaban la vista completa perdiendo la agregacion de pagos multiples y el `estado_calculado` de la definicion real (`20260627231000_crear_vista_finanzas_unidades_cobrables.sql`). Se corrigieron ambas contra el esquema real.
+
+Las 3 se validaron con `supabase db reset` local: aplican sin errores sobre el esquema completo. Se confirmo ademas con `\d` sobre la base local que `vista_finanzas_fotos_auditoria` expone las columnas esperadas, y con `pg_policies` que las 9 DELETE policies nuevas quedaron creadas. Falta: validacion funcional con usuarios demo SEC-007B (login como finanzas y confirmar lectura de ambas vistas) y PR a `main`. Migraciones sin aplicar a ningun ambiente remoto. No se ejecuto `supabase db push`.
+
+### BLOQUE-2-UTIL - Extraccion de utilidades compartidas para DEC-037
+
+**Estado:** Archivos validados (tsc/eslint) e importados en 12 paginas / pendiente PR
+**Prioridad:** Media
+**Responsable:** Integracion Backend/Estructura
+**Origen:** AUDIT-2026-07-04 / DEC-037
+**Fecha creacion:** 2026-07-04
+**Rama:** `refactor/extract-utilities`
+
+#### Resultado
+
+`src/lib/constants.ts`, `format.ts` y `queries.ts` fueron reescritos como extraccion fiel de las implementaciones reales duplicadas en `src/pages/` (verificado contra 10+ copias de cada funcion y contra los CHECK constraints de las migraciones). El intento anterior en la misma rama habia sido inventado desde cero y no compilaba.
+
+Se migraron los imports de `formatearFecha`/`normalizarTexto`/`aNumero`/`formatearMoneda`/`textoCorto` en `CasoDetallePage`, `CasosPage`, `ConsultasPage`, `EvaluacionesPage`, `FinanzasPage`, `PacientesPage`, `ReportesPage`, `DetalleRevisionesPanel`, `ElementosCasoPanel`, `PagosCasoPanel`, `RevisionesCasoPanel` y `TrabajosCasoPanel`, verificando cada funcion linea por linea contra la copia local antes de eliminarla. Donde el `largo` por defecto de `textoCorto` no coincidia con el de `lib/format.ts` (96, 110, 112, 128 vs 120), se dejo intacta o se paso el valor original explicito en el call site para no cambiar el comportamiento observable. `AgendaPage` no se toco: sus formatters de fecha/hora son genuinamente distintos, no duplicados.
+
+Validado con `tsc -b`, `eslint` y prueba visual completa (`npm run dev` + seed local DATA-001, usuario admin) en las 7 paginas y 5 paneles de detalle de caso: fechas y montos identicos a antes del cambio, sin errores de consola.
+
+Pendiente: `AgendaPage` y las paginas donde `textoCorto`/otras utilidades tienen variantes de comportamiento no triviales quedan fuera de este alcance; revisar caso por caso si se decide unificarlas a futuro.
+
+### BLOQUE-3-AUTH - POC AuthContext para DEC-036
+
+**Estado:** Validado tecnica y visualmente / pendiente revision final de Javier y PR
+**Prioridad:** Media
+**Responsable:** Integracion Backend/Estructura
+**Origen:** AUDIT-2026-07-04 / DEC-036
+**Fecha creacion:** 2026-07-04
+**Rama:** `poc/auth-context`
+
+#### Resultado
+
+El POC extrae fielmente la logica de autenticacion de `App.tsx` hacia `AuthContext`/`useAuth()`, eliminando el prop drilling hacia `RutaProtegida`/`AppPrivada`/`DashboardShell`. Se corrigio un bug de compilacion (`usuarioInterno.nombre_completo` sin guard opcional) y se encapsulo el contexto (ya no expone `setEstadoAuth`/`setSession`/`setUsuarioInterno`/`setMensajeAuth`, sin consumidores que los usaran).
+
+Validacion visual completa con `npm run dev` y los usuarios demo SEC-007B: login/logout y sidebar filtrado correctos para los 3 roles (`admin` ve todos los modulos incl. Configuracion; `terapeuta` ve modulos clinicos sin Finanzas; `finanzas` ve solo Finanzas/Pagos y Reportes), sin errores de consola. Sin merge a `main`: pendiente revision final de Javier y PR.
 
 ## Tareas sugeridas no activas
 
