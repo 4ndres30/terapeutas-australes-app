@@ -1,6 +1,4 @@
-import { useEffect, useState } from 'react'
-import type { ReactNode } from 'react'
-import type { Session } from '@supabase/supabase-js'
+import { useState, useEffect, type ReactNode } from 'react'
 import { Menu, ShieldAlert, X } from 'lucide-react'
 import { BrowserRouter, Navigate, NavLink, Route, Routes } from 'react-router-dom'
 import PacientesPage from './pages/PacientesPage'
@@ -12,28 +10,13 @@ import FinanzasPage from './pages/FinanzasPage'
 import AgendaPage from './pages/AgendaPage'
 import ReportesPage from './pages/ReportesPage'
 import LoginPage from './pages/LoginPage'
-import { supabase } from './lib/supabase'
+import { AuthProvider, useAuth } from './context/AuthContext'
+import type { RolUsuario, UsuarioInterno } from './context/authTypes'
 import './App.css'
 import './DashboardPremium.css'
 import './TypographyElegant.css'
 import './ReferencePolish.css'
 import './ReferenceFinalPass.css'
-
-type RolUsuario = 'admin' | 'terapeuta' | 'finanzas'
-
-type UsuarioInterno = {
-  id: string
-  email: string
-  nombre_completo: string
-  rol: RolUsuario
-  activo: boolean
-}
-
-type UsuarioInternoRow = Omit<UsuarioInterno, 'rol'> & {
-  rol: string
-}
-
-type EstadoAuth = 'cargando' | 'sin_sesion' | 'autorizado' | 'sin_autorizacion' | 'inactivo' | 'error'
 
 type AmbienteApp = 'LOCAL' | 'DEMO' | 'STAGING' | 'PRODUCCION' | 'DESCONOCIDO'
 
@@ -57,13 +40,6 @@ type NavegacionLateral = {
 }
 
 const rolesValidos: RolUsuario[] = ['admin', 'terapeuta', 'finanzas']
-
-const mensajeAccesoInternoNoHabilitado =
-  'Acceso interno no habilitado. Solicita revisión a un administrador.'
-const mensajeValidacionAcceso =
-  'No se pudo validar el acceso interno. Intenta nuevamente o contacta a un administrador.'
-const mensajeSesionNoValidada =
-  'No se pudo validar la sesión. Intenta iniciar sesión nuevamente.'
 
 const valoresVerdaderos = ['1', 'true', 'yes', 'habilitada']
 
@@ -178,9 +154,6 @@ const navegacionPrincipal: NavegacionLateral[] = [
   { etiqueta: 'Configuración', icono: '⚙', estado: 'pronto', rolesPermitidos: ['admin'] },
 ]
 
-function esRolUsuario(rol: string): rol is RolUsuario {
-  return rolesValidos.includes(rol as RolUsuario)
-}
 
 function rutaInicial(usuarioInterno: UsuarioInterno | null) {
   if (usuarioInterno?.rol === 'finanzas') {
@@ -235,11 +208,11 @@ function IndicadorAmbiente({ configuracion }: { configuracion: ConfiguracionAmbi
 
 function BloqueoAmbiente({
   configuracion,
-  onCerrarSesion,
 }: {
   configuracion: ConfiguracionAmbiente
-  onCerrarSesion: () => Promise<void>
 }) {
+  const { cerrarSesion } = useAuth()
+
   return (
     <section className="dashboard-environment-lock" role="alert" aria-live="assertive">
       <div className="dashboard-environment-lock__icon" aria-hidden="true">
@@ -258,7 +231,7 @@ function BloqueoAmbiente({
 
       <button
         className="dashboard-environment-lock__action"
-        onClick={() => void onCerrarSesion()}
+        onClick={() => void cerrarSesion()}
         type="button"
       >
         Cerrar sesion
@@ -278,14 +251,13 @@ function PantallaCarga() {
   )
 }
 
-function DashboardShell({ usuarioInterno, onCerrarSesion, children }: {
-  usuarioInterno: UsuarioInterno
-  onCerrarSesion: () => Promise<void>
+function DashboardShell({ children }: {
   children: ReactNode
 }) {
-  const inicialesUsuario = obtenerInicialesUsuario(usuarioInterno.nombre_completo)
-  const rolVisible = formatearRol(usuarioInterno.rol)
-  const navegacionVisible = obtenerNavegacionPorRol(usuarioInterno.rol)
+  const { usuarioInterno, cerrarSesion } = useAuth()
+  const inicialesUsuario = usuarioInterno ? obtenerInicialesUsuario(usuarioInterno.nombre_completo) : ''
+  const rolVisible = usuarioInterno ? formatearRol(usuarioInterno.rol) : ''
+  const navegacionVisible = usuarioInterno ? obtenerNavegacionPorRol(usuarioInterno.rol) : []
   const [menuMovilAbierto, setMenuMovilAbierto] = useState(false)
 
   useEffect(() => {
@@ -379,7 +351,7 @@ function DashboardShell({ usuarioInterno, onCerrarSesion, children }: {
           </div>
         </div>
 
-        <button className="sidebar-logout" type="button" onClick={() => void onCerrarSesion()}>
+        <button className="sidebar-logout" type="button" onClick={() => void cerrarSesion()}>
           Cerrar sesión
         </button>
       </aside>
@@ -411,48 +383,39 @@ function DashboardShell({ usuarioInterno, onCerrarSesion, children }: {
             </button>
             <div className="dashboard-userbar__avatar" aria-hidden="true">{inicialesUsuario}</div>
             <div className="dashboard-userbar__meta">
-              <strong>{usuarioInterno.nombre_completo}</strong>
+              <strong>{usuarioInterno?.nombre_completo}</strong>
               <span>{rolVisible}</span>
             </div>
           </div>
         </header>
 
         {configuracionAmbiente.bloqueaUso
-          ? (
-            <BloqueoAmbiente
-              configuracion={configuracionAmbiente}
-              onCerrarSesion={onCerrarSesion}
-            />
-          )
+          ? <BloqueoAmbiente configuracion={configuracionAmbiente} />
           : children}
       </main>
     </div>
   )
 }
 
-function AppPrivada({ usuarioInterno, onCerrarSesion, children }: {
-  usuarioInterno: UsuarioInterno
-  onCerrarSesion: () => Promise<void>
+function AppPrivada({ children }: {
   children: ReactNode
 }) {
   return (
-    <DashboardShell usuarioInterno={usuarioInterno} onCerrarSesion={onCerrarSesion}>
+    <DashboardShell>
       {children}
     </DashboardShell>
   )
 }
 
 function RutaProtegida({
-  estadoAuth,
-  usuarioInterno,
   rolesPermitidos,
   children,
 }: {
-  estadoAuth: EstadoAuth
-  usuarioInterno: UsuarioInterno | null
   rolesPermitidos: RolUsuario[]
   children: ReactNode
 }) {
+  const { estadoAuth, usuarioInterno } = useAuth()
+
   if (estadoAuth === 'cargando') {
     return <PantallaCarga />
   }
@@ -468,107 +431,8 @@ function RutaProtegida({
   return children
 }
 
-function App() {
-  const [estadoAuth, setEstadoAuth] = useState<EstadoAuth>('cargando')
-  const [session, setSession] = useState<Session | null>(null)
-  const [usuarioInterno, setUsuarioInterno] = useState<UsuarioInterno | null>(null)
-  const [mensajeAuth, setMensajeAuth] = useState('')
-
-  async function cerrarSesion() {
-    await supabase.auth.signOut()
-  }
-
-  useEffect(() => {
-    let componenteActivo = true
-
-    async function aplicarSesion(sesionActual: Session | null) {
-      if (!componenteActivo) {
-        return
-      }
-
-      setSession(sesionActual)
-
-      if (!sesionActual) {
-        setUsuarioInterno(null)
-        setMensajeAuth('')
-        setEstadoAuth('sin_sesion')
-        return
-      }
-
-      const { data, error } = await supabase
-        .from('usuarios_internos')
-        .select('id, email, nombre_completo, rol, activo')
-        .eq('id', sesionActual.user.id)
-        .maybeSingle()
-
-      if (!componenteActivo) {
-        return
-      }
-
-      if (error) {
-        setUsuarioInterno(null)
-        setMensajeAuth(mensajeValidacionAcceso)
-        setEstadoAuth('error')
-        return
-      }
-
-      if (!data) {
-        setUsuarioInterno(null)
-        setMensajeAuth(mensajeAccesoInternoNoHabilitado)
-        setEstadoAuth('sin_autorizacion')
-        return
-      }
-
-      const usuario = data as UsuarioInternoRow
-
-      if (!esRolUsuario(usuario.rol)) {
-        setUsuarioInterno(null)
-        setMensajeAuth(mensajeAccesoInternoNoHabilitado)
-        setEstadoAuth('sin_autorizacion')
-        return
-      }
-
-      if (!usuario.activo) {
-        setUsuarioInterno(null)
-        setMensajeAuth(mensajeAccesoInternoNoHabilitado)
-        setEstadoAuth('inactivo')
-        return
-      }
-
-      setUsuarioInterno({ ...usuario, rol: usuario.rol })
-      setMensajeAuth('')
-      setEstadoAuth('autorizado')
-    }
-
-    async function cargarSesionInicial() {
-      const { data, error } = await supabase.auth.getSession()
-
-      if (!componenteActivo) {
-        return
-      }
-
-      if (error) {
-        setSession(null)
-        setUsuarioInterno(null)
-        setMensajeAuth(mensajeSesionNoValidada)
-        setEstadoAuth('error')
-        return
-      }
-
-      await aplicarSesion(data.session)
-    }
-
-    void cargarSesionInicial()
-
-    const { data: listener } = supabase.auth.onAuthStateChange((_event, sesionActual) => {
-      void aplicarSesion(sesionActual)
-    })
-
-    return () => {
-      componenteActivo = false
-      listener.subscription.unsubscribe()
-    }
-  }, [])
+function RouterApp() {
+  const { estadoAuth, usuarioInterno, mensajeAuth, session, cerrarSesion } = useAuth()
 
   return (
     <BrowserRouter>
@@ -578,25 +442,14 @@ function App() {
           element={
             estadoAuth === 'autorizado'
               ? <Navigate to={rutaInicial(usuarioInterno)} replace />
-              : (
-                <LoginPage
-                  estadoAuth={estadoAuth}
-                  mensajeAuth={mensajeAuth}
-                  session={session}
-                  onCerrarSesion={cerrarSesion}
-                />
-              )
+              : <LoginPage estadoAuth={estadoAuth} mensajeAuth={mensajeAuth} session={session} onCerrarSesion={cerrarSesion} />
           }
         />
         <Route
           path="/pacientes"
           element={
-            <RutaProtegida
-              estadoAuth={estadoAuth}
-              usuarioInterno={usuarioInterno}
-              rolesPermitidos={['admin', 'terapeuta']}
-            >
-              <AppPrivada usuarioInterno={usuarioInterno!} onCerrarSesion={cerrarSesion}>
+            <RutaProtegida rolesPermitidos={['admin', 'terapeuta']}>
+              <AppPrivada>
                 <PacientesPage />
               </AppPrivada>
             </RutaProtegida>
@@ -605,12 +458,8 @@ function App() {
         <Route
           path="/consultas"
           element={
-            <RutaProtegida
-              estadoAuth={estadoAuth}
-              usuarioInterno={usuarioInterno}
-              rolesPermitidos={['admin', 'terapeuta']}
-            >
-              <AppPrivada usuarioInterno={usuarioInterno!} onCerrarSesion={cerrarSesion}>
+            <RutaProtegida rolesPermitidos={['admin', 'terapeuta']}>
+              <AppPrivada>
                 <ConsultasPage />
               </AppPrivada>
             </RutaProtegida>
@@ -619,12 +468,8 @@ function App() {
         <Route
           path="/evaluaciones"
           element={
-            <RutaProtegida
-              estadoAuth={estadoAuth}
-              usuarioInterno={usuarioInterno}
-              rolesPermitidos={['admin', 'terapeuta']}
-            >
-              <AppPrivada usuarioInterno={usuarioInterno!} onCerrarSesion={cerrarSesion}>
+            <RutaProtegida rolesPermitidos={['admin', 'terapeuta']}>
+              <AppPrivada>
                 <EvaluacionesPage />
               </AppPrivada>
             </RutaProtegida>
@@ -633,12 +478,8 @@ function App() {
         <Route
           path="/casos"
           element={
-            <RutaProtegida
-              estadoAuth={estadoAuth}
-              usuarioInterno={usuarioInterno}
-              rolesPermitidos={['admin', 'terapeuta']}
-            >
-              <AppPrivada usuarioInterno={usuarioInterno!} onCerrarSesion={cerrarSesion}>
+            <RutaProtegida rolesPermitidos={['admin', 'terapeuta']}>
+              <AppPrivada>
                 <CasosPage />
               </AppPrivada>
             </RutaProtegida>
@@ -647,12 +488,8 @@ function App() {
         <Route
           path="/casos/:id"
           element={
-            <RutaProtegida
-              estadoAuth={estadoAuth}
-              usuarioInterno={usuarioInterno}
-              rolesPermitidos={['admin', 'terapeuta']}
-            >
-              <AppPrivada usuarioInterno={usuarioInterno!} onCerrarSesion={cerrarSesion}>
+            <RutaProtegida rolesPermitidos={['admin', 'terapeuta']}>
+              <AppPrivada>
                 <CasoDetallePage />
               </AppPrivada>
             </RutaProtegida>
@@ -661,12 +498,8 @@ function App() {
         <Route
           path="/elementos-caso"
           element={
-            <RutaProtegida
-              estadoAuth={estadoAuth}
-              usuarioInterno={usuarioInterno}
-              rolesPermitidos={['admin', 'terapeuta']}
-            >
-              <AppPrivada usuarioInterno={usuarioInterno!} onCerrarSesion={cerrarSesion}>
+            <RutaProtegida rolesPermitidos={['admin', 'terapeuta']}>
+              <AppPrivada>
                 <Navigate to="/casos" replace />
               </AppPrivada>
             </RutaProtegida>
@@ -675,12 +508,8 @@ function App() {
         <Route
           path="/revisiones"
           element={
-            <RutaProtegida
-              estadoAuth={estadoAuth}
-              usuarioInterno={usuarioInterno}
-              rolesPermitidos={['admin', 'terapeuta']}
-            >
-              <AppPrivada usuarioInterno={usuarioInterno!} onCerrarSesion={cerrarSesion}>
+            <RutaProtegida rolesPermitidos={['admin', 'terapeuta']}>
+              <AppPrivada>
                 <Navigate to="/casos" replace />
               </AppPrivada>
             </RutaProtegida>
@@ -689,12 +518,8 @@ function App() {
         <Route
           path="/detalle-revisiones"
           element={
-            <RutaProtegida
-              estadoAuth={estadoAuth}
-              usuarioInterno={usuarioInterno}
-              rolesPermitidos={['admin', 'terapeuta']}
-            >
-              <AppPrivada usuarioInterno={usuarioInterno!} onCerrarSesion={cerrarSesion}>
+            <RutaProtegida rolesPermitidos={['admin', 'terapeuta']}>
+              <AppPrivada>
                 <Navigate to="/casos" replace />
               </AppPrivada>
             </RutaProtegida>
@@ -703,12 +528,8 @@ function App() {
         <Route
           path="/finanzas"
           element={
-            <RutaProtegida
-              estadoAuth={estadoAuth}
-              usuarioInterno={usuarioInterno}
-              rolesPermitidos={['admin', 'finanzas']}
-            >
-              <AppPrivada usuarioInterno={usuarioInterno!} onCerrarSesion={cerrarSesion}>
+            <RutaProtegida rolesPermitidos={['admin', 'finanzas']}>
+              <AppPrivada>
                 <FinanzasPage />
               </AppPrivada>
             </RutaProtegida>
@@ -717,12 +538,8 @@ function App() {
         <Route
           path="/agenda"
           element={
-            <RutaProtegida
-              estadoAuth={estadoAuth}
-              usuarioInterno={usuarioInterno}
-              rolesPermitidos={['admin', 'terapeuta']}
-            >
-              <AppPrivada usuarioInterno={usuarioInterno!} onCerrarSesion={cerrarSesion}>
+            <RutaProtegida rolesPermitidos={['admin', 'terapeuta']}>
+              <AppPrivada>
                 <AgendaPage />
               </AppPrivada>
             </RutaProtegida>
@@ -731,12 +548,8 @@ function App() {
         <Route
           path="/reportes"
           element={
-            <RutaProtegida
-              estadoAuth={estadoAuth}
-              usuarioInterno={usuarioInterno}
-              rolesPermitidos={['admin', 'terapeuta', 'finanzas']}
-            >
-              <AppPrivada usuarioInterno={usuarioInterno!} onCerrarSesion={cerrarSesion}>
+            <RutaProtegida rolesPermitidos={['admin', 'terapeuta', 'finanzas']}>
+              <AppPrivada>
                 <ReportesPage />
               </AppPrivada>
             </RutaProtegida>
@@ -756,4 +569,10 @@ function App() {
   )
 }
 
-export default App
+export default function App() {
+  return (
+    <AuthProvider>
+      <RouterApp />
+    </AuthProvider>
+  )
+}
