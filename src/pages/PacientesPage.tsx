@@ -1,5 +1,6 @@
 import type { FormEvent, KeyboardEvent } from 'react'
-import { useEffect, useMemo, useState } from 'react'
+import { useMemo, useState } from 'react'
+import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { formatearFecha, normalizarTexto } from '../lib/format'
 import { supabase } from '../lib/supabase'
 import './PacientesPage.css'
@@ -132,11 +133,17 @@ const pasosFicha: PasoFichaConfig[] = [
   },
 ]
 
-async function obtenerPacientes() {
-  return supabase
+async function obtenerPacientes(): Promise<Paciente[]> {
+  const { data, error } = await supabase
     .from('pacientes')
     .select('*')
     .order('created_at', { ascending: false })
+
+  if (error) {
+    throw new Error(`Error al cargar pacientes: ${error.message}`)
+  }
+
+  return (data || []) as Paciente[]
 }
 
 function normalizarClave(texto: string) {
@@ -331,10 +338,19 @@ function MetricaIcon({ tipo }: { tipo: TipoMetrica }) {
 }
 
 function PacientesPage() {
-  const [pacientes, setPacientes] = useState<Paciente[]>([])
-  const [cargando, setCargando] = useState(true)
+  const queryClient = useQueryClient()
+
+  const {
+    data: pacientes = [],
+    isLoading: cargando,
+    error: errorCarga,
+  } = useQuery({
+    queryKey: ['pacientes'],
+    queryFn: obtenerPacientes,
+  })
+
   const [guardando, setGuardando] = useState(false)
-  const [mensaje, setMensaje] = useState('')
+  const [mensajeGuardado, setMensajeGuardado] = useState('')
   const [busqueda, setBusqueda] = useState('')
   const [filtroEstado, setFiltroEstado] = useState<FiltroEstado>('todos')
   const [pasoActivo, setPasoActivo] = useState<PasoFicha>('identidad')
@@ -360,6 +376,7 @@ function PacientesPage() {
   const ubicacionPreview = [formulario.comuna, formulario.region].filter(Boolean).join(', ')
   const sexoPreview = obtenerEtiqueta(opcionesSexo, formulario.sexo)
   const fechaNacimientoPreview = formulario.fecha_nacimiento ? formatearFecha(formulario.fecha_nacimiento) : 'Pendiente'
+  const mensaje = mensajeGuardado || (errorCarga ? errorCarga.message : '')
   const mensajeEsError = mensaje.toLowerCase().startsWith('error')
   const cantidadVisible = pacientesFiltrados.length
 
@@ -383,21 +400,6 @@ function PacientesPage() {
     })
   }
 
-  async function cargarPacientes() {
-    setCargando(true)
-
-    const { data, error } = await obtenerPacientes()
-
-    if (error) {
-      setMensaje(`Error al cargar pacientes: ${error.message}`)
-      setCargando(false)
-      return
-    }
-
-    setPacientes(data || [])
-    setCargando(false)
-  }
-
   async function guardarPaciente(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
 
@@ -405,7 +407,7 @@ function PacientesPage() {
 
     if (validacion) {
       setPasoActivo(validacion.paso)
-      setMensaje(`Error: ${validacion.mensaje}`)
+      setMensajeGuardado(`Error: ${validacion.mensaje}`)
       return
     }
 
@@ -415,26 +417,25 @@ function PacientesPage() {
 
     if (existeDuplicado) {
       setPasoActivo('identidad')
-      setMensaje('Error: Este paciente ya existe con exactamente los mismos datos.')
+      setMensajeGuardado('Error: Este paciente ya existe con exactamente los mismos datos.')
       return
     }
 
     setGuardando(true)
-    setMensaje('Guardando paciente...')
+    setMensajeGuardado('Guardando paciente...')
 
     const { error } = await supabase.from('pacientes').insert(pacienteParaGuardar)
 
     if (error) {
-      setMensaje(`Error al guardar: ${error.message}`)
+      setMensajeGuardado(`Error al guardar: ${error.message}`)
       setGuardando(false)
       return
     }
 
-    setMensaje('Paciente guardado correctamente')
+    await queryClient.invalidateQueries({ queryKey: ['pacientes'] })
+    setMensajeGuardado('Paciente guardado correctamente')
     setFormulario(formularioInicial)
     setPasoActivo('identidad')
-
-    await cargarPacientes()
     setGuardando(false)
   }
 
@@ -467,36 +468,9 @@ function PacientesPage() {
 
     if (validacion) {
       setPasoActivo(validacion.paso)
-      setMensaje(`Error: ${validacion.mensaje}`)
+      setMensajeGuardado(`Error: ${validacion.mensaje}`)
     }
   }
-
-  useEffect(() => {
-    let componenteActivo = true
-
-    async function cargarPacientesIniciales() {
-      const { data, error } = await obtenerPacientes()
-
-      if (!componenteActivo) {
-        return
-      }
-
-      if (error) {
-        setMensaje(`Error al cargar pacientes: ${error.message}`)
-        setCargando(false)
-        return
-      }
-
-      setPacientes(data || [])
-      setCargando(false)
-    }
-
-    void cargarPacientesIniciales()
-
-    return () => {
-      componenteActivo = false
-    }
-  }, [])
 
   const metricas: { etiqueta: string; valor: number | string; detalle: string; tipo: TipoMetrica }[] = [
     { etiqueta: 'Total', valor: totalPacientes, detalle: 'Pacientes', tipo: 'total' },
