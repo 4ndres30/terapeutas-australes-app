@@ -3681,3 +3681,24 @@ PROD-001 sigue bloqueante.
 - Bloque 5 (documentacion de arquitectura: `ARCHITECTURE.md`/`DEVELOPMENT.md`): sin iniciar.
 
 PROD-001 sigue bloqueante.
+
+## LOG-083 - Bloque 5 (docs) y Playwright E2E mergeados
+
+**Estado:** Mergeado a `main`: PR #92 (ARCHITECTURE.md/DEVELOPMENT.md), PR #93 (4 specs Playwright de auth/roles).
+**Prioridad:** Media
+**Responsable:** Control de desarrollo (Claude, autorizacion de Javier)
+**Origen:** DEC-039 / roadmap AUDIT-2026-07-04 / Javier
+**Fecha creacion:** 2026-07-06
+
+### Resultado
+
+`ARCHITECTURE.md` y `DEVELOPMENT.md` documentan el estado real del codigo tras los Bloques 1-4 (no un diseño aspiracional). `e2e/auth.spec.ts` (4 tests: login/logout admin, sidebar filtrado por rol para terapeuta/finanzas, mensaje de credenciales invalidas) verificado 2 veces contra Supabase local real (antes y despues del merge, ambas 4/4 en verde).
+
+Deliberadamente NO se agrego job de E2E en `.github/workflows/ci.yml`: requeriria un Supabase completo (Postgres+Auth+RLS) corriendo en el runner de GitHub Actions, y no hay forma de verificar esa configuracion sin observar una ejecucion real de Actions. Queda documentado en `DEVELOPMENT.md` como paso manual (`npm run test:e2e`) hasta que alguien pueda iterar en vivo sobre el workflow de CI.
+
+### Pendiente
+
+- Wiring de Playwright a CI (requiere iteracion en vivo contra GitHub Actions).
+- Ampliar cobertura E2E mas alla de auth/roles (crear caso, agenda, pagos).
+
+PROD-001 sigue bloqueante.
