@@ -69,22 +69,6 @@ type AgendaEventoForm = {
   notas_internas: string
 }
 
-type AgendaEventoPayload = {
-  titulo_evento?: string
-  titulo_publico?: string
-  tipo_evento?: TipoEventoAgenda
-  estado_evento: EstadoEventoAgenda
-  origen_evento?: 'interno'
-  fecha_inicio: string
-  fecha_fin: string | null
-  modalidad?: ModalidadAgenda | null
-  ubicacion?: string | null
-  enlace_online?: string | null
-  notas_internas?: string | null
-  created_by?: string
-  updated_by: string
-}
-
 const AGENDA_OPERATIVA_SELECT = [
   'id_agenda_evento',
   'solicitud_agenda_id',
@@ -775,9 +759,17 @@ function AgendaPage() {
     setGuardando(true)
 
     if (modoFormulario === 'crear') {
-      const payloadCreacion: AgendaEventoPayload = {
+      if (!('titulo_evento' in payload) || !payload.titulo_evento || !payload.tipo_evento) {
+        setGuardando(false)
+        setMensajeFormulario('Faltan datos obligatorios para crear el evento.')
+        return
+      }
+
+      const payloadCreacion = {
         ...payload,
-        origen_evento: 'interno',
+        titulo_evento: payload.titulo_evento,
+        tipo_evento: payload.tipo_evento,
+        origen_evento: 'interno' as const,
         titulo_publico: 'Cita Terapeutas Australes - Servicio reservado',
         created_by: usuarioId,
       }
