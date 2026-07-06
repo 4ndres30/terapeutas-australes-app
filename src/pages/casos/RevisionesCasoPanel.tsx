@@ -1,5 +1,6 @@
 import type { FormEvent } from 'react'
 import { useCallback, useEffect, useMemo, useState } from 'react'
+import { formatearFecha, normalizarTexto, textoCorto } from '../../lib/format'
 import { supabase } from '../../lib/supabase'
 import '../ClinicalModuleBase.css'
 
@@ -111,34 +112,6 @@ function crearFormularioInicial(numeroRevision = '1'): FormularioRevision {
     estado_revision: 'Pendiente',
     notas_internas: '',
   }
-}
-
-function normalizarTexto(texto: string) {
-  return texto.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '')
-}
-
-function formatearFecha(fecha: string | null) {
-  if (!fecha) {
-    return 'Sin fecha'
-  }
-
-  const normalizada = fecha.includes('T') ? fecha : `${fecha}T00:00:00`
-  const fechaRevision = new Date(normalizada)
-
-  if (Number.isNaN(fechaRevision.getTime())) {
-    return 'Sin fecha'
-  }
-
-  return new Intl.DateTimeFormat('es-CL', {
-    day: '2-digit',
-    month: 'short',
-    year: 'numeric',
-  }).format(fechaRevision)
-}
-
-function textoCorto(texto: string, largo = 120) {
-  const limpio = texto.trim()
-  return limpio.length > largo ? `${limpio.slice(0, largo - 1)}...` : limpio
 }
 
 function obtenerSiguienteNumero(revisiones: Revision[]) {

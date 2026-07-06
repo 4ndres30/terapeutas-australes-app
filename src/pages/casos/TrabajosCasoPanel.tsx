@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
+import { formatearFecha, normalizarTexto, textoCorto } from '../../lib/format'
 import { supabase } from '../../lib/supabase'
 import '../ClinicalModuleBase.css'
 
@@ -62,34 +63,6 @@ const TRABAJO_SELECT = [
   'observaciones',
   'created_at',
 ].join(', ')
-
-function normalizarTexto(texto: string) {
-  return texto.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '')
-}
-
-function formatearFecha(fecha: string | null) {
-  if (!fecha) {
-    return 'Sin fecha'
-  }
-
-  const normalizada = fecha.includes('T') ? fecha : `${fecha}T00:00:00`
-  const fechaTrabajo = new Date(normalizada)
-
-  if (Number.isNaN(fechaTrabajo.getTime())) {
-    return 'Sin fecha'
-  }
-
-  return new Intl.DateTimeFormat('es-CL', {
-    day: '2-digit',
-    month: 'short',
-    year: 'numeric',
-  }).format(fechaTrabajo)
-}
-
-function textoCorto(texto: string, largo = 128) {
-  const limpio = texto.trim()
-  return limpio.length > largo ? `${limpio.slice(0, largo - 1)}...` : limpio
-}
 
 function TrabajosCasoPanel({ casoId, pacienteId }: TrabajosCasoPanelProps) {
   const [trabajos, setTrabajos] = useState<Trabajo[]>([])
@@ -213,7 +186,7 @@ function TrabajosCasoPanel({ casoId, pacienteId }: TrabajosCasoPanelProps) {
                   </div>
                   <span className="clinical-badge">{trabajo.estado_trabajo}</span>
                 </div>
-                <p>{textoCorto(trabajo.objetivo_trabajo)}</p>
+                <p>{textoCorto(trabajo.objetivo_trabajo, 128)}</p>
                 <dl className="clinical-details">
                   <div>
                     <dt>Tipo</dt>

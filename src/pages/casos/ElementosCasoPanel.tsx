@@ -1,5 +1,6 @@
 import type { FormEvent } from 'react'
 import { useCallback, useEffect, useMemo, useState } from 'react'
+import { formatearFecha, normalizarTexto, textoCorto } from '../../lib/format'
 import { supabase } from '../../lib/supabase'
 import '../ClinicalModuleBase.css'
 
@@ -177,10 +178,6 @@ function crearFormularioFotoInicial(elemento_caso_id = ''): FormularioFoto {
   }
 }
 
-function normalizarTexto(texto: string) {
-  return texto.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '')
-}
-
 function normalizarNombreArchivo(nombreArchivo: string) {
   const limpio = normalizarTexto(nombreArchivo)
     .replace(/[^a-z0-9._-]+/g, '-')
@@ -188,30 +185,6 @@ function normalizarNombreArchivo(nombreArchivo: string) {
     .replace(/^-|-$/g, '')
 
   return limpio || 'foto-elemento'
-}
-
-function formatearFecha(fecha: string | null) {
-  if (!fecha) {
-    return 'Sin fecha'
-  }
-
-  const normalizada = fecha.includes('T') ? fecha : `${fecha}T00:00:00`
-  const fechaElemento = new Date(normalizada)
-
-  if (Number.isNaN(fechaElemento.getTime())) {
-    return 'Sin fecha'
-  }
-
-  return new Intl.DateTimeFormat('es-CL', {
-    day: '2-digit',
-    month: 'short',
-    year: 'numeric',
-  }).format(fechaElemento)
-}
-
-function textoCorto(texto: string, largo = 120) {
-  const limpio = texto.trim()
-  return limpio.length > largo ? `${limpio.slice(0, largo - 1)}...` : limpio
 }
 
 function validarFormulario(formulario: FormularioElemento, casoId: string, pacienteId: string) {

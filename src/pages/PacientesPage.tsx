@@ -1,5 +1,6 @@
 import type { FormEvent, KeyboardEvent } from 'react'
 import { useEffect, useMemo, useState } from 'react'
+import { formatearFecha, normalizarTexto } from '../lib/format'
 import { supabase } from '../lib/supabase'
 import './PacientesPage.css'
 
@@ -138,13 +139,6 @@ async function obtenerPacientes() {
     .order('created_at', { ascending: false })
 }
 
-function normalizarTexto(texto: string) {
-  return texto
-    .toLowerCase()
-    .normalize('NFD')
-    .replace(/[\u0300-\u036f]/g, '')
-}
-
 function normalizarClave(texto: string) {
   return normalizarTexto(texto.trim().replace(/\s+/g, ' '))
 }
@@ -155,35 +149,6 @@ function obtenerIniciales(nombres: string, apellidos: string) {
   const iniciales = `${inicialNombre}${inicialApellido}`.trim()
 
   return iniciales ? iniciales.toUpperCase() : 'TA'
-}
-
-function crearFechaLocal(fecha: string) {
-  const [fechaBase] = fecha.split('T')
-  const [anio, mes, dia] = fechaBase.split('-').map(Number)
-
-  if (anio && mes && dia) {
-    return new Date(anio, mes - 1, dia)
-  }
-
-  return new Date(fecha)
-}
-
-function formatearFecha(fecha: string) {
-  if (!fecha) {
-    return 'Sin fecha'
-  }
-
-  const fechaLocal = crearFechaLocal(fecha)
-
-  if (Number.isNaN(fechaLocal.getTime())) {
-    return 'Sin fecha'
-  }
-
-  return new Intl.DateTimeFormat('es-CL', {
-    day: '2-digit',
-    month: 'short',
-    year: 'numeric',
-  }).format(fechaLocal)
 }
 
 function obtenerEtiqueta(opciones: OpcionFormulario[], valor: string) {

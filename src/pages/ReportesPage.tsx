@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
+import { aNumero, formatearFecha as formatearFechaBase, formatearMoneda, textoCorto } from '../lib/format'
 import { supabase } from '../lib/supabase'
 import './ClinicalModuleBase.css'
 
@@ -156,23 +157,6 @@ function esRolUsuario(rol: string): rol is RolUsuario {
   return rolesValidos.includes(rol as RolUsuario)
 }
 
-function aNumero(valor: number | string | null | undefined) {
-  if (valor === null || valor === undefined || valor === '') {
-    return 0
-  }
-
-  const numero = typeof valor === 'number' ? valor : Number(valor)
-  return Number.isFinite(numero) ? numero : 0
-}
-
-function formatearMoneda(valor: number) {
-  return new Intl.NumberFormat('es-CL', {
-    currency: 'CLP',
-    maximumFractionDigits: 0,
-    style: 'currency',
-  }).format(valor)
-}
-
 function normalizarFecha(fecha: string | null | undefined) {
   if (!fecha) {
     return null
@@ -193,23 +177,7 @@ function valorFecha(fecha: string | null | undefined) {
 }
 
 function formatearFecha(fecha: string | null | undefined) {
-  const normalizada = normalizarFecha(fecha)
-
-  if (!normalizada) {
-    return 'Sin fecha'
-  }
-
-  const fechaReporte = new Date(normalizada)
-
-  if (Number.isNaN(fechaReporte.getTime())) {
-    return 'Sin fecha'
-  }
-
-  return new Intl.DateTimeFormat('es-CL', {
-    day: '2-digit',
-    month: 'short',
-    year: 'numeric',
-  }).format(fechaReporte)
+  return formatearFechaBase(fecha ?? null)
 }
 
 function calcularPorcentaje(parte: number, total: number) {
@@ -239,11 +207,6 @@ function crearDetalleConteo(conteo: Record<string, number>) {
     .slice(0, 3)
     .map(([estado, total]) => `${estado}: ${total}`)
     .join(' · ')
-}
-
-function textoCorto(texto: string, largo = 120) {
-  const limpio = texto.trim()
-  return limpio.length > largo ? `${limpio.slice(0, largo - 1)}...` : limpio
 }
 
 function esCasoActivo(caso: Caso) {

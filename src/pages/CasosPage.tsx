@@ -2,6 +2,7 @@ import type { FormEvent, KeyboardEvent } from 'react'
 import { useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
+import { formatearFecha, normalizarTexto } from '../lib/format'
 import './CasosPage.css'
 import './CasoDetallePage.css'
 
@@ -170,35 +171,12 @@ function crearFormularioInicial(): FormularioCaso {
   }
 }
 
-function normalizarTexto(texto: string) {
-  return texto.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '')
-}
-
 function obtenerNombrePaciente(paciente?: Paciente) {
   if (!paciente) {
     return 'Paciente sin seleccionar'
   }
 
   return `${paciente.nombres} ${paciente.apellidos}`.trim() || 'Paciente sin nombre'
-}
-
-function formatearFecha(fecha: string) {
-  if (!fecha) {
-    return 'Sin fecha'
-  }
-
-  const fechaNormalizada = fecha.includes('T') ? fecha : `${fecha}T00:00:00`
-  const fechaCaso = new Date(fechaNormalizada)
-
-  if (Number.isNaN(fechaCaso.getTime())) {
-    return 'Sin fecha'
-  }
-
-  return new Intl.DateTimeFormat('es-CL', {
-    day: '2-digit',
-    month: 'short',
-    year: 'numeric',
-  }).format(fechaCaso)
 }
 
 function textoCorto(texto: string, largo = 96) {
