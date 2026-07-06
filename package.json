@@ -16,15 +16,12 @@
     "gen:types": "supabase gen types typescript --local | grep -v -E \"^(Connecting to db|A new version|We recommend updating)\" > src/lib/database.types.ts"
   },
   "dependencies": {
-    "@hookform/resolvers": "^5.4.0",
     "@supabase/supabase-js": "^2.107.0",
     "@tanstack/react-table": "^8.21.3",
     "lucide-react": "^1.17.0",
     "react": "^19.2.6",
     "react-dom": "^19.2.6",
-    "react-hook-form": "^7.77.0",
-    "react-router-dom": "^7.17.0",
-    "zod": "^4.4.3"
+    "react-router-dom": "^7.17.0"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
