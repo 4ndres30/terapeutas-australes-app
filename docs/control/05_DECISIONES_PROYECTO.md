@@ -1231,3 +1231,38 @@ Esta decision queda como Bloque 4 del roadmap, independiente de los Bloques 1-3 
 **Estado:** Sin definir
 
 Codigo reservado por el audit AUDIT-2026-07-04 sin una decision asociada. No usar hasta que se defina un contenido concreto.
+
+## DEC-041 - Aprobacion acotada de Control para uso de Gemini en "Detector de huecos y sobrecarga de agenda"
+
+**Estado:** Aprobada
+**Origen:** PR #100 / `docs/control/ROADMAP-HERRAMIENTAS-GEMINI.md` / Javier
+**Fecha:** 2026-07-06
+
+### Decision propuesta
+
+Autorizar el uso de Gemini API (Google) exclusivamente para la Edge Function `supabase/functions/agenda-resumen-semanal`, bajo el alcance de datos verificado en esta decision. Esta aprobacion es acotada a esta herramienta puntual, no constituye aprobacion generica de BE-020 ni habilita ninguna otra integracion con Gemini/Google.
+
+### Razon
+
+BE-020 exige aprobacion expresa de Control antes de cualquier integracion externa (incluida una API de IA como Gemini) que reciba datos derivados de la operacion clinica. Esta herramienta ya cumple el principio central de BE-020 ("Google no debe recibir datos clinicos sensibles") por construccion, no por promesa:
+
+- El unico `select` contra la base es explicito: `fecha_inicio, fecha_fin, modalidad, tipo_evento, created_by` sobre `agenda_eventos`. Nunca `paciente_id`, `titulo_evento`, `titulo_publico` ni ninguna columna de `solicitudes_agenda` (contacto/nombre/email/telefono).
+- El payload que se serializa hacia Gemini contiene solo agregados: conteos por tipo/modalidad, y bloques de huecos/sobrecarga identificados por `created_by` (usuario interno que registro el evento, no el terapeuta responsable ni el paciente).
+- No se envia ningun texto libre interno ni dato de paciente en ningun punto del codigo (verificado por revision de codigo en PR #100 y probado con datos sinteticos reales).
+- No aplica PROD-001 (bloquea datos reales de pacientes/fotos/pagos): esta herramienta no lee ni un solo campo vinculado a identidad de paciente.
+
+### Impacto
+
+- Habilita continuar con el despliegue de `supabase/functions/agenda-resumen-semanal` (migracion `20260706000000_crear_tabla_resumenes_agenda_semanal.sql` incluida) una vez configurado `GEMINI_API_KEY` como Supabase Secret en el proyecto remoto.
+- No habilita cron todavia (invocacion manual unicamente hasta decision de infraestructura aparte).
+- No aprueba ninguna otra herramienta del roadmap (`ROADMAP-HERRAMIENTAS-GEMINI.md`): cada una requiere su propia decision DEC-xxx acotada, en particular las que toquen `tipo_caso`/`prioridad` o cualquier alias de paciente.
+
+### Restricciones
+
+- Si el codigo de la Edge Function cambia para incluir cualquier columna adicional (especialmente `titulo_evento`, `titulo_publico`, o cualquier campo de `pacientes`/`solicitudes_agenda`), esta aprobacion queda invalidada y requiere nueva revision.
+- No se carga ni se procesa dato real de paciente bajo esta decision: sigue valido solo con datos sinteticos/agregados no identificables, consistente con PROD-001 vigente.
+- Esta decision no reemplaza el cierre documental/legal pendiente de BE-020 general.
+
+### Observaciones
+
+Ver `docs/control/ROADMAP-HERRAMIENTAS-GEMINI.md` para el analisis completo de las 12 herramientas candidatas evaluadas y por que las demas quedaron en Fase 2 o descartadas.
