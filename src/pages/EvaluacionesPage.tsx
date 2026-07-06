@@ -1,5 +1,6 @@
 import type { FormEvent } from 'react'
-import { useEffect, useMemo, useState } from 'react'
+import { useMemo, useState } from 'react'
+import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { supabase } from '../lib/supabase'
 import { formatearFecha, normalizarTexto, textoCorto } from '../lib/format'
 import './ClinicalModuleBase.css'
@@ -93,6 +94,46 @@ function crearFormularioInicial(): FormularioEvaluacion {
   }
 }
 
+async function obtenerPacientes(): Promise<Paciente[]> {
+  const { data, error } = await supabase
+    .from('pacientes')
+    .select('id, nombres, apellidos')
+    .order('created_at', { ascending: false })
+
+  if (error) {
+    throw new Error(`Error al cargar pacientes: ${error.message}`)
+  }
+
+  return (data || []) as Paciente[]
+}
+
+async function obtenerConsultas(): Promise<Consulta[]> {
+  const { data, error } = await supabase
+    .from('consultas')
+    .select('id_consulta, paciente_id, fecha_consulta, tipo_consulta, estado_consulta, motivo_consulta')
+    .order('fecha_consulta', { ascending: false })
+
+  if (error) {
+    throw new Error(`Error al cargar consultas: ${error.message}`)
+  }
+
+  return (data || []) as Consulta[]
+}
+
+async function obtenerEvaluaciones(): Promise<Evaluacion[]> {
+  const { data, error } = await supabase
+    .from('evaluaciones')
+    .select(EVALUACION_SELECT)
+    .order('fecha_evaluacion', { ascending: false })
+    .order('created_at', { ascending: false })
+
+  if (error) {
+    throw new Error(`Error al cargar evaluaciones: ${error.message}`)
+  }
+
+  return (data || []) as unknown as Evaluacion[]
+}
+
 function nombrePaciente(paciente?: Paciente) {
   if (!paciente) {
     return 'Paciente no encontrado'
@@ -133,14 +174,44 @@ function validarFormulario(formulario: FormularioEvaluacion, consultas: Consulta
 }
 
 function EvaluacionesPage() {
-  const [pacientes, setPacientes] = useState<Paciente[]>([])
-  const [consultas, setConsultas] = useState<Consulta[]>([])
-  const [evaluaciones, setEvaluaciones] = useState<Evaluacion[]>([])
+  const queryClient = useQueryClient()
+
+  const {
+    data: pacientes = [],
+    isLoading: cargandoPacientes,
+    error: errorPacientes,
+  } = useQuery({
+    queryKey: ['pacientes'],
+    queryFn: obtenerPacientes,
+  })
+
+  const {
+    data: consultas = [],
+    isLoading: cargandoConsultas,
+    error: errorConsultas,
+  } = useQuery({
+    queryKey: ['consultas'],
+    queryFn: obtenerConsultas,
+  })
+
+  const {
+    data: evaluaciones = [],
+    isLoading: cargandoEvaluaciones,
+    error: errorEvaluaciones,
+  } = useQuery({
+    queryKey: ['evaluaciones'],
+    queryFn: obtenerEvaluaciones,
+  })
+
+  const cargando = cargandoPacientes || cargandoConsultas || cargandoEvaluaciones
+  const errorCarga = errorPacientes || errorConsultas || errorEvaluaciones
+
   const [formulario, setFormulario] = useState<FormularioEvaluacion>(() => crearFormularioInicial())
   const [busqueda, setBusqueda] = useState('')
-  const [mensaje, setMensaje] = useState('')
-  const [cargando, setCargando] = useState(true)
+  const [mensajeGuardado, setMensajeGuardado] = useState('')
   const [guardando, setGuardando] = useState(false)
+
+  const mensaje = mensajeGuardado || (errorCarga ? errorCarga.message : '')
 
   const pacientesPorId = useMemo(() => new Map(pacientes.map((paciente) => [paciente.id, paciente])), [pacientes])
   const consultasPorId = useMemo(() => new Map(consultas.map((consulta) => [consulta.id_consulta, consulta])), [consultas])
@@ -195,62 +266,18 @@ function EvaluacionesPage() {
     setFormulario((actual) => ({ ...actual, paciente_id: pacienteId, consulta_id: '' }))
   }
 
-  async function cargarDatos() {
-    setCargando(true)
-    setMensaje('')
-
-    const { data: pacientesData, error: pacientesError } = await supabase
-      .from('pacientes')
-      .select('id, nombres, apellidos')
-      .order('created_at', { ascending: false })
-
-    if (pacientesError) {
-      setMensaje(`Error al cargar pacientes: ${pacientesError.message}`)
-      setCargando(false)
-      return
-    }
-
-    const { data: consultasData, error: consultasError } = await supabase
-      .from('consultas')
-      .select('id_consulta, paciente_id, fecha_consulta, tipo_consulta, estado_consulta, motivo_consulta')
-      .order('fecha_consulta', { ascending: false })
-
-    if (consultasError) {
-      setMensaje(`Error al cargar consultas: ${consultasError.message}`)
-      setCargando(false)
-      return
-    }
-
-    const { data: evaluacionesData, error: evaluacionesError } = await supabase
-      .from('evaluaciones')
-      .select(EVALUACION_SELECT)
-      .order('fecha_evaluacion', { ascending: false })
-      .order('created_at', { ascending: false })
-
-    if (evaluacionesError) {
-      setMensaje(`Error al cargar evaluaciones: ${evaluacionesError.message}`)
-      setCargando(false)
-      return
-    }
-
-    setPacientes((pacientesData || []) as Paciente[])
-    setConsultas((consultasData || []) as Consulta[])
-    setEvaluaciones((evaluacionesData || []) as unknown as Evaluacion[])
-    setCargando(false)
-  }
-
   async function guardarEvaluacion(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
 
     const errorFormulario = validarFormulario(formulario, consultas)
 
     if (errorFormulario) {
-      setMensaje(`Error: ${errorFormulario}`)
+      setMensajeGuardado(`Error: ${errorFormulario}`)
       return
     }
 
     setGuardando(true)
-    setMensaje('Guardando evaluación...')
+    setMensajeGuardado('Guardando evaluación...')
 
     const payload = {
       paciente_id: formulario.paciente_id,
@@ -266,31 +293,23 @@ function EvaluacionesPage() {
       estado_evaluacion: formulario.estado_evaluacion,
     }
 
-    const { data, error } = await supabase
+    const { error } = await supabase
       .from('evaluaciones')
       .insert(payload)
       .select(EVALUACION_SELECT)
       .single()
 
     if (error) {
-      setMensaje(`Error al guardar evaluación: ${error.message}`)
+      setMensajeGuardado(`Error al guardar evaluación: ${error.message}`)
       setGuardando(false)
       return
     }
 
-    setEvaluaciones((actuales) => [data as unknown as Evaluacion, ...actuales])
+    await queryClient.invalidateQueries({ queryKey: ['evaluaciones'] })
     setFormulario(crearFormularioInicial())
-    setMensaje('Evaluación guardada correctamente')
+    setMensajeGuardado('Evaluación guardada correctamente')
     setGuardando(false)
   }
-
-  useEffect(() => {
-    const carga = window.setTimeout(() => {
-      void cargarDatos()
-    }, 0)
-
-    return () => window.clearTimeout(carga)
-  }, [])
 
   return (
     <main className="clinical-module-page">
