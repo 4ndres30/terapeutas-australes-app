@@ -3662,3 +3662,22 @@ Javier autorizo mergear los 5 PRs abiertos, uno a la vez, verificando que cada m
 - Evaluar a futuro si migrar `AgendaPage` y unificar los `largo` de `textoCorto` en las 2 paginas restantes es deseable.
 
 PROD-001 sigue bloqueante.
+
+## LOG-082 - Bloque 4 (parcial): Vitest + tests unitarios + CI
+
+**Estado:** Mergeado a `main` (PR #91). Unit tests de `lib/format.ts` (24 casos) y `lib/queries.ts` (smoke test). CI en GitHub Actions (lint+build+test). Playwright E2E pendiente.
+**Prioridad:** Media
+**Responsable:** Control de desarrollo (Claude, autorizacion de Javier)
+**Origen:** DEC-039 / Javier
+**Fecha creacion:** 2026-07-06
+
+### Resultado
+
+`npm test` (Vitest) cubre las 6 funciones de `lib/format.ts`, incluyendo el caso de regresion de timezone en `formatearFecha` con fechas date-only (el tipo exacto de bug que rompio silenciosamente en intentos previos documentados en LOG-076/077). Verificado: `tsc -b`, `eslint`, `npm test` (24/24) y `vite build` en verde sobre `main` tras el merge.
+
+### Pendiente
+
+- Playwright E2E (login, crear caso, crear evento agenda): requiere Supabase local en el runner de CI, no incluido aun.
+- Bloque 5 (documentacion de arquitectura: `ARCHITECTURE.md`/`DEVELOPMENT.md`): sin iniciar.
+
+PROD-001 sigue bloqueante.

@@ -113,6 +113,7 @@ Este documento es la lista maestra de pendientes. Cada pendiente debe tener un c
 | BLOQUE-1-RLS | 3 migraciones RLS para DEC-038 en ramas fix/rls-*. | Mergeado a `main` (PR #85, #86, #87) | Alta | Integracion Backend / Seguridad |
 | BLOQUE-2-UTIL | Extraccion de lib/format.ts, lib/queries.ts, lib/constants.ts para DEC-037. | Mergeado a `main` (PR #89), 12 de 14 paginas | Media | Integracion Backend/Estructura |
 | BLOQUE-3-AUTH | POC AuthContext para DEC-036. | Mergeado a `main` (PR #88) | Media | Integracion Backend/Estructura |
+| BLOQUE-4-TEST | Vitest + tests unitarios lib/format.ts + CI para DEC-039. | Mergeado a `main` (PR #91), 24 tests. Playwright E2E pendiente | Media | Control de desarrollo |
 
 ## Pendientes integrados
 
