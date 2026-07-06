@@ -47,12 +47,15 @@ Tras editar el SQL: `npx supabase db reset` (reaplica todas las migraciones desd
 ## Tests
 
 ```bash
-npm test          # Vitest, una vez
+npm test          # Vitest (unit), una vez
 npm run test:watch
 npm run test:coverage
+npm run test:e2e   # Playwright, requiere Supabase local + usuarios demo + npm run dev
 ```
 
-CI (`.github/workflows/ci.yml`) corre `lint` + `build` + `test` en cada PR y push a `main`. Sin E2E todavia.
+Para `test:e2e`, exportar `QA_DEMO_PASSWORD` (ver seccion de usuarios demo) antes de correr; los specs se saltan solos si no esta seteada.
+
+CI (`.github/workflows/ci.yml`) corre `lint` + `build` + `test` (unit) en cada PR y push a `main`. El job de E2E aun no esta en CI: requiere un Supabase completo corriendo en el runner, que no se ha validado con una ejecucion real de GitHub Actions todavia. Por ahora, correr `npm run test:e2e` localmente antes de mergear cambios de auth/routing.
 
 ## Checklist antes de abrir PR
 
