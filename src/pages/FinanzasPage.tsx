@@ -1,4 +1,5 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useMemo, useState } from 'react'
+import { useQuery } from '@tanstack/react-query'
 import { aNumero, formatearFecha, formatearMoneda, normalizarTexto, textoCorto } from '../lib/format'
 import { supabase } from '../lib/supabase'
 import './ClinicalModuleBase.css'
@@ -54,11 +55,32 @@ const UNIDAD_COBRABLE_SELECT = [
 ].join(', ')
 
 
+async function obtenerUnidadesCobrables(): Promise<UnidadCobrableFinanzas[]> {
+  const { data, error } = await supabase
+    .from('vista_finanzas_unidades_cobrables')
+    .select(UNIDAD_COBRABLE_SELECT)
+    .order('fecha_cobro', { ascending: false })
+
+  if (error) {
+    throw new Error(`Error al cargar unidades cobrables: ${error.message}`)
+  }
+
+  return (data || []) as unknown as UnidadCobrableFinanzas[]
+}
+
 function FinanzasPage() {
-  const [unidadesCobrables, setUnidadesCobrables] = useState<UnidadCobrableFinanzas[]>([])
   const [busqueda, setBusqueda] = useState('')
-  const [mensaje, setMensaje] = useState('')
-  const [cargando, setCargando] = useState(true)
+
+  const {
+    data: unidadesCobrables = [],
+    isLoading: cargando,
+    error: errorConsulta,
+  } = useQuery({
+    queryKey: ['unidades-cobrables'],
+    queryFn: obtenerUnidadesCobrables,
+  })
+
+  const mensaje = errorConsulta ? errorConsulta.message : ''
 
   const unidadesFiltradas = useMemo(() => {
     if (!busqueda.trim()) {
@@ -98,33 +120,6 @@ function FinanzasPage() {
     { etiqueta: 'Pagado', valor: formatearMoneda(totalPagado), detalle: 'Pagos aplicados' },
     { etiqueta: 'Saldo', valor: formatearMoneda(saldoPendiente), detalle: 'Pendiente' },
   ]
-
-  async function cargarDatos() {
-    setCargando(true)
-    setMensaje('')
-
-    const { data: unidadesData, error: unidadesError } = await supabase
-      .from('vista_finanzas_unidades_cobrables')
-      .select(UNIDAD_COBRABLE_SELECT)
-      .order('fecha_cobro', { ascending: false })
-
-    if (unidadesError) {
-      setMensaje(`Error al cargar unidades cobrables: ${unidadesError.message}`)
-      setCargando(false)
-      return
-    }
-
-    setUnidadesCobrables((unidadesData || []) as unknown as UnidadCobrableFinanzas[])
-    setCargando(false)
-  }
-
-  useEffect(() => {
-    const carga = window.setTimeout(() => {
-      void cargarDatos()
-    }, 0)
-
-    return () => window.clearTimeout(carga)
-  }, [])
 
   return (
     <main className="clinical-module-page">
