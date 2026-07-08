@@ -377,10 +377,6 @@ function DashboardShell({ children }: {
           <IndicadorAmbiente configuracion={configuracionAmbiente} />
 
           <div className="dashboard-userbar">
-            <button className="dashboard-notification" aria-label="Notificaciones" type="button">
-              <span aria-hidden="true">⌁</span>
-              <strong>3</strong>
-            </button>
             <div className="dashboard-userbar__avatar" aria-hidden="true">{inicialesUsuario}</div>
             <div className="dashboard-userbar__meta">
               <strong>{usuarioInterno?.nombre_completo}</strong>
