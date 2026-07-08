@@ -3702,3 +3702,342 @@ Deliberadamente NO se agrego job de E2E en `.github/workflows/ci.yml`: requeriri
 - Ampliar cobertura E2E mas alla de auth/roles (crear caso, agenda, pagos).
 
 PROD-001 sigue bloqueante.
+
+## LOG-084 - Integración y validación local de SEC-008B, BE-013, SEC-005 y SEC-011
+
+**Estado:** Integrada local/demo
+**Prioridad:** Alta
+**Responsable:** Control de desarrollo (Claude / Codex)
+**Origen:** Tareas priorizadas por Codex
+**Fecha creacion:** 2026-07-08
+**Rama usada:** `codex/implementacion-bloque-seguridad-cobros`
+
+### Resumen
+Se implementan y validan localmente en Supabase local 4 bloques de seguridad y control:
+1. **SEC-008B:** Sincronización del trigger transaccional `handle_new_auth_user` para aprovisionar perfiles internos de forma segura y actualización del script local de provisioning.
+2. **BE-013:** Reglas de exclusión mutua para unidades cobrables en la tabla `cobros` (`chk_cobro_origen_valido`, `chk_cobro_origen_excluyente`) y corrección del trigger de validación de relaciones.
+3. **SEC-005:** Sistema de logs de auditoría transaccionales (`logs_auditoria_sensible`) con enmascaramiento de datos PII y campos clínicos.
+4. **SEC-011:** Revocación de privilegios amplios sobre fotos, aseguramiento de privilegios por defecto y vistas de diagnóstico de archivos huérfanos.
+
+### Archivos tocados
+- `supabase/migrations/20260708000000_sec_008b_cierre_signup_y_provisioning_controlado.sql`
+- `supabase/migrations/20260708000001_be_013_reglas_cobros_unidad_cobrable.sql`
+- `supabase/migrations/20260708000002_sec_005_implementacion_auditoria_sensible.sql`
+- `supabase/migrations/20260708000003_sec_011_hardening_fotos_storage.sql`
+- `scripts/provision-demo-users.mjs`
+- `docs/control/00_ESTADO_GENERAL_PROYECTO.md`
+- `docs/control/01_PENDIENTES_PROYECTO.md`
+### Restricciones respetadas
+
+- `supabase db reset` se ejecuto solo contra la base **local** (Docker). No se ejecuto `supabase db push`. No se toco Supabase remoto ni `.env`.
+- No se mergeo nada a `main`: cada rama sigue pendiente de PR y aprobacion de Javier.
+
+### Pendiente
+
+- Validacion funcional con usuarios demo SEC-007B: login como `finanzas` y confirmar lectura real de `vista_cobros_estado` y `vista_finanzas_fotos_auditoria` vía la UI o Studio (la validacion de esta sesion fue a nivel de DDL/esquema, no de RLS end-to-end con JWT de rol finanzas).
+- PR de las 3 ramas `fix/rls-*` a `main`.
+- Bloque 3: `poc/auth-context` sigue exponiendo los 4 setters crudos del contexto (`setEstadoAuth`, `setSession`, `setUsuarioInterno`, `setMensajeAuth`); considerar encapsular antes de PR. Validacion visual en navegador aun pendiente.
+- Bloque 2: sin cambios respecto de LOG-077 (imports pendientes, caso por caso).
+
+PROD-001 sigue bloqueante.
+
+## LOG-079 - Validacion visual Bloque 3 y encapsulacion de AuthContext
+
+**Estado:** Bloque 3 (DEC-036) validado tecnica y visualmente / pendiente revision final Javier y PR
+**Prioridad:** Media
+**Responsable:** Control de desarrollo (Claude - continuacion de sesion)
+**Origen:** AUDIT-2026-07-04 / DEC-036 / Javier
+**Fecha creacion:** 2026-07-04
+
+### Resumen
+
+Se cerro el pendiente de LOG-078 sobre `poc/auth-context`: encapsular el contexto y ejecutar la validacion visual en navegador que exigia DEC-036 antes de cualquier PR.
+
+### Trabajo realizado en esta sesion
+
+1. Se levanto `npm run dev` y se reprovisionaron los usuarios demo SEC-007B (habian quedado sin auth tras los `supabase db reset` de LOG-078, que solo reaplican migraciones, no el provisioning imperativo de Auth).
+2. Se valido login/logout y sidebar filtrado por rol para `admin` (todos los modulos + Configuracion), `terapeuta` (modulos clinicos, sin Finanzas) y `finanzas` (solo Finanzas/Pagos y Reportes), sin errores de consola.
+3. Se detecto que `src/context/AuthContext.tsx` exponia los 4 setters crudos de estado (`setEstadoAuth`, `setSession`, `setUsuarioInterno`, `setMensajeAuth`) sin que ningun consumidor los usara (confirmado por grep). Se retiraron del tipo `AuthContextType` y del `value` del provider; el contexto ahora solo expone estado de lectura + `cerrarSesion`.
+4. Se revalido `tsc -b` (limpio) y, tras recargar el navegador, que la sesion persistida y el flujo de los 3 roles seguian funcionando igual tras encapsular.
+
+### Archivos relacionados
+
+- `src/context/AuthContext.tsx` (rama `poc/auth-context`)
+- `docs/control/01_PENDIENTES_PROYECTO.md`
+- `docs/control/05_DECISIONES_PROYECTO.md`
+
+### Restricciones respetadas
+
+- Los usuarios demo reprovisionados son estrictamente locales (`SEC007B_ALLOW_PROVISIONING=LOCAL_DEMO_ONLY`, contra `http://127.0.0.1:54321`), siguiendo el procedimiento documentado en SEC-007B. Las variables de entorno sensibles se limpiaron tras la ejecucion.
+- No se toco Supabase remoto ni `.env`. No se mergeo nada a `main`.
+
+### Pendiente
+
+- Revision final de Javier y PR de `poc/auth-context` a `main`.
+- Bloque 1, 2, 4 y 5: sin cambios respecto de LOG-078.
+
+PROD-001 sigue bloqueante.
+
+## LOG-080 - PRs de Bloques 1 y 3 abiertos; migracion de imports Bloque 2
+
+**Estado:** Bloque 1 y 3 con PR abierto a `main` / Bloque 2 con 12 de 14 paginas migradas, pendiente PR
+**Prioridad:** Alta
+**Responsable:** Control de desarrollo (Claude, con autorizacion de Javier)
+**Origen:** AUDIT-2026-07-04 / DEC-036 / DEC-037 / DEC-038 / Javier
+**Fecha creacion:** 2026-07-04
+
+### Resumen
+
+Javier confirmo conformidad con el trabajo revisado en WebStorm y autorizo proceder. Se abrieron los PRs de los bloques ya validados y se completo la migracion de imports de Bloque 2 (utilidades).
+
+### Trabajo realizado en esta sesion
+
+1. Se empujaron `fix/rls-vista-cobros-finanzas`, `fix/rls-fotos-auditoria-finanzas`, `fix/rls-delete-policies`, `docs/audit-2026-07-04-revision-estructura` y `poc/auth-context` a `origin`.
+2. Se abrieron 4 PRs contra `main`: #85 (vista_cobros_estado), #86 (vista_finanzas_fotos_auditoria), #87 (DELETE policies), #88 (AuthContext).
+3. Bloque 2: se migraron los imports de `formatearFecha`/`normalizarTexto`/`aNumero`/`formatearMoneda`/`textoCorto` desde `lib/format.ts` en 12 paginas (ver detalle en `BLOQUE-2-UTIL` de `01_PENDIENTES_PROYECTO.md` y DEC-037). Verificado con `tsc -b`, `eslint` y validacion visual completa en navegador con datos del seed local DATA-001 (login admin): Pacientes, Casos, Consultas, Evaluaciones, Finanzas, Reportes y los 5 paneles de detalle de caso muestran los mismos valores que antes de la migracion.
+4. Se detecto que Docker Desktop se habia cerrado durante la sesion (interrumpiendo Supabase local); se reinicio, y se cargo el seed `supabase/dev-seeds/caso_demo_integral.sql` para tener datos reales con los que validar visualmente el formato de fecha/moneda/texto.
+
+### Archivos relacionados
+
+- `supabase/migrations/20260704_000000_fix_vista_cobros_estado_finanzas.sql`, `20260704_000001_crear_vista_fotos_auditoria_finanzas.sql`, `20260704_000002_agregar_delete_policies_tablas_operativas.sql`
+- `src/context/AuthContext.tsx`
+- 12 paginas listadas en `BLOQUE-2-UTIL`
+- `docs/control/01_PENDIENTES_PROYECTO.md`, `05_DECISIONES_PROYECTO.md`
+
+### Restricciones respetadas
+
+- No se ejecuto `supabase db push`. No se toco Supabase remoto ni `.env`.
+- Los PRs abiertos no se mergearon a `main`; quedan pendientes de revision y aprobacion en GitHub.
+- El seed cargado (`caso_demo_integral.sql`) es exclusivamente local, ya documentado y validado en DATA-001.
+
+### Pendiente
+
+- Revision y merge de PRs #85, #86, #87, #88 en GitHub.
+- Bloque 2: PR de las 12 paginas migradas; evaluar a futuro si migrar `AgendaPage` y unificar los `largo` de `textoCorto` es deseable (decision de producto, no mecanica).
+- Bloque 4 (testing) y Bloque 5 (documentacion): sin trabajo iniciado.
+
+PROD-001 sigue bloqueante.
+
+## LOG-081 - Merge de Bloques 1, 2 y 3 a main; bug de naming de migraciones encontrado y corregido
+
+**Estado:** Bloques 1, 2 y 3 (DEC-036/037/038) mergeados a `main` (PR #85-#90). Bloque 4 y 5 sin iniciar.
+**Prioridad:** Alta
+**Responsable:** Control de desarrollo (Claude, con autorizacion explicita de Javier)
+**Origen:** AUDIT-2026-07-04 / DEC-036 / DEC-037 / DEC-038 / Javier
+**Fecha creacion:** 2026-07-06
+
+### Resumen
+
+Javier autorizo mergear los 5 PRs abiertos, uno a la vez, verificando que cada merge no rompiera la aplicacion antes de integrar el siguiente.
+
+### Trabajo realizado
+
+1. Merge PR #85 (vista_cobros_estado): verificado con `tsc`, `eslint`, `supabase db reset` y prueba visual en vivo del panel Pagos (usa la vista) con datos del seed local.
+2. Merge PR #86 (vista_finanzas_fotos_auditoria): al aplicar `db reset` con ambas migraciones juntas aparecio `ERROR: duplicate key value violates unique constraint "schema_migrations_pkey", Key (version)=(20260704) already exists`. Causa: los archivos `20260704_000000_...` y `20260704_000001_...` usaban guion bajo entre fecha y hora, distinto a la convencion del resto del proyecto (`YYYYMMDDHHMMSS` corrido, ej. `20260701040000`). El CLI de Supabase toma como version solo los digitos antes del primer guion bajo, asi que ambas migraciones quedaban con la misma version `20260704`.
+3. Se renombraron `20260704_000000` y `20260704_000001` a `20260704000000`/`20260704000001` (commit directo en `main`), y se aplico el mismo fix en la rama de PR #87 (`20260704_000002` a `20260704000002`) antes de mergearla, para evitar la misma colision.
+4. Merge PR #87 (DELETE policies): verificado con `tsc`, `eslint`, `db reset` (las 3 migraciones ya renombradas aplican juntas sin error) y `pg_policies` (10 policies DELETE creadas). Se confirmo ademas que no hay ningun `.delete(` en `src/`, por lo que esta migracion no puede romper ninguna funcionalidad existente.
+5. Merge PR #88 (AuthContext): verificado con `tsc`, `eslint`, `vite build` y prueba visual completa en navegador (login/logout/sidebar para admin, terapeuta y finanzas) contra el `main` ya actualizado con Bloque 1.
+6. Merge PR #89 (utilidades compartidas): verificado con `tsc`, `eslint`, `vite build` y prueba visual completa (Pacientes, Casos, Consultas, Evaluaciones, Reportes y detalle de caso) con los mismos valores de fecha/moneda que antes del merge.
+7. Se detecto que la rama de documentacion (`docs/audit-2026-07-04-revision-estructura`, con DEC-036 a DEC-039 y LOG-076 a LOG-080) nunca habia tenido un PR abierto. Se abrio PR #90 y se mergeo tambien.
+8. Durante la sesion, Docker Desktop se cerro solo dos veces (una a mitad de la verificacion de PR #85/86, otra entre el merge de #87 y #88); ambas veces se reinicio con `Start-Process` de PowerShell (el `&`/`disown` de Bash no mantenia el proceso vivo entre invocaciones de la herramienta) y se reprovisionaron usuarios demo + seed cuando fue necesario.
+
+### Archivos relacionados
+
+- `supabase/migrations/20260704000000_fix_vista_cobros_estado_finanzas.sql`, `20260704000001_crear_vista_fotos_auditoria_finanzas.sql`, `20260704000002_agregar_delete_policies_tablas_operativas.sql` (renombrados)
+- `docs/control/01_PENDIENTES_PROYECTO.md`
+
+### Restricciones respetadas
+
+- No se ejecuto `supabase db push`. No se toco Supabase remoto ni `.env`.
+- Cada merge se verifico de forma aislada (pull + tsc + eslint + build/db reset + prueba visual) antes de proceder al siguiente PR, sin excepcion.
+
+### Pendiente
+
+- Bloque 4 (testing con Vitest/Playwright) y Bloque 5 (documentacion de arquitectura): sin trabajo iniciado.
+- Evaluar a futuro si migrar `AgendaPage` y unificar los `largo` de `textoCorto` en las 2 paginas restantes es deseable.
+
+PROD-001 sigue bloqueante.
+
+## LOG-082 - Bloque 4 (parcial): Vitest + tests unitarios + CI
+
+**Estado:** Mergeado a `main` (PR #91). Unit tests de `lib/format.ts` (24 casos) y `lib/queries.ts` (smoke test). CI en GitHub Actions (lint+build+test). Playwright E2E pendiente.
+**Prioridad:** Media
+**Responsable:** Control de desarrollo (Claude, autorizacion de Javier)
+**Origen:** DEC-039 / Javier
+**Fecha creacion:** 2026-07-06
+
+### Resultado
+
+`npm test` (Vitest) cubre las 6 funciones de `lib/format.ts`, incluyendo el caso de regresion de timezone en `formatearFecha` con fechas date-only (el tipo exacto de bug que rompio silenciosamente en intentos previos documentados en LOG-076/077). Verificado: `tsc -b`, `eslint`, `npm test` (24/24) y `vite build` en verde sobre `main` tras el merge.
+
+### Pendiente
+
+- Playwright E2E (login, crear caso, crear evento agenda): requiere Supabase local en el runner de CI, no incluido aun.
+- Bloque 5 (documentacion de arquitectura: `ARCHITECTURE.md`/`DEVELOPMENT.md`): sin iniciar.
+
+PROD-001 sigue bloqueante.
+
+## LOG-083 - Bloque 5 (docs) y Playwright E2E mergeados
+
+**Estado:** Mergeado a `main`: PR #92 (ARCHITECTURE.md/DEVELOPMENT.md), PR #93 (4 specs Playwright de auth/roles).
+**Prioridad:** Media
+**Responsable:** Control de desarrollo (Claude, autorizacion de Javier)
+**Origen:** DEC-039 / roadmap AUDIT-2026-07-04 / Javier
+**Fecha creacion:** 2026-07-06
+
+### Resultado
+
+`ARCHITECTURE.md` y `DEVELOPMENT.md` documentan el estado real del codigo tras los Bloques 1-4 (no un diseño aspiracional). `e2e/auth.spec.ts` (4 tests: login/logout admin, sidebar filtrado por rol para terapeuta/finanzas, mensaje de credenciales invalidas) verificado 2 veces contra Supabase local real (antes y despues del merge, ambas 4/4 en verde).
+
+Deliberadamente NO se agrego job de E2E en `.github/workflows/ci.yml`: requeriria un Supabase completo (Postgres+Auth+RLS) corriendo en el runner de GitHub Actions, y no hay forma de verificar esa configuracion sin observar una ejecucion real de Actions. Queda documentado en `DEVELOPMENT.md` como paso manual (`npm run test:e2e`) hasta que alguien pueda iterar en vivo sobre el workflow de CI.
+
+### Pendiente
+
+- Wiring de Playwright a CI (requiere iteracion en vivo contra GitHub Actions).
+- Ampliar cobertura E2E mas alla de auth/roles (crear caso, agenda, pagos).
+
+PROD-001 sigue bloqueante.
+
+## LOG-084 - Integración y validación local de SEC-008B, BE-013, SEC-005 y SEC-011
+
+**Estado:** Integrada local/demo
+**Prioridad:** Alta
+**Responsable:** Control de desarrollo (Claude / Codex)
+**Origen:** Tareas priorizadas por Codex
+**Fecha creacion:** 2026-07-08
+**Rama usada:** `codex/implementacion-bloque-seguridad-cobros`
+
+### Resumen
+Se implementan y validan localmente en Supabase local 4 bloques de seguridad y control:
+1. **SEC-008B:** Sincronización del trigger transaccional `handle_new_auth_user` para aprovisionar perfiles internos de forma segura y actualización del script local de provisioning.
+2. **BE-013:** Reglas de exclusión mutua para unidades cobrables en la tabla `cobros` (`chk_cobro_origen_valido`, `chk_cobro_origen_excluyente`) y corrección del trigger de validación de relaciones.
+3. **SEC-005:** Sistema de logs de auditoría transaccionales (`logs_auditoria_sensible`) con enmascaramiento de datos PII y campos clínicos.
+4. **SEC-011:** Revocación de privilegios amplios sobre fotos, aseguramiento de privilegios por defecto y vistas de diagnóstico de archivos huérfanos.
+
+### Archivos tocados
+- `supabase/migrations/20260708000000_sec_008b_cierre_signup_y_provisioning_controlado.sql`
+- `supabase/migrations/20260708000001_be_013_reglas_cobros_unidad_cobrable.sql`
+- `supabase/migrations/20260708000002_sec_005_implementacion_auditoria_sensible.sql`
+- `supabase/migrations/20260708000003_sec_011_hardening_fotos_storage.sql`
+- `scripts/provision-demo-users.mjs`
+- `docs/control/00_ESTADO_GENERAL_PROYECTO.md`
+- `docs/control/01_PENDIENTES_PROYECTO.md`
+- `docs/control/05_DECISIONES_PROYECTO.md`
+- `docs/control/06_BITACORA_CAMBIOS.md`
+
+### Restricciones respetadas
+- Todos los cambios se aplicaron y validaron de forma local exclusivamente.
+- No se realizó ninguna acción sobre el entorno de producción (`PROD-001` permanece activo y bloqueante).
+- No se modificó el archivo `.env`.
+- No se ejecutó `supabase db push` remoto.
+
+### Resultado
+Las 4 migraciones aplican correctamente sobre la base de datos local y todas las pruebas de restricciones (exclusión de cobros), auditoría enmascarada y compilación de vistas pasaron con éxito. El linting y los tests unitarios siguen pasando en limpio.
+
+PROD-001 sigue bloqueante.
+
+## LOG-085 - Implementación y validación local de BE-024 y BE-023
+
+**Estado:** Integrada local/demo
+**Prioridad:** Alta
+**Responsable:** Control de desarrollo (Claude / Codex)
+**Origen:** Tareas priorizadas por Codex
+**Fecha creacion:** 2026-07-08
+**Rama usada:** `codex/implementacion-bloque-seguridad-cobros`
+
+### Resumen
+Se implementan y validan localmente dos tareas técnicas del plan recomendado:
+1. **BE-024:** Restricción de hallazgo único activo por aspecto de revisión. Se creó la migración `20260708000004_be_024_restriccion_hallazgo_unico_aspecto.sql` con el índice único parcial `idx_unique_activo_por_aspecto` sobre `public.revision_hallazgos (revision_aspecto_id)`.
+2. **BE-023:** Ocultación de `paciente_id` para Finanzas mediante identidad financiera persistente. Se creó la migración `20260708000005_be_023_identidad_financiera_persistente.sql` con la tabla `public.pacientes_identidad_financiera`, trigger de auto-provisión para nuevos pacientes y backfill. Se actualizó `public.vista_finanzas_unidades_cobrables` para remover por completo la columna `paciente_id`. En el frontend, se modificó `src/pages/FinanzasPage.tsx` para no seleccionar ni tipar la columna removida.
+3. **Ajuste del Seed:** Se editó `supabase/dev-seeds/caso_demo_integral.sql` para que el cobro demo de la revisión integral asocie un único origen clínico (`revision_id`), respetando la restricción de exclusión mutua de cobros.
+
+### Archivos tocados
+- `supabase/migrations/20260708000004_be_024_restriccion_hallazgo_unico_aspecto.sql`
+- `supabase/migrations/20260708000005_be_023_identidad_financiera_persistente.sql`
+- `supabase/dev-seeds/caso_demo_integral.sql`
+- `src/pages/FinanzasPage.tsx`
+- `docs/control/00_ESTADO_GENERAL_PROYECTO.md`
+- `docs/control/01_PENDIENTES_PROYECTO.md`
+- `docs/control/05_DECISIONES_PROYECTO.md`
+- `docs/control/06_BITACORA_CAMBIOS.md`
+
+### Restricciones respetadas
+- Cambios aplicados y probados exclusivamente en entorno de base de datos local y frontend local.
+- No se tocó Supabase remoto ni se modificaron variables de entorno en `.env`.
+- `PROD-001` permanece activo y bloqueante.
+
+### Resultado
+Las migraciones aplicaron con éxito y se validó en consola SQL el rechazo de hallazgos activos duplicados y la no exposición de `paciente_id` en la vista financiera, así como el renderizado exitoso y la persistencia de datos. Linting y tests pasaron en limpio.
+
+PROD-001 sigue bloqueante.
+
+## LOG-086 - Implementación y validación local de BE-025, SEC-004 e IMP-002
+
+**Estado:** Integrada local/demo
+**Prioridad:** Alta
+**Responsable:** Control de desarrollo (Claude / Codex)
+**Origen:** Tareas recomendadas por Codex
+**Fecha creacion:** 2026-07-08
+**Rama usada:** `feature/hallazgo-a-trabajo`
+
+### Resumen
+Se implementan y validan localmente tres tareas del roadmap:
+1. **BE-025:** Whitelist de campos financieros permitidos/prohibidos para Finanzas. Se creó la migración `20260708000006_be_025_contrato_campos_finanzas.sql` agregando columnas `observacion_financiera_administrativa` a las tablas `public.cobros` y `public.pagos`, y la columna `nota_conciliacion_financiera` a `public.pagos`. Se redefinió la vista `public.vista_finanzas_unidades_cobrables` para exponer estas columnas y proteger las observaciones clínicas. Se adaptó `FinanzasPage.tsx` para consultar y renderizar estas notas en las tarjetas financieras.
+2. **SEC-004:** Hardening de seguridad de Finanzas. Se creó la especificación de prueba Playwright E2E `e2e/finanzas-restricciones.spec.ts` para verificar la redirección a `/finanzas` ante intentos de navegación a rutas clínicas y el bloqueo de acceso por RLS.
+3. **IMP-002:** Derivación manual de Hallazgo a Trabajo. Se modificó `DetalleRevisionesPanel.tsx` para consultar trabajos asociados, verificar si un hallazgo ya cuenta con una derivación, y renderizar un modal interactivo que hereda datos inteligentes del hallazgo para permitir al terapeuta confirmar la derivación del plan de intervención de manera manual.
+
+### Archivos tocados
+- `supabase/migrations/20260708000006_be_025_contrato_campos_finanzas.sql`
+- `src/pages/FinanzasPage.tsx`
+- `src/pages/casos/DetalleRevisionesPanel.tsx`
+- `e2e/finanzas-restricciones.spec.ts`
+- `docs/control/00_ESTADO_GENERAL_PROYECTO.md`
+- `docs/control/01_PENDIENTES_PROYECTO.md`
+- `docs/control/05_DECISIONES_PROYECTO.md`
+- `docs/control/06_BITACORA_CAMBIOS.md`
+
+### Restricciones respetadas
+- Cambios aplicados y probados exclusivamente en entorno local.
+- No se tocó Supabase remoto ni se modificaron variables de entorno en `.env`.
+- `PROD-001` permanece activo y bloqueante.
+
+### Resultado
+Todas las pruebas de integración pasaron con éxito. La suite de pruebas unitarias (`npm run test`), linter (`npm run lint`), y las pruebas E2E locales de Playwright (`npm run test:e2e`) pasaron en limpio.
+
+PROD-001 sigue bloqueante.
+
+## LOG-087 - Integración y validación local de BE-026, BE-027 y UI-024 / SEC-012
+
+**Estado:** Integrada local/demo
+**Prioridad:** Alta
+**Responsable:** Control de desarrollo (Claude / Codex)
+**Origen:** Tareas priorizadas por Codex
+**Fecha creacion:** 2026-07-08
+**Rama usada:** `feature/recuperacion-y-agendamiento-contrato`
+
+### Resumen
+Se integran y validan localmente tres tareas del roadmap:
+1. **BE-026:** Confirmación documental del contrato conceptual de la API pública de agendamiento detallado en `BE-026_CONTRATO_API_PUBLICA_AGENDAMIENTO.md`.
+2. **BE-027:** Diseño arquitectónico de la integración con Google Calendar/Workspace detallado en `BE-027_INTEGRACION_GOOGLE_WORKSPACE.md` que resguarda la privacidad clínica mediante payloads genéricos.
+3. **UI-024 / SEC-012:** Desarrollo en el frontend de las páginas públicas `/recuperar` y `/reset-password` para una recuperación de cuenta autogestionada segura y sin fuga de cuentas. Se añadió enlace de acceso en `LoginPage.tsx` y se habilitó la redirección automática en Supabase local (`supabase/config.toml`), desactivando temporalmente el módulo de `analytics` para evitar fallos de health checks en sistemas Windows.
+
+### Archivos tocados
+- `docs/control/auditorias/BE-027_INTEGRACION_GOOGLE_WORKSPACE.md`
+- `supabase/config.toml`
+- `src/pages/RecuperarPage.tsx`
+- `src/pages/ResetPasswordPage.tsx`
+- `src/pages/LoginPage.tsx`
+- `src/App.tsx`
+- `docs/control/00_ESTADO_GENERAL_PROYECTO.md`
+- `docs/control/01_PENDIENTES_PROYECTO.md`
+- `docs/control/06_BITACORA_CAMBIOS.md`
+
+### Restricciones respetadas
+- Todos los cambios se aplicaron y validaron localmente.
+- `PROD-001` permanece activo y bloqueante.
+- No se modificó el archivo `.env`.
+
+### Resultado
+El servidor de Supabase reinició exitosamente con la nueva configuración de redirección. La suite de pruebas de Vitest (`npm run test`) y el análisis de calidad de código (`npm run lint`) pasaron con éxito sin errores.
+
+PROD-001 sigue bloqueante.

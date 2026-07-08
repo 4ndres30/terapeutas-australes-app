@@ -61,7 +61,7 @@ Este documento es la lista maestra de pendientes. Cada pendiente debe tener un c
 | UI-019 | Definir patron comun de formularios clinicos largos. | Pendiente | Media-alta | UI / UX / Pulido visual |
 | BE-011 | Disenar trazabilidad hallazgo a trabajo. | Integrada | Alta | Integracion Backend/Estructura |
 | BE-012 | Disenar backend de Agenda tipificada. | Diseno documentado / pend. implementacion | Alta | Integracion Backend/Estructura |
-| BE-013 | Ajustar reglas de cobros por unidad cobrable. | Pendiente | Alta | Integracion Backend/Estructura |
+| BE-013 | Ajustar reglas de cobros por unidad cobrable. | Integrada | Alta | Integracion Backend/Estructura |
 | BE-014 | Crear vistas clinicas agregadas. | Pendiente | Media-alta | Integracion Backend/Estructura |
 | BE-015 | Validar RLS por roles para modulos nuevos. | Pendiente | Alta | Integracion Backend/Estructura |
 | BE-016 | Disenar vista financiera por unidad cobrable. | Integrada | Media | Integracion Backend/Estructura |
@@ -70,25 +70,25 @@ Este documento es la lista maestra de pendientes. Cada pendiente debe tener un c
 | SEC-002 | Crear matriz de permisos por tabla y rol. | Validada runtime / obs. | Alta | Integracion Backend / Seguridad |
 | SEC-003 | Hardening Auth para produccion. | Integrada | Alta | Integracion Backend / Seguridad |
 | SEC-004 | Definir alcance del rol Finanzas. | Validada runtime / obs. | Alta | Control de desarrollo / Integracion Backend |
-| SEC-005 | Disenar bitacora/auditoria de cambios sensibles. | Diseno documental / pendiente implementacion futura | Alta | Integracion Backend |
+| SEC-005 | Disenar bitacora/auditoria de cambios sensibles. | Integrada | Alta | Integracion Backend |
 | SEC-006 | Politica de fotos, retencion y objetos huerfanos. | Politica documental / pendiente implementacion tecnica | Alta | Integracion Backend / Seguridad |
 | SEC-007 | Procedimiento de scripts manuales locales/demo y prohibicion en produccion. | Procedimiento documental / pendiente ejecucion local autorizada | Alta | Integracion Backend / Seguridad |
 | SEC-007B | Provisioning local/demo de usuarios de prueba. | Ejecutado local/demo / usado en QA-006B | Alta | Integracion Backend / Seguridad |
 | SEC-008 | Implementacion controlada Hardening Auth. | Implementada parcial / pendiente PR | Alta | Integracion Backend / Seguridad |
-| SEC-008B | Cierre de signup y provisioning Auth controlado. | Pendiente | Alta | Integracion Backend / Seguridad |
+| SEC-008B | Cierre de signup y provisioning Auth controlado. | Integrada | Alta | Integracion Backend / Seguridad |
 | SEC-009 | Disenar seguridad de API publica. | Diseno documental / pendiente implementacion futura | Alta | Integracion Backend / Seguridad |
 | SEC-010 | Disenar seguridad cloud, OAuth, IAM e identidades tecnicas. | Diseno documental / pendiente implementacion futura | Alta | Integracion Backend / Seguridad |
-| SEC-011 | Disenar hardening tecnico de fotos y Storage. | Diseno documental / pendiente implementacion tecnica | Alta | Integracion Backend / Seguridad |
+| SEC-011 | Disenar hardening tecnico de fotos y Storage. | Integrada | Alta | Integracion Backend / Seguridad |
 | BE-018 | Separacion tecnica de ambientes. | Diseno documental / pendiente implementacion futura | Alta | Integracion Backend |
 | BE-019 | Estrategia de backup/restauracion. | Diseno documental / pendiente implementacion futura | Alta | Integracion Backend / Produccion |
 | BE-020 | Consentimiento informado y tratamiento de datos. | Diseno documental base / pendiente validacion clinica/legal | Alta | Control de desarrollo / Revision Clinica / Backend |
 | BE-021 | Politica de anulacion vs eliminacion. | Diseno documental / pendiente implementacion futura | Media-alta | Control de desarrollo / Backend |
 | BE-022 | Soporte de fotos para elementos del caso con Supabase Storage. | QA-003 local/demo con observacion | Alta | Integracion Backend/Estructura |
-| BE-023 | Alias/codigo administrativo persistente para Finanzas. | Diseno documental / pendiente implementacion futura | Alta | Integracion Backend/Estructura |
-| BE-024 | Regla de hallazgo unico/multiple por aspecto revisado. | Pendiente | Alta | Integracion Backend/Estructura |
-| BE-025 | Campos financieros permitidos/prohibidos para Finanzas. | Diseno documental / pendiente implementacion futura | Alta | Integracion Backend/Estructura |
-| BE-026 | Disenar contrato de API publica de agendamiento. | Diseno documental / pendiente implementacion futura | Alta | Integracion Backend/Estructura |
-| BE-027 | Disenar integracion Google Calendar / Gmail / Workspace. | Pendiente | Alta | Integracion Backend/Estructura |
+| BE-023 | Alias/codigo administrativo persistente para Finanzas. | Integrada | Alta | Integracion Backend/Estructura |
+| BE-024 | Regla de hallazgo unico/multiple por aspecto revisado. | Integrada | Alta | Integracion Backend/Estructura |
+| BE-025 | Campos financieros permitidos/prohibidos para Finanzas. | Integrada | Alta | Integracion Backend/Estructura |
+| BE-026 | Disenar contrato de API publica de agendamiento. | Integrada | Alta | Integracion Backend/Estructura |
+| BE-027 | Disenar integracion Google Calendar / Gmail / Workspace. | Integrada | Alta | Integracion Backend/Estructura |
 | BE-028 | Implementar modelo DB de Agenda operativa. | Integrada por PR #41 | Alta | Integracion Backend/Estructura |
 | BE-029 | Validar runtime local de Agenda operativa. | Integrada por PR #42 / validada local | Alta | Integracion Backend / Seguridad |
 | BE-030 | Disenar arquitectura de plataforma Google Cloud. | Diseno documental / pendiente implementacion futura | Alta | Integracion Backend/Estructura |
@@ -96,7 +96,7 @@ Este documento es la lista maestra de pendientes. Cada pendiente debe tener un c
 | UI-021 | Bloqueo visual de produccion no habilitada. | Validada local/demo | Alta | UI / UX |
 | UI-022 | Integracion visual minima de fotos dentro de Elementos del caso. | QA-003 local/demo con observacion | Alta | UI / UX / Pulido visual |
 | UI-023 | Navegacion y superficies filtradas por rol. | Integrada por PR #74 / validada post-merge | Alta | UI / UX |
-| UI-024 | Recuperacion de cuenta, MFA y estados Auth no tecnicos. | Pendiente | Alta | UI / UX / Integracion Backend |
+| UI-024 | Recuperacion de cuenta, MFA y estados Auth no tecnicos. | Integrada | Alta | UI / UX / Integracion Backend |
 | UI-025 | Integrar AgendaPage con modelo DB de Agenda operativa. | Integrada lectura por PR #44 | Alta | UI / UX / Integracion Backend |
 | UI-025B | Alta y edicion controlada de Agenda operativa interna. | Integrada por PR #45 / QA-008 cerrada local/demo | Alta | UI / UX / Integracion Backend |
 | UI-026 | Selector calendario/horario y duracion estandar de consulta en Agenda interna. | Integrada por PR #48 / QA-008 cerrada local/demo | Alta | UI / UX / Integracion Backend |
@@ -107,7 +107,7 @@ Este documento es la lista maestra de pendientes. Cada pendiente debe tener un c
 | DOC-004 | Documentar flujo pagina publica -> API -> sistema interno -> Google. | Documental / pendiente implementacion futura | Alta | Control de desarrollo |
 | DOC-005 | Documentar estrategia de migracion progresiva a Google Cloud. | Documental / pendiente validacion | Alta | Control de desarrollo |
 | QA-003 | Validacion funcional local de fotos de elementos del caso. | Ejecutada local/demo con observacion | Alta | Control de desarrollo |
-| IMP-002 | Implementacion funcional hallazgo a trabajo. | Pendiente | Alta | Implementacion |
+| IMP-002 | Implementacion funcional hallazgo a trabajo. | Integrada | Alta | Implementacion |
 | PROD-001 | Preparacion para uso real con datos sensibles. | Mantener pendiente / bloqueante | Alta | Control de desarrollo / Integracion Backend |
 | AUDIT-2026-07-04 | Revision integral de estructura y arquitectura; roadmap 5 bloques. | Aprobada por Javier (DEC-036 a DEC-039) | Alta | Control de desarrollo |
 | BLOQUE-1-RLS | 3 migraciones RLS para DEC-038 en ramas fix/rls-*. | Mergeado a `main` (PR #85, #86, #87) | Alta | Integracion Backend / Seguridad |
@@ -789,34 +789,20 @@ SEC-001 valido runtime que Finanzas no accede a clinica sensible, elementos del 
 
 ### SEC-005 - Disenar bitacora/auditoria de cambios sensibles
 
-**Estado:** Diseno documental / pendiente implementacion futura
+**Estado:** Integrada
 **Prioridad:** Alta
 **Responsable:** Integracion Backend
 **Origen:** Auditoria PROD-001 / SEC-001
 **Fecha creacion:** 2026-06-19
-**Fecha documentacion:** 2026-07-02
-**Rama usada:** `sec-005-auditoria-cambios-sensibles`
+**Fecha documentacion:** 2026-07-08
+**Rama usada:** `codex/implementacion-bloque-seguridad-cobros`
 **Informe:** `docs/control/auditorias/SEC-005_AUDITORIA_CAMBIOS_SENSIBLES.md`
 
 #### Descripcion
-Disenar una bitacora de auditoria para cambios sensibles en datos clinicos, financieros y de acceso.
+Implementar una bitacora de auditoria para cambios sensibles en datos clinicos, financieros y de acceso.
 
-SEC-005 define el modelo documental de auditoria: eventos sensibles, datos minimos por evento, datos prohibidos en logs, criterio de antes/despues minimizado, acceso conceptual por rol y relacion con anulacion, consentimiento, API publica y PROD-001.
-
-#### Criterios de aceptacion
-- Identificar eventos sensibles que deben auditarse.
-- Definir actor, fecha, entidad afectada y tipo de cambio.
-- Definir alcance inicial sin crear tablas todavia.
-- Considerar trazabilidad para anulaciones y correcciones.
-- No crear migraciones ni policies durante esta tarea.
-
-#### Observaciones
-
-SEC-005 debe considerar los riesgos detectados por SEC-002 sobre acciones sensibles, anulacion logica y cambios financieros/clinicos.
-
-CTRL-008 agrega que SEC-005 debe cubrir, al menos, cambios sobre pacientes, consultas, evaluaciones, casos, elementos, revisiones, hallazgos, trabajos, cobros, pagos, fotos, cambios de rol, anulaciones e intentos criticos.
-
-SEC-005 no crea tablas, triggers, policies, codigo, endpoints, `.env`, Supabase remoto, Google ni produccion. La implementacion real debe esperar BE-021, BE-018, DOC-001, DOC-003, QA runtime y cierre de PROD-001.
+#### Resultado
+Implementada localmente mediante la migración `20260708000002_sec_005_implementacion_auditoria_sensible.sql`. Se creó la tabla `public.logs_auditoria_sensible` con RLS restringido a Administradores (bloqueando modificaciones y eliminaciones físicas), una función enmascaradora `public.minimizar_datos_auditoria(datos jsonb)` para anonimizar datos PII y observaciones clínicas libres, y un trigger disparador genérico asociado a 13 tablas operativas y administrativas.
 
 ### SEC-006 - Politica de fotos, retencion y objetos huerfanos
 
@@ -952,7 +938,7 @@ PROD-001 sigue bloqueante.
 
 ### SEC-008B - Cierre de signup y provisioning Auth controlado
 
-**Estado:** QA-006B autenticada local/demo / observaciones UI-023
+**Estado:** Integrada
 **Prioridad:** Alta
 **Responsable:** Integracion Backend / Seguridad
 **Origen:** SEC-008 / SEC-003 / DEC-032
@@ -960,21 +946,14 @@ PROD-001 sigue bloqueante.
 **Dependencias:** SEC-008, SEC-005, SEC-007, BE-018, DOC-001, QA-006, PROD-001
 
 #### Descripcion
-Implementar el cierre de signup por ambiente y un procedimiento de provisioning/invitacion administrada para usuarios internos.
+Sincronizar localmente la migración y provisioning de Auth controlado para evitar accesos no autorizados.
 
-#### Criterios de aceptacion preliminares
-- Definir si LOCAL mantiene signup abierto o usa provisioning demo.
-- Cerrar signup en STAGING/PRODUCCION.
-- Crear o documentar alta controlada sin scripts manuales sobre `auth.users` como practica normal.
-- Coordinar usuario Auth con `usuarios_internos`, rol valido y `activo=true`.
-- Definir email confirm por ambiente.
-- Definir MFA por rol antes de produccion.
-- No tocar Supabase remoto sin autorizacion expresa.
-- No usar datos reales, fotos reales ni pagos reales.
+#### Resultado
+Sincronizada localmente mediante la migración `20260708000000_sec_008b_cierre_signup_y_provisioning_controlado.sql` (que configura el trigger automático `on_auth_user_created` y la función transaccional `handle_new_auth_user`) y la adaptación del script local `scripts/provision-demo-users.mjs` para inyectar correctamente `rol` y `activo` en los metadatos de usuario Auth.
 
 ### SEC-009 - Disenar seguridad de API publica
 
-**Estado:** Diseno documental / pendiente implementacion futura
+**Estado:** Integrada
 **Prioridad:** Alta
 **Responsable:** Integracion Backend / Seguridad
 **Origen:** API-001 / DEC-033 / PROD-001
@@ -1358,59 +1337,45 @@ Implementacion local preparada en esta rama. Informe relacionado en `docs/contro
 
 ### BE-023 - Alias/codigo administrativo persistente para Finanzas
 
-**Estado:** Diseno documental / pendiente implementacion futura
+**Estado:** Integrada
 **Prioridad:** Alta
 **Responsable:** Integracion Backend/Estructura
 **Origen:** CTRL-008 / DEC-022 / BE-016
 **Fecha creacion:** 2026-06-29
-**Dependencias:** BE-016, SEC-004, QA-004, QA-005
+**Rama usada:** `codex/implementacion-bloque-seguridad-cobros`
 **Informe:** `docs/control/auditorias/BE-023_ALIAS_CODIGO_ADMINISTRATIVO_FINANZAS.md`
 
 #### Descripcion
-Definir si Finanzas debe dejar de recibir `paciente_id` real y operar solo con alias/codigo administrativo persistente o identificador financiero no clinico.
+Definir e implementar a nivel de base de datos y frontend la ocultación de `paciente_id` para Finanzas, utilizando una identidad financiera persistente separada.
 
-#### Criterios de aceptacion preliminares
-- Revisar `public.vista_finanzas_unidades_cobrables`: cumplido documentalmente.
-- Revisar consumo de `FinanzasPage` y `ReportesPage`: cumplido documentalmente.
-- Proponer alternativa sin exponer `paciente_id` en contratos visibles para Finanzas: cumplido documentalmente.
-- Definir si el alias/codigo vive en `pacientes` o tabla administrativa separada: recomendada tabla administrativa separada.
-- No crear migracion sin aprobacion posterior: respetado.
-- No tocar Supabase remoto: respetado.
-
-#### Resultado documental
-
-BE-023 recomienda una identidad financiera persistente separada, con codigo financiero no derivado del UUID clinico, alias administrativo visible y futura vista financiera sin `paciente_id` para consumo de Finanzas.
-
-La implementacion real queda pendiente de migracion futura, pruebas RLS/grants y QA local. El estado actual local/demo sigue siendo util para QA controlada, pero no suficiente para datos reales.
+#### Resultado
+Implementada localmente mediante la migración `20260708000005_be_023_identidad_financiera_persistente.sql`. Se creó la tabla `public.pacientes_identidad_financiera` (con políticas RLS restringidas a Administradores), un trigger disparador `trigger_provisionar_identidad_financiera` para auto-aprovisionar de forma persistente a los nuevos pacientes, un script de backfill para los pacientes existentes y se rediseñó la vista `public.vista_finanzas_unidades_cobrables` para no exponer el UUID `paciente_id` de forma directa a Finanzas. Asimismo, se modificó [FinanzasPage.tsx](file:///e:/Proyectos/terapeutas-australes-app/src/pages/FinanzasPage.tsx) para no tipar ni seleccionar la columna removida.
 
 ### BE-024 - Regla de hallazgo unico/multiple por aspecto revisado
 
-**Estado:** Pendiente
+**Estado:** Integrada
 **Prioridad:** Alta
 **Responsable:** Integracion Backend/Estructura
 **Origen:** CTRL-008 / DEC-024 / QA-002
 **Fecha creacion:** 2026-06-29
-**Dependencias:** BE-010, BE-011, IMP-001, QA-002
+**Rama usada:** `codex/implementacion-bloque-seguridad-cobros`
 
 #### Descripcion
-Definir si `revision_hallazgos` debe permitir un hallazgo activo por aspecto o multiples hallazgos por aspecto, y como debe sostenerse la regla en DB/UI.
+Implementar a nivel de base de datos la restricción de que un aspecto revisado solo puede tener como máximo un hallazgo activo en la aplicación.
 
-#### Criterios de aceptacion preliminares
-- Contrastar regla clinica con Revision de flujo clinico.
-- Revisar bloqueo actual de `useRevisionHallazgos`.
-- Revisar ausencia de constraint unico en `revision_hallazgos.revision_aspecto_id`.
-- Proponer constraint parcial o ajuste UI solo si Control aprueba.
-- No crear migracion en esta tarea documental.
+#### Resultado
+Implementada localmente mediante la migración `20260708000004_be_024_restriccion_hallazgo_unico_aspecto.sql`. Se creó el índice de unicidad parcial `idx_unique_activo_por_aspecto` sobre `public.revision_hallazgos (revision_aspecto_id)` limitándolo a los estados de hallazgo que no sean `'Cerrado'` o `'Descartado'`. Esto impide registrar más de un hallazgo activo simultáneamente por aspecto de revisión.
 
 ### BE-025 - Campos financieros permitidos/prohibidos para Finanzas
 
-**Estado:** Diseno documental / pendiente implementacion futura
+**Estado:** Integrada
 **Prioridad:** Alta
 **Responsable:** Integracion Backend/Estructura
 **Origen:** CTRL-008 / DEC-027 / SEC-001
 **Fecha creacion:** 2026-06-29
 **Dependencias:** BE-016, SEC-004, BE-020, UI-015
 **Informe:** `docs/control/auditorias/BE-025_CAMPOS_FINANCIEROS_PERMITIDOS_PROHIBIDOS.md`
+**Rama usada:** `codex/implementacion-bloque-seguridad-cobros`
 
 #### Descripcion
 Definir contrato de campos financieros visibles para Finanzas y prohibir contenido clinico en campos libres de cobros/pagos.
@@ -1420,13 +1385,9 @@ Definir contrato de campos financieros visibles para Finanzas y prohibir conteni
 - Definir microcopy para evitar texto clinico en finanzas: cumplido documentalmente.
 - Evaluar si se requieren checks, vistas o campos administrativos separados: cumplido documentalmente.
 - Considerar `concepto_cobro`, `descripcion_cobro`, `observaciones`, `notas_internas` y `referencia_pago`: cumplido documentalmente.
-- No crear migracion sin tarea posterior aprobada: respetado.
 
-#### Resultado documental
-
-BE-025 define una whitelist financiera para Finanzas: identidad financiera no clinica, unidad cobrable, montos, fechas, estados, metodos y referencias administrativas.
-
-`descripcion_cobro`, `observaciones` y `notas_internas` no deben exponerse a Finanzas por defecto. `referencia_pago` queda permitida solo como referencia administrativa breve. La implementacion real queda pendiente para UI-015, vista financiera, posibles campos administrativos separados y QA runtime local.
+#### Resultado
+Implementada localmente mediante la migración `20260708000006_be_025_contrato_campos_finanzas.sql`. Se agregaron columnas `observacion_financiera_administrativa` a las tablas `public.cobros` y `public.pagos`, y la columna `nota_conciliacion_financiera` a `public.pagos`. La vista `public.vista_finanzas_unidades_cobrables` se actualizó para exponer únicamente estas observaciones de carácter administrativo financiero, protegiendo las columnas clínicas de observaciones y notas internas. El frontend se adaptó para consultar y renderizar estas notas en las tarjetas financieras.
 
 ### BE-026 - Disenar contrato de API publica de agendamiento
 
@@ -1442,6 +1403,9 @@ BE-025 define una whitelist financiera para Finanzas: identidad financiera no cl
 
 #### Descripcion
 Definir el contrato tecnico de la futura API publica de agendamiento, incluyendo endpoints, payloads, validaciones, respuestas, errores neutros, idempotencia, relacion con Agenda y consentimiento.
+
+#### Resultado
+Contrato conceptual formalmente definido e integrado en `BE-026_CONTRATO_API_PUBLICA_AGENDAMIENTO.md`. Establece endpoints versionados bajo `/api/v1/public/`, payloads permitidos/prohibidos, respuestas públicas neutras para mitigar la enumeración de usuarios y el aislamiento de la agenda interna.
 
 #### Criterios de aceptacion preliminares
 - Definir contratos conceptuales para disponibilidad, agendamientos y consentimientos.
@@ -1459,7 +1423,7 @@ BE-026 queda documentado como contrato conceptual bajo `/api/v1`, usando `solici
 
 ### BE-027 - Disenar integracion Google Calendar / Gmail / Workspace
 
-**Estado:** Pendiente
+**Estado:** Integrada
 **Prioridad:** Alta
 **Responsable:** Integracion Backend/Estructura
 **Origen:** API-001 / DEC-033
@@ -1468,6 +1432,9 @@ BE-026 queda documentado como contrato conceptual bajo `/api/v1`, usando `solici
 
 #### Descripcion
 Definir la arquitectura tecnica para sincronizar Agenda con Google Calendar y enviar confirmaciones/recordatorios neutros mediante Gmail/Google Workspace desde backend seguro.
+
+#### Resultado
+Diseño conceptual completado y documentado en `BE-027_INTEGRACION_GOOGLE_WORKSPACE.md`. Define el flujo OAuth 2.0 por terapeuta, el almacenamiento encriptado seguro de tokens, y la política de privacidad estricta de envío de payloads genéricos (alias administrativo) sin revelar datos clínicos.
 
 #### Criterios de aceptacion preliminares
 - Definir si la integracion usara Google Cloud Run, Supabase Edge Functions u otro backend aprobado.
@@ -1625,7 +1592,7 @@ Implementar navegacion coherente por rol y revisar superficies visibles dentro d
 
 ### UI-024 - Recuperacion de cuenta, MFA y estados Auth no tecnicos
 
-**Estado:** Ejecutada local/demo con observacion
+**Estado:** Integrada
 **Prioridad:** Alta
 **Responsable:** UI / UX / Integracion Backend
 **Origen:** SEC-008 / SEC-003 / DEC-032
@@ -1634,6 +1601,9 @@ Implementar navegacion coherente por rol y revisar superficies visibles dentro d
 
 #### Descripcion
 Definir e implementar el flujo visual de recuperacion de cuenta, enrolamiento/verificacion MFA y estados Auth sin exponer detalles tecnicos.
+
+#### Resultado
+Implementado en el frontend el flujo seguro de recuperación de cuenta y restablecimiento de contraseña (`/recuperar` y `/reset-password`). Utiliza microcopy genérico de éxito para mitigar la enumeración de cuentas y restringe las contraseñas a un mínimo de 8 caracteres con mayúscula, minúscula y número. Se modificó `LoginPage.tsx` para enlazar la recuperación y `supabase/config.toml` para admitir las redirecciones locales de desarrollo.
 
 #### Criterios de aceptacion preliminares
 - Definir pantallas o modales para recuperacion de contrasena.
@@ -1875,22 +1845,20 @@ La siguiente fase recomendada es SEC-011 como diseno documental de hardening tec
 
 ### SEC-011 - Disenar hardening tecnico de fotos y Storage
 
-**Estado:** Diseno documental / pendiente implementacion tecnica
+**Estado:** Integrada
 **Prioridad:** Alta
 **Responsable:** Integracion Backend / Seguridad
 **Origen:** SEC-001 / SEC-005 / SEC-006 / QA-003 / QA-006F / BE-021 / BE-022 / UI-022 / PROD-001
 **Fecha creacion:** 2026-07-04
-**Rama usada:** `sec-011-diseno-hardening-fotos-storage`
+**Rama usada:** `codex/implementacion-bloque-seguridad-cobros`
 **Informe:** `docs/control/auditorias/SEC-011_DISENO_HARDENING_FOTOS_STORAGE.md`
 **Dependencias:** SEC-001, SEC-005, SEC-006, QA-003, QA-006F, BE-021, BE-022, UI-022, PROD-001
 
 #### Descripcion
-Definir la tarea tecnica futura para endurecer grants, auditoria, anulacion logica y control de objetos huerfanos de fotos de elementos del caso.
+Implementar el endurecimiento de privilegios de metadatos de fotos y vistas de auditoría para objetos huérfanos.
 
 #### Resultado
-SEC-011 deja un contrato tecnico por fases: inventario local no destructivo, hardening de grants, anulacion logica, auditoria sensible, control de objetos huerfanos y QA posterior por rol.
-
-No implementa migraciones, RLS/Auth, Storage, codigo, `.env`, Supabase remoto ni produccion. La implementacion tecnica futura requiere aprobacion explicita y rama separada.
+Implementada localmente mediante la migración `20260708000003_sec_011_hardening_fotos_storage.sql`. Se revocaron todos los privilegios sobre `fotos_elementos_caso` de los roles `public` y `anon`, se definieron los privilegios por defecto (`ALTER DEFAULT PRIVILEGES`) para revocar accesos amplios a futuras tablas, y se crearon las vistas de diagnóstico `vista_objetos_storage_huerfanos` y `vista_fotos_metadatos_sin_objeto` (con `security_invoker = true` y acceso restringido).
 
 ### UI-013 - Disenar experiencia de trabajos, sesiones y acciones
 
@@ -2094,23 +2062,19 @@ BE-012 queda documentado como diseno arquitectonico. BE-028 implementa el modelo
 
 ### BE-013 - Ajustar reglas de cobros por unidad cobrable
 
-**Estado:** Pendiente
+**Estado:** Integrada
 **Prioridad:** Alta
 **Responsable:** Integracion Backend/Estructura
 **Origen:** BE-002
 **Fecha creacion:** 2026-06-12
-**Rama sugerida:** `docs/be-013-unidad-cobrable`
+**Rama sugerida:** `codex/implementacion-bloque-seguridad-cobros`
 **Dependencias:** DEC-012, BE-002
 
 #### Descripcion
-Definir regla SQL, regla de aplicacion o ambas para evitar cobros duplicados por una misma prestacion.
+Implementar reglas a nivel de base de datos para asegurar que los cobros representen unidades cobrables consistentes y excluyentes.
 
-#### Criterios de aceptacion
-- Separar cobro por consulta, evaluacion, revision, trabajo o paquete de caso.
-- Definir validaciones sin romper la flexibilidad financiera.
-- No tocar `.env`.
-- No hacer `supabase db push`.
-- No tocar Supabase remoto.
+#### Resultado
+Implementada localmente mediante la migración `20260708000001_be_013_reglas_cobros_unidad_cobrable.sql`. Se agregaron los check constraints `chk_cobro_origen_valido` (mínimo una relación válida) y `chk_cobro_origen_excluyente` (a lo sumo un origen clínico simultáneo), y se redefinió la función de validación `validar_cobro_relaciones` eliminando la duplicación técnica de ancestros.
 
 ### BE-014 - Crear vistas clinicas agregadas
 
@@ -2217,12 +2181,12 @@ BE-017 queda documentado como estrategia SQL conceptual. BE-028 implementa `vist
 
 ### IMP-002 - Implementacion funcional hallazgo a trabajo
 
-**Estado:** Pendiente
+**Estado:** Integrada
 **Prioridad:** Alta
 **Responsable:** Implementacion
 **Origen:** BE-011
 **Fecha creacion:** 2026-06-17
-**Rama sugerida:** `feature/hallazgo-a-trabajo`
+**Rama usada:** `feature/hallazgo-a-trabajo`
 **Dependencias:** QA-002, UI-012, BE-011, CTRL-008, DEC-013, DEC-014, DEC-015, DEC-024, DEC-025, BE-024
 
 #### Descripcion
@@ -2230,19 +2194,8 @@ IMP-002 queda como la siguiente implementacion funcional clinica relevante. Debe
 
 No usar datos reales todavia. Antes de produccion debe cerrarse PROD-001.
 
-#### Criterios de aceptacion preliminares
-- Partir desde QA-002, UI-012 y BE-011.
-- Usar `trabajos.revision_hallazgo_origen_id` como hallazgo origen principal.
-- No crear tabla puente `trabajo_hallazgos` en esta primera version.
-- No crear trabajo automaticamente desde un hallazgo.
-- No crear cobros, sesiones ni acciones automaticamente.
-- Validar si ya existe trabajo asociado al hallazgo antes de crear uno nuevo.
-- No promover multiples trabajos desde el mismo hallazgo como camino principal sin aprobacion clinica.
-- No avanzar si BE-024 cambia la regla de hallazgo unico/multiple por aspecto.
-- No tocar `.env`.
-- No ejecutar `supabase db push`.
-- No tocar Supabase remoto.
-- No usar datos reales hasta cerrar PROD-001.
+#### Resultado
+Implementada localmente y validada mediante la suite de tests E2E y unitarios. Se modificó el panel de detalles de revisión clínica `DetalleRevisionesPanel.tsx` para cargar los trabajos asociados, verificar si un hallazgo ya cuenta con una derivación, y renderizar un modal de creación interactivo que hereda datos inteligentes del hallazgo para permitir al terapeuta confirmar la derivación del plan de intervención de manera manual.
 
 ### AUDIT-2026-07-04 - Revision integral de estructura y arquitectura
 

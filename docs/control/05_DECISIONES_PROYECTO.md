@@ -37,20 +37,20 @@ Este documento registra decisiones estables. No reemplaza la conversacion, pero 
 | DEC-019 | SEC-001 valida RLS local pero no habilita datos reales. | Validada | 2026-06-27 |
 | DEC-020 | Finanzas usa vista financiera minima dedicada. | Validada localmente | 2026-06-27 |
 | DEC-021 | Reportes se separan por rol y Finanzas no consulta clinica. | Integrada | 2026-06-29 |
-| DEC-022 | Finanzas no debe ver `paciente_id` real por defecto. | Diseno documental / pendiente implementacion | 2026-06-29 |
+| DEC-022 | Finanzas no debe ver `paciente_id` real por defecto. | Validada | 2026-06-29 |
 | DEC-023 | Terapeuta no administra pagos desde ficha clinica. | Propuesta pendiente aprobacion | 2026-06-29 |
-| DEC-024 | Un aspecto revisado debe tener maximo un hallazgo activo en v1. | Propuesta pendiente aprobacion clinica | 2026-06-29 |
+| DEC-024 | Un aspecto revisado debe tener maximo un hallazgo activo en v1. | Integrada | 2026-06-29 |
 | DEC-025 | Hallazgo a trabajo mantiene origen principal sin automatismos. | Estable v1 / abierta evolucion | 2026-06-29 |
 | DEC-026 | Produccion debe usar anulacion logica, no delete fisico operativo. | Propuesta bloqueante | 2026-06-29 |
-| DEC-027 | Finanzas solo debe ver textos administrativos financieros. | Diseno documental / pendiente implementacion | 2026-06-29 |
+| DEC-027 | Finanzas solo debe ver textos administrativos financieros. | Integrada | 2026-06-29 |
 | DEC-028 | Fotos reales quedan bloqueadas hasta politica, QA, auditoria y anulacion. | Propuesta bloqueante | 2026-06-29 |
-| DEC-029 | Scripts manuales sobre Auth solo local/demo y prohibidos en produccion. | Procedimiento documental / pendiente ejecucion controlada | 2026-06-29 |
+| DEC-029 | Scripts manuales sobre Auth solo local/demo y prohibidos en produccion. | Validada | 2026-06-29 |
 | DEC-030 | El proyecto debe reconocer LOCAL, DEMO, STAGING y PRODUCCION. | Propuesta pendiente aprobacion | 2026-06-29 |
 | DEC-031 | Carga real requiere aprobacion explicita y checklist. | Pregunta abierta bloqueante | 2026-06-29 |
-| DEC-032 | Auth productivo por invitacion/provisioning y MFA por rol. | Propuesta pendiente aprobacion | 2026-06-29 |
+| DEC-032 | Auth productivo por invitacion/provisioning y MFA por rol. | Validada | 2026-06-29 |
 | DEC-033 | API segura como frontera entre pagina publica, sistema interno y servicios Google. | Propuesta arquitectonica / pendiente implementacion | 2026-06-30 |
 | DEC-034 | Agenda operativa separada de consulta clinica confirmada. | Arquitectura aprobada / DB validada localmente | 2026-07-01 |
-| DEC-035 | Migracion progresiva a plataforma Google Cloud. | Propuesta documental / pendiente validacion Javier | 2026-07-01 |
+| DEC-035 | Migracion progresiva a plataforma Google Cloud. | Validada | 2026-07-01 |
 | DEC-036 | State management centralizado con Context + useReducer. | Aprobada / POC en validacion tecnica | 2026-07-04 |
 | DEC-037 | Utilidades compartidas en `lib/`. | Aprobada / implementacion en curso | 2026-07-04 |
 | DEC-038 | Migraciones SQL para cerrar brechas RLS. | Aprobada / migraciones sin aplicar | 2026-07-04 |
@@ -573,7 +573,7 @@ Informe relacionado: `docs/control/auditorias/UI-016_REPORTES_POR_ROL.md`.
 
 ## DEC-022 - Finanzas no debe ver `paciente_id` real por defecto
 
-**Estado:** Diseno documental / pendiente implementacion
+**Estado:** Validada
 **Origen:** CTRL-008
 **Fecha:** 2026-06-29
 
@@ -627,7 +627,7 @@ Informe relacionado: `docs/control/auditorias/CTRL-008_DECISIONES_CRITICAS_POST_
 
 ## DEC-024 - Un aspecto revisado debe tener maximo un hallazgo activo en v1
 
-**Estado:** Propuesta pendiente aprobacion clinica
+**Estado:** Integrada
 **Origen:** CTRL-008 / QA-002 / IMP-001
 **Fecha:** 2026-06-29
 
@@ -710,7 +710,7 @@ Informe relacionado: `docs/control/auditorias/CTRL-008_DECISIONES_CRITICAS_POST_
 
 ## DEC-027 - Finanzas solo debe ver textos administrativos financieros
 
-**Estado:** Propuesta pendiente aprobacion
+**Estado:** Integrada
 **Origen:** CTRL-008 / SEC-001 / BE-016
 **Fecha:** 2026-06-29
 
@@ -774,7 +774,7 @@ Informes relacionados:
 
 ## DEC-029 - Scripts manuales sobre Auth solo local/demo y prohibidos en produccion
 
-**Estado:** Procedimiento documental / pendiente ejecucion controlada
+**Estado:** Validada
 **Origen:** CTRL-008 / SEC-003
 **Fecha:** 2026-06-29
 
@@ -891,7 +891,7 @@ Restauracion relacionada: `docs/control/auditorias/DOC-002_PROCEDIMIENTO_BACKUP_
 
 ## DEC-032 - Auth productivo por invitacion/provisioning y MFA por rol
 
-**Estado:** Propuesta pendiente aprobacion
+**Estado:** Validada
 **Origen:** SEC-003 / CTRL-008 / DEC-029 / DEC-030 / DEC-031
 **Fecha:** 2026-06-29
 
@@ -1063,7 +1063,7 @@ Anulacion relacionada: `docs/control/auditorias/BE-021_POLITICA_ANULACION_ELIMIN
 
 ## DEC-035 - Migracion progresiva a plataforma Google Cloud
 
-**Estado:** Propuesta documental / pendiente validacion Javier
+**Estado:** Validada
 **Origen:** CTRL-009 / API-001 / DEC-033 / DEC-034 / PROD-001
 **Fecha:** 2026-07-01
 

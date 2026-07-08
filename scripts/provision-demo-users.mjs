@@ -121,6 +121,8 @@ async function ensureAuthUser(supabase, demoUser, password) {
       user_metadata: {
         sec007b_identity: demoUser.identity,
         display_name: demoUser.fullName,
+        rol: demoUser.role,
+        activo: demoUser.active,
       },
     })
 
@@ -138,6 +140,8 @@ async function ensureAuthUser(supabase, demoUser, password) {
     user_metadata: {
       sec007b_identity: demoUser.identity,
       display_name: demoUser.fullName,
+      rol: demoUser.role,
+      activo: demoUser.active,
     },
   })
 

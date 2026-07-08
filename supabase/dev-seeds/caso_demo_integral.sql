@@ -1217,11 +1217,11 @@ begin
     )
     values (
       v_paciente_id,
-      v_consulta_id,
-      v_evaluacion_id,
+      null, -- consulta_id
+      null, -- evaluacion_id
       v_caso_id,
       v_revision_1_id,
-      v_trabajo_id,
+      null, -- trabajo_id
       date '2026-06-13',
       date '2026-06-30',
       'DATA-001 - Cobro demo revisión integral',

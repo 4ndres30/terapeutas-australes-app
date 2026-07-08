@@ -1,6 +1,6 @@
 # Estado general del proyecto
 
-Fecha de corte: `2026-07-04`
+Fecha de corte: `2026-07-08`
 Responsable del documento: Control de desarrollo
 Estado general documental: En control activo
 
@@ -8,9 +8,9 @@ Estado general documental: En control activo
 
 El proyecto cuenta con una estructura documental de control en `docs/control/`. Esta estructura ordena responsabilidades, pendientes, decisiones, bitacora, auditorias y flujo de trabajo sin modificar codigo, migraciones ni base de datos.
 
-Al corte actual ya quedaron integradas las auditorias iniciales de control, backend, flujo clinico y UI/UX. Tambien quedaron registrados BE-003, BE-010, UI-011, IMP-001, DATA-001, BE-011, QA-002, SEC-001, BE-016, QA-004, UI-016, API-001, el diseno BE-012/BE-017 de Agenda Operativa, la implementacion DB inicial BE-028, la validacion runtime local BE-029, la integracion interna UI-025/UI-025B de Agenda y el inicio progresivo QA-006 de pruebas por rol, junto con las decisiones clinicas/operativas y arquitectonicas clave que permiten avanzar sin romper el flujo definido.
+Al corte actual ya quedaron integradas las auditorias iniciales de control, backend, flujo clinico y UI/UX. Tambien quedaron registrados BE-003, BE-010, UI-011, IMP-001, DATA-001, BE-011, QA-002, SEC-001, BE-016, QA-004, UI-016, API-001, el diseno BE-012/BE-017 de Agenda Operativa, la implementacion DB inicial BE-028, la validacion runtime local BE-029, la integracion interna UI-025/UI-025B de Agenda, el inicio progresivo QA-006 de pruebas por rol, y la implementación local de seguridad/unidades cobrables (BE-013, SEC-005, SEC-008B, SEC-011), junto con las decisiones clinicas/operativas y arquitectonicas clave que permiten avanzar sin romper el flujo definido.
 
-PR #45 ya esta integrado en `main`: Agenda interna cuenta con lectura, alta y edicion controlada de `agenda_eventos`. PR #48 tambien quedo integrado: el modal suma selector calendario/horario, duracion controlada, fin calculado y validacion basica de solapamiento. PR #49 y PR #50 quedaron integrados en `main`: QA-008 queda cerrada como validacion funcional local/demo de Agenda interna, con validacion visual autenticada admin y correccion responsive movil UI-027 mediante menu superior y drawer lateral. BE-026 define el contrato documental de la futura API publica de agendamiento sobre `solicitudes_agenda`, sin endpoints reales. SEC-009 define el marco documental de seguridad, DOC-004 documenta el flujo pagina publica -> API -> sistema interno -> Google, BE-020 define la base documental de consentimiento/tratamiento de datos pendiente de validacion clinica/legal, SEC-005 define el modelo documental de auditoria de cambios sensibles, BE-021 define la politica documental de anulacion vs eliminacion, BE-018/DOC-001/DOC-003 ordenan ambientes y carga de datos reales, BE-019/DOC-002 documentan backup/restauracion, y UI-020/UI-021 definen e implementan localmente el indicador de ambiente y bloqueo de produccion no habilitada. QA-009 valida UI-020 en `/agenda` local autenticada desktop/mobile equivalente y valida UI-021 con bloqueo `PRODUCCION NO HABILITADA` usando variables temporales de proceso, sin modificar `.env`. API publica funcional, Google Calendar/Gmail y produccion siguen en espera.
+PR #45 ya esta integrado en `main`: Agenda interna cuenta con lectura, alta y edicion controlada de `agenda_eventos`. PR #48 tambien quedo integrado: el modal suma selector calendario/horario, duracion controlada, fin calculado y validacion basica de solapamiento. PR #49 y PR #50 quedaron integrados en `main`: QA-008 queda cerrada como validacion funcional local/demo de Agenda interna, con validacion visual autenticada admin y correccion responsive movil UI-027 mediante menu superior y drawer lateral. BE-026 define el contrato documental de la futura API publica de agendamiento sobre `solicitudes_agenda`, sin endpoints reales. SEC-009 define el marco documental de seguridad, DOC-004 documenta el flujo pagina publica -> API -> sistema interno -> Google, BE-020 define la base documental de consentimiento/tratamiento de datos pendiente de validacion clinica/legal, SEC-005 define la auditoria sensible de base de datos implementada localmente, BE-021 define la politica documental de anulacion vs eliminacion, BE-018/DOC-001/DOC-003 ordenan ambientes y carga de datos reales, BE-019/DOC-002 documentan backup/restauracion, y UI-020/UI-021 definen e implementan localmente el indicador de ambiente y bloqueo de produccion no habilitada. QA-009 valida UI-020 en `/agenda` local autenticada desktop/mobile equivalente y valida UI-021 con bloqueo `PRODUCCION NO HABILITADA` usando variables temporales de proceso, sin modificar `.env`. API publica funcional, Google Calendar/Gmail y produccion siguen en espera.
 
 UI-026 incorpora selector de fecha, selector de hora, duracion controlada, fin calculado y validacion basica de solapamiento con buffer operativo de 15 minutos para consultas. El cambio se mantiene en UI interna; no modifica DB, RLS, API publica ni Google. UI-027 quedo integrado en `main` y ajusta el shell responsive para que Agenda no presente overflow horizontal en mobile y la navegacion se despliegue desde el costado izquierdo.
 
@@ -53,38 +53,38 @@ El proyecto se mantiene alineado con el metodo acordado: primero documentar, aud
 - BE-016: vista financiera minima `public.vista_finanzas_unidades_cobrables` integrada por PR #31.
 - QA-004: validacion funcional local de BE-016 / Finanzas integrada por PR #32.
 - UI-016: reportes separados por rol integrados por PR #33.
+- BE-013: Reglas de cobros por unidad cobrable integradas localmente.
+- SEC-005: Bitácora y auditoría de cambios sensibles integrada localmente.
+- SEC-008B: Cierre de signup y provisioning Auth controlado integrado localmente.
+- SEC-011: Hardening de fotos y Storage integrado localmente.
+- BE-023: Alias/código financiero persistente y ocultamiento de paciente_id para Finanzas integrado localmente.
+- BE-024: Restricción de hallazgo único activo por aspecto de revisión integrado localmente.
+- BE-025: Campos financieros permitidos/prohibidos para Finanzas integrado localmente.
+- SEC-004: Hardening y validación de rol Finanzas vía tests E2E integrado localmente.
+- IMP-002: Implementación funcional hallazgo a trabajo integrado localmente.
+- BE-026: Contrato conceptual de API pública de agendamiento integrado.
+- BE-027: Diseño técnico de la integración con Google Calendar/Workspace integrado.
+- UI-024 / SEC-012: Flujo seguro de recuperación de cuenta y reset de contraseña en frontend integrado localmente.
 
 ## En revision / planificacion
 
-- Implementacion funcional hallazgo a trabajo: pendiente futura, posterior a QA-002 y UI-012.
-- UI-010, UI-012 y UI-015: prioridades de planificacion UI derivadas de UI-001 + UI-002 y del estado post IMP-001.
+- UI-010, UI-012 y UI-015: prioridades de planificacion UI derivadas de UI-001 + UI-002 y del estado post IMP-001 e IMP-002.
 - UI-013, UI-014, UI-017, UI-018 y UI-019: pendientes UI derivados, aun sin activacion tecnica.
 - UI-025/UI-025B/UI-026/UI-027: Agenda operativa cuenta con vista interna, filtros, gestion manual minima de `agenda_eventos`, selector controlado de fecha/hora y correccion responsive del shell con drawer movil; QA-008 queda cerrada post-merge como validacion funcional local/demo, con desktop/admin y mobile sin overflow horizontal.
-- BE-013 a BE-015: tareas backend sugeridas por BE-002 para cobros, vistas, RLS y reportes.
-- BE-023: diseno documental de identidad financiera persistente para Finanzas, pendiente implementacion futura sin exponer `paciente_id` por defecto.
-- BE-025: diseno documental de campos financieros permitidos/prohibidos para Finanzas, pendiente implementacion futura en vista/UI/QA.
-- API-001, BE-026, BE-027, SEC-009 y DOC-004: estrategia futura para API publica segura, contrato de agendamiento, integracion Google Workspace, seguridad API y flujo pagina publica -> API -> sistema interno -> Google.
+- BE-014 a BE-015: tareas backend sugeridas por BE-002 para vistas, RLS y reportes.
+- API-001, SEC-009 y DOC-004: estrategia futura para API publica segura, seguridad API y flujo pagina publica -> API -> sistema interno -> Google.
 - CTRL-009, DEC-035, BE-030, SEC-010, DOC-005 y QA-007: estrategia progresiva Google Cloud en revision documental; no migra base de datos, Auth ni produccion.
 - CTRL-012: cierre documental del bloque QA/Finanzas integrado; dejo `QA-006F` como siguiente tarea recomendada.
 - UI-020/UI-021: implementacion local del indicador visual de ambiente activo y bloqueo de produccion no habilitada; QA-009 valida UI-020 en `/agenda` local desktop/mobile equivalente y UI-021 con bloqueo `PRODUCCION NO HABILITADA` y accion `Cerrar sesion`.
 - QA-006/QA-006A/QA-006B/QA-006C/QA-006D/QA-006E/QA-006F: plan base de pruebas por rol, matriz de rutas/superficies, validacion visual sin sesion/autenticada local-demo, UI-023 post-merge, Reportes/Finanzas por rol, estados Auth minimos y RLS/Storage local por rol documentados.
-- SEC-007: procedimiento documental para usuarios demo/locales, sin crear cuentas ni scripts y con prohibicion de uso en produccion.
-- SEC-007B: herramienta local-only y provisioning local de usuarios demo ficticios, sin secretos versionados ni Supabase remoto.
-- RFC-002: deteccion de duplicidades entre entidades clinicas.
 
 ## Pendiente operativo
 
-- Mantener la implementacion funcional hallazgo a trabajo como pendiente futura; no crear trabajo automaticamente.
-- Mantener UI-010, UI-012 y UI-015 como prioridades de planificacion.
 - Sincronizar periodicamente `01_PENDIENTES_PROYECTO.md` cuando una tarea cambie de estado.
 - Mantener `06_BITACORA_CAMBIOS.md` actualizado despues de cada bloque documental o tecnico relevante.
 - Mantener `QA008-OBS-003` como corregida por UI-027 y usar el cierre QA-008 como precondicion documental para evaluar `BE-026`.
 - Implementar UI-020/UI-021 antes de cualquier prueba real de staging, produccion o carga de datos reales.
 - Atender observaciones de SEC-001 y aplicar SEC-006 antes de avanzar a datos reales, fotos reales, pagos reales o produccion.
-- Ejecutar QA-006 por fases: con QA-006A documentada, QA-006B autenticada ejecutada local/demo, SEC-007B integrado, QA-006C validando post-merge UI-023, QA-006D validando Reportes/Finanzas, QA-006E validando Auth local/demo y QA-006F revalidando RLS/Storage local por rol.
-- Implementar BE-023 en tarea tecnica futura antes de exponer Finanzas con datos reales: identidad financiera persistente, vista sin `paciente_id` visible y QA runtime local.
-- Implementar BE-025 en tarea tecnica futura antes de exponer Finanzas con datos reales: whitelist de campos, microcopy UI-015, separacion de textos libres y QA de no exposicion clinica.
-- Registrar SEC-011 como diseno documental y ejecutar hardening tecnico de fotos/Storage solo en tarea separada con aprobacion explicita para migraciones/grants/RLS local.
 
 ## Estrategia futura de API publica
 
