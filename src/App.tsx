@@ -1,15 +1,6 @@
-import { useState, useEffect, type ReactNode } from 'react'
+import { lazy, Suspense, useState, useEffect, type ReactNode } from 'react'
 import { Menu, ShieldAlert, X } from 'lucide-react'
 import { BrowserRouter, Navigate, NavLink, Outlet, Route, Routes } from 'react-router-dom'
-import PacientesPage from './pages/PacientesPage'
-import ConsultasPage from './pages/ConsultasPage'
-import EvaluacionesPage from './pages/EvaluacionesPage'
-import CasosPage from './pages/CasosPage'
-import CasoDetallePage from './pages/CasoDetallePage'
-import FinanzasPage from './pages/FinanzasPage'
-import AgendaPage from './pages/AgendaPage'
-import ReportesPage from './pages/ReportesPage'
-import LoginPage from './pages/LoginPage'
 import { AuthProvider, useAuth } from './context/AuthContext'
 import type { RolUsuario, UsuarioInterno } from './context/authTypes'
 import './App.css'
@@ -17,6 +8,17 @@ import './DashboardPremium.css'
 import './TypographyElegant.css'
 import './ReferencePolish.css'
 import './ReferenceFinalPass.css'
+
+// Carga diferida de páginas — code splitting por ruta
+const PacientesPage    = lazy(() => import('./pages/PacientesPage'))
+const ConsultasPage    = lazy(() => import('./pages/ConsultasPage'))
+const EvaluacionesPage = lazy(() => import('./pages/EvaluacionesPage'))
+const CasosPage        = lazy(() => import('./pages/CasosPage'))
+const CasoDetallePage  = lazy(() => import('./pages/CasoDetallePage'))
+const FinanzasPage     = lazy(() => import('./pages/FinanzasPage'))
+const AgendaPage       = lazy(() => import('./pages/AgendaPage'))
+const ReportesPage     = lazy(() => import('./pages/ReportesPage'))
+const LoginPage        = lazy(() => import('./pages/LoginPage'))
 
 type AmbienteApp = 'LOCAL' | 'DEMO' | 'STAGING' | 'PRODUCCION' | 'DESCONOCIDO'
 
@@ -240,12 +242,12 @@ function BloqueoAmbiente({
   )
 }
 
-function PantallaCarga() {
+function PantallaCarga({ mensaje = 'Validando acceso interno...' }: { mensaje?: string }) {
   return (
     <main className="auth-shell">
       <section className="auth-card">
-        <h1>Cargando sesión</h1>
-        <p>Validando acceso interno...</p>
+        <h1>Cargando</h1>
+        <p>{mensaje}</p>
       </section>
     </main>
   )
@@ -420,42 +422,44 @@ function RouterApp() {
 
   return (
     <BrowserRouter>
-      <Routes>
-        <Route
-          path="/login"
-          element={
-            estadoAuth === 'autorizado'
-              ? <Navigate to={rutaInicial(usuarioInterno)} replace />
-              : <LoginPage estadoAuth={estadoAuth} mensajeAuth={mensajeAuth} session={session} onCerrarSesion={cerrarSesion} />
-          }
-        />
-        <Route element={<RutaProtegidaLayout rolesPermitidos={['admin', 'terapeuta']} />}>
-          <Route path="/pacientes" element={<PacientesPage />} />
-          <Route path="/consultas" element={<ConsultasPage />} />
-          <Route path="/evaluaciones" element={<EvaluacionesPage />} />
-          <Route path="/casos" element={<CasosPage />} />
-          <Route path="/casos/:id" element={<CasoDetallePage />} />
-          <Route path="/elementos-caso" element={<Navigate to="/casos" replace />} />
-          <Route path="/revisiones" element={<Navigate to="/casos" replace />} />
-          <Route path="/detalle-revisiones" element={<Navigate to="/casos" replace />} />
-          <Route path="/agenda" element={<AgendaPage />} />
-        </Route>
-        <Route element={<RutaProtegidaLayout rolesPermitidos={['admin', 'finanzas']} />}>
-          <Route path="/finanzas" element={<FinanzasPage />} />
-        </Route>
-        <Route element={<RutaProtegidaLayout rolesPermitidos={rolesValidos} />}>
-          <Route path="/reportes" element={<ReportesPage />} />
-        </Route>
-        <Route
-          path="*"
-          element={
-            <Navigate
-              to={estadoAuth === 'autorizado' ? rutaInicial(usuarioInterno) : '/login'}
-              replace
-            />
-          }
-        />
-      </Routes>
+      <Suspense fallback={<PantallaCarga mensaje="Cargando módulo..." />}>
+        <Routes>
+          <Route
+            path="/login"
+            element={
+              estadoAuth === 'autorizado'
+                ? <Navigate to={rutaInicial(usuarioInterno)} replace />
+                : <LoginPage estadoAuth={estadoAuth} mensajeAuth={mensajeAuth} session={session} onCerrarSesion={cerrarSesion} />
+            }
+          />
+          <Route element={<RutaProtegidaLayout rolesPermitidos={['admin', 'terapeuta']} />}>
+            <Route path="/pacientes" element={<PacientesPage />} />
+            <Route path="/consultas" element={<ConsultasPage />} />
+            <Route path="/evaluaciones" element={<EvaluacionesPage />} />
+            <Route path="/casos" element={<CasosPage />} />
+            <Route path="/casos/:id" element={<CasoDetallePage />} />
+            <Route path="/elementos-caso" element={<Navigate to="/casos" replace />} />
+            <Route path="/revisiones" element={<Navigate to="/casos" replace />} />
+            <Route path="/detalle-revisiones" element={<Navigate to="/casos" replace />} />
+            <Route path="/agenda" element={<AgendaPage />} />
+          </Route>
+          <Route element={<RutaProtegidaLayout rolesPermitidos={['admin', 'finanzas']} />}>
+            <Route path="/finanzas" element={<FinanzasPage />} />
+          </Route>
+          <Route element={<RutaProtegidaLayout rolesPermitidos={rolesValidos} />}>
+            <Route path="/reportes" element={<ReportesPage />} />
+          </Route>
+          <Route
+            path="*"
+            element={
+              <Navigate
+                to={estadoAuth === 'autorizado' ? rutaInicial(usuarioInterno) : '/login'}
+                replace
+              />
+            }
+          />
+        </Routes>
+      </Suspense>
     </BrowserRouter>
   )
 }
