@@ -66,7 +66,7 @@ Este documento es la lista maestra de pendientes. Cada pendiente debe tener un c
 | BE-015 | Validar RLS por roles para modulos nuevos. | Pendiente | Alta | Integracion Backend/Estructura |
 | BE-016 | Disenar vista financiera por unidad cobrable. | Integrada | Media | Integracion Backend/Estructura |
 | BE-017 | Definir estrategia SQL de agenda operativa. | Diseno documentado / pend. implementacion | Media | Integracion Backend/Estructura |
-| SEC-001 | Validar RLS runtime por roles. | Aprobada con observaciones | Alta | Integracion Backend / Seguridad |
+| SEC-001 | Validar RLS runtime por roles. | Integrada | Alta | Integracion Backend / Seguridad |
 | SEC-002 | Crear matriz de permisos por tabla y rol. | Validada runtime / obs. | Alta | Integracion Backend / Seguridad |
 | SEC-003 | Hardening Auth para produccion. | Integrada | Alta | Integracion Backend / Seguridad |
 | SEC-004 | Definir alcance del rol Finanzas. | Validada runtime / obs. | Alta | Control de desarrollo / Integracion Backend |
@@ -82,7 +82,7 @@ Este documento es la lista maestra de pendientes. Cada pendiente debe tener un c
 | BE-018 | Separacion tecnica de ambientes. | Diseno documental / pendiente implementacion futura | Alta | Integracion Backend |
 | BE-019 | Estrategia de backup/restauracion. | Diseno documental / pendiente implementacion futura | Alta | Integracion Backend / Produccion |
 | BE-020 | Consentimiento informado y tratamiento de datos. | Diseno documental base / pendiente validacion clinica/legal | Alta | Control de desarrollo / Revision Clinica / Backend |
-| BE-021 | Politica de anulacion vs eliminacion. | Diseno documental / pendiente implementacion futura | Media-alta | Control de desarrollo / Backend |
+| BE-021 | Politica de anulacion vs eliminacion. | Diseno documental / Integrada (DELETE policies) | Media-alta | Control de desarrollo / Backend |
 | BE-022 | Soporte de fotos para elementos del caso con Supabase Storage. | QA-003 local/demo con observacion | Alta | Integracion Backend/Estructura |
 | BE-023 | Alias/codigo administrativo persistente para Finanzas. | Diseno documental / pendiente implementacion futura | Alta | Integracion Backend/Estructura |
 | BE-024 | Regla de hallazgo unico/multiple por aspecto revisado. | Pendiente | Alta | Integracion Backend/Estructura |
@@ -101,6 +101,10 @@ Este documento es la lista maestra de pendientes. Cada pendiente debe tener un c
 | UI-025B | Alta y edicion controlada de Agenda operativa interna. | Integrada por PR #45 / QA-008 cerrada local/demo | Alta | UI / UX / Integracion Backend |
 | UI-026 | Selector calendario/horario y duracion estandar de consulta en Agenda interna. | Integrada por PR #48 / QA-008 cerrada local/demo | Alta | UI / UX / Integracion Backend |
 | UI-027 | Ajuste responsive de shell y Agenda interna. | Integrada por PR #50 / validada post-merge | Media-alta | UI / UX / Pulido visual |
+| UI-028 | Reemplazar `as unknown as` por tipos generados de Supabase (25 ocurrencias en 13 archivos: paneles de caso, AgendaPage, ConsultasPage, EvaluacionesPage, FinanzasPage, ReportesPage, CasoDetallePage, useRevisionHallazgos). | Pendiente | Baja | UI / UX / Integracion Backend |
+| UI-029 | Retirar o conectar campana de notificaciones del topbar (placeholder hardcodeado sin backend). | Integrada (placeholder retirado, App.tsx) | Baja | UI / UX |
+| UI-030 | Extraer hook `useClinicalList` + componentes compartidos (`ClinicalMetrics`/`ClinicalList`/`ClinicalEmpty`) para RevisionesCasoPanel/TrabajosCasoPanel/PagosCasoPanel/ElementosCasoPanel, hoy con andamiaje duplicado. | Pendiente | Media | UI / UX / Integracion Backend |
+| UI-031 | Consolidar `src/lib/queries.ts` (migrar paginas a `QUERY_COLUMNS` o eliminar el archivo, hoy sin consumidores reales fuera de su propio test). | Pendiente | Baja | Integracion Backend |
 | DOC-001 | Manual de ambientes. | Documental / pendiente implementacion futura | Alta | Control de desarrollo |
 | DOC-002 | Procedimiento de backup/restauracion. | Documental / pendiente prueba futura | Alta | Control de desarrollo / Integracion Backend |
 | DOC-003 | Politica de carga de datos reales. | Documental / pendiente implementacion futura | Alta | Control de desarrollo |
