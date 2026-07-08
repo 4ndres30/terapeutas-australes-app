@@ -10,6 +10,8 @@ import FinanzasPage from './pages/FinanzasPage'
 import AgendaPage from './pages/AgendaPage'
 import ReportesPage from './pages/ReportesPage'
 import LoginPage from './pages/LoginPage'
+import RecuperarPage from './pages/RecuperarPage'
+import ResetPasswordPage from './pages/ResetPasswordPage'
 import { AuthProvider, useAuth } from './context/AuthContext'
 import type { RolUsuario, UsuarioInterno } from './context/authTypes'
 import './App.css'
@@ -431,6 +433,20 @@ function RouterApp() {
             estadoAuth === 'autorizado'
               ? <Navigate to={rutaInicial(usuarioInterno)} replace />
               : <LoginPage estadoAuth={estadoAuth} mensajeAuth={mensajeAuth} session={session} onCerrarSesion={cerrarSesion} />
+          }
+        />
+        <Route
+          path="/recuperar"
+          element={
+            estadoAuth === 'autorizado'
+              ? <Navigate to={rutaInicial(usuarioInterno)} replace />
+              : <RecuperarPage />
+          }
+        />
+        <Route
+          path="/reset-password"
+          element={
+            <ResetPasswordPage />
           }
         />
         <Route element={<RutaProtegidaLayout rolesPermitidos={['admin', 'terapeuta']} />}>
