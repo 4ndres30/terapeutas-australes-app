@@ -3702,3 +3702,35 @@ Deliberadamente NO se agrego job de E2E en `.github/workflows/ci.yml`: requeriri
 - Ampliar cobertura E2E mas alla de auth/roles (crear caso, agenda, pagos).
 
 PROD-001 sigue bloqueante.
+
+## LOG-084 - Implementacion de navegacion por pestañas en CasoDetallePage y normalizacion de microcopy clinica
+
+**Estado:** Integrada local/demo
+**Prioridad:** Alta
+**Responsable:** Control de desarrollo (Claude / Codex)
+**Origen:** UI-010 / UI-018
+**Fecha creacion:** 2026-07-08
+**Rama usada:** `feature/ui-navegacion-detalle-caso`
+
+### Resumen
+Se implementa y valida en el frontend la navegación interactiva por pestañas en la ficha del caso y la limpieza de microcopy clínica eliminando descripciones técnicas de base de datos.
+
+### Trabajo realizado
+1. **Pestañas dinámicas (UI-010):** Se re-estructuró `CasoDetallePage.tsx` para renderizar condicionalmente 5 pestañas (Resumen, Elementos, Revisiones, Intervenciones, Finanzas), eliminando el scroll vertical kilométrico.
+2. **Estilos Premium:** Se rediseñó la barra de navegación `.caso-detail-tabs` en `CasoDetallePage.css` con tipografía moderna, bordes curvos, sombras suaves y degradados interactivos en HSL.
+3. **Limpieza de Microcopy (UI-018):** Se eliminaron tecnicismos SQL y referencias a nombres de tablas en el listado de revisiones y trabajos (`public.casos`, `revisiones.caso_id`, `Supabase local`), sustituyéndolos por explicaciones clínicas y de negocio claras.
+4. **Validación:** El código compila limpiamente (`npm run build`), y los tests unitarios (`npm run test`) y de linter (`npm run lint`) pasaron sin errores.
+
+### Archivos relacionados
+- `src/pages/CasoDetallePage.tsx`
+- `src/pages/CasoDetallePage.css`
+- `src/pages/casos/RevisionesCasoPanel.tsx`
+- `src/pages/casos/TrabajosCasoPanel.tsx`
+- `docs/control/00_ESTADO_GENERAL_PROYECTO.md`
+- `docs/control/01_PENDIENTES_PROYECTO.md`
+- `docs/control/06_BITACORA_CAMBIOS.md`
+
+### Restricciones respetadas
+- Todos los cambios son puramente en la UI local y frontend.
+- No se crearon migraciones ni se tocó Supabase local en el backend.
+- `PROD-001` permanece activo y bloqueante.

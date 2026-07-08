@@ -1,6 +1,6 @@
 # Estado general del proyecto
 
-Fecha de corte: `2026-07-04`
+Fecha de corte: `2026-07-08`
 Responsable del documento: Control de desarrollo
 Estado general documental: En control activo
 
@@ -8,7 +8,7 @@ Estado general documental: En control activo
 
 El proyecto cuenta con una estructura documental de control en `docs/control/`. Esta estructura ordena responsabilidades, pendientes, decisiones, bitacora, auditorias y flujo de trabajo sin modificar codigo, migraciones ni base de datos.
 
-Al corte actual ya quedaron integradas las auditorias iniciales de control, backend, flujo clinico y UI/UX. Tambien quedaron registrados BE-003, BE-010, UI-011, IMP-001, DATA-001, BE-011, QA-002, SEC-001, BE-016, QA-004, UI-016, API-001, el diseno BE-012/BE-017 de Agenda Operativa, la implementacion DB inicial BE-028, la validacion runtime local BE-029, la integracion interna UI-025/UI-025B de Agenda y el inicio progresivo QA-006 de pruebas por rol, junto con las decisiones clinicas/operativas y arquitectonicas clave que permiten avanzar sin romper el flujo definido.
+Al corte actual ya quedaron integradas las auditorias iniciales de control, backend, flujo clinico y UI/UX. Tambien quedaron registrados BE-003, BE-010, UI-011, IMP-001, DATA-001, BE-011, QA-002, SEC-001, BE-016, QA-004, UI-016, API-001, el diseno BE-012/BE-017 de Agenda Operativa, la implementacion DB inicial BE-028, la validacion runtime local BE-029, la integracion interna UI-025/UI-025B de Agenda y el inicio progresivo QA-006 de pruebas por rol, junto con las decisiones clinicas/operativas y arquitectonicas clave que permiten avanzar sin romper el flujo definido. Se implementó en el frontend el rediseño de navegación por pestañas en la ficha del caso (UI-010) y la normalización de microcopy clínica (UI-018) en la rama local `feature/ui-navegacion-detalle-caso`.
 
 PR #45 ya esta integrado en `main`: Agenda interna cuenta con lectura, alta y edicion controlada de `agenda_eventos`. PR #48 tambien quedo integrado: el modal suma selector calendario/horario, duracion controlada, fin calculado y validacion basica de solapamiento. PR #49 y PR #50 quedaron integrados en `main`: QA-008 queda cerrada como validacion funcional local/demo de Agenda interna, con validacion visual autenticada admin y correccion responsive movil UI-027 mediante menu superior y drawer lateral. BE-026 define el contrato documental de la futura API publica de agendamiento sobre `solicitudes_agenda`, sin endpoints reales. SEC-009 define el marco documental de seguridad, DOC-004 documenta el flujo pagina publica -> API -> sistema interno -> Google, BE-020 define la base documental de consentimiento/tratamiento de datos pendiente de validacion clinica/legal, SEC-005 define el modelo documental de auditoria de cambios sensibles, BE-021 define la politica documental de anulacion vs eliminacion, BE-018/DOC-001/DOC-003 ordenan ambientes y carga de datos reales, BE-019/DOC-002 documentan backup/restauracion, y UI-020/UI-021 definen e implementan localmente el indicador de ambiente y bloqueo de produccion no habilitada. QA-009 valida UI-020 en `/agenda` local autenticada desktop/mobile equivalente y valida UI-021 con bloqueo `PRODUCCION NO HABILITADA` usando variables temporales de proceso, sin modificar `.env`. API publica funcional, Google Calendar/Gmail y produccion siguen en espera.
 

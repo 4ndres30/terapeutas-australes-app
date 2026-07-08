@@ -135,7 +135,7 @@ function TrabajosCasoPanel({ casoId, pacienteId }: TrabajosCasoPanelProps) {
         <div>
           <span className="clinical-kicker">Trabajos / Intervenciones</span>
           <h2>Trabajos del caso</h2>
-          <p>Lectura base desde `trabajos.caso_id`. La creación de trabajos queda pendiente para una pantalla operativa específica.</p>
+          <p>Seguimiento de las intervenciones y planes de trabajo planificados en este caso clínico.</p>
         </div>
       </div>
 
@@ -173,7 +173,7 @@ function TrabajosCasoPanel({ casoId, pacienteId }: TrabajosCasoPanelProps) {
         {trabajosFiltrados.length === 0 ? (
           <div className="clinical-empty">
             <strong>{cargando ? 'Cargando trabajos' : 'Sin trabajos/intervenciones registrados en este caso'}</strong>
-            <p>{cargando ? 'Consultando Supabase local.' : 'La tabla existe, pero aún no hay registros para este caso.'}</p>
+            <p>{cargando ? 'Consultando información de trabajos...' : 'Aún no hay trabajos registrados para este caso.'}</p>
           </div>
         ) : (
           <div className="clinical-list">
