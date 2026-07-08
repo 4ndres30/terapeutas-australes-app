@@ -3702,3 +3702,90 @@ Deliberadamente NO se agrego job de E2E en `.github/workflows/ci.yml`: requeriri
 - Ampliar cobertura E2E mas alla de auth/roles (crear caso, agenda, pagos).
 
 PROD-001 sigue bloqueante.
+
+## LOG-085 - Formulario operativo de intervenciones en TrabajosCasoPanel (UI-013)
+
+**Estado:** Implementada local/demo
+**Prioridad:** Alta
+**Responsable:** Control de desarrollo (Claude / Codex)
+**Origen:** UI-013
+**Fecha creacion:** 2026-07-08
+**Rama usada:** `feature/ui-013-trabajos-panel`
+**PR:** #108 (draft)
+
+### Resumen
+Se agrega formulario completo de creación de trabajos/intervenciones clínicas en `TrabajosCasoPanel.tsx`. El panel pasa de ser solo lectura a tener capacidad operativa de registro.
+
+### Trabajo realizado
+1. **Formulario de 16 campos** con tipos TypeScript estrictos (tipo, ámbito, modalidad, método, alcance, prioridad, fase, estado, fechas, avance, seguimiento, próxima acción, observaciones).
+2. **Lógica de guardado** contra `supabase.from('trabajos')` con numeración automática por caso.
+3. **Toggle** `Nueva intervención / Cerrar formulario` desde el heading.
+4. **Expand/collapse** de detalle por tarjeta en la lista.
+5. **Metricas** actualizadas con etiquetas clínicas.
+6. **Estilos reutilizables** `.clinical-form`, `.clinical-form-grid`, `.clinical-label`, `.clinical-textarea`, `.clinical-expandido` agregados a `ClinicalModuleBase.css`.
+7. **Validaciones:** lint 0 errores, build OK.
+
+### Archivos relacionados
+- `src/pages/casos/TrabajosCasoPanel.tsx`
+- `src/pages/ClinicalModuleBase.css`
+
+### Restricciones respetadas
+- Sin migraciones. Sin RLS. Sin Supabase remoto. Sin `.env`.
+- PROD-001 sigue bloqueante.
+
+---
+
+## LOG-086 - Vistas SQL clinicas agregadas para reportes evolutivos (BE-014)
+
+**Estado:** Migración SQL local lista / no aplicada en remoto
+**Prioridad:** Media-alta
+**Responsable:** Control de desarrollo (Claude / Codex)
+**Origen:** BE-014
+**Fecha creacion:** 2026-07-08
+**Rama usada:** `feature/be-014-vistas-clinicas`
+**PR:** #109 (draft)
+
+### Resumen
+Se crean 3 vistas SQL de lectura para reportes evolutivos y paneles operativos. Migración idempotente (`CREATE OR REPLACE VIEW`), solo local.
+
+### Vistas creadas
+1. `vista_resumen_evolutivo_caso` — conteos de revisiones, hallazgos, trabajos, elementos y cobros por caso.
+2. `vista_actividad_clinica_reciente` — revisiones de los últimos 90 días con conteo de hallazgos.
+3. `vista_carga_trabajo_terapeutica` — métricas de carga activa por paciente.
+
+### Archivos relacionados
+- `supabase/migrations/20260708000000_be014_vistas_clinicas_agregadas.sql`
+- `docs/control/BE-014_VISTAS_CLINICAS_AGREGADAS.md`
+
+### Restricciones respetadas
+- No se ejecuto `supabase db push`. Sin Supabase remoto.
+- RLS sobre las vistas pendiente en BE-015 (requiere aprobación explícita de Javier).
+- PROD-001 sigue bloqueante.
+
+---
+
+## LOG-087 - Code-splitting por ruta con React.lazy + Suspense + manualChunks (Vite 8)
+
+**Estado:** Implementada local/demo
+**Prioridad:** Media
+**Responsable:** Control de desarrollo (Claude / Codex)
+**Origen:** Optimización técnica de bundle
+**Fecha creacion:** 2026-07-08
+**Rama usada:** `chore/code-splitting-vite`
+**PR:** #110 (draft)
+
+### Resumen
+Se implementa carga diferida de todas las páginas de la aplicación con `React.lazy()` + `Suspense`, y se separa el bundle en chunks vendors mediante `manualChunks` en `vite.config.ts`.
+
+### Resultado
+- Chunk principal bajó de **687 kB → 38 kB** (eliminado el warning de bundle grande).
+- Chunks vendor separados: `vendor-react` (223 kB), `vendor-supabase` (200 kB), `vendor-lucide` (10 kB).
+- Cada página carga solo su código al navegar a ella.
+
+### Archivos relacionados
+- `src/App.tsx`
+- `vite.config.ts`
+
+### Restricciones respetadas
+- Solo cambios en la capa de bundling y carga de módulos. Sin DB, sin RLS, sin remoto.
+- PROD-001 sigue bloqueante.

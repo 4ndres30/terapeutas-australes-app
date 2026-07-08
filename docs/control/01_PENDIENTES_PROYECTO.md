@@ -1,7 +1,7 @@
 # Pendientes del proyecto
 
 Fecha de apertura: `2026-06-11`
-Ultima actualizacion: `2026-07-04`
+Ultima actualizacion: `2026-07-08`
 Responsable del documento: Control de desarrollo
 
 Este documento es la lista maestra de pendientes. Cada pendiente debe tener un codigo, un responsable y un estado permitido. Los detalles tecnicos o clinicos pueden vivir en los documentos especializados, pero este archivo debe permitir ver rapidamente que falta.
@@ -49,20 +49,20 @@ Este documento es la lista maestra de pendientes. Cada pendiente debe tener un c
 | BE-010 | Ajustar soporte operativo de hallazgos derivados de aspectos. | Integrada | Alta | Integracion Backend/Estructura |
 | IMP-001 | Implementar hallazgos operativos en `DetalleRevisionesPanel`. | Integrada | Alta | Implementacion |
 | DATA-001 | Agregar seed local de caso demo integral. | Integrada | Alta | Control de desarrollo |
-| UI-010 | Redisenar navegacion del detalle de caso. | Aprobada obs. / pend. implementacion | Alta | UI / UX / Pulido visual |
+| UI-010 | Redisenar navegacion del detalle de caso. | Implementada local / PR #107 draft | Alta | UI / UX / Pulido visual |
 | UI-011 | Disenar panel operativo de hallazgos dentro del detalle de revision. | Integrada | Alta | UI / UX / Pulido visual |
 | UI-012 | Disenar flujo visual Evaluar trabajo. | Integrada | Alta | UI / UX / Pulido visual |
-| UI-013 | Disenar experiencia de trabajos, sesiones y acciones. | Pendiente | Alta | UI / UX / Pulido visual |
+| UI-013 | Disenar experiencia de trabajos, sesiones y acciones. | Implementada local / PR #108 draft | Alta | UI / UX / Pulido visual |
 | UI-014 | Disenar agenda tipificada. | Pendiente | Media-alta | UI / UX / Pulido visual |
 | UI-015 | Mejorar experiencia de finanzas por unidad cobrable. | Pendiente | Alta | UI / UX / Pulido visual |
 | UI-016 | Mejorar reportes por rol. | Integrada | Media-alta | UI / UX / Pulido visual |
 | UI-017 | Definir checklist responsive de pantallas clinicas. | Pendiente | Media | UI / UX / Pulido visual |
-| UI-018 | Normalizar microcopy clinica y retirar textos tecnicos visibles. | Pendiente | Media | UI / UX / Pulido visual |
+| UI-018 | Normalizar microcopy clinica y retirar textos tecnicos visibles. | Implementada local / PR #107 draft | Media | UI / UX / Pulido visual |
 | UI-019 | Definir patron comun de formularios clinicos largos. | Pendiente | Media-alta | UI / UX / Pulido visual |
 | BE-011 | Disenar trazabilidad hallazgo a trabajo. | Integrada | Alta | Integracion Backend/Estructura |
 | BE-012 | Disenar backend de Agenda tipificada. | Diseno documentado / pend. implementacion | Alta | Integracion Backend/Estructura |
 | BE-013 | Ajustar reglas de cobros por unidad cobrable. | Pendiente | Alta | Integracion Backend/Estructura |
-| BE-014 | Crear vistas clinicas agregadas. | Pendiente | Media-alta | Integracion Backend/Estructura |
+| BE-014 | Crear vistas clinicas agregadas. | Migracion SQL local / PR #109 draft / RLS pendiente | Media-alta | Integracion Backend/Estructura |
 | BE-015 | Validar RLS por roles para modulos nuevos. | Pendiente | Alta | Integracion Backend/Estructura |
 | BE-016 | Disenar vista financiera por unidad cobrable. | Integrada | Media | Integracion Backend/Estructura |
 | BE-017 | Definir estrategia SQL de agenda operativa. | Diseno documentado / pend. implementacion | Media | Integracion Backend/Estructura |
