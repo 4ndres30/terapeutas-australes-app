@@ -360,6 +360,111 @@ function DetalleRevisionesPanel({ casoId, pacienteId }: DetalleRevisionesPanelPr
     crearHallazgoDesdeAspecto,
   } = useRevisionHallazgos({ casoId, pacienteId })
 
+  const [trabajos, setTrabajos] = useState<{ id_trabajo: string; numero_trabajo: number; estado_trabajo: string; revision_hallazgo_origen_id: string | null }[]>([])
+  const [aspectoTrabajoActivo, setAspectoTrabajoActivo] = useState<{ aspecto: RevisionAspecto; hallazgo: RevisionHallazgo } | null>(null)
+  const [guardandoTrabajo, setGuardandoTrabajo] = useState(false)
+  const [formularioTrabajo, setFormularioTrabajo] = useState({
+    nombre_trabajo: '',
+    tipo_trabajo: 'Trabajo sobre bloqueo',
+    ambito_trabajo: 'Trabajo/Bloqueo',
+    modalidad_ejecucion: 'Proceso por semanas',
+    alcance_trabajo: 'Seguimiento de hallazgo',
+    metodo_principal: 'Radiestesia y canalización',
+    prioridad_trabajo: 'Media',
+    objetivo_trabajo: '',
+    fecha_inicio: new Date().toISOString().split('T')[0],
+    duracion_estimada_semanas: '4',
+    observaciones: '',
+  })
+
+  const cargarTrabajosAsociados = useCallback(async () => {
+    const { data, error } = await supabase
+      .from('trabajos')
+      .select('id_trabajo, numero_trabajo, estado_trabajo, revision_hallazgo_origen_id')
+      .eq('caso_id', casoId)
+      .eq('paciente_id', pacienteId)
+
+    if (!error && data) {
+      setTrabajos(data as unknown as { id_trabajo: string; numero_trabajo: number; estado_trabajo: string; revision_hallazgo_origen_id: string | null }[])
+    }
+  }, [casoId, pacienteId])
+
+  function abrirFormularioTrabajo(aspecto: RevisionAspecto, hallazgo: RevisionHallazgo) {
+    setAspectoTrabajoActivo({ aspecto, hallazgo })
+    setFormularioTrabajo({
+      nombre_trabajo: `Trabajo para ${hallazgo.tipo_hallazgo || 'Hallazgo'}`,
+      tipo_trabajo: 'Trabajo sobre bloqueo',
+      ambito_trabajo: 'Trabajo/Bloqueo',
+      modalidad_ejecucion: 'Proceso por semanas',
+      alcance_trabajo: 'Seguimiento de hallazgo',
+      metodo_principal: 'Radiestesia y canalización',
+      prioridad_trabajo: hallazgo.prioridad_hallazgo || 'Media',
+      objetivo_trabajo: `Objetivo derivado del hallazgo: ${hallazgo.descripcion_hallazgo}`,
+      fecha_inicio: new Date().toISOString().split('T')[0],
+      duracion_estimada_semanas: '4',
+      observaciones: '',
+    })
+  }
+
+  async function guardarTrabajoConfirmado(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault()
+    if (!aspectoTrabajoActivo) return
+
+    setGuardandoTrabajo(true)
+    setMensajeHallazgos('Obteniendo correlación de número de trabajo...')
+
+    try {
+      const { data: trabajosActuales, error: errorMax } = await supabase
+        .from('trabajos')
+        .select('numero_trabajo')
+        .eq('caso_id', casoId)
+
+      if (errorMax) {
+        throw new Error(`Error al obtener número de trabajo: ${errorMax.message}`)
+      }
+
+      const maxNumero = trabajosActuales?.reduce((max, t) => Math.max(max, t.numero_trabajo || 0), 0) || 0
+      const nuevoNumero = maxNumero + 1
+
+      const payload = {
+        paciente_id: pacienteId,
+        caso_id: casoId,
+        revision_inicial_id: aspectoTrabajoActivo.hallazgo.revision_id,
+        revision_hallazgo_origen_id: aspectoTrabajoActivo.hallazgo.id_revision_hallazgo,
+        numero_trabajo: nuevoNumero,
+        nombre_trabajo: formularioTrabajo.nombre_trabajo.trim(),
+        tipo_trabajo: formularioTrabajo.tipo_trabajo,
+        ambito_trabajo: formularioTrabajo.ambito_trabajo,
+        modalidad_ejecucion: formularioTrabajo.modalidad_ejecucion,
+        fase_actual: 'Planificación',
+        alcance_trabajo: formularioTrabajo.alcance_trabajo,
+        metodo_principal: formularioTrabajo.metodo_principal,
+        prioridad_trabajo: formularioTrabajo.prioridad_trabajo,
+        objetivo_trabajo: formularioTrabajo.objetivo_trabajo.trim(),
+        duracion_estimada_semanas: formularioTrabajo.duracion_estimada_semanas ? Number(formularioTrabajo.duracion_estimada_semanas) : null,
+        fecha_inicio: formularioTrabajo.fecha_inicio,
+        estado_trabajo: 'Planificado',
+        observaciones: formularioTrabajo.observaciones.trim() || null,
+      }
+
+      const { error: errorInsert } = await supabase
+        .from('trabajos')
+        .insert(payload)
+
+      if (errorInsert) {
+        throw new Error(`Error al guardar trabajo: ${errorInsert.message}`)
+      }
+
+      await cargarTrabajosAsociados()
+      setAspectoTrabajoActivo(null)
+      setMensajeHallazgos('Trabajo creado e integrado correctamente')
+    } catch (err) {
+      setMensajeHallazgos(err instanceof Error ? err.message : 'Error desconocido')
+    } finally {
+      setGuardandoTrabajo(false)
+    }
+  }
+
   const revisionesPorId = useMemo(() => new Map(revisiones.map((revision) => [revision.id_revision, revision])), [revisiones])
   const elementosPorId = useMemo(() => new Map(elementos.map((elemento) => [elemento.id_elemento_caso, elemento])), [elementos])
   const revisionSeleccionada = revisionesPorId.get(formulario.revision_id)
@@ -508,6 +613,7 @@ function DetalleRevisionesPanel({ casoId, pacienteId }: DetalleRevisionesPanelPr
   const cargarDatos = useCallback(async () => {
     setCargando(true)
     setMensaje('')
+    void cargarTrabajosAsociados()
 
     const { data: revisionesData, error: revisionesError } = await supabase
       .from('revisiones')
@@ -567,7 +673,7 @@ function DetalleRevisionesPanel({ casoId, pacienteId }: DetalleRevisionesPanelPr
     setAspectos((aspectosData || []) as unknown as RevisionAspecto[])
     setFormulario(crearFormularioInicial())
     setCargando(false)
-  }, [casoId, pacienteId])
+  }, [casoId, pacienteId, cargarTrabajosAsociados])
 
   async function obtenerRevisionElemento(revision: Revision, elemento: ElementoCaso) {
     const existente = revisionElementos.find((item) => (
@@ -788,9 +894,21 @@ function DetalleRevisionesPanel({ casoId, pacienteId }: DetalleRevisionesPanelPr
                             <button className="clinical-button clinical-button--secondary clinical-button--compact" type="button" onClick={() => verHallazgo(hallazgoPrincipal)}>
                               Ver hallazgo
                             </button>
-                            <button className="clinical-button clinical-button--ghost clinical-button--compact" disabled type="button">
-                              Evaluar trabajo próximamente
-                            </button>
+                            {(() => {
+                              const trabajoAsociado = trabajos.find((t) => t.revision_hallazgo_origen_id === hallazgoPrincipal.id_revision_hallazgo)
+                              if (trabajoAsociado) {
+                                return (
+                                  <span className="clinical-badge clinical-badge--muted" style={{ padding: '0.35rem 0.5rem', alignSelf: 'center', fontSize: '0.8rem' }}>
+                                    Trabajo {trabajoAsociado.numero_trabajo} ({trabajoAsociado.estado_trabajo})
+                                  </span>
+                                )
+                              }
+                              return (
+                                <button className="clinical-button clinical-button--ghost clinical-button--compact" type="button" onClick={() => abrirFormularioTrabajo(aspecto, hallazgoPrincipal)}>
+                                  Evaluar trabajo
+                                </button>
+                              )
+                            })()}
                           </div>
                         </>
                       ) : (
@@ -879,9 +997,26 @@ function DetalleRevisionesPanel({ casoId, pacienteId }: DetalleRevisionesPanelPr
                         <button className="clinical-button clinical-button--secondary clinical-button--compact" type="button" onClick={() => verHallazgo(hallazgo)}>
                           Ver hallazgo
                         </button>
-                        <button className="clinical-button clinical-button--ghost clinical-button--compact" disabled type="button">
-                          Evaluar trabajo próximamente
-                        </button>
+                        {(() => {
+                          const trabajoAsociado = trabajos.find((t) => t.revision_hallazgo_origen_id === hallazgo.id_revision_hallazgo)
+                          if (trabajoAsociado) {
+                            return (
+                              <span className="clinical-badge clinical-badge--muted" style={{ padding: '0.35rem 0.5rem', alignSelf: 'center', fontSize: '0.8rem' }}>
+                                Trabajo {trabajoAsociado.numero_trabajo} ({trabajoAsociado.estado_trabajo})
+                              </span>
+                            )
+                          }
+                          return (
+                            <button
+                              className="clinical-button clinical-button--ghost clinical-button--compact"
+                              disabled={!aspectoOrigen}
+                              type="button"
+                              onClick={() => aspectoOrigen && abrirFormularioTrabajo(aspectoOrigen, hallazgo)}
+                            >
+                              Evaluar trabajo
+                            </button>
+                          )
+                        })()}
                       </div>
                     </article>
                   )
@@ -1255,13 +1390,159 @@ function DetalleRevisionesPanel({ casoId, pacienteId }: DetalleRevisionesPanelPr
             <p className="clinical-note">Un hallazgo no crea un trabajo automáticamente. Primero debe evaluarse si requiere intervención.</p>
 
             <div className="clinical-actions clinical-actions--end">
-              <button className="clinical-button clinical-button--ghost" disabled type="button">
-                Evaluar trabajo próximamente
-              </button>
+              {(() => {
+                const trabajoAsociado = trabajos.find((t) => t.revision_hallazgo_origen_id === hallazgoEnVista.id_revision_hallazgo)
+                if (trabajoAsociado) {
+                  return (
+                    <span className="clinical-badge clinical-badge--muted" style={{ padding: '0.35rem 0.5rem', alignSelf: 'center', fontSize: '0.8rem' }}>
+                      Trabajo {trabajoAsociado.numero_trabajo} ({trabajoAsociado.estado_trabajo})
+                    </span>
+                  )
+                }
+                return (
+                  <button className="clinical-button clinical-button--secondary" type="button" onClick={() => {
+                    const aspecto = aspectos.find(a => a.id_revision_aspecto === hallazgoEnVista.revision_aspecto_id)
+                    if (aspecto) {
+                      setHallazgoEnVista(null)
+                      abrirFormularioTrabajo(aspecto, hallazgoEnVista)
+                    }
+                  }}>
+                    Evaluar trabajo
+                  </button>
+                )
+              })()}
               <button className="clinical-button" type="button" onClick={() => setHallazgoEnVista(null)}>
                 Cerrar
               </button>
             </div>
+          </section>
+        </div>
+      )}
+
+      {aspectoTrabajoActivo && (
+        <div className="clinical-modal-backdrop">
+          <section className="clinical-modal" role="dialog" aria-modal="true" aria-labelledby="crear-trabajo-titulo">
+            <div className="clinical-modal__header">
+              <div>
+                <span className="clinical-kicker">Trabajo / Intervención</span>
+                <h2 id="crear-trabajo-titulo">Evaluar trabajo desde hallazgo</h2>
+                <p>Confirma manualmente la creación de la intervención terapéutica.</p>
+              </div>
+              <button className="clinical-icon-button" disabled={guardandoTrabajo} type="button" aria-label="Cerrar formulario de trabajo" onClick={() => setAspectoTrabajoActivo(null)}>
+                ×
+              </button>
+            </div>
+
+            <div className="clinical-origin-summary">
+              <span>Hallazgo origen</span>
+              <strong>{aspectoTrabajoActivo.hallazgo.tipo_hallazgo || 'Otro'} · {aspectoTrabajoActivo.aspecto.aspecto_revisado}</strong>
+              <p>{aspectoTrabajoActivo.hallazgo.descripcion_hallazgo}</p>
+            </div>
+
+            <form className="clinical-form" onSubmit={guardarTrabajoConfirmado}>
+              <label className="clinical-field">
+                <span>Nombre del trabajo *</span>
+                <input className="clinical-input" disabled={guardandoTrabajo} value={formularioTrabajo.nombre_trabajo} onChange={(e) => setFormularioTrabajo(a => ({ ...a, nombre_trabajo: e.target.value }))} required />
+              </label>
+
+              <div className="clinical-grid">
+                <label className="clinical-field">
+                  <span>Tipo de trabajo *</span>
+                  <select className="clinical-select" disabled={guardandoTrabajo} value={formularioTrabajo.tipo_trabajo} onChange={(e) => setFormularioTrabajo(a => ({ ...a, tipo_trabajo: e.target.value }))} required>
+                    <option value="Trabajo sobre bloqueo">Trabajo sobre bloqueo</option>
+                    <option value="Limpieza energética">Limpieza energética</option>
+                    <option value="Retiro de entidades">Retiro de entidades</option>
+                    <option value="Trabajo sobre vínculo">Trabajo sobre vínculo</option>
+                    <option value="Trabajo sobre linaje">Trabajo sobre linaje</option>
+                    <option value="Trabajo sobre hogar/espacio">Trabajo sobre hogar/espacio</option>
+                    <option value="Seguimiento energético">Seguimiento energético</option>
+                    <option value="Otro">Otro</option>
+                  </select>
+                </label>
+
+                <label className="clinical-field">
+                  <span>Ámbito *</span>
+                  <select className="clinical-select" disabled={guardandoTrabajo} value={formularioTrabajo.ambito_trabajo} onChange={(e) => setFormularioTrabajo(a => ({ ...a, ambito_trabajo: e.target.value }))} required>
+                    <option value="Trabajo/Bloqueo">Trabajo/Bloqueo</option>
+                    <option value="Persona">Persona</option>
+                    <option value="Vínculo">Vínculo</option>
+                    <option value="Linaje">Linaje</option>
+                    <option value="Hogar/Espacio">Hogar/Espacio</option>
+                    <option value="Entidad/Presencia">Entidad/Presencia</option>
+                    <option value="Otro">Otro</option>
+                  </select>
+                </label>
+              </div>
+
+              <div className="clinical-grid">
+                <label className="clinical-field">
+                  <span>Modalidad ejecución *</span>
+                  <select className="clinical-select" disabled={guardandoTrabajo} value={formularioTrabajo.modalidad_ejecucion} onChange={(e) => setFormularioTrabajo(a => ({ ...a, modalidad_ejecucion: e.target.value }))} required>
+                    <option value="Proceso por semanas">Proceso por semanas</option>
+                    <option value="Trabajo único">Trabajo único</option>
+                    <option value="Seguimiento posterior">Seguimiento posterior</option>
+                    <option value="Trabajo por etapas">Trabajo por etapas</option>
+                  </select>
+                </label>
+
+                <label className="clinical-field">
+                  <span>Alcance *</span>
+                  <select className="clinical-select" disabled={guardandoTrabajo} value={formularioTrabajo.alcance_trabajo} onChange={(e) => setFormularioTrabajo(a => ({ ...a, alcance_trabajo: e.target.value }))} required>
+                    <option value="Seguimiento de hallazgo">Seguimiento de hallazgo</option>
+                    <option value="Caso completo">Caso completo</option>
+                    <option value="Persona individual">Persona individual</option>
+                  </select>
+                </label>
+              </div>
+
+              <div className="clinical-grid">
+                <label className="clinical-field">
+                  <span>Método principal *</span>
+                  <select className="clinical-select" disabled={guardandoTrabajo} value={formularioTrabajo.metodo_principal} onChange={(e) => setFormularioTrabajo(a => ({ ...a, metodo_principal: e.target.value }))} required>
+                    <option value="Radiestesia y canalización">Radiestesia y canalización</option>
+                    <option value="Radiestesia">Radiestesia</option>
+                    <option value="Canalización">Canalización</option>
+                    <option value="Mixto">Mixto</option>
+                  </select>
+                </label>
+
+                <label className="clinical-field">
+                  <span>Prioridad *</span>
+                  <select className="clinical-select" disabled={guardandoTrabajo} value={formularioTrabajo.prioridad_trabajo} onChange={(e) => setFormularioTrabajo(a => ({ ...a, prioridad_trabajo: e.target.value }))} required>
+                    <option value="Media">Media</option>
+                    <option value="Baja">Baja</option>
+                    <option value="Alta">Alta</option>
+                    <option value="Urgente">Urgente</option>
+                  </select>
+                </label>
+              </div>
+
+              <div className="clinical-grid">
+                <label className="clinical-field">
+                  <span>Fecha inicio *</span>
+                  <input className="clinical-input" type="date" disabled={guardandoTrabajo} value={formularioTrabajo.fecha_inicio} onChange={(e) => setFormularioTrabajo(a => ({ ...a, fecha_inicio: e.target.value }))} required />
+                </label>
+
+                <label className="clinical-field">
+                  <span>Duración semanas</span>
+                  <input className="clinical-input" type="number" min="1" disabled={guardandoTrabajo} value={formularioTrabajo.duracion_estimada_semanas} onChange={(e) => setFormularioTrabajo(a => ({ ...a, duracion_estimada_semanas: e.target.value }))} />
+                </label>
+              </div>
+
+              <label className="clinical-field">
+                <span>Objetivo *</span>
+                <textarea className="clinical-textarea" disabled={guardandoTrabajo} value={formularioTrabajo.objetivo_trabajo} onChange={(e) => setFormularioTrabajo(a => ({ ...a, objetivo_trabajo: e.target.value }))} required />
+              </label>
+
+              <label className="clinical-field">
+                <span>Observaciones</span>
+                <textarea className="clinical-textarea" disabled={guardandoTrabajo} value={formularioTrabajo.observaciones} onChange={(e) => setFormularioTrabajo(a => ({ ...a, observaciones: e.target.value }))} />
+              </label>
+
+              <button className="clinical-button" disabled={guardandoTrabajo} type="submit">
+                {guardandoTrabajo ? 'Creando trabajo...' : 'Confirmar creación'}
+              </button>
+            </form>
           </section>
         </div>
       )}
