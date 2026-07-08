@@ -45,10 +45,12 @@ Nada de lo que sigue puede construirse antes de cerrar esto. No es una fase para
 
 Prioridad alta/media, riesgo ya acotable con las salvaguardas de Fase 0.
 
-### 1. Detector de riesgo de abandono de tratamiento
-- **Qué hace**: analiza inasistencias, reprogramaciones, días sin consulta y estado de cobro por caso; Gemini redacta explicación y recomendación de acción administrativa (contactar, evaluar cierre) para revisión humana del terapeuta/coordinador. Nunca decide de forma automática.
-- **Qué dato toca**: conteos agregados (inasistencias 60d, días desde última consulta, reprogramaciones, cobros vencidos bool, `tipo_caso`, `prioridad`) — requiere anonimización (alias aleatorio no reversible + auditar que `tipo_caso`/`prioridad` no codifiquen diagnóstico).
-- **Complejidad**: media (sobre Fase 0 ya construida).
+### 1. Detector de riesgo de abandono de tratamiento — ✅ implementado SIN Gemini (ver DEC-042)
+- **Qué hace**: analiza inasistencias, días sin consulta y estado de cobro por caso; clasifica `nivel_riesgo` (Alto/Medio/Bajo) y arma una recomendación de texto fijo por regla, para revisión humana del terapeuta/coordinador. Nunca decide de forma automática.
+- **Qué dato toca**: nada sale del proyecto. Vista SQL pura `vista_riesgo_abandono_casos` (migración `20260706000001_crear_vista_riesgo_abandono_casos.sql`), sin alias, sin llamada externa.
+- **Por qué sin Gemini**: el diseño original (alias + payload agregado + explicación por IA) fue sometido a revisión adversarial de privacidad y **rechazado 3/3** — vector de atributos casi único en universo chico, alias estable = identificador longitudinal para Google, fuga de taxonomía clínica vía texto libre de salida. Detalle completo en DEC-042.
+- **Nota de alcance**: se descartó la métrica de reprogramaciones (`estado_consulta = 'Reagendada'` es un estado mutable sin historial de eventos, contarla daría una señal falsa).
+- **Complejidad real**: baja (una vista SQL + una función `security definer` para el chequeo de cobros vencidos, sin Edge Function ni cron).
 
 ### 2. Redactor de resumen de gestión semanal/mensual
 - **Qué hace**: reporte administrativo interno (consultas realizadas, evaluaciones cerradas, cobros pendientes, ocupación de agenda, casos por prioridad) para revisión de terapeuta/admin antes de compartir.

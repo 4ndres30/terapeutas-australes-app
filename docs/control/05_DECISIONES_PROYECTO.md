@@ -1266,3 +1266,40 @@ BE-020 exige aprobacion expresa de Control antes de cualquier integracion extern
 ### Observaciones
 
 Ver `docs/control/ROADMAP-HERRAMIENTAS-GEMINI.md` para el analisis completo de las 12 herramientas candidatas evaluadas y por que las demas quedaron en Fase 2 o descartadas.
+
+## DEC-042 - Detector de riesgo de abandono de tratamiento implementado sin IA (SQL + reglas deterministas)
+
+**Estado:** Aprobada
+**Origen:** Fase 1 item 1 de `docs/control/ROADMAP-HERRAMIENTAS-GEMINI.md` / panel adversarial de privacidad / Javier
+**Fecha:** 2026-07-08
+
+### Decision propuesta
+
+Implementar el "Detector de riesgo de abandono de tratamiento" como vista SQL pura (`vista_riesgo_abandono_casos`), sin Gemini, sin alias/pseudonimizacion, sin ninguna llamada a servicio externo. Se descarta explicitamente el uso de un LLM para esta herramienta puntual.
+
+### Razon
+
+Se diseno primero una version con Gemini (alias aleatorio por caso + payload de metricas agregadas + explicacion generada por IA), siguiendo el mismo patron aprobado en DEC-041 para agenda. Ese diseno fue sometido a revision adversarial de privacidad (3 revisores independientes, lentes: reidentificacion, taxonomia clinica encubierta, reversibilidad del alias) y fue **rechazado 3/3**, con hallazgos reales y no cosmeticos:
+
+1. **Vector de atributos casi unico en universo chico**: el vector `(prioridad, inasistencias_60d, dias_sin_actividad, cobros_vencidos)` por caso, en una clinica con pocas decenas de casos activos, es casi un identificador unico para cualquiera con contexto interno (el propio terapeuta ya conoce estos datos de memoria) — el alias criptografico no protege contra esto.
+2. **El alias estable es el problema, no la solucion**: reutilizar el mismo alias para "evitar correlacion temporal" logra el efecto contrario — desde la perspectiva de Google, un alias que se repite semana tras semana es un identificador longitudinal estable para construir perfil de comportamiento, sin necesidad de romper nada criptograficamente.
+3. **Fuga por el canal de salida**: aunque se excluye `tipo_caso` de la entrada, el texto libre `explicacion`/`recomendacion` generado por el LLM se guarda ligado al `caso_id` real sin ningun filtro — nada impide que el modelo "alucine" o infiera y redacte la taxonomia clinica que se excluyo de la entrada.
+
+Dado que el patron se repite en todo el roadmap (herramientas agregadas sin dato-por-caso pasan limpio; herramientas por-caso en universo chico, no), se decide: para esta herramienta puntual, el calculo (inasistencias, dias sin actividad, cobro vencido) y la recomendacion (texto fijo por regla) no necesitan generacion de lenguaje natural. Un `CASE WHEN` determinista resuelve el mismo valor operativo sin sacar un solo dato del proyecto.
+
+### Impacto
+
+- Nueva vista `public.vista_riesgo_abandono_casos` (migracion `20260706000001_crear_vista_riesgo_abandono_casos.sql`), mismo patron de seguridad que `vista_agenda_operativa` (`security_invoker = true` + filtro `es_terapeuta_o_admin()`).
+- Nueva funcion `public.caso_tiene_cobro_vencido(uuid)` (`security definer`), necesaria porque `cobros` tiene RLS restringida a `es_finanzas_o_admin()` y un terapeuta no puede hacer `select` directo sobre esa tabla; la funcion expone solo el booleano, nunca montos ni conceptos, sin ampliar el acceso real a Finanzas.
+- No requiere Edge Function, cron, secrets ni aprobacion BE-020 (no hay integracion externa que aprobar).
+- Sin frontend todavia: la vista queda lista para que una pagina (CasosPage o dashboard) la consuma en un trabajo aparte.
+
+### Restricciones
+
+- No se agrego metrica de reprogramaciones: `estado_consulta` es un campo mutable sin historial de eventos (se sobreescribe al cambiar de estado), contarla habria dado una senal falsa. Si se quiere esa metrica en el futuro, requiere una tabla de historial de cambios de estado, fuera de este alcance.
+- Los umbrales (45/25 dias, 2 inasistencias) son una primera aproximacion razonable, no estan validados contra el uso real de la clinica. Se dejan como constantes explicitas en el SQL para poder ajustarlos sin tocar la logica.
+- Sin datos reales de pacientes usados en ningun momento (pruebas locales con datos sinteticos, eliminados despues de verificar).
+
+### Observaciones
+
+Bug real encontrado durante la prueba local (no durante la revision de codigo): la primera version de la vista hacia `left join lateral` directo contra `cobros`, y con `security_invoker = true` un rol `terapeuta` nunca ve esas filas (RLS `cobros_select_finanzas` exige `es_finanzas_o_admin()`) — `cobros_vencidos` daba `false` siempre para terapeutas, sin error visible. Solo aparecio probando con un usuario `rol = 'terapeuta'` real, no alcanzaba con leer el SQL. Corregido con la funcion `security definer` de arriba. Mismo patron de aprendizaje que `[[refactor-extract-utilities-jul-2026]]`: la revision de codigo no sustituye la prueba con datos y rol reales.
