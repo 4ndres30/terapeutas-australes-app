@@ -3818,3 +3818,127 @@ Se implementa carga diferida de todas las páginas de la aplicación con `React.
 ### Restricciones respetadas
 - Solo cambios en la capa de bundling y carga de módulos. Sin DB, sin RLS, sin remoto.
 - PROD-001 sigue bloqueante.
+
+## LOG-088 - Revision y correccion de 6 PRs paralelas (sesion Claude Code / antigravity 2026-07-08)
+
+**Estado:** Integrada
+**Fecha:** 2026-07-08
+**Rama:** `docs/unificar-instrucciones-agentes-ia` (PR #111)
+**Responsable:** Control de desarrollo (Claude Code)
+
+### Resumen
+Auditoria de las 6 PRs abiertas en paralelo por Codex y antigravity sin coordinacion. Se identificaron y documentaron: escalamiento de privilegios en signup (#106), bugs de insert siempre fallido (#104, #108), migracion con columnas inexistentes (#109), salto de gate clinico (#107), y multiples colisiones de archivos entre PRs. Se unificaron instrucciones de agentes en AGENTS.md y CLAUDE.md. El informe completo quedo en `docs/control/auditorias/REVISION-6-PRS-PARALELAS-2026-07-08.md`.
+
+### Archivos tocados
+- `docs/control/auditorias/REVISION-6-PRS-PARALELAS-2026-07-08.md` (nuevo)
+- `AGENTS.md` (actualizado con coordinacion obligatoria entre agentes)
+- `CLAUDE.md` (remite a AGENTS.md)
+
+### Restricciones respetadas
+- Solo documentacion y archivo de instrucciones. Sin codigo funcional ni migraciones.
+- PROD-001 sigue bloqueante.
+
+### Resultado
+PR #111 mergeado. Instrucciones de agentes unificadas. Problemas de los 6 PRs documentados con plan de accion.
+
+## LOG-089 - Implementacion bloque seguridad cobros e identidad financiera (PR #106)
+
+**Estado:** Integrada
+**Fecha:** 2026-07-08
+**Rama:** `codex/implementacion-bloque-seguridad-cobros` (PR #106)
+**Responsable:** Control de desarrollo (Claude Code + antigravity)
+
+### Resumen
+Implementacion del bloque A de seguridad. Incluye: cierre de signup publico con trigger seguro (SEC-008B), reglas de exclusion mutua y validacion de relaciones en cobros (BE-013), bitacora de auditoria sensible con 40+ columnas PII/clinicas enmascaradas (SEC-005), hardening de fotos/Storage con revoke de grants amplios y vistas de diagnostico de huerfanos (SEC-011), restriccion de hallazgo unico activo por aspecto mediante index parcial (BE-024), tabla `pacientes_identidad_financiera` con alias/codigo financiero persistente y vista financiera redefinida sin `paciente_id` (BE-023). Se corrigio el escalamiento de privilegios del trigger original (commit 5d89d5a) antes del merge. Conflictos de docs resueltos manualmente al hacer merge con main.
+
+### Archivos tocados
+- `supabase/migrations/20260708000000_sec_008b_cierre_signup_y_provisioning_controlado.sql` (nuevo)
+- `supabase/migrations/20260708000001_be_013_reglas_cobros_unidad_cobrable.sql` (nuevo)
+- `supabase/migrations/20260708000002_sec_005_implementacion_auditoria_sensible.sql` (nuevo)
+- `supabase/migrations/20260708000003_sec_011_hardening_fotos_storage.sql` (nuevo)
+- `supabase/migrations/20260708000004_be_024_restriccion_hallazgo_unico_aspecto.sql` (nuevo)
+- `supabase/migrations/20260708000005_be_023_identidad_financiera_persistente.sql` (nuevo)
+- `src/pages/FinanzasPage.tsx` (actualizado con alias financiero)
+- `supabase/config.toml` (enable_signup = false)
+- `scripts/provision-demo-users.mjs` (actualizado)
+- `supabase/dev-seeds/caso_demo_integral.sql` (actualizado)
+- `docs/control/` (sincronizados durante merge)
+
+### Restricciones respetadas
+- Solo local. Sin Supabase remoto, sin `.env`, sin produccion.
+- PROD-001 sigue bloqueante.
+
+### Resultado
+PR #106 mergeado. IDs cerrados: SEC-008B, BE-013, SEC-005, SEC-011, BE-024, BE-023.
+
+## LOG-090 - Derivacion hallazgo a trabajo y test E2E de finanzas (PR #104)
+
+**Estado:** Integrada
+**Fecha:** 2026-07-08
+**Rama:** `feature/hallazgo-a-trabajo` (PR #104)
+**Responsable:** Control de desarrollo (Claude Code + antigravity)
+
+### Resumen
+Implementacion del bloque B (IMP-002). El flujo de derivacion manual de hallazgo clinico a plan de trabajo queda operativo en `DetalleRevisionesPanel.tsx`: el usuario puede evaluar un hallazgo y derivarlo a trabajo, con comprobacion de existencia previa (previene duplicacion) y `estado_trabajo: 'Pendiente'` (corregido de 'Planificado' que no existia en el CHECK constraint). Se corrigio ademas la condicion de carrera en `numero_trabajo` (calculo en cliente sin proteccion de unicidad). Se agrego test Playwright E2E para restricciones del rol Finanzas. Migracion BE-025 agrega columnas de observaciones administrativas en cobros/pagos y redefine la vista financiera final. La rama fue rebaseada sobre main post-merge de #106 para quedar solo con 2 commits propios.
+
+### Archivos tocados
+- `src/pages/casos/DetalleRevisionesPanel.tsx` (flujo derivacion hallazgo -> trabajo)
+- `supabase/migrations/20260708000006_be_025_contrato_campos_finanzas.sql` (nuevo)
+- `e2e/finanzas-restricciones.spec.ts` (nuevo)
+- `docs/control/` (sincronizados durante merge)
+
+### Restricciones respetadas
+- Sin Supabase remoto, sin `.env`, sin produccion.
+- PROD-001 sigue bloqueante.
+
+### Resultado
+PR #104 mergeado. IDs cerrados: IMP-002, BE-025. Bug `estado_trabajo` y condicion de carrera `numero_trabajo` corregidos.
+
+## LOG-091 - Aplicacion de 7 migraciones pendientes en Supabase local
+
+**Estado:** Ejecutada local
+**Fecha:** 2026-07-08
+**Responsable:** Control de desarrollo (antigravity)
+
+### Resumen
+Aplicacion de las 7 migraciones de la sesion de hoy (`20260708000000` a `20260708000006`) al schema local usando `supabase migration up --local --include-all`. Las migraciones estaban en `main` pero no se habian aplicado al schema local porque sus timestamps eran anteriores a `20260708000020` (BE-014) ya aplicada. El flag `--include-all` permite aplicar migraciones fuera de orden cronologico en local. Se verifico que las 36/36 migraciones quedaron sincronizadas, que las tablas `logs_auditoria_sensible` y `pacientes_identidad_financiera` existen, que las 3 vistas nuevas existen con `security_invoker`, que los 13 triggers de auditoria estan activos y que los 2 CHECK constraints de cobros estan presentes.
+
+### Restricciones respetadas
+- Solo `supabase migration up --local`. Sin `supabase db push` ni Supabase remoto.
+- Los datos demo existentes no fueron afectados (no se hizo `db reset`).
+- PROD-001 sigue bloqueante.
+
+### Resultado
+Schema local sincronizado. 36/36 migraciones aplicadas. Todas las estructuras nuevas verificadas en la DB local.
+
+## LOG-092 - Sincronizacion documental post-sesion 2026-07-08 (CTRL-013)
+
+**Estado:** Integrada
+**Fecha:** 2026-07-08
+**Rama:** `docs/ctrl-013-sync-post-sesion-2026-07-08`
+**Responsable:** Control de desarrollo (antigravity)
+
+### Resumen
+Sincronizacion final de documentos de control para reflejar el estado real post-sesion 2026-07-08. Se actualizaron los estados de UI-010, UI-013, UI-018, IMP-002 en la tabla de vista rapida (de "draft" a "Integrada"). Se agregaron LOGs 088 a 092 en la bitacora de cambios.
+
+### Proxima tarea recomendada
+BE-015 — validar RLS por roles para los modulos nuevos: `pacientes_identidad_financiera` (solo admin escribe, Finanzas solo lee via vista), `logs_auditoria_sensible` (nadie lee directamente desde frontend), triggers de auditoria (verificar que se disparan), CHECK constraints de cobros. Requiere Supabase local corriendo y seed demo activo.
+
+### Estado de bloqueos vigentes
+- PROD-001: pendiente / bloqueante (no habilita datos reales, Google Calendar, Gmail, produccion)
+- BE-015: pendiente / siguiente tarea recomendada
+- UI-015: pendiente (Finanzas por unidad cobrable - ahora tiene base con alias BE-023)
+- MFA (parte de UI-024): pendiente
+- RFC-002: pendiente
+
+### Archivos tocados
+- `docs/control/01_PENDIENTES_PROYECTO.md` (estados actualizados en tabla vista rapida)
+- `docs/control/06_BITACORA_CAMBIOS.md` (LOGs 088-092 agregados)
+
+### Restricciones respetadas
+- Solo documentacion. Sin codigo funcional, migraciones ni Supabase remoto.
+- PROD-001 sigue bloqueante.
+
+### Resultado
+Documentacion de control sincronizada. Cualquier agente que lea `docs/control/` desde este punto tiene contexto completo de la sesion 2026-07-08.
+

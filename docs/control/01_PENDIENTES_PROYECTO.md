@@ -49,15 +49,15 @@ Este documento es la lista maestra de pendientes. Cada pendiente debe tener un c
 | BE-010 | Ajustar soporte operativo de hallazgos derivados de aspectos. | Integrada | Alta | Integracion Backend/Estructura |
 | IMP-001 | Implementar hallazgos operativos en `DetalleRevisionesPanel`. | Integrada | Alta | Implementacion |
 | DATA-001 | Agregar seed local de caso demo integral. | Integrada | Alta | Control de desarrollo |
-| UI-010 | Redisenar navegacion del detalle de caso. | Implementada local / PR #107 draft | Alta | UI / UX / Pulido visual |
+| UI-010 | Redisenar navegacion del detalle de caso. | Integrada (PR #107) | Alta | UI / UX / Pulido visual |
 | UI-011 | Disenar panel operativo de hallazgos dentro del detalle de revision. | Integrada | Alta | UI / UX / Pulido visual |
 | UI-012 | Disenar flujo visual Evaluar trabajo. | Integrada | Alta | UI / UX / Pulido visual |
-| UI-013 | Disenar experiencia de trabajos, sesiones y acciones. | Implementada local / PR #108 draft | Alta | UI / UX / Pulido visual |
+| UI-013 | Disenar experiencia de trabajos, sesiones y acciones. | Integrada (PR #108) | Alta | UI / UX / Pulido visual |
 | UI-014 | Disenar agenda tipificada. | Pendiente | Media-alta | UI / UX / Pulido visual |
 | UI-015 | Mejorar experiencia de finanzas por unidad cobrable. | Pendiente | Alta | UI / UX / Pulido visual |
 | UI-016 | Mejorar reportes por rol. | Integrada | Media-alta | UI / UX / Pulido visual |
 | UI-017 | Definir checklist responsive de pantallas clinicas. | Pendiente | Media | UI / UX / Pulido visual |
-| UI-018 | Normalizar microcopy clinica y retirar textos tecnicos visibles. | Implementada local / PR #107 draft | Media | UI / UX / Pulido visual |
+| UI-018 | Normalizar microcopy clinica y retirar textos tecnicos visibles. | Integrada (PR #107) | Media | UI / UX / Pulido visual |
 | UI-019 | Definir patron comun de formularios clinicos largos. | Pendiente | Media-alta | UI / UX / Pulido visual |
 | BE-011 | Disenar trazabilidad hallazgo a trabajo. | Integrada | Alta | Integracion Backend/Estructura |
 | BE-012 | Disenar backend de Agenda tipificada. | Diseno documentado / pend. implementacion | Alta | Integracion Backend/Estructura |
@@ -111,7 +111,7 @@ Este documento es la lista maestra de pendientes. Cada pendiente debe tener un c
 | DOC-004 | Documentar flujo pagina publica -> API -> sistema interno -> Google. | Documental / pendiente implementacion futura | Alta | Control de desarrollo |
 | DOC-005 | Documentar estrategia de migracion progresiva a Google Cloud. | Documental / pendiente validacion | Alta | Control de desarrollo |
 | QA-003 | Validacion funcional local de fotos de elementos del caso. | Ejecutada local/demo con observacion | Alta | Control de desarrollo |
-| IMP-002 | Implementacion funcional hallazgo a trabajo. | Integrada | Alta | Implementacion |
+| IMP-002 | Implementacion funcional hallazgo a trabajo. | Integrada (PR #104) | Alta | Implementacion |
 | PROD-001 | Preparacion para uso real con datos sensibles. | Mantener pendiente / bloqueante | Alta | Control de desarrollo / Integracion Backend |
 | AUDIT-2026-07-04 | Revision integral de estructura y arquitectura; roadmap 5 bloques. | Aprobada por Javier (DEC-036 a DEC-039) | Alta | Control de desarrollo |
 | BLOQUE-1-RLS | 3 migraciones RLS para DEC-038 en ramas fix/rls-*. | Mergeado a `main` (PR #85, #86, #87) | Alta | Integracion Backend / Seguridad |
