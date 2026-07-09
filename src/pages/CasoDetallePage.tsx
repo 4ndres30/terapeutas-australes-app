@@ -148,6 +148,12 @@ function CasoDetallePage() {
   const [mensaje, setMensaje] = useState('')
   const [cargando, setCargando] = useState(true)
   const [activeTab, setActiveTab] = useState<TabSeccion>('resumen')
+  const [visitedTabs, setVisitedTabs] = useState<Set<TabSeccion>>(() => new Set<TabSeccion>(['resumen']))
+
+  const seleccionarTab = useCallback((tab: TabSeccion) => {
+    setActiveTab(tab)
+    setVisitedTabs((previo) => (previo.has(tab) ? previo : new Set(previo).add(tab)))
+  }, [])
 
   const pacienteNombre = obtenerNombrePaciente(paciente)
 
@@ -308,46 +314,66 @@ function CasoDetallePage() {
 
       {mensaje && <p className={mensaje.startsWith('Error') ? 'clinical-message clinical-message--error' : 'clinical-message'}>{mensaje}</p>}
 
-      <nav className="caso-detail-tabs" aria-label="Secciones de la ficha del caso">
+      <nav className="caso-detail-tabs" aria-label="Secciones de la ficha del caso" role="tablist">
         <button
+          id="tab-resumen"
           className={activeTab === 'resumen' ? 'caso-detail-tab caso-detail-tab--active' : 'caso-detail-tab'}
           type="button"
-          onClick={() => setActiveTab('resumen')}
+          role="tab"
+          aria-selected={activeTab === 'resumen'}
+          aria-controls="panel-resumen"
+          onClick={() => seleccionarTab('resumen')}
         >
           Resumen
         </button>
         <button
+          id="tab-elementos"
           className={activeTab === 'elementos' ? 'caso-detail-tab caso-detail-tab--active' : 'caso-detail-tab'}
           type="button"
-          onClick={() => setActiveTab('elementos')}
+          role="tab"
+          aria-selected={activeTab === 'elementos'}
+          aria-controls="panel-elementos"
+          onClick={() => seleccionarTab('elementos')}
         >
           Elementos
         </button>
         <button
+          id="tab-revisiones"
           className={activeTab === 'revisiones' ? 'caso-detail-tab caso-detail-tab--active' : 'caso-detail-tab'}
           type="button"
-          onClick={() => setActiveTab('revisiones')}
+          role="tab"
+          aria-selected={activeTab === 'revisiones'}
+          aria-controls="panel-revisiones"
+          onClick={() => seleccionarTab('revisiones')}
         >
           Revisiones
         </button>
         <button
+          id="tab-intervenciones"
           className={activeTab === 'intervenciones' ? 'caso-detail-tab caso-detail-tab--active' : 'caso-detail-tab'}
           type="button"
-          onClick={() => setActiveTab('intervenciones')}
+          role="tab"
+          aria-selected={activeTab === 'intervenciones'}
+          aria-controls="panel-intervenciones"
+          onClick={() => seleccionarTab('intervenciones')}
         >
           Intervenciones
         </button>
         <button
+          id="tab-pagos"
           className={activeTab === 'pagos' ? 'caso-detail-tab caso-detail-tab--active' : 'caso-detail-tab'}
           type="button"
-          onClick={() => setActiveTab('pagos')}
+          role="tab"
+          aria-selected={activeTab === 'pagos'}
+          aria-controls="panel-pagos"
+          onClick={() => seleccionarTab('pagos')}
         >
           Finanzas
         </button>
       </nav>
 
-      {activeTab === 'resumen' && (
-        <>
+      {visitedTabs.has('resumen') && (
+        <div id="panel-resumen" role="tabpanel" aria-labelledby="tab-resumen" hidden={activeTab !== 'resumen'}>
           <section className="caso-detail-section" id="resumen">
             <div className="caso-section-heading">
               <div>
@@ -478,26 +504,32 @@ function CasoDetallePage() {
               </article>
             </div>
           </section>
-        </>
+        </div>
       )}
 
-      {activeTab === 'elementos' && (
-        <ElementosCasoPanel casoId={caso.id_caso} pacienteId={caso.paciente_id} pacienteNombre={pacienteNombre} />
+      {visitedTabs.has('elementos') && (
+        <div id="panel-elementos" role="tabpanel" aria-labelledby="tab-elementos" hidden={activeTab !== 'elementos'}>
+          <ElementosCasoPanel casoId={caso.id_caso} pacienteId={caso.paciente_id} pacienteNombre={pacienteNombre} />
+        </div>
       )}
 
-      {activeTab === 'revisiones' && (
-        <>
+      {visitedTabs.has('revisiones') && (
+        <div id="panel-revisiones" role="tabpanel" aria-labelledby="tab-revisiones" hidden={activeTab !== 'revisiones'}>
           <RevisionesCasoPanel casoId={caso.id_caso} pacienteId={caso.paciente_id} consultaId={caso.consulta_id} evaluacionId={caso.evaluacion_id} pacienteNombre={pacienteNombre} />
           <DetalleRevisionesPanel casoId={caso.id_caso} pacienteId={caso.paciente_id} />
-        </>
+        </div>
       )}
 
-      {activeTab === 'intervenciones' && (
-        <TrabajosCasoPanel casoId={caso.id_caso} pacienteId={caso.paciente_id} />
+      {visitedTabs.has('intervenciones') && (
+        <div id="panel-intervenciones" role="tabpanel" aria-labelledby="tab-intervenciones" hidden={activeTab !== 'intervenciones'}>
+          <TrabajosCasoPanel casoId={caso.id_caso} pacienteId={caso.paciente_id} />
+        </div>
       )}
 
-      {activeTab === 'pagos' && (
-        <PagosCasoPanel casoId={caso.id_caso} pacienteId={caso.paciente_id} />
+      {visitedTabs.has('pagos') && (
+        <div id="panel-pagos" role="tabpanel" aria-labelledby="tab-pagos" hidden={activeTab !== 'pagos'}>
+          <PagosCasoPanel casoId={caso.id_caso} pacienteId={caso.paciente_id} />
+        </div>
       )}
     </main>
   )
