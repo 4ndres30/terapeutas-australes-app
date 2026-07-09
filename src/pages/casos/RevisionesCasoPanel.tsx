@@ -287,7 +287,7 @@ function RevisionesCasoPanel({ casoId, pacienteId, consultaId = null, evaluacion
         <div>
           <span className="clinical-kicker">Revisiones</span>
           <h2>Revisiones del caso</h2>
-          <p>Filtradas por `revisiones.caso_id`. Las nuevas revisiones heredan paciente, consulta y evaluación del caso.</p>
+          <p>Historial evolutivo de revisiones del caso. Las nuevas revisiones heredan automáticamente el contexto clínico del paciente.</p>
         </div>
       </div>
 
@@ -326,7 +326,7 @@ function RevisionesCasoPanel({ casoId, pacienteId, consultaId = null, evaluacion
           {revisionesFiltradas.length === 0 ? (
             <div className="clinical-empty">
               <strong>{cargando ? 'Cargando revisiones' : 'Sin revisiones registradas en este caso'}</strong>
-              <p>{cargando ? 'Consultando Supabase local.' : 'Registra la primera revisión desde el formulario de esta ficha.'}</p>
+              <p>{cargando ? 'Consultando información...' : 'Registra la primera revisión desde el formulario de esta ficha.'}</p>
             </div>
           ) : (
             <div className="clinical-list">
