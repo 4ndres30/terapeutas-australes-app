@@ -460,15 +460,15 @@ Implementar testing automatizado mínimo con Vitest (unit) + Playwright (E2E) y 
 
 ## 5. ROADMAP DE IMPLEMENTACIÓN
 
-### **Bloque 1: RLS Fixes (Urgente — Sin Riesgo)**
+### **Bloque 1: RLS Fixes (Completado)**
 **Duración**: 2-3 días | **PRs**: 3 | **Riesgo**: BAJO
 
-- [ ] PR#81: Corregir `vista_cobros_estado` para finanzas (1 migración SQL)
-- [ ] PR#82: Crear `vista_finanzas_fotos_auditoria` (1 migración SQL)
-- [ ] PR#83: Agregar DELETE policies (1 migración SQL)
+- [x] PR#81: Corregir `vista_cobros_estado` para finanzas (1 migración SQL)
+- [x] PR#82: Crear `vista_finanzas_fotos_auditoria` (1 migración SQL)
+- [x] PR#83: Agregar DELETE policies (1 migración SQL)
 
 **Testing**: Local con usuario finanzas demo (SEC-007B)
-**Dependencias**: Ninguna
+**Estado**: Migraciones aplicadas y validadas en ambiente local.
 
 ---
 
