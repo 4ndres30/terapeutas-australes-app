@@ -136,6 +136,8 @@ function textoOpcional(texto: string | null | undefined, respaldo = 'Sin informa
   return texto?.trim() || respaldo
 }
 
+type TabSeccion = 'resumen' | 'elementos' | 'revisiones' | 'intervenciones' | 'pagos'
+
 function CasoDetallePage() {
   const { id } = useParams()
   const casoId = id || ''
@@ -145,6 +147,13 @@ function CasoDetallePage() {
   const [evaluacion, setEvaluacion] = useState<Evaluacion | null>(null)
   const [mensaje, setMensaje] = useState('')
   const [cargando, setCargando] = useState(true)
+  const [activeTab, setActiveTab] = useState<TabSeccion>('resumen')
+  const [visitedTabs, setVisitedTabs] = useState<Set<TabSeccion>>(() => new Set<TabSeccion>(['resumen']))
+
+  const seleccionarTab = useCallback((tab: TabSeccion) => {
+    setActiveTab(tab)
+    setVisitedTabs((previo) => (previo.has(tab) ? previo : new Set(previo).add(tab)))
+  }, [])
 
   const pacienteNombre = obtenerNombrePaciente(paciente)
 
@@ -305,153 +314,223 @@ function CasoDetallePage() {
 
       {mensaje && <p className={mensaje.startsWith('Error') ? 'clinical-message clinical-message--error' : 'clinical-message'}>{mensaje}</p>}
 
-      <nav className="caso-detail-tabs" aria-label="Secciones de la ficha del caso">
-        <a href="#resumen">Resumen</a>
-        <a href="#consulta-evaluacion">Consulta / Evaluación</a>
-        <a href="#elementos-caso">Elementos del caso</a>
-        <a href="#revisiones">Revisiones</a>
-        <a href="#detalle-revisiones">Detalle de revisiones</a>
-        <a href="#trabajos-intervenciones">Trabajos / Intervenciones</a>
-        <a href="#pagos">Pagos</a>
-        <a href="#seguimiento">Seguimiento</a>
+      <nav className="caso-detail-tabs" aria-label="Secciones de la ficha del caso" role="tablist">
+        <button
+          id="tab-resumen"
+          className={activeTab === 'resumen' ? 'caso-detail-tab caso-detail-tab--active' : 'caso-detail-tab'}
+          type="button"
+          role="tab"
+          aria-selected={activeTab === 'resumen'}
+          aria-controls="panel-resumen"
+          onClick={() => seleccionarTab('resumen')}
+        >
+          Resumen
+        </button>
+        <button
+          id="tab-elementos"
+          className={activeTab === 'elementos' ? 'caso-detail-tab caso-detail-tab--active' : 'caso-detail-tab'}
+          type="button"
+          role="tab"
+          aria-selected={activeTab === 'elementos'}
+          aria-controls="panel-elementos"
+          onClick={() => seleccionarTab('elementos')}
+        >
+          Elementos
+        </button>
+        <button
+          id="tab-revisiones"
+          className={activeTab === 'revisiones' ? 'caso-detail-tab caso-detail-tab--active' : 'caso-detail-tab'}
+          type="button"
+          role="tab"
+          aria-selected={activeTab === 'revisiones'}
+          aria-controls="panel-revisiones"
+          onClick={() => seleccionarTab('revisiones')}
+        >
+          Revisiones
+        </button>
+        <button
+          id="tab-intervenciones"
+          className={activeTab === 'intervenciones' ? 'caso-detail-tab caso-detail-tab--active' : 'caso-detail-tab'}
+          type="button"
+          role="tab"
+          aria-selected={activeTab === 'intervenciones'}
+          aria-controls="panel-intervenciones"
+          onClick={() => seleccionarTab('intervenciones')}
+        >
+          Intervenciones
+        </button>
+        <button
+          id="tab-pagos"
+          className={activeTab === 'pagos' ? 'caso-detail-tab caso-detail-tab--active' : 'caso-detail-tab'}
+          type="button"
+          role="tab"
+          aria-selected={activeTab === 'pagos'}
+          aria-controls="panel-pagos"
+          onClick={() => seleccionarTab('pagos')}
+        >
+          Finanzas
+        </button>
       </nav>
 
-      <section className="caso-detail-section" id="resumen">
-        <div className="caso-section-heading">
-          <div>
-            <span className="clinical-kicker">Resumen</span>
-            <h2>Datos base del caso</h2>
-            <p>Contexto directo del registro en `public.casos`.</p>
-          </div>
-        </div>
-
-        <div className="caso-info-grid">
-          <article className="caso-info-card">
-            <span>Tipo</span>
-            <strong>{caso.tipo_caso}</strong>
-          </article>
-          <article className="caso-info-card">
-            <span>Objetivo</span>
-            <p>{textoOpcional(caso.objetivo_trabajo)}</p>
-          </article>
-          <article className="caso-info-card">
-            <span>Descripción general</span>
-            <p>{textoOpcional(caso.descripcion_general)}</p>
-          </article>
-          <article className="caso-info-card">
-            <span>Notas internas</span>
-            <p>{textoOpcional(caso.notas_internas)}</p>
-          </article>
-        </div>
-      </section>
-
-      <section className="caso-detail-section" id="consulta-evaluacion">
-        <div className="caso-section-heading">
-          <div>
-            <span className="clinical-kicker">Origen clínico</span>
-            <h2>Consulta / Evaluación de origen</h2>
-            <p>Solo lectura. No se crean consultas ni evaluaciones desde esta ficha.</p>
-          </div>
-        </div>
-
-        {!consulta && !evaluacion ? (
-          <div className="clinical-empty">
-            <strong>Sin consulta/evaluación asociada</strong>
-            <p>El caso existe con paciente directo, pero no tiene origen clínico vinculado en `consulta_id` o `evaluacion_id`.</p>
-          </div>
-        ) : (
-          <div className="caso-origin-grid">
-            <article className="clinical-card">
-              <div className="clinical-card__top">
-                <div>
-                  <h3>Consulta</h3>
-                  <small>{consulta ? `${formatearFecha(consulta.fecha_consulta)} · ${consulta.tipo_consulta}` : 'Sin consulta asociada'}</small>
-                </div>
-                {consulta && <span className="clinical-badge">{consulta.estado_consulta}</span>}
+      {visitedTabs.has('resumen') && (
+        <div id="panel-resumen" role="tabpanel" aria-labelledby="tab-resumen" hidden={activeTab !== 'resumen'}>
+          <section className="caso-detail-section" id="resumen">
+            <div className="caso-section-heading">
+              <div>
+                <span className="clinical-kicker">Resumen</span>
+                <h2>Datos base del caso</h2>
+                <p>Resumen administrativo del caso clínico.</p>
               </div>
-              <p>{consulta ? textoOpcional(consulta.motivo_consulta) : 'Sin consulta asociada al caso.'}</p>
-              {consulta && (
-                <dl className="clinical-details">
-                  <div>
-                    <dt>Modalidad</dt>
-                    <dd>{consulta.modalidad}</dd>
-                  </div>
-                  <div>
-                    <dt>Inicio</dt>
-                    <dd>{consulta.hora_inicio || 'Sin hora'}</dd>
-                  </div>
-                  <div>
-                    <dt>Resumen</dt>
-                    <dd>{consulta.resumen_consulta ? 'Registrado' : 'Pendiente'}</dd>
-                  </div>
-                </dl>
-              )}
-            </article>
+            </div>
 
-            <article className="clinical-card">
-              <div className="clinical-card__top">
-                <div>
-                  <h3>Evaluación</h3>
-                  <small>{evaluacion ? `${formatearFecha(evaluacion.fecha_evaluacion)} · ${evaluacion.decision_revision}` : 'Sin evaluación asociada'}</small>
-                </div>
-                {evaluacion && <span className="clinical-badge">{evaluacion.estado_evaluacion}</span>}
+            <div className="caso-info-grid">
+              <article className="caso-info-card">
+                <span>Tipo</span>
+                <strong>{caso.tipo_caso}</strong>
+              </article>
+              <article className="caso-info-card">
+                <span>Objetivo</span>
+                <p>{textoOpcional(caso.objetivo_trabajo)}</p>
+              </article>
+              <article className="caso-info-card">
+                <span>Descripción general</span>
+                <p>{textoOpcional(caso.descripcion_general)}</p>
+              </article>
+              <article className="caso-info-card">
+                <span>Notas internas</span>
+                <p>{textoOpcional(caso.notas_internas)}</p>
+              </article>
+            </div>
+          </section>
+
+          <section className="caso-detail-section" id="consulta-evaluacion">
+            <div className="caso-section-heading">
+              <div>
+                <span className="clinical-kicker">Origen clínico</span>
+                <h2>Consulta / Evaluación de origen</h2>
+                <p>Consulta y evaluación vinculadas que dieron origen a este caso.</p>
               </div>
-              <p>{evaluacion ? textoOpcional(evaluacion.relato_antecedentes) : 'Sin evaluación asociada al caso.'}</p>
-              {evaluacion && (
-                <dl className="clinical-details">
-                  <div>
-                    <dt>Síntomas</dt>
-                    <dd>{evaluacion.sintomas_reportados ? 'Registrados' : 'Pendiente'}</dd>
-                  </div>
-                  <div>
-                    <dt>Hechos clave</dt>
-                    <dd>{evaluacion.hechos_clave ? 'Registrados' : 'Pendiente'}</dd>
-                  </div>
-                  <div>
-                    <dt>Fundamento</dt>
-                    <dd>{evaluacion.fundamento_decision ? 'Registrado' : 'Pendiente'}</dd>
-                  </div>
-                </dl>
-              )}
-            </article>
-          </div>
-        )}
-      </section>
+            </div>
 
-      <ElementosCasoPanel casoId={caso.id_caso} pacienteId={caso.paciente_id} pacienteNombre={pacienteNombre} />
-      <RevisionesCasoPanel casoId={caso.id_caso} pacienteId={caso.paciente_id} consultaId={caso.consulta_id} evaluacionId={caso.evaluacion_id} pacienteNombre={pacienteNombre} />
-      <DetalleRevisionesPanel casoId={caso.id_caso} pacienteId={caso.paciente_id} />
-      <TrabajosCasoPanel casoId={caso.id_caso} pacienteId={caso.paciente_id} />
-      <PagosCasoPanel casoId={caso.id_caso} pacienteId={caso.paciente_id} />
+            {!consulta && !evaluacion ? (
+              <div className="clinical-empty">
+                <strong>Sin consulta/evaluación asociada</strong>
+                <p>El caso existe con paciente directo, pero no tiene origen clínico vinculado.</p>
+              </div>
+            ) : (
+              <div className="caso-origin-grid">
+                <article className="clinical-card">
+                  <div className="clinical-card__top">
+                    <div>
+                      <h3>Consulta</h3>
+                      <small>{consulta ? `${formatearFecha(consulta.fecha_consulta)} · ${consulta.tipo_consulta}` : 'Sin consulta asociada'}</small>
+                    </div>
+                    {consulta && <span className="clinical-badge">{consulta.estado_consulta}</span>}
+                  </div>
+                  <p>{consulta ? textoOpcional(consulta.motivo_consulta) : 'Sin consulta asociada al caso.'}</p>
+                  {consulta && (
+                    <dl className="clinical-details">
+                      <div>
+                        <dt>Modalidad</dt>
+                        <dd>{consulta.modalidad}</dd>
+                      </div>
+                      <div>
+                        <dt>Inicio</dt>
+                        <dd>{consulta.hora_inicio || 'Sin hora'}</dd>
+                      </div>
+                      <div>
+                        <dt>Resumen</dt>
+                        <dd>{consulta.resumen_consulta ? 'Registrado' : 'Pendiente'}</dd>
+                      </div>
+                    </dl>
+                  )}
+                </article>
 
-      <section className="caso-detail-section" id="seguimiento">
-        <div className="caso-section-heading">
-          <div>
-            <span className="clinical-kicker">Seguimiento</span>
-            <h2>Estado y próximas acciones</h2>
-            <p>Lectura desde campos de seguimiento y cierre del caso.</p>
-          </div>
+                <article className="clinical-card">
+                  <div className="clinical-card__top">
+                    <div>
+                      <h3>Evaluación</h3>
+                      <small>{evaluacion ? `${formatearFecha(evaluacion.fecha_evaluacion)} · ${evaluacion.decision_revision}` : 'Sin evaluación asociada'}</small>
+                    </div>
+                    {evaluacion && <span className="clinical-badge">{evaluacion.estado_evaluacion}</span>}
+                  </div>
+                  <p>{evaluacion ? textoOpcional(evaluacion.relato_antecedentes) : 'Sin evaluación asociada al caso.'}</p>
+                  {evaluacion && (
+                    <dl className="clinical-details">
+                      <div>
+                        <dt>Síntomas</dt>
+                        <dd>{evaluacion.sintomas_reportados ? 'Registrados' : 'Pendiente'}</dd>
+                      </div>
+                      <div>
+                        <dt>Hechos clave</dt>
+                        <dd>{evaluacion.hechos_clave ? 'Registrados' : 'Pendiente'}</dd>
+                      </div>
+                      <div>
+                        <dt>Fundamento</dt>
+                        <dd>{evaluacion.fundamento_decision ? 'Registrado' : 'Pendiente'}</dd>
+                      </div>
+                    </dl>
+                  )}
+                </article>
+              </div>
+            )}
+          </section>
+
+          <section className="caso-detail-section" id="seguimiento">
+            <div className="caso-section-heading">
+              <div>
+                <span className="clinical-kicker">Seguimiento</span>
+                <h2>Estado y próximas acciones</h2>
+                <p>Seguimiento evolutivo e información de cierre.</p>
+              </div>
+            </div>
+
+            <div className="caso-info-grid">
+              <article className="caso-info-card">
+                <span>Requiere seguimiento</span>
+                <strong>{caso.requiere_seguimiento ? 'Sí' : 'No'}</strong>
+              </article>
+              <article className="caso-info-card">
+                <span>Notas de seguimiento</span>
+                <p>{textoOpcional(caso.notas_seguimiento, 'Sin notas de seguimiento registradas')}</p>
+              </article>
+              <article className="caso-info-card">
+                <span>Fecha cierre</span>
+                <strong>{formatearFecha(caso.fecha_cierre)}</strong>
+              </article>
+              <article className="caso-info-card">
+                <span>Resultado cierre</span>
+                <p>{textoOpcional(caso.resultado_cierre, 'Sin cierre registrado')}</p>
+              </article>
+            </div>
+          </section>
         </div>
+      )}
 
-        <div className="caso-info-grid">
-          <article className="caso-info-card">
-            <span>Requiere seguimiento</span>
-            <strong>{caso.requiere_seguimiento ? 'Sí' : 'No'}</strong>
-          </article>
-          <article className="caso-info-card">
-            <span>Notas de seguimiento</span>
-            <p>{textoOpcional(caso.notas_seguimiento, 'Sin notas de seguimiento registradas')}</p>
-          </article>
-          <article className="caso-info-card">
-            <span>Fecha cierre</span>
-            <strong>{formatearFecha(caso.fecha_cierre)}</strong>
-          </article>
-          <article className="caso-info-card">
-            <span>Resultado cierre</span>
-            <p>{textoOpcional(caso.resultado_cierre, 'Sin cierre registrado')}</p>
-          </article>
+      {visitedTabs.has('elementos') && (
+        <div id="panel-elementos" role="tabpanel" aria-labelledby="tab-elementos" hidden={activeTab !== 'elementos'}>
+          <ElementosCasoPanel casoId={caso.id_caso} pacienteId={caso.paciente_id} pacienteNombre={pacienteNombre} />
         </div>
-      </section>
+      )}
+
+      {visitedTabs.has('revisiones') && (
+        <div id="panel-revisiones" role="tabpanel" aria-labelledby="tab-revisiones" hidden={activeTab !== 'revisiones'}>
+          <RevisionesCasoPanel casoId={caso.id_caso} pacienteId={caso.paciente_id} consultaId={caso.consulta_id} evaluacionId={caso.evaluacion_id} pacienteNombre={pacienteNombre} />
+          <DetalleRevisionesPanel casoId={caso.id_caso} pacienteId={caso.paciente_id} />
+        </div>
+      )}
+
+      {visitedTabs.has('intervenciones') && (
+        <div id="panel-intervenciones" role="tabpanel" aria-labelledby="tab-intervenciones" hidden={activeTab !== 'intervenciones'}>
+          <TrabajosCasoPanel casoId={caso.id_caso} pacienteId={caso.paciente_id} />
+        </div>
+      )}
+
+      {visitedTabs.has('pagos') && (
+        <div id="panel-pagos" role="tabpanel" aria-labelledby="tab-pagos" hidden={activeTab !== 'pagos'}>
+          <PagosCasoPanel casoId={caso.id_caso} pacienteId={caso.paciente_id} />
+        </div>
+      )}
     </main>
   )
 }

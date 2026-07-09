@@ -3703,6 +3703,35 @@ Deliberadamente NO se agrego job de E2E en `.github/workflows/ci.yml`: requeriri
 
 PROD-001 sigue bloqueante.
 
+## LOG-084 - Implementacion de navegacion por pestanas en CasoDetallePage y normalizacion de microcopy clinica
+
+**Estado:** Implementada local/demo
+**Prioridad:** Alta
+**Responsable:** Control de desarrollo (Claude / Codex)
+**Origen:** UI-010 / UI-018
+**Fecha creacion:** 2026-07-08
+**Rama usada:** `feature/ui-navegacion-detalle-caso`
+**PR:** #107 (mergeado)
+
+### Resumen
+Se implementa y valida en el frontend la navegacion interactiva por pestanas en la ficha del caso y la limpieza de microcopy clinica eliminando descripciones tecnicas de base de datos.
+
+### Trabajo realizado
+1. **Pestanas dinamicas (UI-010):** Se re-estructuro `CasoDetallePage.tsx` para renderizar condicionalmente 5 pestanas (Resumen, Elementos, Revisiones, Intervenciones, Finanzas), eliminando el scroll vertical kilometrico.
+2. **Estilos Premium:** Se rediseno la barra de navegacion `.caso-detail-tabs` en `CasoDetallePage.css` con tipografia moderna, bordes curvos, sombras suaves y degradados interactivos en HSL.
+3. **Limpieza de Microcopy (UI-018):** Se eliminaron tecnicismos SQL y referencias a nombres de tablas en revisiones y trabajos.
+4. **Validacion:** Lint 0 errores, test 24/24, build OK.
+
+### Archivos relacionados
+- `src/pages/CasoDetallePage.tsx`
+- `src/pages/CasoDetallePage.css`
+- `src/pages/casos/RevisionesCasoPanel.tsx`
+- `src/pages/casos/TrabajosCasoPanel.tsx`
+
+### Restricciones respetadas
+- Sin migraciones. Sin Supabase remoto. Sin `.env`.
+- PROD-001 sigue bloqueante.
+
 ## LOG-085 - Formulario operativo de intervenciones en TrabajosCasoPanel (UI-013)
 
 **Estado:** Implementada local/demo
