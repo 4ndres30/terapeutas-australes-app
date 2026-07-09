@@ -414,42 +414,53 @@ function DetalleRevisionesPanel({ casoId, pacienteId }: DetalleRevisionesPanelPr
     setMensajeHallazgos('Obteniendo correlación de número de trabajo...')
 
     try {
-      const { data: trabajosActuales, error: errorMax } = await supabase
-        .from('trabajos')
-        .select('numero_trabajo')
-        .eq('caso_id', casoId)
+      const intentosMaximos = 3
+      let errorInsert: { code?: string; message: string } | null = null
 
-      if (errorMax) {
-        throw new Error(`Error al obtener número de trabajo: ${errorMax.message}`)
+      for (let intento = 0; intento < intentosMaximos; intento += 1) {
+        const { data: trabajosActuales, error: errorMax } = await supabase
+          .from('trabajos')
+          .select('numero_trabajo')
+          .eq('caso_id', casoId)
+
+        if (errorMax) {
+          throw new Error(`Error al obtener número de trabajo: ${errorMax.message}`)
+        }
+
+        const maxNumero = trabajosActuales?.reduce((max, t) => Math.max(max, t.numero_trabajo || 0), 0) || 0
+        const nuevoNumero = maxNumero + 1
+
+        const payload = {
+          paciente_id: pacienteId,
+          caso_id: casoId,
+          revision_inicial_id: aspectoTrabajoActivo.hallazgo.revision_id,
+          revision_hallazgo_origen_id: aspectoTrabajoActivo.hallazgo.id_revision_hallazgo,
+          numero_trabajo: nuevoNumero,
+          nombre_trabajo: formularioTrabajo.nombre_trabajo.trim(),
+          tipo_trabajo: formularioTrabajo.tipo_trabajo,
+          ambito_trabajo: formularioTrabajo.ambito_trabajo,
+          modalidad_ejecucion: formularioTrabajo.modalidad_ejecucion,
+          fase_actual: 'Planificación',
+          alcance_trabajo: formularioTrabajo.alcance_trabajo,
+          metodo_principal: formularioTrabajo.metodo_principal,
+          prioridad_trabajo: formularioTrabajo.prioridad_trabajo,
+          objetivo_trabajo: formularioTrabajo.objetivo_trabajo.trim(),
+          duracion_estimada_semanas: formularioTrabajo.duracion_estimada_semanas ? Number(formularioTrabajo.duracion_estimada_semanas) : null,
+          fecha_inicio: formularioTrabajo.fecha_inicio,
+          estado_trabajo: 'Pendiente',
+          observaciones: formularioTrabajo.observaciones.trim() || null,
+        }
+
+        const resultado = await supabase.from('trabajos').insert(payload)
+        errorInsert = resultado.error
+
+        // 23505 = unique_violation: otro trabajo tomó el mismo numero_trabajo justo antes
+        // (condicion de carrera, dos usuarios creando trabajo para el mismo caso a la vez).
+        // Reintentar recalculando el numero en vez de fallar de inmediato.
+        if (!errorInsert || errorInsert.code !== '23505') {
+          break
+        }
       }
-
-      const maxNumero = trabajosActuales?.reduce((max, t) => Math.max(max, t.numero_trabajo || 0), 0) || 0
-      const nuevoNumero = maxNumero + 1
-
-      const payload = {
-        paciente_id: pacienteId,
-        caso_id: casoId,
-        revision_inicial_id: aspectoTrabajoActivo.hallazgo.revision_id,
-        revision_hallazgo_origen_id: aspectoTrabajoActivo.hallazgo.id_revision_hallazgo,
-        numero_trabajo: nuevoNumero,
-        nombre_trabajo: formularioTrabajo.nombre_trabajo.trim(),
-        tipo_trabajo: formularioTrabajo.tipo_trabajo,
-        ambito_trabajo: formularioTrabajo.ambito_trabajo,
-        modalidad_ejecucion: formularioTrabajo.modalidad_ejecucion,
-        fase_actual: 'Planificación',
-        alcance_trabajo: formularioTrabajo.alcance_trabajo,
-        metodo_principal: formularioTrabajo.metodo_principal,
-        prioridad_trabajo: formularioTrabajo.prioridad_trabajo,
-        objetivo_trabajo: formularioTrabajo.objetivo_trabajo.trim(),
-        duracion_estimada_semanas: formularioTrabajo.duracion_estimada_semanas ? Number(formularioTrabajo.duracion_estimada_semanas) : null,
-        fecha_inicio: formularioTrabajo.fecha_inicio,
-        estado_trabajo: 'Planificado',
-        observaciones: formularioTrabajo.observaciones.trim() || null,
-      }
-
-      const { error: errorInsert } = await supabase
-        .from('trabajos')
-        .insert(payload)
 
       if (errorInsert) {
         throw new Error(`Error al guardar trabajo: ${errorInsert.message}`)
