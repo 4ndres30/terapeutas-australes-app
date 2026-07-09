@@ -6,7 +6,7 @@
 **Responsable:** Integracion Backend/Estructura  
 **Fecha creación:** 2026-07-08  
 **Rama:** `feature/be-014-vistas-clinicas`  
-**Migración:** `supabase/migrations/20260708000000_be014_vistas_clinicas_agregadas.sql`
+**Migración:** `supabase/migrations/20260708000020_be014_vistas_clinicas_agregadas.sql`
 
 ---
 
@@ -49,12 +49,11 @@ Métricas de carga activa por paciente:
 - Solo lectura. No modifican datos ni disparan triggers.
 - `CREATE OR REPLACE VIEW` — idempotente, seguro de re-ejecutar.
 - No aplica `supabase db push`. Solo local.
-- RLS sobre las vistas: pendiente en BE-015 (requiere aprobación de Javier).
-- No se exponen a Finanzas: las vistas referencian `casos`, `revisiones` y `trabajos` que ya tienen RLS por `paciente_id` y rol.
+- Las 3 vistas tienen `security_invoker = true` + `GRANT SELECT` solo a `authenticated` (patrón de `20260706000001_crear_vista_riesgo_abandono_casos.sql`). `vista_resumen_evolutivo_caso` y `vista_actividad_clinica_reciente` heredan la restricción a `es_terapeuta_o_admin()` de sus tablas base (casos/revisiones/revision_hallazgos/trabajos/elementos_caso). `vista_carga_trabajo_terapeutica` agrega un filtro explícito `public.es_admin()` porque sus tablas base solo exigen terapeuta-o-admin, no admin.
+- No se exponen a Finanzas: las vistas referencian `casos`, `revisiones` y `trabajos` que ya tienen RLS por rol (`es_terapeuta_o_admin()`).
 
 ## Pendiente
 
 - Aplicar la migración en Supabase local (`supabase db reset` o `migration up`) — requiere Docker activo.
-- BE-015: hardening RLS sobre estas vistas (pendiente aprobación).
 - Integrar `vista_resumen_evolutivo_caso` en `CasoDetallePage` (tarea UI futura).
 - Integrar `vista_actividad_clinica_reciente` en un panel de dashboard (tarea UI futura).
