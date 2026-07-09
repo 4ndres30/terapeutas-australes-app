@@ -55,7 +55,18 @@ type ModalidadEjecucion =
   | 'Trabajo por etapas'
   | 'Trabajo de cierre'
   | 'Mixto'
-type FaseActual = 'Planificación' | 'Inicio' | 'En curso' | 'Revisión' | 'Cierre'
+type FaseActual =
+  | 'Planificación'
+  | 'Revisión previa'
+  | 'Limpieza/Retiro'
+  | 'Liberación/Desarme'
+  | 'Ajuste energético'
+  | 'Sellado'
+  | 'Seguimiento'
+  | 'Revisión posterior'
+  | 'Cierre'
+  | 'Pausado'
+  | 'Anulado'
 type AlcanceTrabajo =
   | 'Caso completo'
   | 'Elementos seleccionados'
@@ -558,7 +569,19 @@ function TrabajosCasoPanel({ casoId, pacienteId }: TrabajosCasoPanelProps) {
                   value={formulario.fase_actual}
                   onChange={(e) => cambiarCampo('fase_actual', e.target.value as FaseActual)}
                 >
-                  {(['Planificación', 'Inicio', 'En curso', 'Revisión', 'Cierre'] as FaseActual[]).map((f) => (
+                  {([
+                    'Planificación',
+                    'Revisión previa',
+                    'Limpieza/Retiro',
+                    'Liberación/Desarme',
+                    'Ajuste energético',
+                    'Sellado',
+                    'Seguimiento',
+                    'Revisión posterior',
+                    'Cierre',
+                    'Pausado',
+                    'Anulado',
+                  ] as FaseActual[]).map((f) => (
                     <option key={f} value={f}>{f}</option>
                   ))}
                 </select>
