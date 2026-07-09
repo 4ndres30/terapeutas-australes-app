@@ -42,13 +42,45 @@ begin
   end if;
 
   for k in select jsonb_object_keys(datos) loop
-    -- Filtrar columnas que contienen PII, notas libres clínicas o descripciones no financieras
+    -- Filtrar columnas que contienen PII, notas libres clinicas o descripciones no financieras.
+    -- Lista construida contra el esquema real de las 13 tablas auditadas (ver triggers audit_*
+    -- mas abajo), no contra suposiciones -- una version anterior de esta lista omitia
+    -- descripcion_hallazgo (texto clinico de revision_hallazgos) y varios campos de PII de
+    -- pacientes (rut, direccion, comuna, region, contacto de emergencia), dejandolos en texto
+    -- plano en la bitacora pese al proposito declarado de esta funcion.
     if k in (
-      'nombre_completo', 'email', 'telefono', 'direccion', 'identificador_interno',
-      'relato_antecedentes', 'motivo_consulta', 'informacion_canalizada',
-      'observaciones', 'notas_internas', 'sintomas_reportados', 'objetivo_trabajo',
-      'objetivo_revision', 'descripcion_general', 'resultado_cierre',
-      'storage_path', 'foto_url', 'descripcion_cobro', 'referencia_pago'
+      -- pacientes
+      'nombres', 'apellidos', 'rut', 'telefono', 'email', 'direccion', 'comuna', 'region',
+      'ocupacion', 'contacto_emergencia_nombre', 'contacto_emergencia_telefono',
+      'motivo_consulta', 'observaciones_generales',
+      -- consultas
+      'resumen_consulta', 'observaciones_internas',
+      -- evaluaciones
+      'relato_antecedentes', 'sintomas_reportados', 'hechos_clave', 'personas_mencionadas',
+      'fundamento_decision',
+      -- casos
+      'nombre_caso', 'motivo_apertura', 'descripcion_general', 'objetivo_trabajo',
+      'notas_seguimiento', 'resultado_cierre',
+      -- elementos_caso
+      'nombre_elemento', 'vinculo_con_paciente', 'foto_url', 'descripcion_referencia',
+      'antecedentes_relevantes', 'motivo_inclusion',
+      -- revisiones / revision_aspectos / revision_hallazgos
+      'objetivo_revision', 'resumen_general', 'resultado_general', 'proxima_accion',
+      'aspecto_revisado', 'resultado_aspecto', 'motivo_pendiente', 'informacion_canalizada',
+      'descripcion_hallazgo', 'origen_sugerido',
+      -- trabajos y sub-tablas (elementos/sesiones/acciones)
+      'nombre_trabajo', 'descripcion_plan', 'frecuencia_planificada', 'dias_planificados',
+      'objetivo_elemento', 'estado_inicial_resumen', 'estado_final_resumen',
+      'objetivo_sesion', 'estado_previo_resumen', 'acciones_realizadas',
+      'estado_posterior_resumen', 'resultado_sesion', 'estado_previo_elemento',
+      'estado_posterior_elemento', 'resultado_accion',
+      -- cobros / pagos
+      'concepto_cobro', 'descripcion_cobro', 'referencia_pago', 'comprobante_url',
+      'recibido_por',
+      -- fotos_elementos_caso
+      'storage_path', 'nombre_archivo', 'descripcion',
+      -- compartido / generico
+      'observaciones', 'notas_internas', 'identificador_interno', 'nombre_completo'
     ) then
       cleaned := cleaned || jsonb_build_object(k, '[ENMASCARADO]');
     else

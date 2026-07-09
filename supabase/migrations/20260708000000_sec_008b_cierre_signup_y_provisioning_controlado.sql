@@ -2,55 +2,42 @@
 -- Autor: Control de desarrollo
 -- Fecha: 2026-07-08
 
--- Trigger function to automatically provision the internal user profile on auth.users insert
+-- Trigger function to automatically provision the internal user profile on auth.users insert.
+--
+-- SEGURIDAD: rol y activo NUNCA se leen de raw_user_meta_data. Ese campo lo controla
+-- quien llama signUp() desde el cliente (anon key) -- confiar en el para asignar rol
+-- es una escalada de privilegios directa (cualquiera podria auto-asignarse 'admin').
+-- Todo usuario nuevo se provisiona SIEMPRE con el rol menos privilegiado y desactivado;
+-- un admin existente debe promoverlo/activarlo manualmente (update directo a
+-- usuarios_internos, unica via de escritura para esos dos campos).
 create or replace function public.handle_new_auth_user()
 returns trigger as $$
 declare
   meta_nombre text;
-  meta_rol text;
-  meta_activo boolean;
 begin
-  -- Extract display_name, full_name, or fallback to email localpart
+  -- Extract display_name/full_name (dato de presentacion, no privilegio) o fallback a email
   meta_nombre := coalesce(
     new.raw_user_meta_data->>'display_name',
     new.raw_user_meta_data->>'full_name',
     split_part(new.email, '@', 1)
   );
 
-  -- Extract and validate role (fallback to safe 'terapeuta' role)
-  meta_rol := coalesce(
-    new.raw_user_meta_data->>'rol',
-    new.raw_user_meta_data->>'role',
-    'terapeuta'
-  );
-
-  if meta_rol not in ('admin', 'terapeuta', 'finanzas') then
-    meta_rol := 'terapeuta';
-  end if;
-
-  -- Extract active status (default to true)
-  meta_activo := coalesce(
-    (new.raw_user_meta_data->>'activo')::boolean,
-    (new.raw_user_meta_data->>'active')::boolean,
-    true
-  );
-
-  -- Upsert into public.usuarios_internos
+  -- Insert con rol/activo fijos, nunca derivados de metadata del cliente
   insert into public.usuarios_internos (id, email, nombre_completo, rol, activo)
   values (
     new.id,
     new.email,
     meta_nombre,
-    meta_rol,
-    meta_activo
+    'terapeuta',
+    false
   )
   on conflict (id) do update
   set
     email = excluded.email,
     nombre_completo = excluded.nombre_completo,
-    rol = excluded.rol,
-    activo = excluded.activo,
     updated_at = now();
+    -- rol/activo deliberadamente fuera del update: si el registro ya existia
+    -- (un admin ya lo promovio/activo), un re-signup no debe poder revertirlo.
 
   return new;
 end;
