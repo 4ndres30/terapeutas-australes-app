@@ -10,15 +10,17 @@ import './ReferencePolish.css'
 import './ReferenceFinalPass.css'
 
 // Carga diferida de páginas — code splitting por ruta
-const PacientesPage    = lazy(() => import('./pages/PacientesPage'))
-const ConsultasPage    = lazy(() => import('./pages/ConsultasPage'))
-const EvaluacionesPage = lazy(() => import('./pages/EvaluacionesPage'))
-const CasosPage        = lazy(() => import('./pages/CasosPage'))
-const CasoDetallePage  = lazy(() => import('./pages/CasoDetallePage'))
-const FinanzasPage     = lazy(() => import('./pages/FinanzasPage'))
-const AgendaPage       = lazy(() => import('./pages/AgendaPage'))
-const ReportesPage     = lazy(() => import('./pages/ReportesPage'))
-const LoginPage        = lazy(() => import('./pages/LoginPage'))
+const PacientesPage     = lazy(() => import('./pages/PacientesPage'))
+const ConsultasPage     = lazy(() => import('./pages/ConsultasPage'))
+const EvaluacionesPage  = lazy(() => import('./pages/EvaluacionesPage'))
+const CasosPage         = lazy(() => import('./pages/CasosPage'))
+const CasoDetallePage   = lazy(() => import('./pages/CasoDetallePage'))
+const FinanzasPage      = lazy(() => import('./pages/FinanzasPage'))
+const AgendaPage        = lazy(() => import('./pages/AgendaPage'))
+const ReportesPage      = lazy(() => import('./pages/ReportesPage'))
+const LoginPage         = lazy(() => import('./pages/LoginPage'))
+const RecuperarPage     = lazy(() => import('./pages/RecuperarPage'))
+const ResetPasswordPage = lazy(() => import('./pages/ResetPasswordPage'))
 
 type AmbienteApp = 'LOCAL' | 'DEMO' | 'STAGING' | 'PRODUCCION' | 'DESCONOCIDO'
 
@@ -430,6 +432,20 @@ function RouterApp() {
               estadoAuth === 'autorizado'
                 ? <Navigate to={rutaInicial(usuarioInterno)} replace />
                 : <LoginPage estadoAuth={estadoAuth} mensajeAuth={mensajeAuth} session={session} onCerrarSesion={cerrarSesion} />
+            }
+          />
+          <Route
+            path="/recuperar"
+            element={
+              estadoAuth === 'autorizado'
+                ? <Navigate to={rutaInicial(usuarioInterno)} replace />
+                : <RecuperarPage />
+            }
+          />
+          <Route
+            path="/reset-password"
+            element={
+              <ResetPasswordPage />
             }
           />
           <Route element={<RutaProtegidaLayout rolesPermitidos={['admin', 'terapeuta']} />}>

@@ -96,7 +96,7 @@ Este documento es la lista maestra de pendientes. Cada pendiente debe tener un c
 | UI-021 | Bloqueo visual de produccion no habilitada. | Validada local/demo | Alta | UI / UX |
 | UI-022 | Integracion visual minima de fotos dentro de Elementos del caso. | QA-003 local/demo con observacion | Alta | UI / UX / Pulido visual |
 | UI-023 | Navegacion y superficies filtradas por rol. | Integrada por PR #74 / validada post-merge | Alta | UI / UX |
-| UI-024 | Recuperacion de cuenta, MFA y estados Auth no tecnicos. | Pendiente | Alta | UI / UX / Integracion Backend |
+| UI-024 | Recuperacion de cuenta, MFA y estados Auth no tecnicos. | Recuperacion contrasena PR #105 (sin mergear) / MFA pendiente | Alta | UI / UX / Integracion Backend |
 | UI-025 | Integrar AgendaPage con modelo DB de Agenda operativa. | Integrada lectura por PR #44 | Alta | UI / UX / Integracion Backend |
 | UI-025B | Alta y edicion controlada de Agenda operativa interna. | Integrada por PR #45 / QA-008 cerrada local/demo | Alta | UI / UX / Integracion Backend |
 | UI-026 | Selector calendario/horario y duracion estandar de consulta en Agenda interna. | Integrada por PR #48 / QA-008 cerrada local/demo | Alta | UI / UX / Integracion Backend |
@@ -1629,12 +1629,17 @@ Implementar navegacion coherente por rol y revisar superficies visibles dentro d
 
 ### UI-024 - Recuperacion de cuenta, MFA y estados Auth no tecnicos
 
-**Estado:** Ejecutada local/demo con observacion
+**Estado:** Recuperacion de contrasena implementada (PR #105, sin mergear) / MFA no implementado
 **Prioridad:** Alta
 **Responsable:** UI / UX / Integracion Backend
 **Origen:** SEC-008 / SEC-003 / DEC-032
 **Fecha creacion:** 2026-06-30
+**Rama usada:** `feature/recuperacion-y-agendamiento-contrato`
 **Dependencias:** SEC-008, SEC-008B, BE-018, DOC-001, QA-006
+
+**Nota:** el estado anterior de esta ficha ("Ejecutada local/demo con observacion") era un
+error de copy-paste de otra tarea, detectado en `FASE1-BARRIDO-2026-07-08.md` -- UI-024 no
+tenia implementacion real hasta PR #105.
 
 #### Descripcion
 Definir e implementar el flujo visual de recuperacion de cuenta, enrolamiento/verificacion MFA y estados Auth sin exponer detalles tecnicos.

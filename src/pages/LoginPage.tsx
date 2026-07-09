@@ -1,6 +1,7 @@
 import type { FormEvent } from 'react'
 import type { Session } from '@supabase/supabase-js'
 import { useState } from 'react'
+import { Link } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 
 type EstadoAuth = 'cargando' | 'sin_sesion' | 'autorizado' | 'sin_autorizacion' | 'inactivo' | 'error'
@@ -82,6 +83,11 @@ function LoginPage({ estadoAuth, mensajeAuth, session, onCerrarSesion }: LoginPa
             <button type="submit" disabled={enviando || estadoAuth === 'cargando'}>
               {enviando || estadoAuth === 'cargando' ? 'Validando...' : 'Iniciar sesión'}
             </button>
+            <div style={{ marginTop: '1rem', textAlign: 'center' }}>
+              <Link to="/recuperar" style={{ color: '#00ffff', textDecoration: 'none', fontSize: '0.85rem' }}>
+                ¿Olvidaste tu contraseña?
+              </Link>
+            </div>
           </form>
         )}
       </section>
