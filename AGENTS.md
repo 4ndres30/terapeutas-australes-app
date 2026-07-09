@@ -1,5 +1,56 @@
 # AGENTS.md - Terapeutas Australes App
 
+## Alcance de este documento
+
+Este contrato aplica a **cualquier agente de IA que trabaje en este repositorio** -- Codex,
+Claude Code, Gemini CLI, antigravity, o cualquier otro asistente presente o futuro. No son
+reglas exclusivas de una herramienta: el nombre "Codex" que aparece en varias secciones
+refleja el origen historico de este documento, pero las restricciones, niveles de tarea y
+flujos de aprobacion aplican igual sin importar cual asistente los lea. Si tu herramienta
+tiene su propio archivo de instrucciones (`CLAUDE.md`, etc.), ese archivo debe remitir aqui,
+no duplicar ni contradecir estas reglas.
+
+## Coordinacion obligatoria entre multiples agentes en paralelo
+
+**Caso real, no hipotetico:** el 2026-07-08, tres agentes (Codex, antigravity, Claude Code)
+trabajaron sobre este repositorio en paralelo sin coordinarse y abrieron 6 PRs (#104-#109)
+con: dos migraciones con el mismo timestamp elegido de forma independiente, dos PRs
+redefiniendo la misma vista SQL con una dependencia de tabla no declarada entre ellas, dos
+PRs editando el mismo componente React, y un PR con una vulnerabilidad de escalamiento de
+privilegios (signup publico auto-asignando rol admin) que nadie detuvo antes de abrir el PR.
+Ver `docs/control/auditorias/REVISION-6-PRS-PARALELAS-2026-07-08.md` para el detalle completo.
+
+Antes de empezar CUALQUIER tarea, todo agente debe:
+
+1. Correr `gh pr list --state open` y leer que archivos/tablas/vistas/migraciones toca cada
+   PR abierta.
+2. Si la tarea nueva toca el mismo archivo, la misma vista/tabla, o depende de algo que solo
+   existe en una PR abierta sin mergear, **detenerse y declararlo explicitamente** antes de
+   escribir codigo -- no asumir que se puede resolver despues en el merge.
+3. Si dos PRs abiertas ya se solapan, no abrir una tercera que agrave el solapamiento.
+
+## Verificacion de colision de ID (BE-xxx / UI-xxx / SEC-xxx / DEC-xxx / LOG-xxx)
+
+Antes de asignar un ID nuevo a cualquier tarea, buscar primero en
+`docs/control/01_PENDIENTES_PROYECTO.md` y `docs/control/05_DECISIONES_PROYECTO.md` si ese
+numero ya esta ocupado por algo distinto. Esta sesion encontro colisiones reales (`BE-020`,
+`BE-021`, `UI-026`, `UI-027` reasignados por error a temas distintos de los que ya tenian) que
+generaron confusion y trabajo duplicado. Siguiente ID libre real segun la ultima verificacion
+(2026-07-08): `BE-031` en adelante, `UI-032` en adelante (`UI-028` a `UI-031` ya se usaron ese
+mismo dia). Verificar de nuevo antes de confiar en estos numeros si esta leyendo esto mucho
+despues de esa fecha.
+
+## Nivel 3 (Auth/RLS/migraciones/seguridad): aprobacion ANTES de escribir codigo, no despues
+
+Si una tarea toca Auth, RLS, migraciones o cualquier dato sensible, y no existe una entrada
+`DEC-0xx` en `05_DECISIONES_PROYECTO.md` que la apruebe explicitamente para ESE alcance
+puntual, no se implementa codigo/SQL todavia -- se propone el diseno primero y se espera la
+aprobacion. Implementar directamente "porque el criterio de aceptacion decia que estaba
+pendiente" no es aprobacion. El patron correcto (diseno -> revision adversarial o de Control
+-> `DEC-0xx` -> recien ahi codigo) esta documentado en `DEC-041`/`DEC-042`
+(`05_DECISIONES_PROYECTO.md`) para el roadmap de Gemini, y debe replicarse para cualquier otra
+tarea Nivel 3.
+
 ## Rol de Codex
 
 Codex debe actuar como Control de Desarrollo principal cuando opere este repositorio desde Codex escritorio.
