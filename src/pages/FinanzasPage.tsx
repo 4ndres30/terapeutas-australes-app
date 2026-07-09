@@ -7,7 +7,6 @@ import './ClinicalModuleBase.css'
 type UnidadCobrableFinanzas = {
   id_cobro: string
   id_pago: string | null
-  paciente_id: string
   codigo_paciente: string | null
   alias_administrativo_paciente: string | null
   tipo_unidad_cobrable: string | null
@@ -27,12 +26,14 @@ type UnidadCobrableFinanzas = {
   fecha_ultimo_pago: string | null
   metodo_ultimo_pago: string | null
   referencia_pago: string | null
+  observaciones_cobro_administrativas: string | null
+  observaciones_pago_administrativas: string | null
+  nota_conciliacion_pago: string | null
 }
 
 const UNIDAD_COBRABLE_SELECT = [
   'id_cobro',
   'id_pago',
-  'paciente_id',
   'codigo_paciente',
   'alias_administrativo_paciente',
   'tipo_unidad_cobrable',
@@ -52,6 +53,9 @@ const UNIDAD_COBRABLE_SELECT = [
   'fecha_ultimo_pago',
   'metodo_ultimo_pago',
   'referencia_pago',
+  'observaciones_cobro_administrativas',
+  'observaciones_pago_administrativas',
+  'nota_conciliacion_pago',
 ].join(', ')
 
 
@@ -102,6 +106,9 @@ function FinanzasPage() {
         unidad.metodo_ultimo_pago || '',
         unidad.referencia_pago || '',
         unidad.moneda || '',
+        unidad.observaciones_cobro_administrativas || '',
+        unidad.observaciones_pago_administrativas || '',
+        unidad.nota_conciliacion_pago || '',
       ].join(' ')
 
       return normalizarTexto(texto).includes(filtro)
@@ -194,6 +201,11 @@ function FinanzasPage() {
                       <dd>{formatearMoneda(aNumero(unidad.saldo_pendiente))}</dd>
                     </div>
                   </dl>
+                  {unidad.observaciones_cobro_administrativas && (
+                    <div className="clinical-details" style={{ display: 'block', marginTop: '0.5rem', fontSize: '0.85rem', color: 'rgba(255, 255, 255, 0.7)' }}>
+                      <strong>Nota administrativa:</strong> {unidad.observaciones_cobro_administrativas}
+                    </div>
+                  )}
                 </article>
               ))}
             </div>
@@ -240,6 +252,16 @@ function FinanzasPage() {
                       <dd>{unidad.referencia_pago || 'Sin referencia'}</dd>
                     </div>
                   </dl>
+                  {unidad.observaciones_pago_administrativas && (
+                    <div className="clinical-details" style={{ display: 'block', marginTop: '0.5rem', fontSize: '0.85rem', color: 'rgba(255, 255, 255, 0.7)' }}>
+                      <strong>Nota pago:</strong> {unidad.observaciones_pago_administrativas}
+                    </div>
+                  )}
+                  {unidad.nota_conciliacion_pago && (
+                    <div className="clinical-details" style={{ display: 'block', marginTop: '0.25rem', fontSize: '0.85rem', color: 'rgba(255, 255, 255, 0.7)' }}>
+                      <strong>Conciliación:</strong> {unidad.nota_conciliacion_pago}
+                    </div>
+                  )}
                 </article>
               ))}
             </div>
