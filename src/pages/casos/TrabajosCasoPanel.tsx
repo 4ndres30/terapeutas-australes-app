@@ -9,14 +9,84 @@ type TrabajosCasoPanelProps = {
   pacienteId: string
 }
 
-type TipoTrabajo = 'Terapéutico' | 'Energético' | 'Educativo' | 'Preventivo' | 'Seguimiento' | 'Otro'
-type AmbitoTrabajo = 'Individual' | 'Familiar' | 'Grupal' | 'Remoto' | 'Mixto'
-type ModalidadEjecucion = 'Presencial' | 'Telemática' | 'Combinada'
+type TipoTrabajo =
+  | 'Retiro de entidades'
+  | 'Retiro de espíritus trascendidos'
+  | 'Liberación de trabajo energético'
+  | 'Desarme de trabajo energético'
+  | 'Limpieza energética'
+  | 'Ajuste energético'
+  | 'Sello energético'
+  | 'Protección energética'
+  | 'Trabajo sobre vínculo'
+  | 'Trabajo sobre linaje'
+  | 'Trabajo sobre hogar/espacio'
+  | 'Trabajo sobre terreno'
+  | 'Trabajo sobre habitación'
+  | 'Trabajo sobre bloqueo'
+  | 'Integración de cuerpos sutiles'
+  | 'Recuperación de cuerpos sutiles'
+  | 'Liberación de cuerpos sutiles secuestrados'
+  | 'Trabajo sobre trauma localizado'
+  | 'Seguimiento energético'
+  | 'Cierre energético'
+  | 'Mixto'
+  | 'Otro'
+type AmbitoTrabajo =
+  | 'Persona'
+  | 'Familia'
+  | 'Hogar/Espacio'
+  | 'Habitación'
+  | 'Terreno'
+  | 'Negocio/Lugar'
+  | 'Vínculo'
+  | 'Linaje'
+  | 'Entidad/Presencia'
+  | 'Trabajo/Bloqueo'
+  | 'Cuerpos sutiles'
+  | 'Trauma energético'
+  | 'Protección/Sello'
+  | 'Mixto'
+  | 'Otro'
+type ModalidadEjecucion =
+  | 'Trabajo único'
+  | 'Proceso por semanas'
+  | 'Seguimiento posterior'
+  | 'Trabajo por etapas'
+  | 'Trabajo de cierre'
+  | 'Mixto'
 type FaseActual = 'Planificación' | 'Inicio' | 'En curso' | 'Revisión' | 'Cierre'
-type AlcanceTrabajo = 'Puntual' | 'Continuo' | 'Periódico'
-type MetodoPrincipal = 'Consulta' | 'Sesión estructurada' | 'Revisión' | 'Evaluación de avance' | 'Taller' | 'Otro'
+type AlcanceTrabajo =
+  | 'Caso completo'
+  | 'Elementos seleccionados'
+  | 'Grupo familiar'
+  | 'Persona individual'
+  | 'Hogar completo'
+  | 'Habitación específica'
+  | 'Terreno'
+  | 'Seguimiento de hallazgo'
+  | 'Seguimiento de ajuste'
+  | 'Cierre general'
+  | 'Otro'
+type MetodoPrincipal =
+  | 'Radiestesia'
+  | 'Canalización'
+  | 'Radiestesia y canalización'
+  | 'Oración/Decreto'
+  | 'Trabajo energético'
+  | 'Meditación guiada'
+  | 'Mixto'
+  | 'Otro'
 type PrioridadTrabajo = 'Baja' | 'Media' | 'Alta' | 'Urgente'
-type EstadoTrabajo = 'Planificado' | 'Activo' | 'En pausa' | 'Cerrado' | 'Anulado'
+type EstadoTrabajo =
+  | 'Pendiente'
+  | 'En proceso'
+  | 'Pausado'
+  | 'Completado'
+  | 'Completado parcialmente'
+  | 'Requiere seguimiento'
+  | 'Cerrado'
+  | 'Anulado'
 
 type Trabajo = {
   id_trabajo: string
@@ -100,15 +170,15 @@ function hoy(): string {
 function crearFormularioInicial(): FormularioTrabajo {
   return {
     nombre_trabajo: '',
-    tipo_trabajo: 'Terapéutico',
-    ambito_trabajo: 'Individual',
-    modalidad_ejecucion: 'Presencial',
+    tipo_trabajo: 'Retiro de entidades',
+    ambito_trabajo: 'Persona',
+    modalidad_ejecucion: 'Proceso por semanas',
     fase_actual: 'Planificación',
-    alcance_trabajo: 'Continuo',
-    metodo_principal: 'Sesión estructurada',
+    alcance_trabajo: 'Caso completo',
+    metodo_principal: 'Radiestesia y canalización',
     objetivo_trabajo: '',
     prioridad_trabajo: 'Media',
-    estado_trabajo: 'Planificado',
+    estado_trabajo: 'Pendiente',
     fecha_inicio: hoy(),
     fecha_estimada_cierre: '',
     porcentaje_avance_general: 0,
@@ -337,7 +407,30 @@ function TrabajosCasoPanel({ casoId, pacienteId }: TrabajosCasoPanelProps) {
                   value={formulario.tipo_trabajo}
                   onChange={(e) => cambiarCampo('tipo_trabajo', e.target.value as TipoTrabajo)}
                 >
-                  {(['Terapéutico', 'Energético', 'Educativo', 'Preventivo', 'Seguimiento', 'Otro'] as TipoTrabajo[]).map((t) => (
+                  {([
+                    'Retiro de entidades',
+                    'Retiro de espíritus trascendidos',
+                    'Liberación de trabajo energético',
+                    'Desarme de trabajo energético',
+                    'Limpieza energética',
+                    'Ajuste energético',
+                    'Sello energético',
+                    'Protección energética',
+                    'Trabajo sobre vínculo',
+                    'Trabajo sobre linaje',
+                    'Trabajo sobre hogar/espacio',
+                    'Trabajo sobre terreno',
+                    'Trabajo sobre habitación',
+                    'Trabajo sobre bloqueo',
+                    'Integración de cuerpos sutiles',
+                    'Recuperación de cuerpos sutiles',
+                    'Liberación de cuerpos sutiles secuestrados',
+                    'Trabajo sobre trauma localizado',
+                    'Seguimiento energético',
+                    'Cierre energético',
+                    'Mixto',
+                    'Otro',
+                  ] as TipoTrabajo[]).map((t) => (
                     <option key={t} value={t}>{t}</option>
                   ))}
                 </select>
@@ -351,7 +444,23 @@ function TrabajosCasoPanel({ casoId, pacienteId }: TrabajosCasoPanelProps) {
                   value={formulario.ambito_trabajo}
                   onChange={(e) => cambiarCampo('ambito_trabajo', e.target.value as AmbitoTrabajo)}
                 >
-                  {(['Individual', 'Familiar', 'Grupal', 'Remoto', 'Mixto'] as AmbitoTrabajo[]).map((a) => (
+                  {([
+                    'Persona',
+                    'Familia',
+                    'Hogar/Espacio',
+                    'Habitación',
+                    'Terreno',
+                    'Negocio/Lugar',
+                    'Vínculo',
+                    'Linaje',
+                    'Entidad/Presencia',
+                    'Trabajo/Bloqueo',
+                    'Cuerpos sutiles',
+                    'Trauma energético',
+                    'Protección/Sello',
+                    'Mixto',
+                    'Otro',
+                  ] as AmbitoTrabajo[]).map((a) => (
                     <option key={a} value={a}>{a}</option>
                   ))}
                 </select>
@@ -365,7 +474,14 @@ function TrabajosCasoPanel({ casoId, pacienteId }: TrabajosCasoPanelProps) {
                   value={formulario.modalidad_ejecucion}
                   onChange={(e) => cambiarCampo('modalidad_ejecucion', e.target.value as ModalidadEjecucion)}
                 >
-                  {(['Presencial', 'Telemática', 'Combinada'] as ModalidadEjecucion[]).map((m) => (
+                  {([
+                    'Trabajo único',
+                    'Proceso por semanas',
+                    'Seguimiento posterior',
+                    'Trabajo por etapas',
+                    'Trabajo de cierre',
+                    'Mixto',
+                  ] as ModalidadEjecucion[]).map((m) => (
                     <option key={m} value={m}>{m}</option>
                   ))}
                 </select>
@@ -379,7 +495,16 @@ function TrabajosCasoPanel({ casoId, pacienteId }: TrabajosCasoPanelProps) {
                   value={formulario.metodo_principal}
                   onChange={(e) => cambiarCampo('metodo_principal', e.target.value as MetodoPrincipal)}
                 >
-                  {(['Consulta', 'Sesión estructurada', 'Revisión', 'Evaluación de avance', 'Taller', 'Otro'] as MetodoPrincipal[]).map((m) => (
+                  {([
+                    'Radiestesia',
+                    'Canalización',
+                    'Radiestesia y canalización',
+                    'Oración/Decreto',
+                    'Trabajo energético',
+                    'Meditación guiada',
+                    'Mixto',
+                    'Otro',
+                  ] as MetodoPrincipal[]).map((m) => (
                     <option key={m} value={m}>{m}</option>
                   ))}
                 </select>
@@ -393,7 +518,19 @@ function TrabajosCasoPanel({ casoId, pacienteId }: TrabajosCasoPanelProps) {
                   value={formulario.alcance_trabajo}
                   onChange={(e) => cambiarCampo('alcance_trabajo', e.target.value as AlcanceTrabajo)}
                 >
-                  {(['Puntual', 'Continuo', 'Periódico'] as AlcanceTrabajo[]).map((a) => (
+                  {([
+                    'Caso completo',
+                    'Elementos seleccionados',
+                    'Grupo familiar',
+                    'Persona individual',
+                    'Hogar completo',
+                    'Habitación específica',
+                    'Terreno',
+                    'Seguimiento de hallazgo',
+                    'Seguimiento de ajuste',
+                    'Cierre general',
+                    'Otro',
+                  ] as AlcanceTrabajo[]).map((a) => (
                     <option key={a} value={a}>{a}</option>
                   ))}
                 </select>
@@ -435,7 +572,16 @@ function TrabajosCasoPanel({ casoId, pacienteId }: TrabajosCasoPanelProps) {
                   value={formulario.estado_trabajo}
                   onChange={(e) => cambiarCampo('estado_trabajo', e.target.value as EstadoTrabajo)}
                 >
-                  {(['Planificado', 'Activo', 'En pausa', 'Cerrado', 'Anulado'] as EstadoTrabajo[]).map((e) => (
+                  {([
+                    'Pendiente',
+                    'En proceso',
+                    'Pausado',
+                    'Completado',
+                    'Completado parcialmente',
+                    'Requiere seguimiento',
+                    'Cerrado',
+                    'Anulado',
+                  ] as EstadoTrabajo[]).map((e) => (
                     <option key={e} value={e}>{e}</option>
                   ))}
                 </select>
