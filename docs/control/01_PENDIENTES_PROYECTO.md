@@ -120,6 +120,7 @@ Este documento es la lista maestra de pendientes. Cada pendiente debe tener un c
 | UI-044 | ErrorBoundary global por ruta: hoy cualquier error de render desmonta toda la app a pantalla en blanco (confirmado con el bug de colision de queryKey entre paginas). | Integrada local/demo por PR #124 | Alta | UI / UX |
 | BE-031 | Columna de terapeuta responsable en agenda_eventos (hoy solo created_by, que es auditoria, no responsabilidad clinica). Prerrequisito para filtrar "mis pacientes de hoy" en UI-034 con multiples terapeutas. Nivel 3: requiere DEC previa. | Pendiente | Media-alta | Integracion Backend |
 | UI-045 | Formulario plano de edicion de pacientes: todos los campos visibles a la vez, sin pasos ni preview vivo (DEC-044: crear=guiado, editar=plano; validaciones compartidas con el wizard via hook comun). | Integrada local/demo por PR feature/ui-045-edicion-plana-pacientes (draft, pendiente merge Javier) | Alta | UI / UX |
+| UI-046 | Preview adaptativo en wizard de alta de pacientes: panel lateral en desktop, overlay/modal de confirmación al guardar en tablet/mobile (DEC-045). | Integrada local/demo por PR feature/ui-046-preview-adaptativo-wizard (pendiente merge de PR #125 primero) | Alta | UI / UX |
 | DOC-001 | Manual de ambientes. | Documental / pendiente implementacion futura | Alta | Control de desarrollo |
 | DOC-002 | Procedimiento de backup/restauracion. | Documental / pendiente prueba futura | Alta | Control de desarrollo / Integracion Backend |
 | DOC-003 | Politica de carga de datos reales. | Documental / pendiente implementacion futura | Alta | Control de desarrollo |
@@ -1418,6 +1419,38 @@ sigue con wizard intacto.
 Implementado en rama feature/ui-045-edicion-plana-pacientes (LOG-103). Validado en BD local
 (updated_at 2026-07-10 21:07:08 UTC). Wizard de alta intacto con stepper y preview.
 tsc/lint/test/build limpios. PR draft abierto para revision de Javier.
+
+### UI-046 - Preview adaptativo en wizard de alta de pacientes
+
+**Estado:** Integrada local/demo (rama lista, pendiente merge PR #125)
+**Prioridad:** Alta
+**Responsable:** UI / UX
+**Origen:** Instrucción de Javier / DEC-045
+**Fecha creacion:** 2026-07-10
+**Fecha implementacion:** 2026-07-10
+**Rama:** feature/ui-046-preview-adaptativo-wizard
+**LOG:** LOG-104
+**Dependencias:** UI-045 (pendiente merge), DEC-045
+
+#### Descripcion
+
+El wizard de nuevo paciente (`vista === 'nuevo'`) adaptará la visualización del preview y la confirmación según el tamaño de la pantalla:
+- En pantallas de escritorio (`≥ 1025px`), el panel lateral de "Preview vivo" se mantiene visible en tiempo real (comportamiento actual).
+- En pantallas de tabletas y teléfonos (`≤ 1024px`), el panel lateral de preview se oculta. Al presionar el botón de guardar (que se renombra a "Revisar y guardar"), se despliega una ventana de confirmación fullscreen con el resumen del nuevo paciente.
+- La ventana de confirmación presenta dos acciones claras: "Confirmar y guardar" (envía el formulario a Supabase) y "Volver a editar" (cierra la ventana y permite seguir editando).
+
+#### Criterios de aceptacion
+
+- Breakpoint de ocultación responsiva del preview lateral en `1024px`. **OK**
+- Botones adaptativos ("Guardar paciente" en desktop vs "Revisar y guardar" en tablet/mobile). **OK**
+- Ventana de confirmación (overlay fullscreen con scroll y centrado) en móviles/tablets con el resumen completo de datos ingresados y acciones correspondientes. **OK**
+- Envío correcto del formulario (persistencia en base de datos) al confirmar en el modal móvil. **OK**
+- Validación visual en entorno demo local. **OK**
+
+#### Resultado
+
+Implementado en rama feature/ui-046-preview-adaptativo-wizard (LOG-104). Validado localmente con compilación y linter limpios.
+
 
 ### DOC-001 - Manual de ambientes
 
