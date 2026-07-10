@@ -105,6 +105,8 @@ Este documento es la lista maestra de pendientes. Cada pendiente debe tener un c
 | UI-029 | Retirar o conectar campana de notificaciones del topbar (placeholder hardcodeado sin backend). | Integrada (placeholder retirado, App.tsx) | Baja | UI / UX |
 | UI-030 | Extraer hook `useClinicalList` + componentes compartidos (`ClinicalMetrics`/`ClinicalList`/`ClinicalEmpty`) para RevisionesCasoPanel/TrabajosCasoPanel/PagosCasoPanel/ElementosCasoPanel, hoy con andamiaje duplicado. | Pendiente | Media | UI / UX / Integracion Backend |
 | UI-031 | Consolidar `src/lib/queries.ts` (migrar paginas a `QUERY_COLUMNS` o eliminar el archivo, hoy sin consumidores reales fuera de su propio test). | Pendiente | Baja | Integracion Backend |
+| UI-032 | Edicion y anulacion de pacientes ya registrados (hoy solo crear+listar; la matriz SEC-002 asume edicion que nunca se construyo). | Pendiente | Alta | UI / UX / Integracion Backend |
+| UI-033 | Edicion y anulacion de consultas, evaluaciones y casos (ninguna pagina clinica tiene UI de update/anulacion; policies UPDATE/DELETE ya activas en BD sin consumidor). | Pendiente | Alta | UI / UX / Integracion Backend |
 | DOC-001 | Manual de ambientes. | Documental / pendiente implementacion futura | Alta | Control de desarrollo |
 | DOC-002 | Procedimiento de backup/restauracion. | Documental / pendiente prueba futura | Alta | Control de desarrollo / Integracion Backend |
 | DOC-003 | Politica de carga de datos reales. | Documental / pendiente implementacion futura | Alta | Control de desarrollo |
@@ -1202,6 +1204,60 @@ UI-021 define que produccion no habilitada, produccion sin aprobacion explicita 
 #### Observaciones
 
 UI-021 queda implementada localmente como barrera visual en `DashboardShell`. QA-009 valida el bloqueo `PRODUCCION NO HABILITADA` en `5173` usando variables temporales de proceso para simular produccion no habilitada, sin modificar `.env`. Tambien valida la accion `Cerrar sesion`, que redirige a `/login`. No habilita produccion ni sustituye controles server-side. Mantiene fuera `.env`, Supabase remoto, migraciones, API publica, Google, datos reales, fotos reales y pagos reales.
+
+### UI-032 - Edicion y anulacion de pacientes ya registrados
+
+**Estado:** Pendiente
+**Prioridad:** Alta
+**Responsable:** UI / UX / Integracion Backend
+**Origen:** Comprobacion visual 2026-07-09 (Javier) / SEC-002 / BE-021
+**Fecha creacion:** 2026-07-09
+**Dependencias:** BE-021 (politica de anulacion), SEC-002 (matriz de permisos), PR #113 (GRANT DELETE ya activo)
+
+#### Descripcion
+
+`PacientesPage` solo permite crear y listar: no existe ninguna via en la UI para corregir un
+dato mal ingresado (typo en nombre, telefono desactualizado) ni para anular/desactivar un
+paciente. La matriz de permisos SEC-002 declara que admin/terapeuta pueden "crear y editar
+pacientes" — asume una edicion que nunca se construyo, y ninguna tarea UI-xxx previa la cubrio.
+La BD ya esta lista: policies UPDATE existen desde 20260606055000 y el DELETE (gated a
+`es_admin()` + `estado='inactivo'`) quedo activo con PR #113, pero ningun formulario los consume.
+
+#### Criterios de aceptacion preliminares
+
+- Editar los campos de la ficha del paciente reutilizando el wizard/validaciones existentes.
+- Anulacion logica via `estado='inactivo'` (coherente con BE-021), nunca delete fisico desde UI
+  de terapeuta; el delete fisico queda solo admin y solo sobre pacientes ya inactivos.
+- Respetar la politica de duplicados y la sincronizacion de cache TanStack Query (`invalidateQueries`).
+- No tocar Supabase remoto ni datos reales; validar solo con datos sinteticos locales.
+
+### UI-033 - Edicion y anulacion de consultas, evaluaciones y casos
+
+**Estado:** Pendiente
+**Prioridad:** Alta
+**Responsable:** UI / UX / Integracion Backend
+**Origen:** Comprobacion visual 2026-07-09 (Javier) / BE-021
+**Fecha creacion:** 2026-07-09
+**Dependencias:** BE-021, UI-032 (mismo patron de edicion, conviene resolverlo primero en pacientes)
+
+#### Descripcion
+
+Mismo hueco que UI-032 pero en el resto del modulo clinico: `ConsultasPage`,
+`EvaluacionesPage` y `CasosPage` solo crean y listan. Ninguna pagina clinica tiene UI de
+update — el unico `.update()` de todo `src/` esta en `AgendaPage` (2 usos). Los estados de
+anulacion ya existen en los CHECK constraints (`Cancelada`, `Anulada`, `Anulado`) y las
+policies UPDATE/DELETE estan activas en BD, pero desde la UI no hay forma de cambiar el estado
+de un registro ya creado ni de corregir un error de ingreso.
+
+#### Criterios de aceptacion preliminares
+
+- Edicion de campos y cambio de estado (incluyendo anulacion logica) por registro, con los
+  valores exactos de los CHECK constraints reales (leccion de PR #104/#108: valores inventados
+  en el front fallan silenciosamente contra la BD).
+- Confirmacion explicita antes de anular; sin delete fisico desde UI de terapeuta.
+- `invalidateQueries` tras cada mutacion en las paginas ya migradas a TanStack Query.
+- Definir con Control si la edicion de una consulta `Realizada` debe quedar restringida
+  (trazabilidad clinica) antes de implementar.
 
 ### DOC-001 - Manual de ambientes
 
