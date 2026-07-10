@@ -1303,3 +1303,48 @@ Dado que el patron se repite en todo el roadmap (herramientas agregadas sin dato
 ### Observaciones
 
 Bug real encontrado durante la prueba local (no durante la revision de codigo): la primera version de la vista hacia `left join lateral` directo contra `cobros`, y con `security_invoker = true` un rol `terapeuta` nunca ve esas filas (RLS `cobros_select_finanzas` exige `es_finanzas_o_admin()`) — `cobros_vencidos` daba `false` siempre para terapeutas, sin error visible. Solo aparecio probando con un usuario `rol = 'terapeuta'` real, no alcanzaba con leer el SQL. Corregido con la funcion `security definer` de arriba. Mismo patron de aprendizaje que `[[refactor-extract-utilities-jul-2026]]`: la revision de codigo no sustituye la prueba con datos y rol reales.
+
+## DEC-043 - PacientesPage como panel de trabajo diario (registro completo pasa a vista secundaria)
+
+**Estado:** Aprobada
+**Origen:** Comprobacion visual 2026-07-09 / instruccion directa de Javier
+**Fecha:** 2026-07-09
+
+### Decision propuesta
+
+Redisenar `PacientesPage` para que la vista por defecto al entrar sea el **panel del dia**:
+solo los pacientes con cita agendada HOY (via `agenda_eventos`), no el directorio completo.
+El registro completo, el formulario de alta, la edicion y la anulacion pasan a abrirse bajo
+demanda desde una barra de acciones.
+
+### Razon
+
+El directorio completo como pantalla inicial no refleja el flujo de trabajo real de la
+consulta: lo que el terapeuta necesita al abrir Pacientes es a quien atiende hoy. Ademas el
+wizard de alta hoy ocupa media pantalla de forma permanente aunque se use esporadicamente.
+
+### Impacto
+
+- Layout nuevo (de arriba a abajo): metricas / barra de acciones / directorio del dia.
+- Metricas superiores: pacientes activos totales, citas de hoy, atendidas hoy, pendientes de hoy.
+- Barra de acciones: Registro completo · Nuevo paciente (wizard existente, bajo demanda) ·
+  Editar · Anular (UI-032 se entrega integrada en este rediseno).
+- Directorio del dia: pacientes con evento en `agenda_eventos` con `fecha_inicio` = hoy
+  (fecha local Chile, patron `T00:00:00` anti-corrimiento), estados `programado`/`confirmado`/
+  `reagendado`; `completado` cuenta en la metrica "atendidas hoy"; `cancelado`/`no_asistio`
+  quedan fuera. Un paciente con 2+ citas hoy genera una tarjeta por cita. Hora y estado del
+  evento visibles en cada tarjeta.
+- Empty state explicito ("Sin pacientes agendados para hoy") con acceso al registro completo.
+- "Anular" es anulacion logica `estado='inactivo'` (BE-021); nunca delete fisico desde UI de
+  terapeuta.
+
+### Restricciones
+
+- Implementacion en rama propia (`feature/ui-034-panel-diario-pacientes`), sin tocar Supabase
+  remoto ni datos reales; validacion visual con usuarios demo SEC-007B y seed local.
+- Sin cambios de esquema: `agenda_eventos.paciente_id` + `fecha_inicio` ya soportan la consulta.
+
+### Observaciones
+
+Registrada como tarea UI-034 en `01_PENDIENTES_PROYECTO.md`. UI-032 queda absorbida como
+sub-entrega de UI-034 (misma pagina, mismo patron de mutacion).
