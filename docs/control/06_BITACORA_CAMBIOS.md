@@ -4019,3 +4019,18 @@ registro obligatorio en la misma rama — todo PR lleva su LOG-xxx, estado actua
 01_PENDIENTES (tabla y ficha) y regla de veracidad: "Integrada" solo si el codigo respaldo
 esta en ese PR o ya mergeado (el PR #106 documento como integrado codigo de otros PRs sin
 mergear, dejando la documentacion mintiendo sobre main).
+
+## LOG-099 - Enforcement mecanico de las reglas de orden (template de PR + hook serial)
+
+**Fecha:** 2026-07-09
+**Responsable:** Control de desarrollo (sesion Claude) / instruccion explicita de Javier
+
+Complemento mecanico de LOG-098 (las reglas markdown son consejo; esto las vuelve fisicas):
+(1) `.github/pull_request_template.md` con el checklist de AGENTS.md precargado en cada PR
+(flujo serial, colision de ID, DEC para Nivel 3, LOG en la misma rama, veracidad de
+"Integrada", validaciones con evidencia, enums del CHECK real, staging exacto);
+(2) `.claude/settings.json` + `.claude/hooks/pre-pr-serial.sh`: hook PreToolUse que bloquea
+mecanicamente `gh pr create` si existe cualquier PR abierto sin mergear (aplica a sesiones de
+Claude Code desde su proximo inicio). CI de GitHub Actions ya existia y cubre
+typecheck+lint+test+build (`build` corre `tsc -b`), sin cambios. Falta solo la branch
+protection de `main` en GitHub, configuracion manual del dueno del repositorio.
