@@ -4075,7 +4075,7 @@ tsc/lint/build limpios; app verificada operativa en preview con el boundary mont
 
 **Fecha:** 2026-07-10
 **Responsable:** Control de desarrollo (sesion Antigravity / Sonnet)
-**PR:** feature/ui-045-edicion-plana-pacientes (draft)
+**PR:** #125 (`feature/ui-045-edicion-plana-pacientes`, mergeado a `main`)
 **Tarea:** UI-045
 **Decision:** DEC-044
 
@@ -4113,7 +4113,7 @@ PROD-001 sigue bloqueante.
 
 **Fecha:** 2026-07-10
 **Responsable:** Control de desarrollo (sesion Antigravity / Gemini)
-**PR:** feature/ui-046-preview-adaptativo-wizard (pendiente merge de PR #125 primero)
+**PR:** #126 (`feature/ui-046-preview-adaptativo-wizard`, mergeado a `main`)
 **Tarea:** UI-046
 **Decision:** DEC-045
 
@@ -4138,4 +4138,95 @@ Validaciones:
 - `npm run test` limpio.
 - `npm run build` limpio.
 - Validación visual de diseño responsive realizada.
+
+## LOG-105 - CTRL-015 sincronizacion documental post PR #125/#126
+
+**Fecha:** 2026-07-10
+**Rama:** `ctrl-015-sync-docs-post-pr-125-126`
+**Responsable:** Control de desarrollo (Codex)
+
+### Resumen
+Sincronizacion documental posterior a la integracion de PR #125 y PR #126 en `main`.
+Se verifico que PR #125 (`UI-045`, formulario plano de edicion de pacientes) esta mergeado
+desde 2026-07-10 21:20:30 UTC y que PR #126 (`UI-046`, preview adaptativo del wizard de alta)
+esta mergeado desde 2026-07-10 21:34:12 UTC. Se corrigieron textos temporales que aun
+indicaban draft, merge pendiente, rama lista o dependencia de merge del PR anterior.
+
+### Cambios registrados
+- `CTRL-015` queda integrado como sincronizacion documental post PR #125/#126.
+- `UI-045` queda registrada como integrada en `main` por PR #125 / local-demo / pendiente QA-012.
+- `UI-046` queda registrada como integrada en `main` por PR #126 / local-demo / pendiente QA-012.
+- `QA-012` queda recomendada como regresion visual y funcional de `PacientesPage`.
+- `UI-047` queda recomendada para normalizar queryKeys TanStack Query de pacientes y selectores.
+- `UI-048` queda recomendada para compactar la fila de indicadores superiores de `PacientesPage`.
+- `QA-013` queda recomendada para investigar `startup_failure` de GitHub Actions CI.
+- README queda alineado con IMP-002 ya integrado: la derivacion manual hallazgo -> trabajo existe en local/demo.
+
+### Archivos tocados
+- `README.md`
+- `docs/control/00_ESTADO_GENERAL_PROYECTO.md`
+- `docs/control/01_PENDIENTES_PROYECTO.md`
+- `docs/control/04_UI_UX_PULIDO_VISUAL.md`
+- `docs/control/05_DECISIONES_PROYECTO.md`
+- `docs/control/06_BITACORA_CAMBIOS.md`
+- `docs/control/09_NIVELES_DOCUMENTACION.md`
+- `docs/control/auditorias/CTRL-015_SYNC_DOCUMENTAL_POST_PR_125_126.md`
+
+### Restricciones respetadas
+- Solo documentacion.
+- No se modifico `src/`.
+- No se modificaron migraciones.
+- No se toco `.env`, secretos, Supabase remoto, Google/Gemini, Auth/RLS, produccion ni datos reales.
+- `PROD-001` sigue bloqueante.
+
+### Resultado
+Repositorio documentalmente ordenado post PR #125/#126 y listo para ejecutar QA-012 o, en ramas separadas, UI-047/UI-048.
+
+## LOG-106 - Registro documental UI-049/UI-050 para optimizar el shell interno
+
+**Fecha:** 2026-07-10
+**Rama:** `ctrl-015-sync-docs-post-pr-125-126`
+**PR:** #127
+**Responsable:** Control de desarrollo (Codex) / propuesta Javier
+**Tareas:** UI-049, UI-050
+
+### Resumen
+Durante la revision local/demo en navegador, Javier identifico dos superficies globales que
+reducen innecesariamente el espacio de formularios: la sidebar desktop fija y una barra
+superior con una franja amplia sin contenido util. Tras verificar que los IDs estaban libres,
+se registraron dos tareas separadas y coordinadas:
+
+- `UI-049`: sidebar desktop como rail colapsable y accesible, con iconos por defecto,
+  expansion por hover/foco, fijado opcional y preservacion del drawer movil y filtros por rol.
+- `UI-050`: barra superior como encabezado contextual compacto, con contexto de modulo,
+  ambiente, usuario, rol y acciones primarias distribuidos en una fila estable.
+
+### Clasificacion y orden
+Ambas tareas quedan como Nivel 2 por modificar la interaccion y el layout del shell global.
+No requieren DEC mientras conserven rutas, permisos, Auth y comportamiento funcional. Como
+compartiran `App.tsx` y sus capas CSS, se recomienda implementar primero UI-049 y despues
+UI-050, en ramas y PRs seriales separados.
+
+### Documentos sincronizados
+- `00_ESTADO_GENERAL_PROYECTO.md`: propuestas y secuencia agregadas al estado vigente.
+- `01_PENDIENTES_PROYECTO.md`: filas de vista rapida y fichas completas agregadas.
+- `04_UI_UX_PULIDO_VISUAL.md`: criterio visual, accesibilidad y responsive consolidados.
+- `06_BITACORA_CAMBIOS.md`: LOG-106 agregado.
+- `09_NIVELES_DOCUMENTACION.md`: UI-049/UI-050 clasificadas como Nivel 2.
+- `auditorias/CTRL-015_SYNC_DOCUMENTAL_POST_PR_125_126.md`: alcance, riesgos y trazabilidad
+  del PR actualizados.
+
+`README.md` y `05_DECISIONES_PROYECTO.md` fueron revisados y no requieren cambio adicional:
+las tareas siguen como propuestas pendientes y no alteran el contrato operativo ni una
+decision aprobada del proyecto.
+
+### Restricciones respetadas
+- Solo documentacion; sin cambios en `src/` ni CSS.
+- Sin cambios de rutas, Auth/RLS, DB, migraciones, `.env`, Supabase remoto o servicios.
+- Sin produccion ni datos reales; `PROD-001` sigue bloqueante.
+- `supabase/snippets/` permanece fuera de alcance y sin versionar.
+
+### Resultado
+UI-049 y UI-050 quedan registradas de forma consistente, pendientes de implementacion y sin
+presentarlas como integradas. La documentacion conserva el orden serial y el alcance real.
 

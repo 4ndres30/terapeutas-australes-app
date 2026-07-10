@@ -1380,9 +1380,11 @@ espacio sin agregar informacion: los datos ya existen y se ven en los propios ca
 - El alta con wizard y su preview vivo no cambian. Anulacion/reactivar e invalidateQueries
   no cambian.
 
-### Restricciones
+### Observaciones
 
-- Solo local/demo, rama propia, validacion visual con Javier antes de merge.
+Implementada en `main` por PR #125. La decision queda vigente como criterio general para
+futuras ediciones: crear = guiado, editar = plano. La regresion visual/funcional post-merge
+queda recomendada como QA-012.
 
 ## DEC-045 - Preview adaptativo en wizard de alta (panel en desktop, confirmacion en tablet/movil)
 
@@ -1408,3 +1410,8 @@ En dispositivos moviles y tablets, el panel lateral de preview colapsa y se desp
 - Cero impacto en el formulario de edicion plano (UI-045) y en el wizard en desktop.
 
 - Sin cambios de esquema ni RLS.
+
+### Observaciones
+
+Implementada en `main` por PR #126. La regresion visual/funcional post-merge queda
+recomendada como QA-012 junto con UI-034 y UI-045.

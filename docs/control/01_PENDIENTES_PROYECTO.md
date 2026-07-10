@@ -1,7 +1,7 @@
 # Pendientes del proyecto
 
 Fecha de apertura: `2026-06-11`
-Ultima actualizacion: `2026-07-08`
+Ultima actualizacion: `2026-07-10`
 Responsable del documento: Control de desarrollo
 
 Este documento es la lista maestra de pendientes. Cada pendiente debe tener un codigo, un responsable y un estado permitido. Los detalles tecnicos o clinicos pueden vivir en los documentos especializados, pero este archivo debe permitir ver rapidamente que falta.
@@ -26,6 +26,7 @@ Este documento es la lista maestra de pendientes. Cada pendiente debe tener un c
 | CTRL-008 | Registrar decisiones criticas post auditoria. | Integrada | Alta | Control de desarrollo |
 | CTRL-009 | Sincronizacion documental Google Cloud. | Integrada documentalmente / pendiente revision | Alta | Control de desarrollo |
 | CTRL-012 | Cierre documental bloque QA/Finanzas. | Integrada | Alta | Control de desarrollo |
+| CTRL-015 | Sincronizacion documental post PR #125/#126. | Integrada por este PR documental | Alta | Control de desarrollo |
 | PEND-001 | Levantar inventario real del proyecto desde `main`. | Integrada | Alta | Control de desarrollo |
 | PEND-002 | Clasificar pendientes por chat responsable. | Integrada | Alta | Control de desarrollo |
 | QA-001 | Auditoria inicial del proyecto. | Integrada | Alta | Control de desarrollo |
@@ -37,6 +38,8 @@ Este documento es la lista maestra de pendientes. Cada pendiente debe tener un c
 | QA-007 | Checklist pre-migracion cloud. | Checklist documental / pendiente ejecucion futura | Alta | Control de desarrollo / QA |
 | QA-008 | Validacion funcional completa de Agenda interna. | Cerrada post-merge local/demo | Alta | Control de Desarrollo / QA / UI-UX / Integracion Backend |
 | QA-009 | Validacion visual UI-020/UI-021 ambiente. | Cerrada local/demo | Alta | Control de desarrollo / QA / UI-UX |
+| QA-012 | Regresion visual y funcional de PacientesPage. | Pendiente / recomendada como siguiente paso | Alta | Control de desarrollo / QA / UI-UX |
+| QA-013 | Revisar `startup_failure` de GitHub Actions CI. | Pendiente recomendado | Alta | Control de desarrollo / QA / DevOps |
 | API-001 | Disenar API publica segura e integracion Google Workspace. | Diseno documental / pendiente implementacion | Alta | Control de desarrollo / Integracion Backend |
 | DEC-035 | Migracion progresiva a plataforma Google Cloud. | Propuesta documental / pendiente validacion Javier | Alta | Control de desarrollo |
 | BE-001 | Inventariar estructura backend y Supabase local. | Integrada | Alta | Integracion Backend/Estructura |
@@ -117,10 +120,14 @@ Este documento es la lista maestra de pendientes. Cada pendiente debe tener un c
 | UI-041 | Finanzas/Reportes: paginacion o agregacion server-side; PostgREST trunca en 1000 filas (max_rows en config.toml) en silencio y los KPIs calculados client-side saldrian incompletos. | Pendiente | Alta | Integracion Backend |
 | UI-042 | ReportesPage: corregir guarda de pantalla de carga (cargando && !rolActivo deja de bloquear apenas se setea el rol y muestra estados vacios enganosos antes de que lleguen los datos). | Integrada local/demo por PR #123 | Media | UI / UX |
 | UI-043 | ReportesPage: eliminar re-resolucion de rol (rolesValidos/esRolUsuario/obtenerRolActivo duplican AuthContext byte a byte y agregan 2 llamadas de red redundantes por carga). | Pendiente | Media | UI / UX |
-| UI-044 | ErrorBoundary global por ruta: hoy cualquier error de render desmonta toda la app a pantalla en blanco (confirmado con el bug de colision de queryKey entre paginas). | Integrada local/demo por PR #124 | Alta | UI / UX |
+| UI-044 | ErrorBoundary global por ruta: evita pantalla blanca ante errores de render. | Integrada por PR #124 / pendiente regresion QA-012 | Alta | UI / UX |
 | BE-031 | Columna de terapeuta responsable en agenda_eventos (hoy solo created_by, que es auditoria, no responsabilidad clinica). Prerrequisito para filtrar "mis pacientes de hoy" en UI-034 con multiples terapeutas. Nivel 3: requiere DEC previa. | Pendiente | Media-alta | Integracion Backend |
-| UI-045 | Formulario plano de edicion de pacientes: todos los campos visibles a la vez, sin pasos ni preview vivo (DEC-044: crear=guiado, editar=plano; validaciones compartidas con el wizard via hook comun). | Integrada local/demo por PR feature/ui-045-edicion-plana-pacientes (draft, pendiente merge Javier) | Alta | UI / UX |
-| UI-046 | Preview adaptativo en wizard de alta de pacientes: panel lateral en desktop, overlay/modal de confirmación al guardar en tablet/mobile (DEC-045). | Integrada local/demo por PR feature/ui-046-preview-adaptativo-wizard (pendiente merge de PR #125 primero) | Alta | UI / UX |
+| UI-045 | Formulario plano de edicion de pacientes: todos los campos visibles a la vez, sin pasos ni preview vivo (DEC-044: crear=guiado, editar=plano; validaciones compartidas con el wizard via hook comun). | Integrada en main por PR #125 / local-demo / pendiente QA-012 | Alta | UI / UX |
+| UI-046 | Preview adaptativo en wizard de alta de pacientes: panel lateral en desktop, overlay/modal de confirmacion al guardar en tablet/mobile (DEC-045). | Integrada en main por PR #126 / local-demo / pendiente QA-012 | Alta | UI / UX |
+| UI-047 | Normalizacion de queryKeys TanStack Query para pacientes y selectores. | Pendiente recomendado | Alta | UI / UX / Integracion Backend |
+| UI-048 | Compactar fila de indicadores superiores de PacientesPage manteniendo una sola linea desktop. | Pendiente recomendado | Media-alta | UI / UX / Pulido visual |
+| UI-049 | Convertir la sidebar desktop en rail colapsable: iconos por defecto, expansion por hover/foco y fijado opcional, conservando drawer movil y navegacion por rol. | Pendiente recomendado | Media-alta | UI / UX / Pulido visual |
+| UI-050 | Redisenar la barra superior como encabezado contextual compacto, sin franja vacia y preservando ambiente, usuario y acciones del modulo. | Pendiente recomendado | Media-alta | UI / UX / Pulido visual |
 | DOC-001 | Manual de ambientes. | Documental / pendiente implementacion futura | Alta | Control de desarrollo |
 | DOC-002 | Procedimiento de backup/restauracion. | Documental / pendiente prueba futura | Alta | Control de desarrollo / Integracion Backend |
 | DOC-003 | Politica de carga de datos reales. | Documental / pendiente implementacion futura | Alta | Control de desarrollo |
@@ -223,6 +230,25 @@ El bloque QA/Finanzas queda ordenado con QA-006D, QA-006E, BE-023 y BE-025 integ
 
 La siguiente tarea recomendada queda como `QA-006F - Validacion RLS/Storage local por rol`, en bloque separado, sin remoto, sin `supabase db push`, sin migraciones nuevas y sin datos reales.
 
+### CTRL-015 - Sincronizacion documental post PR #125/#126
+
+**Estado:** Integrada por este PR documental
+**Prioridad:** Alta
+**Responsable:** Control de desarrollo
+**Origen:** Control de Desarrollo V3 / verificacion post-merge PR #125 y PR #126
+**Fecha creacion:** 2026-07-10
+**Rama usada:** `ctrl-015-sync-docs-post-pr-125-126`
+**Informe:** `docs/control/auditorias/CTRL-015_SYNC_DOCUMENTAL_POST_PR_125_126.md`
+**Dependencias:** UI-034, UI-045, UI-046, DEC-044, DEC-045, LOG-103, LOG-104, PROD-001
+
+#### Descripcion
+Sincronizar la documentacion de control despues de integrar PR #125 y PR #126 en `main`, retirando referencias temporales a draft, merge pendiente o dependencia de PR anterior para UI-045/UI-046.
+
+#### Resultado
+UI-045 queda registrada como integrada en `main` por PR #125 y UI-046 como integrada en `main` por PR #126. Se registra QA-012 como siguiente regresion visual/funcional recomendada para `PacientesPage`, UI-047 como pendiente recomendado para normalizar queryKeys TanStack Query relacionados con pacientes y selectores, UI-048 como ajuste visual recomendado para compactar la fila superior de indicadores, UI-049 para recuperar ancho util mediante una sidebar desktop colapsable y UI-050 para recuperar alto util mediante un encabezado contextual compacto.
+
+No modifica codigo funcional, migraciones, Auth/RLS, `.env`, Supabase remoto, Google/Gemini, produccion ni datos reales.
+
 ### QA-006F - Validacion RLS/Storage local por rol
 
 **Estado:** Ejecutada local/demo
@@ -323,6 +349,65 @@ Definir checklist previo a cualquier implementacion o despliegue real en Google 
 
 #### Resultado
 Checklist documental. No habilita produccion mientras PROD-001 siga abierto.
+
+### QA-012 - Regresion visual y funcional de PacientesPage
+
+**Estado:** Pendiente / recomendada como siguiente paso
+**Prioridad:** Alta
+**Responsable:** Control de desarrollo / QA / UI-UX
+**Origen:** CTRL-015 / post-merge PR #118, #125 y #126
+**Fecha creacion:** 2026-07-10
+**Dependencias:** UI-034, UI-045, UI-046, UI-044, PROD-001
+
+#### Descripcion
+Ejecutar una regresion visual y funcional local/demo de `PacientesPage` despues de integrar el panel diario, la edicion plana y el preview adaptativo del wizard de alta.
+
+#### Alcance minimo
+
+- Panel diario de pacientes.
+- Registro completo.
+- Alta de paciente desktop.
+- Alta de paciente tablet/mobile.
+- Overlay de confirmacion mobile/tablet.
+- Edicion plana.
+- Guardar cambios.
+- Cancelar edicion.
+- Anular paciente.
+- Reactivar paciente.
+- Sin errores de consola.
+- Sin pantalla blanca.
+- Sin overflow horizontal.
+- Densidad visual de indicadores superiores consistente y sin uso excesivo de alto.
+- Sin regresion del wizard de alta.
+- Sin regresion del formulario plano de edicion.
+
+#### Restricciones
+
+Solo local/demo con datos ficticios. No habilita produccion, datos reales, fotos reales, pagos reales, Supabase remoto, Google/Gemini ni cambios de esquema.
+
+### QA-013 - Revisar `startup_failure` de GitHub Actions CI
+
+**Estado:** Pendiente recomendado
+**Prioridad:** Alta
+**Responsable:** Control de desarrollo / QA / DevOps
+**Origen:** CTRL-015 / revision GitHub Actions post PR #125/#126
+**Fecha creacion:** 2026-07-10
+**Dependencias:** BLOQUE-4-TEST, DEC-039, LOG-099
+
+#### Descripcion
+Investigar por que las corridas recientes de GitHub Actions aparecen con conclusion
+`startup_failure`, incluyendo corridas sobre `main` posteriores a PR #125 y PR #126.
+
+#### Criterios de aceptacion propuestos
+
+- Identificar si el fallo corresponde a workflow, permisos, runner, evento, branch protection
+  o configuracion de repositorio.
+- Confirmar si afecta checks requeridos antes de merge.
+- Mantener separada cualquier correccion de workflow en una rama propia.
+- No mezclar con QA-012, UI-047, UI-048, UI-049, UI-050 ni features funcionales.
+
+#### Resultado
+Pendiente recomendado. No se corrige en CTRL-015.
 
 ### PEND-001 - Levantar inventario real del proyecto desde main
 
@@ -1369,10 +1454,10 @@ AuthContext ya resolvio — 2 llamadas de red redundantes por carga, y probable 
 `setTimeout(...,0)`. Usar `useAuth().usuarioInterno.rol` directo.
 
 #### UI-044 - ErrorBoundary global (Alta)
-No existe ningun ErrorBoundary en el arbol (App.tsx/main.tsx): cualquier excepcion de render
-desmonta la app completa a pantalla en blanco. No es teorico: la colision de queryKey
-`['pacientes']` entre paginas (FASE1, hallazgo alta) produce exactamente ese crash al navegar
-entre modulos. Agregar boundary por ruta con mensaje de recuperacion + boton reintentar.
+Cubierta por PR #124. La app ya cuenta con ErrorBoundary global para evitar pantalla blanca
+ante errores de render y mostrar una pantalla de recuperacion. El riesgo funcional de fondo
+detectado durante FASE1, la normalizacion de queryKeys TanStack Query relacionadas con
+pacientes y selectores, queda separado como UI-047 para no mezclarlo con esta sincronizacion.
 
 #### BE-031 - Terapeuta responsable en agenda_eventos (Media-alta, Nivel 3)
 `agenda_eventos` no tiene columna de profesional responsable; `created_by` es auditoria
@@ -1383,17 +1468,19 @@ esquema + RLS: **Nivel 3, requiere DEC-0xx aprobada antes de implementar** (patr
 
 **Ya cubiertos por tareas existentes, no se duplican:** edicion/anulacion de consultas/
 evaluaciones/casos = UI-033; gate clinico del detalle de caso = UI-010 (decision de producto
-pendiente); MFA = UI-024; colision de queryKey y casts `as unknown as` = FASE1/UI-028.
+pendiente); MFA = UI-024; casts `as unknown as` = UI-028; queryKeys de pacientes/selectores =
+UI-047.
 
 ### UI-045 - Formulario plano de edicion de pacientes
 
-**Estado:** Integrada local/demo (draft pendiente merge Javier)
+**Estado:** Integrada en main por PR #125 / local-demo / pendiente QA-012
 **Prioridad:** Alta
 **Responsable:** UI / UX
 **Origen:** Observacion de Javier sobre UI-034 en uso / DEC-044
 **Fecha creacion:** 2026-07-09
 **Fecha implementacion:** 2026-07-10
 **Rama:** feature/ui-045-edicion-plana-pacientes
+**PR:** #125
 **LOG:** LOG-103
 **Dependencias:** UI-034 (integrada), DEC-044
 
@@ -1412,25 +1499,28 @@ sigue con wizard intacto.
 - Sin preview en edicion; el preview del alta no se toca. **OK**
 - invalidateQueries y anulacion/reactivar sin cambios. **OK**
 - Criterio DEC-044 (crear=guiado, editar=plano) queda como patron para UI-033. **Documentado**
-- Validacion visual con Javier (ambiente demo) antes de merge. **Pendiente merge**
+- Validacion de regresion visual/funcional post-merge. **Pendiente QA-012**
 
 #### Resultado
 
-Implementado en rama feature/ui-045-edicion-plana-pacientes (LOG-103). Validado en BD local
+Integrado en `main` por PR #125 (merge 2026-07-10 21:20:30 UTC). Implementado originalmente
+en rama `feature/ui-045-edicion-plana-pacientes` (LOG-103). Validado en BD local
 (updated_at 2026-07-10 21:07:08 UTC). Wizard de alta intacto con stepper y preview.
-tsc/lint/test/build limpios. PR draft abierto para revision de Javier.
+tsc/lint/test/build limpios en la implementacion. Queda recomendada QA-012 para regresion
+visual y funcional post-merge.
 
 ### UI-046 - Preview adaptativo en wizard de alta de pacientes
 
-**Estado:** Integrada local/demo (rama lista, pendiente merge PR #125)
+**Estado:** Integrada en main por PR #126 / local-demo / pendiente QA-012
 **Prioridad:** Alta
 **Responsable:** UI / UX
 **Origen:** Instrucción de Javier / DEC-045
 **Fecha creacion:** 2026-07-10
 **Fecha implementacion:** 2026-07-10
 **Rama:** feature/ui-046-preview-adaptativo-wizard
+**PR:** #126
 **LOG:** LOG-104
-**Dependencias:** UI-045 (pendiente merge), DEC-045
+**Dependencias:** UI-045 (integrada por PR #125), DEC-045
 
 #### Descripcion
 
@@ -1449,7 +1539,149 @@ El wizard de nuevo paciente (`vista === 'nuevo'`) adaptará la visualización de
 
 #### Resultado
 
-Implementado en rama feature/ui-046-preview-adaptativo-wizard (LOG-104). Validado localmente con compilación y linter limpios.
+Integrado en `main` por PR #126 (merge 2026-07-10 21:34:12 UTC). Implementado originalmente
+en rama `feature/ui-046-preview-adaptativo-wizard` (LOG-104). Validado localmente con
+compilacion, lint, tests y build limpios en la implementacion. Queda recomendada QA-012 para
+regresion visual y funcional post-merge.
+
+### UI-047 - Normalizacion de queryKeys TanStack Query para pacientes y selectores
+
+**Estado:** Pendiente recomendado
+**Prioridad:** Alta
+**Responsable:** UI / UX / Integracion Backend
+**Origen:** CTRL-015 / riesgo funcional detectado en FASE1 y revisado post PR #125/#126
+**Fecha creacion:** 2026-07-10
+**Dependencias:** UI-044, UI-045, UI-046, QA-012
+
+#### Descripcion
+Normalizar las queryKeys de TanStack Query usadas para pacientes y selectores derivados para
+evitar colisiones de cache entre paginas que consumen la misma entidad con usos distintos.
+La revision post PR #125/#126 confirma que `ConsultasPage`, `EvaluacionesPage` y
+`PacientesPage` aun usan `queryKey: ['pacientes']`.
+
+#### Criterios de aceptacion propuestos
+
+- Definir nombres de queryKey estables y especificos por superficie o selector.
+- Evitar romper invalidateQueries existentes en `PacientesPage`.
+- Incluir prueba o verificacion visual de navegacion entre Pacientes, Consultas y Evaluaciones.
+- No mezclar con QA-012, UI-048, UI-049, UI-050 ni con nuevas features funcionales.
+
+#### Resultado
+Pendiente recomendado. No se implementa en CTRL-015.
+
+### UI-048 - Compactar fila de indicadores superiores de PacientesPage
+
+**Estado:** Pendiente recomendado
+**Prioridad:** Media-alta
+**Responsable:** UI / UX / Pulido visual
+**Origen:** Observacion visual de Javier durante revision local/demo de `PacientesPage`
+**Fecha creacion:** 2026-07-10
+**Dependencias:** UI-034, UI-045, UI-046, QA-012
+
+#### Descripcion
+Reducir el peso visual de los indicadores superiores de `PacientesPage`. La fila actual se
+percibe demasiado alta y poco armoniosa para el panel diario: los indicadores deben seguir
+en una sola linea en desktop, pero ocupar menos alto y menos espacio visual.
+
+#### Criterios de aceptacion propuestos
+
+- Mantener los indicadores superiores en una sola linea en desktop.
+- Reducir alto visual de la fila y tarjetas mediante ajustes de padding, min-height, gap,
+  tamano de iconos y jerarquia tipografica.
+- Conservar lectura rapida de metricas, etiquetas y estados.
+- Evitar overflow horizontal y validar responsive en desktop, tablet y mobile.
+- Mantener su implementacion separada de UI-049 y UI-050 para aislar la regresion visual.
+- No modificar logica de metricas, datos, queries, Auth/RLS, DB, migraciones ni servicios.
+
+#### Resultado
+Pendiente recomendado. Solo se registra documentalmente en CTRL-015; no se implementa CSS ni
+codigo funcional en esta rama.
+
+### UI-049 - Sidebar desktop como rail colapsable y accesible
+
+**Estado:** Pendiente recomendado
+**Prioridad:** Media-alta
+**Responsable:** UI / UX / Pulido visual
+**Origen:** Observacion visual de Javier durante revision local/demo del shell interno
+**Fecha creacion:** 2026-07-10
+**Dependencias:** UI-023, UI-027
+**Nivel documental:** Nivel 2
+
+#### Descripcion
+Recuperar ancho util para formularios y paneles reemplazando la sidebar desktop fija de
+aproximadamente 240 px por un rail colapsado que muestre iconos. Al interactuar con la
+navegacion debe expandirse para mostrar las etiquetas, sin alterar el drawer movil ya
+integrado por UI-027 ni el filtrado de modulos por rol de UI-023.
+
+#### Criterios de aceptacion propuestos
+
+- Aplicar el rail solo en desktop (`> 1080px`); en tablet/mobile conservar el drawer lateral,
+  backdrop y cierres por boton, enlace y `Escape` de UI-027.
+- Usar un ancho colapsado estable cercano a 72 px, con iconos centrados y estado activo
+  inequívoco; las etiquetas deben ocultarse sin quedar cortadas ni reservar espacio.
+- Expandir con puntero y con `:focus-within` o mecanismo equivalente para teclado. Incorporar
+  un control de fijado o alternativa accesible que permita mantener la barra expandida.
+- Evitar saltos del contenido principal durante la expansion temporal; la expansion por
+  hover/foco debe superponerse de forma controlada y el modo fijado puede reservar ancho.
+- Mostrar nombre accesible y tooltip para cada accion cuando el rail este colapsado.
+- Adaptar marca, mensaje institucional, version/estado y cierre de sesion al modo compacto,
+  sin solapamientos ni perdida de acciones esenciales.
+- Respetar `prefers-reduced-motion`, conservar el orden de foco y mantener el filtrado por rol.
+- Validar Inicio, Pacientes, Consultas, Evaluaciones, Casos, Agenda, Finanzas/Pagos, Reportes
+  y Configuracion con los roles demo que correspondan, sin overflow horizontal.
+- No modificar rutas, permisos, Auth/RLS, DB, migraciones, datos, servicios ni produccion.
+
+#### Orden recomendado
+Implementar y validar UI-049 antes de UI-050 porque ambas tareas modificaran el shell global,
+`App.tsx` y sus capas CSS. Deben ir en ramas y PRs seriales separados.
+
+#### Resultado
+Pendiente recomendado. Solo se registra documentalmente en CTRL-015; no se implementa codigo
+ni CSS en esta rama.
+
+### UI-050 - Barra superior como encabezado contextual compacto
+
+**Estado:** Pendiente recomendado
+**Prioridad:** Media-alta
+**Responsable:** UI / UX / Pulido visual
+**Origen:** Observacion visual de Javier durante revision local/demo del shell interno
+**Fecha creacion:** 2026-07-10
+**Dependencias:** UI-020, UI-021, UI-023, UI-027, UI-029, UI-049
+**Nivel documental:** Nivel 2
+
+#### Descripcion
+Eliminar la franja superior vacia o sobredimensionada del shell y convertirla en un
+encabezado contextual compacto. Debe aprovechar el espacio para identificar el modulo y
+acercar sus acciones principales, preservando el indicador de ambiente, la identidad del
+usuario y el rol visible.
+
+#### Criterios de aceptacion propuestos
+
+- Mantener una altura desktop estable entre 56 y 72 px y evitar que la fila del grid se
+  estire para ocupar espacio vertical disponible.
+- Mostrar a la izquierda el contexto real de la ruta (modulo, titulo breve o breadcrumb) y
+  evitar duplicar un encabezado equivalente dentro de la pagina.
+- Mantener a la derecha `IndicadorAmbiente`, avatar, nombre y rol; UI-020/UI-021 no pueden
+  eliminarse ni perder visibilidad por el rediseno.
+- Acercar las acciones primarias del modulo al encabezado cuando corresponda, sin cambiar su
+  comportamiento ni inventar acciones no existentes.
+- En tablet/mobile conservar el boton del drawer, un titulo compacto y los controles de
+  ambiente/usuario sin superposiciones, recortes ni overflow horizontal.
+- Mantener contexto correcto al navegar por todas las rutas protegidas y respetar las
+  superficies visibles para cada rol.
+- Validar desktop, tablet y mobile en las rutas principales, incluyendo formularios largos,
+  estados vacios y contenido con scroll.
+- No modificar logica clinica, datos, queries, rutas, Auth/RLS, DB, migraciones, servicios ni
+  produccion.
+
+#### Decision documental
+No se crea una DEC en esta etapa: UI-050 registra una propuesta Nivel 2 pendiente. La
+implementacion debe definir el contrato de contexto por ruta dentro de su propio alcance y
+solo requeriria una DEC nueva si intentara cambiar navegacion, permisos o reglas funcionales.
+
+#### Resultado
+Pendiente recomendado. Solo se registra documentalmente en CTRL-015; no se implementa codigo
+ni CSS en esta rama.
 
 
 ### DOC-001 - Manual de ambientes

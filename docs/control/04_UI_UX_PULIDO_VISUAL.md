@@ -3,7 +3,7 @@
 Responsable: UI / UX / Pulido visual
 Estado del documento: En analisis
 Fecha creacion: `2026-06-11`
-Ultima actualizacion: `2026-07-02`
+Ultima actualizacion: `2026-07-10`
 
 Este documento controla tareas de experiencia de usuario, formularios, responsive y pulido visual. El objetivo es que la aplicacion sea clara, sobria, profesional y facil de usar para el flujo terapeutico.
 
@@ -62,6 +62,75 @@ Regla vigente:
 
 - No se debe crear trabajo automaticamente desde un hallazgo.
 - No se deben crear cobros, sesiones ni acciones automaticamente desde el flujo de hallazgos.
+
+## Estado post UI-034, UI-045 y UI-046
+
+`PacientesPage` quedo integrada como panel de trabajo diario por PR #118, con registro
+completo y alta bajo demanda. La edicion de pacientes queda integrada por PR #125 como
+formulario plano segun DEC-044, sin pasos ni preview vivo. El wizard de alta queda integrado
+por PR #126 con preview adaptativo segun DEC-045: panel lateral en desktop y confirmacion
+fullscreen en tablet/mobile.
+
+Siguiente paso recomendado: `QA-012 - Regresion visual y funcional de PacientesPage`, cubriendo
+panel diario, registro completo, alta desktop, alta tablet/mobile, overlay de confirmacion,
+edicion plana, guardar/cancelar, anulacion, reactivacion, consola limpia, sin pantalla blanca,
+sin overflow horizontal y sin regresiones del wizard o del formulario plano.
+
+Riesgo tecnico relacionado: `UI-047 - Normalizacion de queryKeys TanStack Query para pacientes
+y selectores`, recomendado en tarea separada. No se implementa dentro de la sincronizacion
+CTRL-015.
+
+Hallazgo visual adicional registrado por Javier durante revision en navegador:
+`UI-048 - Compactar fila de indicadores superiores de PacientesPage`. Los indicadores deben
+mantenerse en una sola linea en desktop, pero con una fila mas estrecha y armoniosa mediante
+ajustes de densidad visual. No se implementa dentro de CTRL-015.
+
+Hallazgos del shell global registrados en la misma revision:
+
+- `UI-049 - Sidebar desktop como rail colapsable y accesible`: recuperar ancho util mostrando
+  iconos por defecto y etiquetas al pasar el puntero o enfocar la navegacion, con opcion de
+  fijado y sin reemplazar el drawer responsive de UI-027.
+- `UI-050 - Barra superior como encabezado contextual compacto`: eliminar la franja vacia,
+  reunir contexto del modulo, ambiente e identidad de usuario en una fila estable y acercar
+  acciones primarias sin duplicar encabezados.
+
+Ambas son propuestas Nivel 2 pendientes. Por compartir el shell global deben implementarse
+en secuencia: primero UI-049 y, una vez validada, UI-050. No se implementan en CTRL-015.
+
+## UI-049 - Sidebar desktop como rail colapsable y accesible
+
+**Estado:** Pendiente recomendado
+**Prioridad:** Media-alta
+**Nivel documental:** Nivel 2
+
+La solucion recomendada mantiene el drawer actual en `<= 1080px` y usa un rail de iconos en
+desktop. La expansion temporal responde a hover y foco de teclado sin desplazar el formulario;
+un control de fijado permite reservar el ancho expandido cuando el usuario lo prefiera.
+
+El modo colapsado debe conservar item activo, etiquetas accesibles/tooltips, navegacion por
+teclado y filtrado por rol. Marca, mensaje institucional, estado/version y cierre de sesion
+deben disponer de una variante compacta coherente, sin textos recortados ni acciones ocultas.
+
+Validacion minima futura: rutas principales, roles admin/terapeuta/finanzas, desktop y
+transicion al drawer responsive, sin overflow, solapamientos ni saltos del contenido.
+
+## UI-050 - Barra superior como encabezado contextual compacto
+
+**Estado:** Pendiente recomendado
+**Prioridad:** Media-alta
+**Nivel documental:** Nivel 2
+
+La solucion recomendada reemplaza la banda superior desaprovechada por una fila de 56-72 px:
+contexto real del modulo a la izquierda; ambiente, usuario y rol a la derecha; acciones
+primarias cercanas al titulo cuando corresponda. Debe evitar duplicar el encabezado de cada
+pagina y evitar que el track del grid se estire verticalmente.
+
+`IndicadorAmbiente` y el bloqueo visual de produccion de UI-020/UI-021 son controles de
+seguridad operativa y se conservan. En tablet/mobile tambien se mantiene el boton del drawer
+de UI-027, con titulo y controles compactos sin recortes ni superposiciones.
+
+UI-050 se implementa despues de UI-049 y en PR propio. No requiere DEC mientras conserve
+rutas, permisos y comportamiento; cualquier cambio de esas reglas debe volver a Control.
 
 ## UI-001 - Auditar pantallas principales y pulido visual
 
