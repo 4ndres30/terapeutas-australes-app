@@ -586,3 +586,20 @@ Se integra una primera experiencia visual dentro de `ElementosCasoPanel` para ca
 ### Informe relacionado
 
 `docs/control/auditorias/BE-022_UI-022_FOTOS_ELEMENTOS_CASO.md`
+
+## UI-034 - PacientesPage como panel de trabajo diario (especificacion visual)
+
+Aprobada por DEC-043 (2026-07-09). Layout de arriba a abajo:
+
+1. **Metricas superiores** (patron `clinical-metric-card` ya usado en paneles de caso):
+   pacientes activos totales, citas de hoy, atendidas hoy, pendientes de hoy.
+2. **Barra de acciones** entre metricas y directorio, 4 botones: `Registro completo`
+   (vista secundaria con todos los pacientes: el directorio actual), `Nuevo paciente`
+   (abre el wizard existente bajo demanda, deja de estar fijo en pantalla), `Editar` y
+   `Anular` (anulacion logica, BE-021; etiqueta "Anular", nunca "Borrar").
+3. **Directorio del dia** (vista por defecto al entrar): tarjetas de pacientes con cita HOY
+   segun `agenda_eventos`, mostrando hora y estado del evento. Una tarjeta por cita (un
+   paciente con 2+ citas aparece 2+ veces). Empty state: "Sin pacientes agendados para hoy"
+   con acceso directo al registro completo.
+
+Detalle completo y criterios en la ficha UI-034 de `01_PENDIENTES_PROYECTO.md`.

@@ -105,8 +105,9 @@ Este documento es la lista maestra de pendientes. Cada pendiente debe tener un c
 | UI-029 | Retirar o conectar campana de notificaciones del topbar (placeholder hardcodeado sin backend). | Integrada (placeholder retirado, App.tsx) | Baja | UI / UX |
 | UI-030 | Extraer hook `useClinicalList` + componentes compartidos (`ClinicalMetrics`/`ClinicalList`/`ClinicalEmpty`) para RevisionesCasoPanel/TrabajosCasoPanel/PagosCasoPanel/ElementosCasoPanel, hoy con andamiaje duplicado. | Pendiente | Media | UI / UX / Integracion Backend |
 | UI-031 | Consolidar `src/lib/queries.ts` (migrar paginas a `QUERY_COLUMNS` o eliminar el archivo, hoy sin consumidores reales fuera de su propio test). | Pendiente | Baja | Integracion Backend |
-| UI-032 | Edicion y anulacion de pacientes ya registrados (hoy solo crear+listar; la matriz SEC-002 asume edicion que nunca se construyo). | Pendiente | Alta | UI / UX / Integracion Backend |
+| UI-032 | Edicion y anulacion de pacientes ya registrados (hoy solo crear+listar; la matriz SEC-002 asume edicion que nunca se construyo). | Absorbida por UI-034 (DEC-043) | Alta | UI / UX / Integracion Backend |
 | UI-033 | Edicion y anulacion de consultas, evaluaciones y casos (ninguna pagina clinica tiene UI de update/anulacion; policies UPDATE/DELETE ya activas en BD sin consumidor). | Pendiente | Alta | UI / UX / Integracion Backend |
+| UI-034 | Redisenar PacientesPage como panel de trabajo diario: metricas arriba, barra de acciones (registro completo / nuevo / editar / anular), directorio del dia con citas de hoy desde agenda_eventos. Absorbe UI-032. | Aprobada (DEC-043) / pendiente implementacion | Alta | UI / UX / Integracion Backend |
 | DOC-001 | Manual de ambientes. | Documental / pendiente implementacion futura | Alta | Control de desarrollo |
 | DOC-002 | Procedimiento de backup/restauracion. | Documental / pendiente prueba futura | Alta | Control de desarrollo / Integracion Backend |
 | DOC-003 | Politica de carga de datos reales. | Documental / pendiente implementacion futura | Alta | Control de desarrollo |
@@ -1207,7 +1208,7 @@ UI-021 queda implementada localmente como barrera visual en `DashboardShell`. QA
 
 ### UI-032 - Edicion y anulacion de pacientes ya registrados
 
-**Estado:** Pendiente
+**Estado:** Absorbida por UI-034 (DEC-043) — se entrega como parte del rediseno del panel diario
 **Prioridad:** Alta
 **Responsable:** UI / UX / Integracion Backend
 **Origen:** Comprobacion visual 2026-07-09 (Javier) / SEC-002 / BE-021
@@ -1258,6 +1259,37 @@ de un registro ya creado ni de corregir un error de ingreso.
 - `invalidateQueries` tras cada mutacion en las paginas ya migradas a TanStack Query.
 - Definir con Control si la edicion de una consulta `Realizada` debe quedar restringida
   (trazabilidad clinica) antes de implementar.
+
+### UI-034 - Redisenar PacientesPage como panel de trabajo diario
+
+**Estado:** Aprobada (DEC-043) / pendiente implementacion
+**Prioridad:** Alta
+**Responsable:** UI / UX / Integracion Backend
+**Origen:** Instruccion directa de Javier, comprobacion visual 2026-07-09 / DEC-043
+**Fecha creacion:** 2026-07-09
+**Rama prevista:** `feature/ui-034-panel-diario-pacientes`
+**Dependencias:** DEC-043, BE-021, UI-032 (absorbida), agenda_eventos (BE-028)
+
+#### Descripcion
+
+La vista por defecto de PacientesPage pasa a ser el panel del dia: solo pacientes con cita
+agendada HOY via `agenda_eventos`. Layout de arriba a abajo: (1) metricas superiores
+(pacientes activos totales, citas de hoy, atendidas hoy, pendientes de hoy); (2) barra de
+acciones con Registro completo / Nuevo paciente (wizard existente bajo demanda) / Editar /
+Anular; (3) directorio del dia con hora y estado del evento por tarjeta.
+
+#### Criterios de aceptacion preliminares
+
+- Consulta del dia: `agenda_eventos.fecha_inicio` = hoy (fecha local Chile, patron
+  `T00:00:00`), estados `programado`/`confirmado`/`reagendado`; `completado` suma a la
+  metrica "atendidas hoy"; `cancelado` y `no_asistio` quedan fuera. Un paciente con 2+ citas
+  hoy = una tarjeta por cita.
+- Registro completo disponible como vista secundaria (el directorio actual no se pierde).
+- Edicion reutiliza el wizard/validaciones existentes; anulacion logica `estado='inactivo'`
+  (BE-021), delete fisico solo admin sobre inactivos, nunca desde el flujo de terapeuta.
+- `invalidateQueries` tras cada mutacion (pagina ya migrada a TanStack Query).
+- Empty state explicito cuando no hay citas hoy, con acceso al registro completo.
+- Sin cambios de esquema; sin Supabase remoto; validacion con demo SEC-007B + seed local.
 
 ### DOC-001 - Manual de ambientes
 

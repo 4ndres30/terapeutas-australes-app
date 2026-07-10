@@ -3942,3 +3942,17 @@ BE-015 — validar RLS por roles para los modulos nuevos: `pacientes_identidad_f
 ### Resultado
 Documentacion de control sincronizada. Cualquier agente que lea `docs/control/` desde este punto tiene contexto completo de la sesion 2026-07-08.
 
+
+## LOG-093 - Registro de UI-032/033/034 y DEC-043 (rediseno panel diario de Pacientes)
+
+**Fecha:** 2026-07-09
+**Responsable:** Control de desarrollo (sesion Claude) / aprobacion Javier
+**PRs:** #114 (UI-032/033), rama `docs/ui-034-dec-043-panel-diario-pacientes` (UI-034/DEC-043)
+
+La comprobacion visual del 2026-07-09 detecto que ninguna pagina clinica permite editar ni
+anular registros ya creados (solo crear+listar; el unico `.update()` de `src/` esta en
+AgendaPage). Se registraron UI-032 (pacientes) y UI-033 (consultas/evaluaciones/casos).
+Acto seguido Javier definio el rediseno de PacientesPage como panel de trabajo diario
+(metricas + barra de acciones + directorio del dia con citas de agenda_eventos), aprobado
+como DEC-043 y registrado como UI-034, que absorbe UI-032. Implementacion pendiente en rama
+propia; sin cambios de esquema.
