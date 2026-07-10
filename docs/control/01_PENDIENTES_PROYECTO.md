@@ -119,7 +119,7 @@ Este documento es la lista maestra de pendientes. Cada pendiente debe tener un c
 | UI-043 | ReportesPage: eliminar re-resolucion de rol (rolesValidos/esRolUsuario/obtenerRolActivo duplican AuthContext byte a byte y agregan 2 llamadas de red redundantes por carga). | Pendiente | Media | UI / UX |
 | UI-044 | ErrorBoundary global por ruta: hoy cualquier error de render desmonta toda la app a pantalla en blanco (confirmado con el bug de colision de queryKey entre paginas). | Integrada local/demo por PR #124 | Alta | UI / UX |
 | BE-031 | Columna de terapeuta responsable en agenda_eventos (hoy solo created_by, que es auditoria, no responsabilidad clinica). Prerrequisito para filtrar "mis pacientes de hoy" en UI-034 con multiples terapeutas. Nivel 3: requiere DEC previa. | Pendiente | Media-alta | Integracion Backend |
-| UI-045 | Formulario plano de edicion de pacientes: todos los campos visibles a la vez, sin pasos ni preview vivo (DEC-044: crear=guiado, editar=plano; validaciones compartidas con el wizard via hook comun). | Aprobada (DEC-044) / pendiente implementacion | Alta | UI / UX |
+| UI-045 | Formulario plano de edicion de pacientes: todos los campos visibles a la vez, sin pasos ni preview vivo (DEC-044: crear=guiado, editar=plano; validaciones compartidas con el wizard via hook comun). | Integrada local/demo por PR feature/ui-045-edicion-plana-pacientes (draft, pendiente merge Javier) | Alta | UI / UX |
 | DOC-001 | Manual de ambientes. | Documental / pendiente implementacion futura | Alta | Control de desarrollo |
 | DOC-002 | Procedimiento de backup/restauracion. | Documental / pendiente prueba futura | Alta | Control de desarrollo / Integracion Backend |
 | DOC-003 | Politica de carga de datos reales. | Documental / pendiente implementacion futura | Alta | Control de desarrollo |
@@ -1386,11 +1386,14 @@ pendiente); MFA = UI-024; colision de queryKey y casts `as unknown as` = FASE1/U
 
 ### UI-045 - Formulario plano de edicion de pacientes
 
-**Estado:** Aprobada (DEC-044) / pendiente implementacion
+**Estado:** Integrada local/demo (draft pendiente merge Javier)
 **Prioridad:** Alta
 **Responsable:** UI / UX
 **Origen:** Observacion de Javier sobre UI-034 en uso / DEC-044
 **Fecha creacion:** 2026-07-09
+**Fecha implementacion:** 2026-07-10
+**Rama:** feature/ui-045-edicion-plana-pacientes
+**LOG:** LOG-103
 **Dependencias:** UI-034 (integrada), DEC-044
 
 #### Descripcion
@@ -1401,14 +1404,20 @@ telefono, email, comuna, region, estado) visibles y editables simultaneamente, g
 columnas desktop / 1 mobile, Guardar/Cancelar fijos sin scroll, SIN preview vivo. Alta
 sigue con wizard intacto.
 
-#### Criterios de aceptacion preliminares
+#### Criterios de aceptacion
 
 - Extraer validaciones/estado a hook compartido con el wizard (anti-duplicados excluyendo
-  al propio paciente incluido) — cero duplicacion de logica de validacion.
-- Sin preview en edicion; el preview del alta no se toca.
-- invalidateQueries y anulacion/reactivar sin cambios.
-- Criterio DEC-044 (crear=guiado, editar=plano) queda como patron para UI-033.
-- Validacion visual con Javier (ambiente demo) antes de merge.
+  al propio paciente incluido) — cero duplicacion de logica de validacion. **OK**
+- Sin preview en edicion; el preview del alta no se toca. **OK**
+- invalidateQueries y anulacion/reactivar sin cambios. **OK**
+- Criterio DEC-044 (crear=guiado, editar=plano) queda como patron para UI-033. **Documentado**
+- Validacion visual con Javier (ambiente demo) antes de merge. **Pendiente merge**
+
+#### Resultado
+
+Implementado en rama feature/ui-045-edicion-plana-pacientes (LOG-103). Validado en BD local
+(updated_at 2026-07-10 21:07:08 UTC). Wizard de alta intacto con stepper y preview.
+tsc/lint/test/build limpios. PR draft abierto para revision de Javier.
 
 ### DOC-001 - Manual de ambientes
 

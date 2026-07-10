@@ -4070,3 +4070,42 @@ App.tsx. Ante un error de render muestra pantalla de recuperacion en espanol con
 Reintentar y enlace al inicio, en vez de desmontar toda la app a pantalla en blanco (riesgo
 real: colision de queryKey ['pacientes'] entre paginas, FASE1 hallazgo alta, aun pendiente).
 tsc/lint/build limpios; app verificada operativa en preview con el boundary montado.
+
+## LOG-103 - UI-045: formulario plano de edicion de pacientes (DEC-044)
+
+**Fecha:** 2026-07-10
+**Responsable:** Control de desarrollo (sesion Antigravity / Sonnet)
+**PR:** feature/ui-045-edicion-plana-pacientes (draft)
+**Tarea:** UI-045
+**Decision:** DEC-044
+
+Implementa el formulario plano de edicion de pacientes segun DEC-044 (crear=guiado,
+editar=plano). Cambios:
+
+- `src/hooks/usePacienteForm.ts` (NUEVO): extrae funciones puras compartidas entre wizard y
+  formulario plano: FormularioPaciente, formularioInicial, opcionesSexo, opcionesEstado,
+  regionesChile, construirClavePaciente, validarFormularioPaciente, prepararPacienteParaGuardar,
+  pacienteAFormulario, obtenerEtiquetaOpcion. Cero duplicacion de logica de validacion.
+  Anti-duplicados excluyen al propio paciente por id.
+
+- `src/pages/PacientesPage.tsx` (MODIFICADO): agrega renderFormularioEdicion() — formulario
+  plano con 9 campos en grid 2 columnas desktop / 1 columna mobile, chips radio para Sexo y
+  Estado, sin stepper, sin preview lateral, barra sticky Guardar/Cancelar visible sin scroll.
+  El wizard de alta (renderFormularioPaciente) queda intacto con preview y pasos. La logica de
+  guardar es compartida: detecta modo edicion vs alta y aplica el feedback correcto (error inline
+  en edicion, cambio de paso en wizard). invalidateQueries(['pacientes'] y ['agenda-hoy-pacientes'])
+  sin cambios.
+
+- `src/pages/PacientesPage.css` (MODIFICADO): agrega clases .edicion-plana-panel,
+  .formulario-edicion-plana (grid 2 col), .edicion-campo-label, .edicion-chips-field,
+  .edicion-campo--full, .edicion-plana-barra-acciones (sticky). Media query <=768px a 1 columna.
+
+Validaciones: tsc --noEmit limpio, npm run lint limpio, npm run test 24/24 OK, npm run build
+limpio (464ms). Validacion visual demo: login qa.demo.admin@example.test, edicion de paciente
+con formulario plano, guardado verificado en BD (updated_at 2026-07-10 21:07:08 UTC), wizard de
+alta confirmado intacto con stepper y preview.
+
+No toca Auth/RLS/migraciones. Valores enum del CHECK real: 'activo'/'inactivo', 'femenino'/
+'masculino'/'otro'/'prefiere_no_decir'. Fecha date-only con slice(0,10), nunca toISOString.
+PROD-001 sigue bloqueante.
+
