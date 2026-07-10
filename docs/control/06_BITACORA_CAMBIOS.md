@@ -3956,3 +3956,15 @@ Acto seguido Javier definio el rediseno de PacientesPage como panel de trabajo d
 (metricas + barra de acciones + directorio del dia con citas de agenda_eventos), aprobado
 como DEC-043 y registrado como UI-034, que absorbe UI-032. Implementacion pendiente en rama
 propia; sin cambios de esquema.
+
+## LOG-094 - Registro de brechas funcionales UI-035..UI-044 y BE-031
+
+**Fecha:** 2026-07-09
+**Responsable:** Control de desarrollo (sesion Claude) / validado por Javier
+
+Cierre del barrido de brechas por seccion iniciado en la comprobacion visual: 10 tareas UI
+nuevas + 1 BE (Nivel 3) registradas en 01_PENDIENTES con fila en tabla y ficha de contexto.
+Destacan: UI-040 (el modulo financiero en BD no tiene ninguna UI que escriba en el), UI-041
+(truncamiento silencioso a 1000 filas afecta KPIs), UI-044 (sin ErrorBoundary, crash conocido
+por colision de queryKey), UI-037 (bug de carga de CasosPage) y BE-031 (columna de terapeuta
+responsable en agenda_eventos, prerrequisito del filtro "mis pacientes" de UI-034).
