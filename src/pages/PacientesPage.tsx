@@ -19,8 +19,25 @@ type Paciente = {
   created_at: string
 }
 
+type EstadoEventoHoy = 'programado' | 'confirmado' | 'reagendado' | 'completado'
+
+type EventoAgendaHoy = {
+  id_agenda_evento: string
+  paciente_id: string | null
+  fecha_inicio: string
+  estado_evento: EstadoEventoHoy
+  modalidad: string | null
+  tipo_evento: string
+}
+
+type CitaDelDia = {
+  evento: EventoAgendaHoy
+  paciente: Paciente
+}
+
+type VistaPacientes = 'dia' | 'registro' | 'nuevo'
 type FiltroEstado = 'todos' | 'activos' | 'inactivos'
-type TipoMetrica = 'total' | 'activos' | 'inactivos' | 'ultimo'
+type TipoMetrica = 'activos' | 'citas' | 'atendidas' | 'pendientes'
 type PasoFicha = 'identidad' | 'contacto' | 'ubicacion' | 'estado'
 
 type FormularioPaciente = {
@@ -61,6 +78,12 @@ const formularioInicial: FormularioPaciente = {
   estado: 'activo',
 }
 
+const vistasPacientes: { etiqueta: string; valor: VistaPacientes }[] = [
+  { etiqueta: 'Pacientes de hoy', valor: 'dia' },
+  { etiqueta: 'Registro completo', valor: 'registro' },
+  { etiqueta: 'Nuevo paciente', valor: 'nuevo' },
+]
+
 const filtrosEstado: { etiqueta: string; valor: FiltroEstado }[] = [
   { etiqueta: 'Todos', valor: 'todos' },
   { etiqueta: 'Activos', valor: 'activos' },
@@ -78,6 +101,17 @@ const opcionesEstado: OpcionFormulario[] = [
   { etiqueta: 'Activo', valor: 'activo' },
   { etiqueta: 'Inactivo', valor: 'inactivo' },
 ]
+
+const ESTADOS_CITA_ACTIVA: EstadoEventoHoy[] = ['programado', 'confirmado', 'reagendado']
+
+const AGENDA_HOY_SELECT = [
+  'id_agenda_evento',
+  'paciente_id',
+  'fecha_inicio',
+  'estado_evento',
+  'modalidad',
+  'tipo_evento',
+].join(', ')
 
 const regionesChile = [
   'Arica y Parinacota',
@@ -146,6 +180,58 @@ async function obtenerPacientes(): Promise<Paciente[]> {
   return (data || []) as Paciente[]
 }
 
+function fechaLocalISO(fecha: Date) {
+  const anio = fecha.getFullYear()
+  const mes = String(fecha.getMonth() + 1).padStart(2, '0')
+  const dia = String(fecha.getDate()).padStart(2, '0')
+  return `${anio}-${mes}-${dia}`
+}
+
+async function obtenerEventosHoy(): Promise<EventoAgendaHoy[]> {
+  const hoy = new Date()
+  const manana = new Date(hoy)
+  manana.setDate(hoy.getDate() + 1)
+
+  const inicioHoy = new Date(`${fechaLocalISO(hoy)}T00:00:00`)
+  const inicioManana = new Date(`${fechaLocalISO(manana)}T00:00:00`)
+
+  const { data, error } = await supabase
+    .from('agenda_eventos')
+    .select(AGENDA_HOY_SELECT)
+    .gte('fecha_inicio', inicioHoy.toISOString())
+    .lt('fecha_inicio', inicioManana.toISOString())
+    .in('estado_evento', ['programado', 'confirmado', 'reagendado', 'completado'])
+    .order('fecha_inicio', { ascending: true })
+
+  if (error) {
+    throw new Error(`Error al cargar la agenda de hoy: ${error.message}`)
+  }
+
+  return (data || []) as unknown as EventoAgendaHoy[]
+}
+
+function horaLocal(fecha: string) {
+  const parseada = new Date(fecha)
+
+  if (Number.isNaN(parseada.getTime())) {
+    return '--:--'
+  }
+
+  return `${String(parseada.getHours()).padStart(2, '0')}:${String(parseada.getMinutes()).padStart(2, '0')}`
+}
+
+function formatearEtiqueta(valor: string | null | undefined) {
+  if (!valor) {
+    return 'Sin dato'
+  }
+
+  return valor
+    .split('_')
+    .filter(Boolean)
+    .map((parte) => parte.charAt(0).toUpperCase() + parte.slice(1))
+    .join(' ')
+}
+
 function normalizarClave(texto: string) {
   return normalizarTexto(texto.trim().replace(/\s+/g, ' '))
 }
@@ -192,6 +278,20 @@ function construirClavePaciente(datos: FormularioPaciente | Paciente) {
     normalizarClave(datos.region),
     normalizarClave(datos.estado),
   ].join('|')
+}
+
+function pacienteAFormulario(paciente: Paciente): FormularioPaciente {
+  return {
+    nombres: paciente.nombres || '',
+    apellidos: paciente.apellidos || '',
+    fecha_nacimiento: (paciente.fecha_nacimiento || '').slice(0, 10),
+    sexo: paciente.sexo || '',
+    telefono: paciente.telefono || '',
+    email: paciente.email || '',
+    comuna: paciente.comuna || '',
+    region: paciente.region || '',
+    estado: paciente.estado || 'activo',
+  }
 }
 
 function coincideConBusqueda(paciente: Paciente, busqueda: string) {
@@ -303,36 +403,32 @@ function MetricaIcon({ tipo }: { tipo: TipoMetrica }) {
     )
   }
 
-  if (tipo === 'inactivos') {
+  if (tipo === 'atendidas') {
     return (
       <svg aria-hidden="true" viewBox="0 0 24 24">
-        <path d="M8 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8Z" />
-        <path d="M2.5 21a6.5 6.5 0 0 1 11 0" />
-        <path d="M15 9l6 6" />
-        <path d="M21 9l-6 6" />
+        <path d="M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18Z" />
+        <path d="m8.5 12.2 2.4 2.4 4.6-4.8" />
       </svg>
     )
   }
 
-  if (tipo === 'ultimo') {
+  if (tipo === 'pendientes') {
     return (
       <svg aria-hidden="true" viewBox="0 0 24 24">
-        <path d="M6 3v4" />
-        <path d="M18 3v4" />
-        <path d="M4 8h16" />
-        <path d="M5 5h14a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1Z" />
-        <path d="M9 13h6" />
-        <path d="M9 17h3" />
+        <path d="M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18Z" />
+        <path d="M12 7v5l3 2" />
       </svg>
     )
   }
 
   return (
     <svg aria-hidden="true" viewBox="0 0 24 24">
-      <path d="M8 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8Z" />
-      <path d="M16 12a3.5 3.5 0 1 0 0-7" />
-      <path d="M2.5 21a6.5 6.5 0 0 1 11 0" />
-      <path d="M14 17a5.5 5.5 0 0 1 7.5 4" />
+      <path d="M6 3v4" />
+      <path d="M18 3v4" />
+      <path d="M4 8h16" />
+      <path d="M5 5h14a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1Z" />
+      <path d="M9 13h6" />
+      <path d="M9 17h3" />
     </svg>
   )
 }
@@ -349,17 +445,56 @@ function PacientesPage() {
     queryFn: obtenerPacientes,
   })
 
+  const {
+    data: eventosHoy = [],
+    isLoading: cargandoAgenda,
+    error: errorAgenda,
+  } = useQuery({
+    queryKey: ['agenda-hoy-pacientes'],
+    queryFn: obtenerEventosHoy,
+  })
+
+  const [vista, setVista] = useState<VistaPacientes>('dia')
+  const [pacienteEnEdicion, setPacienteEnEdicion] = useState<Paciente | null>(null)
   const [guardando, setGuardando] = useState(false)
+  const [accionEnCurso, setAccionEnCurso] = useState('')
   const [mensajeGuardado, setMensajeGuardado] = useState('')
   const [busqueda, setBusqueda] = useState('')
   const [filtroEstado, setFiltroEstado] = useState<FiltroEstado>('todos')
   const [pasoActivo, setPasoActivo] = useState<PasoFicha>('identidad')
   const [formulario, setFormulario] = useState<FormularioPaciente>(formularioInicial)
 
+  async function invalidarConsultasPacientes() {
+    await Promise.all([
+      queryClient.invalidateQueries({ queryKey: ['pacientes'] }),
+      queryClient.invalidateQueries({ queryKey: ['agenda-hoy-pacientes'] }),
+    ])
+  }
+
   const totalPacientes = pacientes.length
   const pacientesActivos = pacientes.filter((paciente) => paciente.estado === 'activo').length
-  const pacientesInactivos = pacientes.filter((paciente) => paciente.estado === 'inactivo').length
-  const ultimoRegistro = pacientes[0]?.created_at
+
+  const eventosHoyConPaciente = useMemo(() => (
+    eventosHoy.filter((evento) => Boolean(evento.paciente_id))
+  ), [eventosHoy])
+
+  const citasActivasHoy = useMemo(() => (
+    eventosHoyConPaciente.filter((evento) => ESTADOS_CITA_ACTIVA.includes(evento.estado_evento))
+  ), [eventosHoyConPaciente])
+
+  const atendidasHoy = eventosHoyConPaciente.filter((evento) => evento.estado_evento === 'completado').length
+  const pendientesHoy = citasActivasHoy.length
+
+  const pacientesPorId = useMemo(() => (
+    new Map(pacientes.map((paciente) => [paciente.id, paciente]))
+  ), [pacientes])
+
+  const citasDelDia = useMemo<CitaDelDia[]>(() => (
+    citasActivasHoy.flatMap((evento) => {
+      const paciente = evento.paciente_id ? pacientesPorId.get(evento.paciente_id) : undefined
+      return paciente ? [{ evento, paciente }] : []
+    })
+  ), [citasActivasHoy, pacientesPorId])
 
   const pacientesFiltrados = useMemo(() => (
     pacientes.filter((paciente) => (
@@ -376,9 +511,83 @@ function PacientesPage() {
   const ubicacionPreview = [formulario.comuna, formulario.region].filter(Boolean).join(', ')
   const sexoPreview = obtenerEtiqueta(opcionesSexo, formulario.sexo)
   const fechaNacimientoPreview = formulario.fecha_nacimiento ? formatearFecha(formulario.fecha_nacimiento) : 'Pendiente'
-  const mensaje = mensajeGuardado || (errorCarga ? errorCarga.message : '')
+  const mensaje = mensajeGuardado
+    || (errorCarga ? errorCarga.message : '')
+    || (errorAgenda ? errorAgenda.message : '')
   const mensajeEsError = mensaje.toLowerCase().startsWith('error')
   const cantidadVisible = pacientesFiltrados.length
+  const mostrarFormulario = vista === 'nuevo' || pacienteEnEdicion !== null
+
+  function cambiarVista(vistaNueva: VistaPacientes) {
+    if (pacienteEnEdicion) {
+      setPacienteEnEdicion(null)
+      setFormulario(formularioInicial)
+      setPasoActivo('identidad')
+    }
+
+    setMensajeGuardado('')
+    setVista(vistaNueva)
+  }
+
+  function iniciarEdicion(paciente: Paciente) {
+    setPacienteEnEdicion(paciente)
+    setFormulario(pacienteAFormulario(paciente))
+    setPasoActivo('identidad')
+    setMensajeGuardado('')
+  }
+
+  function cancelarEdicion() {
+    setPacienteEnEdicion(null)
+    setFormulario(formularioInicial)
+    setPasoActivo('identidad')
+    setMensajeGuardado('')
+  }
+
+  async function cambiarEstadoPaciente(paciente: Paciente, estadoNuevo: 'activo' | 'inactivo') {
+    const nombre = `${paciente.nombres} ${paciente.apellidos}`.trim()
+
+    setAccionEnCurso(paciente.id)
+    setMensajeGuardado('')
+
+    const { error } = await supabase
+      .from('pacientes')
+      .update({ estado: estadoNuevo })
+      .eq('id', paciente.id)
+
+    setAccionEnCurso('')
+
+    if (error) {
+      setMensajeGuardado(`Error al actualizar el estado: ${error.message}`)
+      return
+    }
+
+    await invalidarConsultasPacientes()
+    setMensajeGuardado(estadoNuevo === 'inactivo'
+      ? `Paciente anulado: ${nombre} quedó inactivo (sin eliminación).`
+      : `Paciente reactivado: ${nombre} volvió a estado activo.`)
+  }
+
+  async function anularPaciente(paciente: Paciente) {
+    if (paciente.estado !== 'activo') {
+      return
+    }
+
+    const nombre = `${paciente.nombres} ${paciente.apellidos}`.trim()
+
+    if (!window.confirm(`¿Anular a ${nombre}? Quedará inactivo, no se elimina.`)) {
+      return
+    }
+
+    await cambiarEstadoPaciente(paciente, 'inactivo')
+  }
+
+  async function reactivarPaciente(paciente: Paciente) {
+    if (paciente.estado !== 'inactivo') {
+      return
+    }
+
+    await cambiarEstadoPaciente(paciente, 'activo')
+  }
 
   function avanzarAlSiguientePasoSiCorresponde(pasoActual: PasoFicha, formularioActualizado: FormularioPaciente) {
     const siguientePaso = obtenerSiguientePaso(pasoActual)
@@ -413,7 +622,10 @@ function PacientesPage() {
 
     const pacienteParaGuardar = prepararPacienteParaGuardar(formulario)
     const clavePacienteNuevo = construirClavePaciente(pacienteParaGuardar)
-    const existeDuplicado = pacientes.some((paciente) => construirClavePaciente(paciente) === clavePacienteNuevo)
+    const existeDuplicado = pacientes.some((paciente) => (
+      paciente.id !== pacienteEnEdicion?.id
+      && construirClavePaciente(paciente) === clavePacienteNuevo
+    ))
 
     if (existeDuplicado) {
       setPasoActivo('identidad')
@@ -422,18 +634,36 @@ function PacientesPage() {
     }
 
     setGuardando(true)
-    setMensajeGuardado('Guardando paciente...')
+    setMensajeGuardado(pacienteEnEdicion ? 'Guardando cambios...' : 'Guardando paciente...')
 
-    const { error } = await supabase.from('pacientes').insert(pacienteParaGuardar)
+    if (pacienteEnEdicion) {
+      const { error } = await supabase
+        .from('pacientes')
+        .update(pacienteParaGuardar)
+        .eq('id', pacienteEnEdicion.id)
 
-    if (error) {
-      setMensajeGuardado(`Error al guardar: ${error.message}`)
-      setGuardando(false)
-      return
+      if (error) {
+        setMensajeGuardado(`Error al guardar: ${error.message}`)
+        setGuardando(false)
+        return
+      }
+
+      await invalidarConsultasPacientes()
+      setMensajeGuardado('Paciente actualizado correctamente')
+      setPacienteEnEdicion(null)
+    } else {
+      const { error } = await supabase.from('pacientes').insert(pacienteParaGuardar)
+
+      if (error) {
+        setMensajeGuardado(`Error al guardar: ${error.message}`)
+        setGuardando(false)
+        return
+      }
+
+      await invalidarConsultasPacientes()
+      setMensajeGuardado('Paciente guardado correctamente')
     }
 
-    await queryClient.invalidateQueries({ queryKey: ['pacientes'] })
-    setMensajeGuardado('Paciente guardado correctamente')
     setFormulario(formularioInicial)
     setPasoActivo('identidad')
     setGuardando(false)
@@ -473,11 +703,47 @@ function PacientesPage() {
   }
 
   const metricas: { etiqueta: string; valor: number | string; detalle: string; tipo: TipoMetrica }[] = [
-    { etiqueta: 'Total', valor: totalPacientes, detalle: 'Pacientes', tipo: 'total' },
-    { etiqueta: 'Activos', valor: pacientesActivos, detalle: 'Seguimiento', tipo: 'activos' },
-    { etiqueta: 'Inactivos', valor: pacientesInactivos, detalle: 'Archivados', tipo: 'inactivos' },
-    { etiqueta: 'Último', valor: ultimoRegistro ? formatearFecha(ultimoRegistro) : 'Sin registros', detalle: 'Registro', tipo: 'ultimo' },
+    { etiqueta: 'Pacientes activos', valor: pacientesActivos, detalle: 'En seguimiento', tipo: 'activos' },
+    { etiqueta: 'Citas hoy', valor: eventosHoyConPaciente.length, detalle: 'Agendadas', tipo: 'citas' },
+    { etiqueta: 'Atendidas hoy', valor: atendidasHoy, detalle: 'Completadas', tipo: 'atendidas' },
+    { etiqueta: 'Pendientes hoy', valor: pendientesHoy, detalle: 'Por atender', tipo: 'pendientes' },
   ]
+
+  function renderAccionesPaciente(paciente: Paciente) {
+    const ocupado = accionEnCurso === paciente.id
+
+    return (
+      <div className="paciente-card__acciones">
+        <button
+          className="card-accion"
+          disabled={ocupado}
+          onClick={() => iniciarEdicion(paciente)}
+          type="button"
+        >
+          Editar
+        </button>
+        {paciente.estado === 'activo' ? (
+          <button
+            className="card-accion card-accion--peligro"
+            disabled={ocupado}
+            onClick={() => anularPaciente(paciente)}
+            type="button"
+          >
+            {ocupado ? 'Anulando...' : 'Anular'}
+          </button>
+        ) : (
+          <button
+            className="card-accion card-accion--positivo"
+            disabled={ocupado}
+            onClick={() => reactivarPaciente(paciente)}
+            type="button"
+          >
+            {ocupado ? 'Reactivando...' : 'Reactivar'}
+          </button>
+        )}
+      </div>
+    )
+  }
 
   function renderCamposPaso(paso: PasoFicha) {
     if (paso === 'identidad') {
@@ -670,13 +936,292 @@ function PacientesPage() {
     )
   }
 
+  function renderPanelDia() {
+    return (
+      <section className="pacientes-directory-panel pacientes-dia-panel" aria-label="Pacientes agendados hoy">
+        <div className="panel-heading panel-heading--compact">
+          <div>
+            <span className="panel-kicker">Panel del día</span>
+            <h2>Pacientes agendados hoy</h2>
+          </div>
+          <strong>{citasDelDia.length}</strong>
+        </div>
+
+        {cargando || cargandoAgenda ? (
+          <div className="estado-listado">
+            <strong>Cargando agenda del día</strong>
+            <p>Cruzando citas de hoy con el directorio de pacientes.</p>
+          </div>
+        ) : citasDelDia.length === 0 ? (
+          <div className="estado-listado estado-listado--vacio">
+            <strong>Sin pacientes agendados para hoy</strong>
+            <p>No hay citas programadas, confirmadas ni reagendadas para hoy.</p>
+            <button
+              className="accion-vista accion-vista--vacio"
+              onClick={() => cambiarVista('registro')}
+              type="button"
+            >
+              Ir al registro completo
+            </button>
+          </div>
+        ) : (
+          <div className="pacientes-cards pacientes-cards--compact" aria-live="polite">
+            {citasDelDia.map(({ evento, paciente }) => (
+              <article className="paciente-card paciente-card--compact cita-dia-card" key={evento.id_agenda_evento}>
+                <div className="cita-dia-hora">
+                  <strong>{horaLocal(evento.fecha_inicio)}</strong>
+                  <span>hrs</span>
+                </div>
+
+                <div className="paciente-card__body">
+                  <div className="paciente-card__topline">
+                    <div>
+                      <h3>{paciente.nombres} {paciente.apellidos}</h3>
+                      <p className="paciente-card__contact-line">
+                        <span>{formatearEtiqueta(evento.modalidad)}</span>
+                        <span aria-hidden="true">·</span>
+                        <span>{formatearEtiqueta(evento.tipo_evento)}</span>
+                        <span aria-hidden="true">·</span>
+                        <span>{mostrarDato(paciente.telefono, 'Sin teléfono')}</span>
+                      </p>
+                    </div>
+                    <span className={`estado-badge estado-evento-badge--${evento.estado_evento}`}>
+                      {formatearEtiqueta(evento.estado_evento)}
+                    </span>
+                  </div>
+
+                  {renderAccionesPaciente(paciente)}
+                </div>
+              </article>
+            ))}
+          </div>
+        )}
+      </section>
+    )
+  }
+
+  function renderRegistroCompleto() {
+    return (
+      <section className="pacientes-directory-panel" aria-label="Listado de pacientes">
+        <div className="panel-heading panel-heading--compact">
+          <div>
+            <span className="panel-kicker">Directorio</span>
+            <h2>Pacientes registrados</h2>
+          </div>
+          <strong>{cantidadVisible}</strong>
+        </div>
+
+        <div className="directory-search-row">
+          <label className="buscador-pacientes buscador-pacientes--compact">
+            <span>Buscar</span>
+            <input
+              autoComplete="off"
+              placeholder="Nombre, email, teléfono, comuna o región"
+              type="search"
+              value={busqueda}
+              onChange={(event) => setBusqueda(event.target.value)}
+            />
+          </label>
+          <button className="directory-filter-button" type="button" aria-label="Abrir filtros avanzados">
+            ≡
+          </button>
+        </div>
+
+        <div className="filtros-rapidos filtros-rapidos--compact" aria-label="Filtros rápidos de pacientes">
+          {filtrosEstado.map((filtro) => (
+            <button
+              aria-pressed={filtroEstado === filtro.valor}
+              className={filtroEstado === filtro.valor ? 'chip chip--activo' : 'chip'}
+              key={filtro.valor}
+              onClick={() => setFiltroEstado(filtro.valor)}
+              type="button"
+            >
+              {filtro.etiqueta}
+            </button>
+          ))}
+        </div>
+
+        {cargando ? (
+          <div className="estado-listado">
+            <strong>Cargando pacientes</strong>
+            <p>Preparando el directorio clínico local.</p>
+          </div>
+        ) : pacientes.length === 0 ? (
+          <div className="estado-listado estado-listado--vacio">
+            <strong>Aún no hay pacientes registrados</strong>
+            <p>Completa la ficha de ingreso para crear el primer registro.</p>
+          </div>
+        ) : pacientesFiltrados.length === 0 ? (
+          <div className="estado-listado estado-listado--vacio">
+            <strong>No hay resultados</strong>
+            <p>Ajusta la búsqueda o cambia el filtro de estado.</p>
+          </div>
+        ) : (
+          <>
+            <div className="pacientes-cards pacientes-cards--compact" aria-live="polite">
+              {pacientesFiltrados.map((paciente) => {
+                const ubicacionPaciente = [paciente.comuna, paciente.region].filter(Boolean).join(', ')
+
+                return (
+                  <article className="paciente-card paciente-card--compact" key={paciente.id}>
+                    <div className="paciente-avatar" aria-hidden="true">
+                      {obtenerIniciales(paciente.nombres, paciente.apellidos)}
+                    </div>
+
+                    <div className="paciente-card__body">
+                      <div className="paciente-card__topline">
+                        <div>
+                          <h3>{paciente.nombres} {paciente.apellidos}</h3>
+                          <p className="paciente-card__contact-line">
+                            <span>{mostrarDato(paciente.telefono, 'Sin teléfono')}</span>
+                            <span aria-hidden="true">·</span>
+                            <span>{mostrarDato(paciente.email, 'Sin email')}</span>
+                          </p>
+                        </div>
+                        <span className={`estado-badge estado-badge--${paciente.estado}`}>
+                          {obtenerEtiqueta(opcionesEstado, paciente.estado) || paciente.estado}
+                        </span>
+                      </div>
+
+                      <div className="paciente-card__footer-line">
+                        <span>{mostrarDato(ubicacionPaciente, 'Sin ubicación')}</span>
+                        <time dateTime={paciente.created_at}>{formatearFecha(paciente.created_at)}</time>
+                      </div>
+
+                      {renderAccionesPaciente(paciente)}
+                    </div>
+                  </article>
+                )
+              })}
+            </div>
+
+            <div className="directory-pagination">
+              <span>Mostrando 1 a {cantidadVisible} de {totalPacientes} pacientes</span>
+              <div aria-hidden="true">
+                <button type="button">‹</button>
+                <strong>1</strong>
+                <button type="button">›</button>
+              </div>
+            </div>
+          </>
+        )}
+      </section>
+    )
+  }
+
+  function renderFormularioPaciente() {
+    const nombreEnEdicion = pacienteEnEdicion
+      ? `${pacienteEnEdicion.nombres} ${pacienteEnEdicion.apellidos}`.trim()
+      : ''
+
+    return (
+      <section className="pacientes-intake-panel" aria-label={pacienteEnEdicion ? 'Editar paciente' : 'Nuevo paciente'}>
+        <div className="form-panel-header form-panel-header--command">
+          <div className="form-panel-title">
+            <span className="form-panel-icon" aria-hidden="true">{pacienteEnEdicion ? 'E' : 'N'}</span>
+            <div>
+              <span className="panel-kicker">Ficha inteligente</span>
+              <h2>{pacienteEnEdicion ? 'Editar paciente' : 'Nuevo paciente'}</h2>
+              <p>
+                {pacienteEnEdicion
+                  ? `Edición de ${nombreEnEdicion} con las mismas validaciones del alta.`
+                  : 'Ingreso inicial con preview en vivo antes de guardar.'}
+              </p>
+            </div>
+          </div>
+
+          <div className="form-panel-actions">
+            {pacienteEnEdicion && (
+              <button
+                className="accion-vista"
+                disabled={guardando}
+                onClick={cancelarEdicion}
+                type="button"
+              >
+                Cancelar edición
+              </button>
+            )}
+            <button className="guardar-paciente" disabled={guardando} form="paciente-form" type="submit">
+              {guardando
+                ? 'Guardando...'
+                : (pacienteEnEdicion ? 'Guardar cambios' : 'Guardar paciente')}
+            </button>
+          </div>
+        </div>
+
+        <div className="form-stepper" aria-label="Etapas de la ficha de paciente">
+          {pasosFicha.map((paso) => (
+            <button
+              aria-current={pasoActivo === paso.clave ? 'step' : undefined}
+              className={pasoActivo === paso.clave ? 'form-stepper__item form-stepper__item--activo' : 'form-stepper__item'}
+              key={paso.numero}
+              onClick={() => setPasoActivo(paso.clave)}
+              type="button"
+            >
+              <strong>{paso.numero}</strong>
+              {paso.etiqueta}
+            </button>
+          ))}
+        </div>
+
+        <div className="intake-command-layout">
+          <form
+            className="formulario-ficha formulario-ficha--command"
+            id="paciente-form"
+            onKeyDown={manejarEnterFormulario}
+            onSubmit={guardarPaciente}
+          >
+            <datalist id="regiones-chile">
+              {regionesChile.map((region) => (
+                <option key={region} value={region} />
+              ))}
+            </datalist>
+            {pasosFicha.map(renderPasoFormulario)}
+          </form>
+
+          <aside className="preview-paciente preview-paciente--command" aria-label="Preview del paciente">
+            <div className="preview-avatar" aria-hidden="true">
+              {obtenerIniciales(formulario.nombres, formulario.apellidos)}
+            </div>
+
+            <div className="preview-heading">
+              <span>Preview vivo</span>
+              <h3>{nombrePreview || (pacienteEnEdicion ? 'Paciente en edición' : 'Nuevo paciente')}</h3>
+              <p>
+                {formularioTieneDatos
+                  ? 'Así se verá la ficha antes de guardarla.'
+                  : 'Completa la ficha para construir el resumen clínico.'}
+              </p>
+            </div>
+
+            <span className={`estado-badge estado-badge--${formulario.estado}`}>
+              {obtenerEtiqueta(opcionesEstado, formulario.estado) || formulario.estado}
+            </span>
+
+            <div className="preview-data preview-data--command">
+              <p><strong>Tel.</strong> <span>{mostrarDato(formulario.telefono)}</span></p>
+              <p><strong>Email</strong> <span>{mostrarDato(formulario.email)}</span></p>
+              <p><strong>Zona</strong> <span>{mostrarDato(ubicacionPreview)}</span></p>
+              <p><strong>Sexo</strong> <span>{sexoPreview || 'Pendiente'}</span></p>
+              <p><strong>Nacimiento</strong> <span>{fechaNacimientoPreview}</span></p>
+            </div>
+
+            <div className="preview-help">
+              Esta tarjeta se actualiza mientras completas la ficha, sin guardar cambios hasta confirmar.
+            </div>
+          </aside>
+        </div>
+      </section>
+    )
+  }
+
   return (
     <main className="pacientes-shell pacientes-shell--command">
       <section className="pacientes-command-topbar">
         <div className="pacientes-command-title">
           <span className="modulo-badge">Módulo clínico</span>
           <h1>Pacientes</h1>
-          <p>Centro de control para registrar, buscar y revisar fichas clínicas iniciales.</p>
+          <p>Panel de trabajo diario: pacientes agendados hoy, registro completo y fichas clínicas.</p>
         </div>
 
         <section className="pacientes-metricas-rail" aria-label="Métricas de pacientes">
@@ -693,195 +1238,32 @@ function PacientesPage() {
         </section>
       </section>
 
-      <section className="pacientes-command-grid">
-        <aside className="pacientes-directory-panel" aria-label="Listado de pacientes">
-          <div className="panel-heading panel-heading--compact">
-            <div>
-              <span className="panel-kicker">Directorio</span>
-              <h2>Pacientes registrados</h2>
-            </div>
-            <strong>{cantidadVisible}</strong>
-          </div>
+      <nav className="pacientes-acciones-bar" aria-label="Vistas de pacientes">
+        {vistasPacientes.map((opcionVista) => {
+          const activa = !pacienteEnEdicion && vista === opcionVista.valor
 
-          <div className="directory-search-row">
-            <label className="buscador-pacientes buscador-pacientes--compact">
-              <span>Buscar</span>
-              <input
-                autoComplete="off"
-                placeholder="Nombre, email, teléfono, comuna o región"
-                type="search"
-                value={busqueda}
-                onChange={(event) => setBusqueda(event.target.value)}
-              />
-            </label>
-            <button className="directory-filter-button" type="button" aria-label="Abrir filtros avanzados">
-              ≡
-            </button>
-          </div>
-
-          <div className="filtros-rapidos filtros-rapidos--compact" aria-label="Filtros rápidos de pacientes">
-            {filtrosEstado.map((filtro) => (
-              <button
-                aria-pressed={filtroEstado === filtro.valor}
-                className={filtroEstado === filtro.valor ? 'chip chip--activo' : 'chip'}
-                key={filtro.valor}
-                onClick={() => setFiltroEstado(filtro.valor)}
-                type="button"
-              >
-                {filtro.etiqueta}
-              </button>
-            ))}
-          </div>
-
-          {cargando ? (
-            <div className="estado-listado">
-              <strong>Cargando pacientes</strong>
-              <p>Preparando el directorio clínico local.</p>
-            </div>
-          ) : pacientes.length === 0 ? (
-            <div className="estado-listado estado-listado--vacio">
-              <strong>Aún no hay pacientes registrados</strong>
-              <p>Completa la ficha de ingreso para crear el primer registro.</p>
-            </div>
-          ) : pacientesFiltrados.length === 0 ? (
-            <div className="estado-listado estado-listado--vacio">
-              <strong>No hay resultados</strong>
-              <p>Ajusta la búsqueda o cambia el filtro de estado.</p>
-            </div>
-          ) : (
-            <>
-              <div className="pacientes-cards pacientes-cards--compact" aria-live="polite">
-                {pacientesFiltrados.map((paciente) => {
-                  const ubicacionPaciente = [paciente.comuna, paciente.region].filter(Boolean).join(', ')
-
-                  return (
-                    <article className="paciente-card paciente-card--compact" key={paciente.id}>
-                      <div className="paciente-avatar" aria-hidden="true">
-                        {obtenerIniciales(paciente.nombres, paciente.apellidos)}
-                      </div>
-
-                      <div className="paciente-card__body">
-                        <div className="paciente-card__topline">
-                          <div>
-                            <h3>{paciente.nombres} {paciente.apellidos}</h3>
-                            <p className="paciente-card__contact-line">
-                              <span>{mostrarDato(paciente.telefono, 'Sin teléfono')}</span>
-                              <span aria-hidden="true">·</span>
-                              <span>{mostrarDato(paciente.email, 'Sin email')}</span>
-                            </p>
-                          </div>
-                          <span className={`estado-badge estado-badge--${paciente.estado}`}>
-                            {obtenerEtiqueta(opcionesEstado, paciente.estado) || paciente.estado}
-                          </span>
-                        </div>
-
-                        <div className="paciente-card__footer-line">
-                          <span>{mostrarDato(ubicacionPaciente, 'Sin ubicación')}</span>
-                          <time dateTime={paciente.created_at}>{formatearFecha(paciente.created_at)}</time>
-                        </div>
-                      </div>
-                    </article>
-                  )
-                })}
-              </div>
-
-              <div className="directory-pagination">
-                <span>Mostrando 1 a {cantidadVisible} de {totalPacientes} pacientes</span>
-                <div aria-hidden="true">
-                  <button type="button">‹</button>
-                  <strong>1</strong>
-                  <button type="button">›</button>
-                </div>
-              </div>
-            </>
-          )}
-        </aside>
-
-        <section className="pacientes-intake-panel" aria-label="Nuevo paciente">
-          <div className="form-panel-header form-panel-header--command">
-            <div className="form-panel-title">
-              <span className="form-panel-icon" aria-hidden="true">N</span>
-              <div>
-                <span className="panel-kicker">Ficha inteligente</span>
-                <h2>Nuevo paciente</h2>
-                <p>Ingreso inicial con preview en vivo antes de guardar.</p>
-              </div>
-            </div>
-
-            <button className="guardar-paciente" disabled={guardando} form="paciente-form" type="submit">
-              {guardando ? 'Guardando...' : 'Guardar paciente'}
-            </button>
-          </div>
-
-          <div className="form-stepper" aria-label="Etapas de la ficha de paciente">
-            {pasosFicha.map((paso) => (
-              <button
-                aria-current={pasoActivo === paso.clave ? 'step' : undefined}
-                className={pasoActivo === paso.clave ? 'form-stepper__item form-stepper__item--activo' : 'form-stepper__item'}
-                key={paso.numero}
-                onClick={() => setPasoActivo(paso.clave)}
-                type="button"
-              >
-                <strong>{paso.numero}</strong>
-                {paso.etiqueta}
-              </button>
-            ))}
-          </div>
-
-          <div className="intake-command-layout">
-            <form
-              className="formulario-ficha formulario-ficha--command"
-              id="paciente-form"
-              onKeyDown={manejarEnterFormulario}
-              onSubmit={guardarPaciente}
+          return (
+            <button
+              aria-pressed={activa}
+              className={activa ? 'accion-vista accion-vista--activa' : 'accion-vista'}
+              key={opcionVista.valor}
+              onClick={() => cambiarVista(opcionVista.valor)}
+              type="button"
             >
-              <datalist id="regiones-chile">
-                {regionesChile.map((region) => (
-                  <option key={region} value={region} />
-                ))}
-              </datalist>
-              {pasosFicha.map(renderPasoFormulario)}
-            </form>
+              {opcionVista.etiqueta}
+            </button>
+          )
+        })}
+      </nav>
 
-            <aside className="preview-paciente preview-paciente--command" aria-label="Preview del nuevo paciente">
-              <div className="preview-avatar" aria-hidden="true">
-                {obtenerIniciales(formulario.nombres, formulario.apellidos)}
-              </div>
+      <p aria-live="polite" role="status" className={`mensaje pacientes-mensaje-live${mensajeEsError ? ' mensaje--error' : ''}`}>
+        {mensaje}
+      </p>
 
-              <div className="preview-heading">
-                <span>Preview vivo</span>
-                <h3>{nombrePreview || 'Nuevo paciente'}</h3>
-                <p>
-                  {formularioTieneDatos
-                    ? 'Así se verá la ficha inicial antes de guardarla.'
-                    : 'Completa la ficha para construir el resumen clínico.'}
-                </p>
-              </div>
-
-              <span className={`estado-badge estado-badge--${formulario.estado}`}>
-                {obtenerEtiqueta(opcionesEstado, formulario.estado) || formulario.estado}
-              </span>
-
-              <div className="preview-data preview-data--command">
-                <p><strong>Tel.</strong> <span>{mostrarDato(formulario.telefono)}</span></p>
-                <p><strong>Email</strong> <span>{mostrarDato(formulario.email)}</span></p>
-                <p><strong>Zona</strong> <span>{mostrarDato(ubicacionPreview)}</span></p>
-                <p><strong>Sexo</strong> <span>{sexoPreview || 'Pendiente'}</span></p>
-                <p><strong>Nacimiento</strong> <span>{fechaNacimientoPreview}</span></p>
-              </div>
-
-              <div className="preview-help">
-                Esta tarjeta se actualiza mientras completas el ingreso, sin guardar cambios hasta confirmar.
-              </div>
-            </aside>
-          </div>
-
-          {mensaje && (
-            <p className={mensajeEsError ? 'mensaje mensaje--error' : 'mensaje'}>
-              {mensaje}
-            </p>
-          )}
-        </section>
+      <section className="pacientes-vista-contenido">
+        {mostrarFormulario
+          ? renderFormularioPaciente()
+          : (vista === 'registro' ? renderRegistroCompleto() : renderPanelDia())}
       </section>
     </main>
   )
