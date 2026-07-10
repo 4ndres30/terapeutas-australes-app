@@ -25,7 +25,7 @@ Tablas trabajadas hasta ahora:
 | `revision_elementos` | Integrada | Elementos del caso incluidos en una revision especifica. |
 | `revision_aspectos` | Integrada | Aspectos revisados por cada elemento, con medicion radiestesica, presencia, tipo detectado, observaciones y canalizacion. Incluye cuerpos sutiles, trauma energetico, separacion, retraimiento, aislamiento, secuestro, integracion, alineacion y localizacion. |
 | `revision_hallazgos` | Integrada | Hallazgos relevantes detectados durante la revision de un aspecto. Incluye cuerpos sutiles alterados, separados, retraidos, aislados, secuestrados, trauma localizado y desalineacion energetica. |
-| `trabajos` | Integrada base / UI lectura | Modulo separado para registrar acciones realizadas, avances, intervenciones y resultados. La creacion operativa desde hallazgos sigue pendiente y debe ser manual. |
+| `trabajos` | Integrada base / derivacion manual local-demo | Modulo separado para registrar acciones realizadas, avances, intervenciones y resultados. La derivacion operativa desde hallazgos esta integrada por IMP-002 y sigue siendo manual, sin automatizar cobros, sesiones ni acciones. |
 | `cobros` / `pagos` | Integrada base | Modulo financiero con vista minima para Finanzas. No habilita pagos reales. |
 | `fotos_elementos_caso` | Local/demo / pend. QA | Metadatos de fotos con Storage privado. No habilita fotos reales. |
 
@@ -592,7 +592,7 @@ Desalineacion energetica
 
 ## Modulo `trabajos`
 
-El modulo `trabajos` ya existe como estructura base y se consulta desde la ficha del caso. La creacion operativa desde hallazgos sigue pendiente para IMP-002 y no debe automatizar cobros, sesiones ni acciones.
+El modulo `trabajos` ya existe como estructura base y se consulta desde la ficha del caso. La derivacion operativa manual desde hallazgos quedo integrada por IMP-002 y no automatiza cobros, sesiones ni acciones.
 
 Criterio definido:
 

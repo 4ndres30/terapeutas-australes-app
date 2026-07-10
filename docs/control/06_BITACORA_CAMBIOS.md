@@ -4075,7 +4075,7 @@ tsc/lint/build limpios; app verificada operativa en preview con el boundary mont
 
 **Fecha:** 2026-07-10
 **Responsable:** Control de desarrollo (sesion Antigravity / Sonnet)
-**PR:** feature/ui-045-edicion-plana-pacientes (draft)
+**PR:** #125 (`feature/ui-045-edicion-plana-pacientes`, mergeado a `main`)
 **Tarea:** UI-045
 **Decision:** DEC-044
 
@@ -4113,7 +4113,7 @@ PROD-001 sigue bloqueante.
 
 **Fecha:** 2026-07-10
 **Responsable:** Control de desarrollo (sesion Antigravity / Gemini)
-**PR:** feature/ui-046-preview-adaptativo-wizard (pendiente merge de PR #125 primero)
+**PR:** #126 (`feature/ui-046-preview-adaptativo-wizard`, mergeado a `main`)
 **Tarea:** UI-046
 **Decision:** DEC-045
 
@@ -4138,4 +4138,46 @@ Validaciones:
 - `npm run test` limpio.
 - `npm run build` limpio.
 - Validación visual de diseño responsive realizada.
+
+## LOG-105 - CTRL-015 sincronizacion documental post PR #125/#126
+
+**Fecha:** 2026-07-10
+**Rama:** `ctrl-015-sync-docs-post-pr-125-126`
+**Responsable:** Control de desarrollo (Codex)
+
+### Resumen
+Sincronizacion documental posterior a la integracion de PR #125 y PR #126 en `main`.
+Se verifico que PR #125 (`UI-045`, formulario plano de edicion de pacientes) esta mergeado
+desde 2026-07-10 21:20:30 UTC y que PR #126 (`UI-046`, preview adaptativo del wizard de alta)
+esta mergeado desde 2026-07-10 21:34:12 UTC. Se corrigieron textos temporales que aun
+indicaban draft, merge pendiente, rama lista o dependencia de merge del PR anterior.
+
+### Cambios registrados
+- `CTRL-015` queda integrado como sincronizacion documental post PR #125/#126.
+- `UI-045` queda registrada como integrada en `main` por PR #125 / local-demo / pendiente QA-012.
+- `UI-046` queda registrada como integrada en `main` por PR #126 / local-demo / pendiente QA-012.
+- `QA-012` queda recomendada como regresion visual y funcional de `PacientesPage`.
+- `UI-047` queda recomendada para normalizar queryKeys TanStack Query de pacientes y selectores.
+- `QA-013` queda recomendada para investigar `startup_failure` de GitHub Actions CI.
+- README queda alineado con IMP-002 ya integrado: la derivacion manual hallazgo -> trabajo existe en local/demo.
+
+### Archivos tocados
+- `README.md`
+- `docs/control/00_ESTADO_GENERAL_PROYECTO.md`
+- `docs/control/01_PENDIENTES_PROYECTO.md`
+- `docs/control/04_UI_UX_PULIDO_VISUAL.md`
+- `docs/control/05_DECISIONES_PROYECTO.md`
+- `docs/control/06_BITACORA_CAMBIOS.md`
+- `docs/control/09_NIVELES_DOCUMENTACION.md`
+- `docs/control/auditorias/CTRL-015_SYNC_DOCUMENTAL_POST_PR_125_126.md`
+
+### Restricciones respetadas
+- Solo documentacion.
+- No se modifico `src/`.
+- No se modificaron migraciones.
+- No se toco `.env`, secretos, Supabase remoto, Google/Gemini, Auth/RLS, produccion ni datos reales.
+- `PROD-001` sigue bloqueante.
+
+### Resultado
+Repositorio documentalmente ordenado post PR #125/#126 y listo para ejecutar QA-012 o, en rama separada, UI-047.
 

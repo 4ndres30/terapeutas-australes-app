@@ -1,6 +1,6 @@
 # Estado general del proyecto
 
-Fecha de corte: `2026-07-09`
+Fecha de corte: `2026-07-10`
 Responsable del documento: Control de desarrollo
 Estado general documental: En control activo
 
@@ -22,7 +22,7 @@ AUDIT-2026-07-04 audito estructura React, migraciones y RLS, y propuso el roadma
 
 IMP-001 dejo disponible una implementacion funcional minima de hallazgos operativos dentro de `DetalleRevisionesPanel`. DATA-001 dejo un seed local demo integral ejecutado correctamente en Supabase local. BE-011 confirmo que la primera version de trazabilidad hallazgo a trabajo puede usar `trabajos.revision_hallazgo_origen_id` sin migracion inicial. QA-002 valido funcionalmente el flujo de hallazgos operativos con el caso demo DATA-001 en ambiente local. BE-016 incorporo la vista financiera minima para Finanzas, QA-004 la valido localmente y UI-016 separo `ReportesPage` por rol en main mediante PR #33.
 
-Al corte 2026-07-09: PRs #100-#118 integrados en main. Destacan: primera Edge Function del proyecto (detector de huecos de agenda con Gemini, DEC-041), detector de riesgo de abandono sin IA (DEC-042, vista SQL), activacion real de DELETE policies + security_invoker en vista de fotos (PR #113, cerraba hallazgos criticos de FASE1-BARRIDO-2026-07-08), unificacion de instrucciones para agentes de IA (AGENTS.md + CLAUDE.md + skills /demo-env //verificar-rls //pre-pr), recuperacion de contrasena (UI-024 parcial, MFA pendiente), navegacion por tabs en ficha de caso (UI-010 con gate clinico aun pendiente de decision), formulario de intervenciones (UI-013), vistas clinicas agregadas (BE-014), bloque de seguridad de cobros e identidad financiera (SEC-005/SEC-008B/SEC-011/BE-013/BE-023/BE-024/BE-025), y el rediseno de PacientesPage como panel de trabajo diario (UI-034/DEC-043, validado visualmente). Brechas funcionales pendientes registradas como UI-033 y UI-035..UI-044 + BE-031 en 01_PENDIENTES. PROD-001 sigue bloqueante.
+Al corte 2026-07-10: PRs #100-#126 integrados en main. Destacan: primera Edge Function del proyecto (detector de huecos de agenda con Gemini, DEC-041), detector de riesgo de abandono sin IA (DEC-042, vista SQL), activacion real de DELETE policies + security_invoker en vista de fotos (PR #113, cerraba hallazgos criticos de FASE1-BARRIDO-2026-07-08), unificacion y enforcement de reglas para agentes de IA (PR #120 y #121), recuperacion de contrasena (UI-024 parcial, MFA pendiente), navegacion por tabs en ficha de caso (UI-010 con gate clinico aun pendiente de decision), formulario de intervenciones (UI-013), vistas clinicas agregadas (BE-014), bloque de seguridad de cobros e identidad financiera (SEC-005/SEC-008B/SEC-011/BE-013/BE-023/BE-024/BE-025), rediseño de PacientesPage como panel de trabajo diario (UI-034/DEC-043), formulario plano de edicion de pacientes (UI-045/DEC-044, PR #125) y preview adaptativo del wizard de alta (UI-046/DEC-045, PR #126). Quedan recomendadas QA-012 como regresion visual/funcional de PacientesPage, UI-047 para normalizar queryKeys TanStack Query de pacientes/selectores y QA-013 para investigar `startup_failure` de GitHub Actions. PROD-001 sigue bloqueante.
 
 El proyecto se mantiene alineado con el metodo acordado: primero documentar, auditar y decidir; luego implementar por tareas aprobadas.
 
@@ -67,6 +67,9 @@ El proyecto se mantiene alineado con el metodo acordado: primero documentar, aud
 - BE-026: Contrato conceptual de API pública de agendamiento integrado.
 - BE-027: Diseño técnico de la integración con Google Calendar/Workspace integrado.
 - UI-024 / SEC-012: Flujo seguro de recuperación de cuenta y reset de contraseña en frontend integrado localmente.
+- UI-034: PacientesPage como panel de trabajo diario integrado por PR #118.
+- UI-045: formulario plano de edicion de pacientes integrado por PR #125.
+- UI-046: preview adaptativo del wizard de alta de pacientes integrado por PR #126.
 
 ## En revision / planificacion
 

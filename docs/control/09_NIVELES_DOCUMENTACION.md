@@ -94,7 +94,10 @@ No debe ejecutarse sin:
 | Codigo | Nivel | Motivo |
 | --- | --- | --- |
 | QA-008 | Nivel 2 | Validacion funcional completa de Agenda interna ya integrada. |
+| QA-012 | Nivel 2 | Regresion visual y funcional de PacientesPage integrada con datos local/demo. |
+| QA-013 | Nivel 2 | Revision de GitHub Actions CI sin tocar produccion ni datos reales. |
 | UI-025B | Nivel 2 | Alta y edicion controlada de `agenda_eventos` dentro del sistema interno. |
+| UI-047 | Nivel 2 | Normalizacion de queryKeys TanStack Query en superficies internas, sin DB/RLS/Auth. |
 | BE-026 | Nivel 3 | Contrato de API publica de agendamiento. |
 | BE-027 | Nivel 3 | Integracion Google Calendar/Gmail/Workspace. |
 | PROD-001 | Bloqueo transversal | Impide datos reales, produccion y uso oficial hasta cierre formal. |

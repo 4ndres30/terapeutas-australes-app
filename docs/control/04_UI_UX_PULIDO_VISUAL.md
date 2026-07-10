@@ -3,7 +3,7 @@
 Responsable: UI / UX / Pulido visual
 Estado del documento: En analisis
 Fecha creacion: `2026-06-11`
-Ultima actualizacion: `2026-07-02`
+Ultima actualizacion: `2026-07-10`
 
 Este documento controla tareas de experiencia de usuario, formularios, responsive y pulido visual. El objetivo es que la aplicacion sea clara, sobria, profesional y facil de usar para el flujo terapeutico.
 
@@ -62,6 +62,23 @@ Regla vigente:
 
 - No se debe crear trabajo automaticamente desde un hallazgo.
 - No se deben crear cobros, sesiones ni acciones automaticamente desde el flujo de hallazgos.
+
+## Estado post UI-034, UI-045 y UI-046
+
+`PacientesPage` quedo integrada como panel de trabajo diario por PR #118, con registro
+completo y alta bajo demanda. La edicion de pacientes queda integrada por PR #125 como
+formulario plano segun DEC-044, sin pasos ni preview vivo. El wizard de alta queda integrado
+por PR #126 con preview adaptativo segun DEC-045: panel lateral en desktop y confirmacion
+fullscreen en tablet/mobile.
+
+Siguiente paso recomendado: `QA-012 - Regresion visual y funcional de PacientesPage`, cubriendo
+panel diario, registro completo, alta desktop, alta tablet/mobile, overlay de confirmacion,
+edicion plana, guardar/cancelar, anulacion, reactivacion, consola limpia, sin pantalla blanca,
+sin overflow horizontal y sin regresiones del wizard o del formulario plano.
+
+Riesgo tecnico relacionado: `UI-047 - Normalizacion de queryKeys TanStack Query para pacientes
+y selectores`, recomendado en tarea separada. No se implementa dentro de la sincronizacion
+CTRL-015.
 
 ## UI-001 - Auditar pantallas principales y pulido visual
 
