@@ -1,6 +1,7 @@
 import { lazy, Suspense, useState, useEffect, type ReactNode } from 'react'
 import { Menu, ShieldAlert, X } from 'lucide-react'
 import { BrowserRouter, Navigate, NavLink, Outlet, Route, Routes } from 'react-router-dom'
+import ErrorBoundary from './components/ErrorBoundary'
 import { AuthProvider, useAuth } from './context/AuthContext'
 import type { RolUsuario, UsuarioInterno } from './context/authTypes'
 import './App.css'
@@ -424,6 +425,7 @@ function RouterApp() {
 
   return (
     <BrowserRouter>
+      <ErrorBoundary>
       <Suspense fallback={<PantallaCarga mensaje="Cargando módulo..." />}>
         <Routes>
           <Route
@@ -476,6 +478,7 @@ function RouterApp() {
           />
         </Routes>
       </Suspense>
+      </ErrorBoundary>
     </BrowserRouter>
   )
 }
