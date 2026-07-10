@@ -108,6 +108,17 @@ Este documento es la lista maestra de pendientes. Cada pendiente debe tener un c
 | UI-032 | Edicion y anulacion de pacientes ya registrados (hoy solo crear+listar; la matriz SEC-002 asume edicion que nunca se construyo). | Absorbida por UI-034 (DEC-043) | Alta | UI / UX / Integracion Backend |
 | UI-033 | Edicion y anulacion de consultas, evaluaciones y casos (ninguna pagina clinica tiene UI de update/anulacion; policies UPDATE/DELETE ya activas en BD sin consumidor). | Pendiente | Alta | UI / UX / Integracion Backend |
 | UI-034 | Redisenar PacientesPage como panel de trabajo diario: metricas arriba, barra de acciones (registro completo / nuevo / editar / anular), directorio del dia con citas de hoy desde agenda_eventos. Absorbe UI-032. | Aprobada (DEC-043) / pendiente implementacion | Alta | UI / UX / Integracion Backend |
+| UI-035 | ConsultasPage: vista del dia (consultas de hoy por defecto) + formulario de alta bajo demanda, replicando el patron DEC-043 de Pacientes. | Pendiente | Media-alta | UI / UX |
+| UI-036 | EvaluacionesPage: exponer hora_evaluacion en formulario y tarjetas (columna NOT NULL en BD, hoy invisible: siempre guarda hora del servidor). | Pendiente | Baja | UI / UX |
+| UI-037 | Migrar CasosPage y CasoDetallePage a TanStack Query + corregir bug de carga (si falla 1 de 4 consultas encadenadas se descarta todo el estado, incluidos datos ya cargados). | Pendiente | Alta | UI / UX / Integracion Backend |
+| UI-038 | Verificar y activar el formulario de intervenciones (UI-013/PR #108) dentro del flujo real de CasoDetallePage post-merge de tabs (PR #107); ambos PRs tocaron TrabajosCasoPanel. | Pendiente | Media | UI / UX / QA |
+| UI-039 | AgendaPage: anulacion/cancelacion de eventos desde UI (unica pagina con update pero sin flujo de anulacion; estados cancelado/anulado existen en el CHECK). | Pendiente | Media-alta | UI / UX |
+| UI-040 | Finanzas: flujo de creacion de cobros y registro de pagos desde UI. Todo el modulo de pagos en BD (tablas, triggers, vistas, RLS) existe sin forma de recibir datos desde la app: la pagina solo lee. | Pendiente | Alta | UI / UX / Integracion Backend |
+| UI-041 | Finanzas/Reportes: paginacion o agregacion server-side; PostgREST trunca en 1000 filas (max_rows en config.toml) en silencio y los KPIs calculados client-side saldrian incompletos. | Pendiente | Alta | Integracion Backend |
+| UI-042 | ReportesPage: corregir guarda de pantalla de carga (cargando && !rolActivo deja de bloquear apenas se setea el rol y muestra estados vacios enganosos antes de que lleguen los datos). | Pendiente | Media | UI / UX |
+| UI-043 | ReportesPage: eliminar re-resolucion de rol (rolesValidos/esRolUsuario/obtenerRolActivo duplican AuthContext byte a byte y agregan 2 llamadas de red redundantes por carga). | Pendiente | Media | UI / UX |
+| UI-044 | ErrorBoundary global por ruta: hoy cualquier error de render desmonta toda la app a pantalla en blanco (confirmado con el bug de colision de queryKey entre paginas). | Pendiente | Alta | UI / UX |
+| BE-031 | Columna de terapeuta responsable en agenda_eventos (hoy solo created_by, que es auditoria, no responsabilidad clinica). Prerrequisito para filtrar "mis pacientes de hoy" en UI-034 con multiples terapeutas. Nivel 3: requiere DEC previa. | Pendiente | Media-alta | Integracion Backend |
 | DOC-001 | Manual de ambientes. | Documental / pendiente implementacion futura | Alta | Control de desarrollo |
 | DOC-002 | Procedimiento de backup/restauracion. | Documental / pendiente prueba futura | Alta | Control de desarrollo / Integracion Backend |
 | DOC-003 | Politica de carga de datos reales. | Documental / pendiente implementacion futura | Alta | Control de desarrollo |
@@ -1290,6 +1301,87 @@ Anular; (3) directorio del dia con hora y estado del evento por tarjeta.
 - `invalidateQueries` tras cada mutacion (pagina ya migrada a TanStack Query).
 - Empty state explicito cuando no hay citas hoy, con acceso al registro completo.
 - Sin cambios de esquema; sin Supabase remoto; validacion con demo SEC-007B + seed local.
+
+### UI-035 a UI-044 y BE-031 - Brechas funcionales detectadas en comprobacion visual 2026-07-09
+
+**Origen comun:** comprobacion visual pagina por pagina (Javier + sesion Claude, 2026-07-09)
+cruzada con FASE1-BARRIDO-2026-07-08.md. Criterio: capacidades ausentes verificadas contra
+codigo real, no estilo. Cada una se detalla al tomarse; aqui queda el contexto minimo
+suficiente para no perder el hallazgo.
+
+#### UI-035 - Vista del dia en Consultas (Media-alta)
+`ConsultasPage` muestra todo el historico y el formulario de alta fijo en pantalla. Replicar
+patron DEC-043: consultas de hoy por defecto, alta bajo demanda. Depende de que UI-034 valide
+el patron primero. Sin cambios de esquema (`fecha_consulta` ya existe).
+
+#### UI-036 - hora_evaluacion invisible (Baja)
+`evaluaciones.hora_evaluacion` es NOT NULL con default `localtime` (migracion
+20260605213000:13): siempre guarda la hora del servidor al insertar, el formulario no la pide
+y ninguna tarjeta la muestra. Decidir: agregarla al formulario (como hora_inicio/termino de
+Consultas) o documentarla como dato puramente tecnico.
+
+#### UI-037 - CasosPage/CasoDetallePage sin TanStack Query + bug de carga (Alta)
+Unicas paginas de datos sin migrar (junto a Reportes). Bug real en `cargarBaseCasos`
+(CasosPage:433-483): 4 consultas encadenadas con los `set*` diferidos al final — si falla solo
+la ultima, se descarta TODO (pacientes ya cargados incluidos), select de paciente queda vacio
+y el boton Guardar deshabilitado sin explicacion. Migrar a queries independientes +
+`invalidateQueries` como Evaluaciones/Consultas. Ademas: chequeo de duplicados solo en memoria
+del cliente (sin constraint UNIQUE en BD, riesgo de carrera con 2 usuarios).
+
+#### UI-038 - Verificar formulario de intervenciones post-merge (Media)
+PR #107 (tabs) y PR #108 (formulario UI-013) tocaron ambos `TrabajosCasoPanel.tsx` y se
+mergearon el mismo dia. QA pendiente: confirmar en la app que el formulario "Nueva
+intervencion" quedo activo y funcional dentro del tab Intervenciones del detalle de caso,
+con un insert real contra la BD local (los CHECK constraints ya se corrigieron en #108).
+
+#### UI-039 - Anulacion de eventos de Agenda (Media-alta)
+AgendaPage es la unica pagina con update, pero no expone cancelar/anular eventos. Los estados
+`cancelado`/`anulado` existen en el CHECK de `agenda_eventos.estado_evento` y la policy UPDATE
+ya lo permite. Relevante ademas porque el panel del dia de UI-034 excluye cancelados: sin esta
+UI no hay forma de sacar una cita del dia.
+
+#### UI-040 - Creacion de cobros y registro de pagos (Alta)
+El modulo financiero completo en BD (tablas cobros/pagos, triggers de estado, vistas, RLS
+finanzas) existe desde 20260606052000 pero **ninguna UI escribe en el**: FinanzasPage solo
+lee `vista_finanzas_unidades_cobrables`. Sin este flujo, todo el modulo de pagos es
+infraestructura muerta y las metricas financieras siempre estaran vacias. Definir con Control
+el flujo (desde el caso via PagosCasoPanel, desde Finanzas, o ambos) y los campos permitidos
+por rol segun BE-025 (ya integrado).
+
+#### UI-041 - Truncamiento silencioso a 1000 filas (Alta)
+`max_rows = 1000` en config.toml (PostgREST) trunca sin error. FinanzasPage y ReportesPage
+calculan KPIs client-side sobre el array recibido: con 1000+ filas los totales financieros
+saldrian incompletos sin aviso. Opciones: paginacion `.range()`, `{count:'exact'}` con aviso
+"mostrando N de M", o mover agregados a SQL/RPC (preferido para KPIs).
+
+#### UI-042 - Pantalla de carga de Reportes rota (Media)
+ReportesPage:818 usa `if (cargando && !rolActivo)`: `setRolActivo` corre antes que las cargas
+de datos, la guarda deja de bloquear y se renderizan "Sin actividad para mostrar"/"Sin pagos
+registrados" enganosos mientras los datos reales siguen en vuelo. Fix minimo: `if (cargando)`.
+Fix real: migrar a TanStack Query (junto con UI-037).
+
+#### UI-043 - Reportes re-resuelve el rol (Media)
+ReportesPage:118/156-158/224-248 duplican byte a byte `rolesValidos`/`esRolUsuario` de
+AuthContext y `obtenerRolActivo()` repite `auth.getUser()` + query a `usuarios_internos` que
+AuthContext ya resolvio — 2 llamadas de red redundantes por carga, y probable causa del hack
+`setTimeout(...,0)`. Usar `useAuth().usuarioInterno.rol` directo.
+
+#### UI-044 - ErrorBoundary global (Alta)
+No existe ningun ErrorBoundary en el arbol (App.tsx/main.tsx): cualquier excepcion de render
+desmonta la app completa a pantalla en blanco. No es teorico: la colision de queryKey
+`['pacientes']` entre paginas (FASE1, hallazgo alta) produce exactamente ese crash al navegar
+entre modulos. Agregar boundary por ruta con mensaje de recuperacion + boton reintentar.
+
+#### BE-031 - Terapeuta responsable en agenda_eventos (Media-alta, Nivel 3)
+`agenda_eventos` no tiene columna de profesional responsable; `created_by` es auditoria
+(quien registro), no responsabilidad clinica. Sin ella: el panel del dia de UI-034 no puede
+filtrar "MIS pacientes de hoy" con 2+ terapeutas, y el detector de huecos/sobrecarga
+(agenda-resumen-semanal, DEC-041) agrupa por `created_by` como proxy documentado. Cambio de
+esquema + RLS: **Nivel 3, requiere DEC-0xx aprobada antes de implementar** (patron DEC-041/042).
+
+**Ya cubiertos por tareas existentes, no se duplican:** edicion/anulacion de consultas/
+evaluaciones/casos = UI-033; gate clinico del detalle de caso = UI-010 (decision de producto
+pendiente); MFA = UI-024; colision de queryKey y casts `as unknown as` = FASE1/UI-028.
 
 ### DOC-001 - Manual de ambientes
 
