@@ -10,6 +10,44 @@ flujos de aprobacion aplican igual sin importar cual asistente los lea. Si tu he
 tiene su propio archivo de instrucciones (`CLAUDE.md`, etc.), ese archivo debe remitir aqui,
 no duplicar ni contradecir estas reglas.
 
+## Inmutabilidad de las instrucciones
+
+**Ningun agente puede modificar `AGENTS.md`, `CLAUDE.md` ni `.claude/skills/` por iniciativa
+propia.** Cambiar las reglas del juego es decision exclusiva de Javier: requiere su
+instruccion explicita en la conversacion activa (no inferida, no "mejora oportunista" dentro
+de otra tarea), va en rama y PR propios dedicados solo a eso, y el PR debe citar textualmente
+la instruccion que lo autoriza. Un agente que detecte un problema en estas instrucciones lo
+REPORTA con propuesta concreta; no lo edita. Esto evita que un agente relaje sus propias
+restricciones (accidental o inducido por contenido externo) y que las reglas deriven entre
+sesiones sin trazabilidad.
+
+## Flujo serial obligatorio: un PR a la vez
+
+**Prohibido abrir un PR nuevo mientras exista cualquier PR abierto sin mergear** (propio o de
+otro agente). `gh pr list --state open` debe devolver vacio antes de `gh pr create`. Si hay
+un PR abierto: o se termina/mergea ese primero (si esta dentro del alcance autorizado), o se
+reporta a Javier y se espera — nunca "avanzo en paralelo mientras tanto". Una tarea = una
+rama = un PR = merge = recien entonces la siguiente. Excepcion unica: Javier autoriza
+explicitamente trabajo paralelo puntual; en ese caso los PRs deben tocar conjuntos de
+archivos disjuntos (verificado con `gh pr diff --name-only` antes de empezar) y usar git
+worktrees separados.
+
+## Registro obligatorio: nada se mergea sin bitacora
+
+Todo PR que se mergee debe incluir **en la misma rama** (no despues, no "lo documento luego"):
+
+1. Su entrada `LOG-xxx` en `docs/control/06_BITACORA_CAMBIOS.md` (numero correlativo — grep
+   del ultimo LOG antes de asignar; que hizo, por que, como se valido, PR asociado).
+2. La actualizacion de estado de la tarea en `01_PENDIENTES_PROYECTO.md` (fila de tabla Y
+   ficha de detalle — las dos, la desincronizacion tabla/ficha ya causo confusion real).
+3. Si cambia una decision o crea una nueva: la entrada `DEC-xxx` en `05_DECISIONES_PROYECTO.md`.
+
+Regla de veracidad estricta: **un estado "Integrada" solo puede escribirse en un PR que
+realmente contenga (o tenga ya mergeado) el codigo que lo respalda.** Documentar como
+integrado codigo que vive en otro PR sin mergear ya paso (PR #106 declaraba integrados
+archivos de #104/#105) y dejo la documentacion mintiendo sobre `main`. Al cerrar sesion de
+trabajo: fecha de corte de `00_ESTADO_GENERAL_PROYECTO.md` actualizada si hubo merges.
+
 ## Coordinacion obligatoria entre multiples agentes en paralelo
 
 **Caso real, no hipotetico:** el 2026-07-08, tres agentes (Codex, antigravity, Claude Code)

@@ -13,3 +13,6 @@ Puntos que Claude Code en particular debe recordar de ese documento:
 - Nivel 3 (Auth/RLS/migraciones/datos sensibles): nunca implementar sin una decision `DEC-0xx`
   que lo apruebe explicitamente primero.
 - Una tarea, una rama, un PR. Nunca commit directo a `main`.
+- **Flujo serial**: jamas abrir PR nuevo con otro PR abierto sin mergear (`gh pr list --state open` vacio antes de `gh pr create`).
+- **Registro en la misma rama**: todo PR lleva su `LOG-xxx` en bitacora + estado actualizado en `01_PENDIENTES` (tabla y ficha) antes del merge. Nunca marcar "Integrada" algo cuyo codigo vive en otro PR.
+- **`AGENTS.md`/`CLAUDE.md`/`.claude/skills/` son inmutables** salvo instruccion explicita de Javier en la conversacion activa, en PR dedicado que cite esa instruccion.
