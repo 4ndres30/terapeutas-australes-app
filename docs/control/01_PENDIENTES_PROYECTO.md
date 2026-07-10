@@ -107,7 +107,7 @@ Este documento es la lista maestra de pendientes. Cada pendiente debe tener un c
 | UI-031 | Consolidar `src/lib/queries.ts` (migrar paginas a `QUERY_COLUMNS` o eliminar el archivo, hoy sin consumidores reales fuera de su propio test). | Pendiente | Baja | Integracion Backend |
 | UI-032 | Edicion y anulacion de pacientes ya registrados (hoy solo crear+listar; la matriz SEC-002 asume edicion que nunca se construyo). | Absorbida por UI-034 (DEC-043) | Alta | UI / UX / Integracion Backend |
 | UI-033 | Edicion y anulacion de consultas, evaluaciones y casos (ninguna pagina clinica tiene UI de update/anulacion; policies UPDATE/DELETE ya activas en BD sin consumidor). | Pendiente | Alta | UI / UX / Integracion Backend |
-| UI-034 | Redisenar PacientesPage como panel de trabajo diario: metricas arriba, barra de acciones (registro completo / nuevo / editar / anular), directorio del dia con citas de hoy desde agenda_eventos. Absorbe UI-032. | Aprobada (DEC-043) / pendiente implementacion | Alta | UI / UX / Integracion Backend |
+| UI-034 | Redisenar PacientesPage como panel de trabajo diario: metricas arriba, barra de acciones (registro completo / nuevo / editar / anular), directorio del dia con citas de hoy desde agenda_eventos. Absorbe UI-032. | Integrada local/demo por PR #118 / validada visual con admin demo | Alta | UI / UX / Integracion Backend |
 | UI-035 | ConsultasPage: vista del dia (consultas de hoy por defecto) + formulario de alta bajo demanda, replicando el patron DEC-043 de Pacientes. | Pendiente | Media-alta | UI / UX |
 | UI-036 | EvaluacionesPage: exponer hora_evaluacion en formulario y tarjetas (columna NOT NULL en BD, hoy invisible: siempre guarda hora del servidor). | Pendiente | Baja | UI / UX |
 | UI-037 | Migrar CasosPage y CasoDetallePage a TanStack Query + corregir bug de carga (si falla 1 de 4 consultas encadenadas se descarta todo el estado, incluidos datos ya cargados). | Pendiente | Alta | UI / UX / Integracion Backend |
@@ -1273,7 +1273,7 @@ de un registro ya creado ni de corregir un error de ingreso.
 
 ### UI-034 - Redisenar PacientesPage como panel de trabajo diario
 
-**Estado:** Aprobada (DEC-043) / pendiente implementacion
+**Estado:** Integrada local/demo por PR #118 (2026-07-09), validada visual con admin demo: panel del dia, edicion, anulacion/reactivacion y metricas verificadas contra BD
 **Prioridad:** Alta
 **Responsable:** UI / UX / Integracion Backend
 **Origen:** Instruccion directa de Javier, comprobacion visual 2026-07-09 / DEC-043
