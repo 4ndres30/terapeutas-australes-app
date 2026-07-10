@@ -4046,3 +4046,15 @@ editar = plano" (sin pasos, sin preview vivo en edicion) y UI-045 lo implementar
 Pacientes con validaciones compartidas via hook comun. El criterio queda como patron para la
 futura edicion de Consultas/Evaluaciones/Casos (UI-033). Solo documentacion; implementacion
 pendiente en rama propia.
+
+## LOG-101 - UI-042: fix de pantalla de carga de Reportes (PR #123)
+
+**Fecha:** 2026-07-09
+**Responsable:** Control de desarrollo (sesion Claude)
+
+ReportesPage:818 usaba `if (cargando && !rolActivo)`: setRolActivo corre antes de que
+terminen las cargas de datos, la guarda dejaba de bloquear y se renderizaban estados vacios
+enganosos ("Sin actividad para mostrar") con los datos aun en vuelo. Cambiada a
+`if (cargando)`; setCargando(false) ya estaba en finally, sin riesgo de spinner colgado.
+Verificado visual con admin demo: Reportes carga directo con indicadores reales, sin flash
+de vacios. tsc/lint/tests limpios.
