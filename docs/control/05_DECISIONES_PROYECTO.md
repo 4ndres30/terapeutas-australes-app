@@ -1383,4 +1383,28 @@ espacio sin agregar informacion: los datos ya existen y se ven en los propios ca
 ### Restricciones
 
 - Solo local/demo, rama propia, validacion visual con Javier antes de merge.
+
+## DEC-045 - Preview adaptativo en wizard de alta (panel en desktop, confirmacion en tablet/movil)
+
+**Estado:** Aprobada
+**Origen:** Instruccion de Javier (2026-07-10)
+**Fecha:** 2026-07-10
+
+### Decision propuesta
+
+El wizard de nuevo paciente (`vista === 'nuevo'`) adaptara la visualizacion del preview y la confirmacion segun el tamaño de la pantalla:
+- En pantallas de escritorio (`≥ 1025px`), el panel lateral de "Preview vivo" se mantiene visible en tiempo real (comportamiento actual).
+- En pantallas de tabletas y telefonos (`≤ 1024px`), el panel lateral de preview se oculta. Al presionar el boton de guardar (que se renombra a "Revisar y guardar"), se despliega una ventana de confirmacion fullscreen con el resumen del nuevo paciente.
+- La ventana de confirmacion presenta dos acciones claras: "Confirmar y guardar" (envia el formulario a Supabase) y "Volver a editar" (cierra la ventana y permite seguir editando).
+
+### Razon
+
+En dispositivos moviles y tablets, el panel lateral de preview colapsa y se desplaza al final de la pagina (debajo del formulario), lo que obliga a realizar un scroll innecesario y le quita valor funcional. Al ocultarlo durante la edicion y presentarlo solo al final como un paso de validacion / confirmacion, se optimiza el espacio util y se garantiza que el terapeuta revise y valide los datos cargados antes de persistirlos.
+
+### Impacto
+
+- **PacientesPage.css / PacientesPage.tsx**: se definen estilos responsivos con el breakpoint `1024px` para ocultar el preview del alta, mostrar el boton de "Revisar y guardar" en moviles/tablets y el de "Guardar paciente" en desktop.
+- **Modal de confirmacion**: implementado con accesibilidad y diseño centrado responsivo.
+- Cero impacto en el formulario de edicion plano (UI-045) y en el wizard en desktop.
+
 - Sin cambios de esquema ni RLS.

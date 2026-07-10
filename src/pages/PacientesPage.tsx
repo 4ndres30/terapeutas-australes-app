@@ -1,5 +1,5 @@
 import type { FormEvent, KeyboardEvent } from 'react'
-import { useMemo, useState } from 'react'
+import { useMemo, useRef, useState } from 'react'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { formatearFecha, normalizarTexto } from '../lib/format'
 import { supabase } from '../lib/supabase'
@@ -366,6 +366,10 @@ function PacientesPage() {
   const [formulario, setFormulario] = useState<FormularioPaciente>(formularioInicial)
   // Errores inline para formulario plano de edición (UI-045)
   const [errorEdicion, setErrorEdicion] = useState('')
+  // UI-046 / DEC-045: overlay de confirmación en tablet/mobile
+  const [mostrandoConfirmacionMovil, setMostrandoConfirmacionMovil] = useState(false)
+  // Ref al form del wizard para submit programático desde el overlay
+  const formAltaRef = useRef<HTMLFormElement>(null)
 
   async function invalidarConsultasPacientes() {
     await Promise.all([
@@ -608,7 +612,47 @@ function PacientesPage() {
 
     setFormulario(formularioInicial)
     setPasoActivo('identidad')
+    setMostrandoConfirmacionMovil(false)
     setGuardando(false)
+  }
+
+  // ---------------------------------------------------------------------------
+  // UI-046: Revisar y guardar (tablet/mobile) — abre overlay de confirmación
+  // ---------------------------------------------------------------------------
+
+  function manejarRevisarYGuardar() {
+    const validacion = validarFormularioPaciente(formulario)
+    if (validacion) {
+      // Misma lógica del wizard: mueve al paso con el error
+      const mapaCampoPaso: Partial<Record<keyof FormularioPaciente, PasoFicha>> = {
+        nombres: 'identidad', apellidos: 'identidad',
+        fecha_nacimiento: 'identidad', sexo: 'identidad',
+        telefono: 'contacto', email: 'contacto',
+        comuna: 'ubicacion', region: 'ubicacion',
+        estado: 'estado',
+      }
+      setPasoActivo(mapaCampoPaso[validacion.campo] || 'identidad')
+      setMensajeGuardado(`Error: ${validacion.mensaje}`)
+      return
+    }
+    // Anti-duplicado (igual que en guardarPaciente)
+    const pacienteParaGuardar = prepararPacienteParaGuardar(formulario)
+    const clavePacienteNuevo = construirClavePaciente(pacienteParaGuardar)
+    const existeDuplicado = pacientes.some((p) =>
+      construirClavePaciente(pacienteAFormulario(p)) === clavePacienteNuevo
+    )
+    if (existeDuplicado) {
+      setPasoActivo('identidad')
+      setMensajeGuardado('Error: Este paciente ya existe con exactamente los mismos datos.')
+      return
+    }
+    // Formulario válido → abre la ventana de confirmación
+    setMostrandoConfirmacionMovil(true)
+  }
+
+  function confirmarYGuardar() {
+    // El submit dispara guardarPaciente() que cierra el overlay en la ruta de éxito
+    formAltaRef.current?.requestSubmit()
   }
 
   // ---------------------------------------------------------------------------
@@ -1139,8 +1183,23 @@ function PacientesPage() {
           </div>
 
           <div className="form-panel-actions">
-            <button className="guardar-paciente" disabled={guardando} form="paciente-form" type="submit">
+            {/* Botón desktop (≥ 1025px): guarda directo */}
+            <button
+              className="guardar-paciente guardar-wizard--desktop"
+              disabled={guardando}
+              form="paciente-form"
+              type="submit"
+            >
               {guardando ? 'Guardando...' : 'Guardar paciente'}
+            </button>
+            {/* Botón tablet/mobile (≤ 1024px): abre overlay de confirmación */}
+            <button
+              className="guardar-paciente guardar-wizard--movil"
+              disabled={guardando}
+              onClick={manejarRevisarYGuardar}
+              type="button"
+            >
+              Revisar y guardar
             </button>
           </div>
         </div>
@@ -1164,6 +1223,7 @@ function PacientesPage() {
           <form
             className="formulario-ficha formulario-ficha--command"
             id="paciente-form"
+            ref={formAltaRef}
             onKeyDown={manejarEnterFormulario}
             onSubmit={guardarPaciente}
           >
@@ -1207,6 +1267,79 @@ function PacientesPage() {
             </div>
           </aside>
         </div>
+
+        {/* UI-046 / DEC-045: overlay de confirmación — solo en tablet/mobile (≤ 1024px) */}
+        {mostrandoConfirmacionMovil && (
+          <div
+            className="wizard-confirmacion-overlay"
+            role="dialog"
+            aria-modal="true"
+            aria-label="Confirmar datos del nuevo paciente"
+          >
+            <div className="wizard-confirmacion-panel">
+              <div className="wizard-confirmacion-cabecera">
+                <div className="preview-avatar wizard-confirmacion-avatar" aria-hidden="true">
+                  {obtenerIniciales(formulario.nombres, formulario.apellidos)}
+                </div>
+                <div>
+                  <span className="panel-kicker">Confirmación</span>
+                  <h2 className="wizard-confirmacion-titulo">
+                    {nombrePreview || 'Nuevo paciente'}
+                  </h2>
+                  <span className={`estado-badge estado-badge--${formulario.estado}`}>
+                    {obtenerEtiquetaOpcion(opcionesEstado, formulario.estado) || formulario.estado}
+                  </span>
+                </div>
+              </div>
+
+              <p className="wizard-confirmacion-subtitulo">
+                Revisá el resumen antes de guardar. Si necesitás corregir algo, volvé a editar.
+              </p>
+
+              <div className="wizard-confirmacion-datos">
+                <div className="wizard-confirmacion-dato">
+                  <strong>Tel.</strong>
+                  <span>{mostrarDato(formulario.telefono)}</span>
+                </div>
+                <div className="wizard-confirmacion-dato">
+                  <strong>Email</strong>
+                  <span>{mostrarDato(formulario.email)}</span>
+                </div>
+                <div className="wizard-confirmacion-dato">
+                  <strong>Zona</strong>
+                  <span>{mostrarDato(ubicacionPreview)}</span>
+                </div>
+                <div className="wizard-confirmacion-dato">
+                  <strong>Sexo</strong>
+                  <span>{sexoPreview || 'Pendiente'}</span>
+                </div>
+                <div className="wizard-confirmacion-dato">
+                  <strong>Nacimiento</strong>
+                  <span>{fechaNacimientoPreview}</span>
+                </div>
+              </div>
+
+              <div className="wizard-confirmacion-acciones">
+                <button
+                  className="accion-vista"
+                  disabled={guardando}
+                  onClick={() => setMostrandoConfirmacionMovil(false)}
+                  type="button"
+                >
+                  Volver a editar
+                </button>
+                <button
+                  className="guardar-paciente"
+                  disabled={guardando}
+                  onClick={confirmarYGuardar}
+                  type="button"
+                >
+                  {guardando ? 'Guardando...' : 'Confirmar y guardar'}
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
       </section>
     )
   }

@@ -4109,3 +4109,33 @@ No toca Auth/RLS/migraciones. Valores enum del CHECK real: 'activo'/'inactivo', 
 'masculino'/'otro'/'prefiere_no_decir'. Fecha date-only con slice(0,10), nunca toISOString.
 PROD-001 sigue bloqueante.
 
+## LOG-104 - UI-046: preview adaptativo en el wizard de alta de pacientes (DEC-045)
+
+**Fecha:** 2026-07-10
+**Responsable:** Control de desarrollo (sesion Antigravity / Gemini)
+**PR:** feature/ui-046-preview-adaptativo-wizard (pendiente merge de PR #125 primero)
+**Tarea:** UI-046
+**Decision:** DEC-045
+
+Implementa el comportamiento responsivo/adaptativo del panel de preview del wizard de alta de nuevo paciente:
+
+- `src/pages/PacientesPage.tsx` (MODIFICADO):
+  - Añade estado `mostrandoConfirmacionMovil` y ref `formAltaRef` para disparar el submit del formulario.
+  - Implementa botones adaptativos en el wizard: un botón `guardar-wizard--desktop` para guardar directamente en escritorio (`≥ 1025px`), y un botón `guardar-wizard--movil` que abre la confirmación móvil en pantallas pequeñas (`≤ 1024px`).
+  - Añade un modal de confirmación responsivo (`wizard-confirmacion-overlay`) con el resumen de datos ingresados y acciones correspondientes (Confirmar y guardar, Volver a editar).
+  - Al completar la persistencia exitosa del nuevo paciente, se resetean el formulario y el estado del modal.
+
+- `src/pages/PacientesPage.css` (MODIFICADO):
+  - Define `.intake-command-layout` para estructurar el panel de alta en desktop (2 columnas: formulario + preview vivo).
+  - Añade estilos para los botones adaptativos (`.guardar-wizard--desktop`, `.guardar-wizard--movil`).
+  - Define clases para el modal de confirmación móvil (`.wizard-confirmacion-overlay`, `.wizard-confirmacion-panel`, `.wizard-confirmacion-cabecera`, `.wizard-confirmacion-avatar`, `.wizard-confirmacion-titulo`, `.wizard-confirmacion-subtitulo`, `.wizard-confirmacion-datos`, `.wizard-confirmacion-dato`, `.wizard-confirmacion-acciones`).
+  - Implementa media query `max-width: 1024px` para ocultar el preview del alta, cambiar la disposición de las columnas y mostrar las acciones móviles.
+  - Implementa media query `max-width: 560px` para adaptar el panel de confirmación en móviles ultra pequeños.
+
+Validaciones:
+- `npx tsc --noEmit` limpio.
+- `npm run lint` limpio.
+- `npm run test` limpio.
+- `npm run build` limpio.
+- Validación visual de diseño responsive realizada.
+
