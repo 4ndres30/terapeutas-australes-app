@@ -85,6 +85,53 @@ Hallazgo visual adicional registrado por Javier durante revision en navegador:
 mantenerse en una sola linea en desktop, pero con una fila mas estrecha y armoniosa mediante
 ajustes de densidad visual. No se implementa dentro de CTRL-015.
 
+Hallazgos del shell global registrados en la misma revision:
+
+- `UI-049 - Sidebar desktop como rail colapsable y accesible`: recuperar ancho util mostrando
+  iconos por defecto y etiquetas al pasar el puntero o enfocar la navegacion, con opcion de
+  fijado y sin reemplazar el drawer responsive de UI-027.
+- `UI-050 - Barra superior como encabezado contextual compacto`: eliminar la franja vacia,
+  reunir contexto del modulo, ambiente e identidad de usuario en una fila estable y acercar
+  acciones primarias sin duplicar encabezados.
+
+Ambas son propuestas Nivel 2 pendientes. Por compartir el shell global deben implementarse
+en secuencia: primero UI-049 y, una vez validada, UI-050. No se implementan en CTRL-015.
+
+## UI-049 - Sidebar desktop como rail colapsable y accesible
+
+**Estado:** Pendiente recomendado
+**Prioridad:** Media-alta
+**Nivel documental:** Nivel 2
+
+La solucion recomendada mantiene el drawer actual en `<= 1080px` y usa un rail de iconos en
+desktop. La expansion temporal responde a hover y foco de teclado sin desplazar el formulario;
+un control de fijado permite reservar el ancho expandido cuando el usuario lo prefiera.
+
+El modo colapsado debe conservar item activo, etiquetas accesibles/tooltips, navegacion por
+teclado y filtrado por rol. Marca, mensaje institucional, estado/version y cierre de sesion
+deben disponer de una variante compacta coherente, sin textos recortados ni acciones ocultas.
+
+Validacion minima futura: rutas principales, roles admin/terapeuta/finanzas, desktop y
+transicion al drawer responsive, sin overflow, solapamientos ni saltos del contenido.
+
+## UI-050 - Barra superior como encabezado contextual compacto
+
+**Estado:** Pendiente recomendado
+**Prioridad:** Media-alta
+**Nivel documental:** Nivel 2
+
+La solucion recomendada reemplaza la banda superior desaprovechada por una fila de 56-72 px:
+contexto real del modulo a la izquierda; ambiente, usuario y rol a la derecha; acciones
+primarias cercanas al titulo cuando corresponda. Debe evitar duplicar el encabezado de cada
+pagina y evitar que el track del grid se estire verticalmente.
+
+`IndicadorAmbiente` y el bloqueo visual de produccion de UI-020/UI-021 son controles de
+seguridad operativa y se conservan. En tablet/mobile tambien se mantiene el boton del drawer
+de UI-027, con titulo y controles compactos sin recortes ni superposiciones.
+
+UI-050 se implementa despues de UI-049 y en PR propio. No requiere DEC mientras conserve
+rutas, permisos y comportamiento; cualquier cambio de esas reglas debe volver a Control.
+
 ## UI-001 - Auditar pantallas principales y pulido visual
 
 **Estado:** Integrada

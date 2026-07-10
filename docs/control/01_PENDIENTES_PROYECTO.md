@@ -126,6 +126,8 @@ Este documento es la lista maestra de pendientes. Cada pendiente debe tener un c
 | UI-046 | Preview adaptativo en wizard de alta de pacientes: panel lateral en desktop, overlay/modal de confirmacion al guardar en tablet/mobile (DEC-045). | Integrada en main por PR #126 / local-demo / pendiente QA-012 | Alta | UI / UX |
 | UI-047 | Normalizacion de queryKeys TanStack Query para pacientes y selectores. | Pendiente recomendado | Alta | UI / UX / Integracion Backend |
 | UI-048 | Compactar fila de indicadores superiores de PacientesPage manteniendo una sola linea desktop. | Pendiente recomendado | Media-alta | UI / UX / Pulido visual |
+| UI-049 | Convertir la sidebar desktop en rail colapsable: iconos por defecto, expansion por hover/foco y fijado opcional, conservando drawer movil y navegacion por rol. | Pendiente recomendado | Media-alta | UI / UX / Pulido visual |
+| UI-050 | Redisenar la barra superior como encabezado contextual compacto, sin franja vacia y preservando ambiente, usuario y acciones del modulo. | Pendiente recomendado | Media-alta | UI / UX / Pulido visual |
 | DOC-001 | Manual de ambientes. | Documental / pendiente implementacion futura | Alta | Control de desarrollo |
 | DOC-002 | Procedimiento de backup/restauracion. | Documental / pendiente prueba futura | Alta | Control de desarrollo / Integracion Backend |
 | DOC-003 | Politica de carga de datos reales. | Documental / pendiente implementacion futura | Alta | Control de desarrollo |
@@ -243,7 +245,7 @@ La siguiente tarea recomendada queda como `QA-006F - Validacion RLS/Storage loca
 Sincronizar la documentacion de control despues de integrar PR #125 y PR #126 en `main`, retirando referencias temporales a draft, merge pendiente o dependencia de PR anterior para UI-045/UI-046.
 
 #### Resultado
-UI-045 queda registrada como integrada en `main` por PR #125 y UI-046 como integrada en `main` por PR #126. Se registra QA-012 como siguiente regresion visual/funcional recomendada para `PacientesPage`, UI-047 como pendiente recomendado para normalizar queryKeys TanStack Query relacionados con pacientes y selectores, y UI-048 como ajuste visual recomendado para compactar la fila superior de indicadores.
+UI-045 queda registrada como integrada en `main` por PR #125 y UI-046 como integrada en `main` por PR #126. Se registra QA-012 como siguiente regresion visual/funcional recomendada para `PacientesPage`, UI-047 como pendiente recomendado para normalizar queryKeys TanStack Query relacionados con pacientes y selectores, UI-048 como ajuste visual recomendado para compactar la fila superior de indicadores, UI-049 para recuperar ancho util mediante una sidebar desktop colapsable y UI-050 para recuperar alto util mediante un encabezado contextual compacto.
 
 No modifica codigo funcional, migraciones, Auth/RLS, `.env`, Supabase remoto, Google/Gemini, produccion ni datos reales.
 
@@ -402,7 +404,7 @@ Investigar por que las corridas recientes de GitHub Actions aparecen con conclus
   o configuracion de repositorio.
 - Confirmar si afecta checks requeridos antes de merge.
 - Mantener separada cualquier correccion de workflow en una rama propia.
-- No mezclar con QA-012, UI-047, UI-048 ni features funcionales.
+- No mezclar con QA-012, UI-047, UI-048, UI-049, UI-050 ni features funcionales.
 
 #### Resultado
 Pendiente recomendado. No se corrige en CTRL-015.
@@ -1562,7 +1564,7 @@ La revision post PR #125/#126 confirma que `ConsultasPage`, `EvaluacionesPage` y
 - Definir nombres de queryKey estables y especificos por superficie o selector.
 - Evitar romper invalidateQueries existentes en `PacientesPage`.
 - Incluir prueba o verificacion visual de navegacion entre Pacientes, Consultas y Evaluaciones.
-- No mezclar con QA-012, UI-048 ni con nuevas features funcionales.
+- No mezclar con QA-012, UI-048, UI-049, UI-050 ni con nuevas features funcionales.
 
 #### Resultado
 Pendiente recomendado. No se implementa en CTRL-015.
@@ -1588,11 +1590,98 @@ en una sola linea en desktop, pero ocupar menos alto y menos espacio visual.
   tamano de iconos y jerarquia tipografica.
 - Conservar lectura rapida de metricas, etiquetas y estados.
 - Evitar overflow horizontal y validar responsive en desktop, tablet y mobile.
+- Mantener su implementacion separada de UI-049 y UI-050 para aislar la regresion visual.
 - No modificar logica de metricas, datos, queries, Auth/RLS, DB, migraciones ni servicios.
 
 #### Resultado
 Pendiente recomendado. Solo se registra documentalmente en CTRL-015; no se implementa CSS ni
 codigo funcional en esta rama.
+
+### UI-049 - Sidebar desktop como rail colapsable y accesible
+
+**Estado:** Pendiente recomendado
+**Prioridad:** Media-alta
+**Responsable:** UI / UX / Pulido visual
+**Origen:** Observacion visual de Javier durante revision local/demo del shell interno
+**Fecha creacion:** 2026-07-10
+**Dependencias:** UI-023, UI-027
+**Nivel documental:** Nivel 2
+
+#### Descripcion
+Recuperar ancho util para formularios y paneles reemplazando la sidebar desktop fija de
+aproximadamente 240 px por un rail colapsado que muestre iconos. Al interactuar con la
+navegacion debe expandirse para mostrar las etiquetas, sin alterar el drawer movil ya
+integrado por UI-027 ni el filtrado de modulos por rol de UI-023.
+
+#### Criterios de aceptacion propuestos
+
+- Aplicar el rail solo en desktop (`> 1080px`); en tablet/mobile conservar el drawer lateral,
+  backdrop y cierres por boton, enlace y `Escape` de UI-027.
+- Usar un ancho colapsado estable cercano a 72 px, con iconos centrados y estado activo
+  inequívoco; las etiquetas deben ocultarse sin quedar cortadas ni reservar espacio.
+- Expandir con puntero y con `:focus-within` o mecanismo equivalente para teclado. Incorporar
+  un control de fijado o alternativa accesible que permita mantener la barra expandida.
+- Evitar saltos del contenido principal durante la expansion temporal; la expansion por
+  hover/foco debe superponerse de forma controlada y el modo fijado puede reservar ancho.
+- Mostrar nombre accesible y tooltip para cada accion cuando el rail este colapsado.
+- Adaptar marca, mensaje institucional, version/estado y cierre de sesion al modo compacto,
+  sin solapamientos ni perdida de acciones esenciales.
+- Respetar `prefers-reduced-motion`, conservar el orden de foco y mantener el filtrado por rol.
+- Validar Inicio, Pacientes, Consultas, Evaluaciones, Casos, Agenda, Finanzas/Pagos, Reportes
+  y Configuracion con los roles demo que correspondan, sin overflow horizontal.
+- No modificar rutas, permisos, Auth/RLS, DB, migraciones, datos, servicios ni produccion.
+
+#### Orden recomendado
+Implementar y validar UI-049 antes de UI-050 porque ambas tareas modificaran el shell global,
+`App.tsx` y sus capas CSS. Deben ir en ramas y PRs seriales separados.
+
+#### Resultado
+Pendiente recomendado. Solo se registra documentalmente en CTRL-015; no se implementa codigo
+ni CSS en esta rama.
+
+### UI-050 - Barra superior como encabezado contextual compacto
+
+**Estado:** Pendiente recomendado
+**Prioridad:** Media-alta
+**Responsable:** UI / UX / Pulido visual
+**Origen:** Observacion visual de Javier durante revision local/demo del shell interno
+**Fecha creacion:** 2026-07-10
+**Dependencias:** UI-020, UI-021, UI-023, UI-027, UI-029, UI-049
+**Nivel documental:** Nivel 2
+
+#### Descripcion
+Eliminar la franja superior vacia o sobredimensionada del shell y convertirla en un
+encabezado contextual compacto. Debe aprovechar el espacio para identificar el modulo y
+acercar sus acciones principales, preservando el indicador de ambiente, la identidad del
+usuario y el rol visible.
+
+#### Criterios de aceptacion propuestos
+
+- Mantener una altura desktop estable entre 56 y 72 px y evitar que la fila del grid se
+  estire para ocupar espacio vertical disponible.
+- Mostrar a la izquierda el contexto real de la ruta (modulo, titulo breve o breadcrumb) y
+  evitar duplicar un encabezado equivalente dentro de la pagina.
+- Mantener a la derecha `IndicadorAmbiente`, avatar, nombre y rol; UI-020/UI-021 no pueden
+  eliminarse ni perder visibilidad por el rediseno.
+- Acercar las acciones primarias del modulo al encabezado cuando corresponda, sin cambiar su
+  comportamiento ni inventar acciones no existentes.
+- En tablet/mobile conservar el boton del drawer, un titulo compacto y los controles de
+  ambiente/usuario sin superposiciones, recortes ni overflow horizontal.
+- Mantener contexto correcto al navegar por todas las rutas protegidas y respetar las
+  superficies visibles para cada rol.
+- Validar desktop, tablet y mobile en las rutas principales, incluyendo formularios largos,
+  estados vacios y contenido con scroll.
+- No modificar logica clinica, datos, queries, rutas, Auth/RLS, DB, migraciones, servicios ni
+  produccion.
+
+#### Decision documental
+No se crea una DEC en esta etapa: UI-050 registra una propuesta Nivel 2 pendiente. La
+implementacion debe definir el contrato de contexto por ruta dentro de su propio alcance y
+solo requeriria una DEC nueva si intentara cambiar navegacion, permisos o reglas funcionales.
+
+#### Resultado
+Pendiente recomendado. Solo se registra documentalmente en CTRL-015; no se implementa codigo
+ni CSS en esta rama.
 
 
 ### DOC-001 - Manual de ambientes

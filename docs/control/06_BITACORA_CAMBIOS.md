@@ -4182,3 +4182,51 @@ indicaban draft, merge pendiente, rama lista o dependencia de merge del PR anter
 ### Resultado
 Repositorio documentalmente ordenado post PR #125/#126 y listo para ejecutar QA-012 o, en ramas separadas, UI-047/UI-048.
 
+## LOG-106 - Registro documental UI-049/UI-050 para optimizar el shell interno
+
+**Fecha:** 2026-07-10
+**Rama:** `ctrl-015-sync-docs-post-pr-125-126`
+**PR:** #127
+**Responsable:** Control de desarrollo (Codex) / propuesta Javier
+**Tareas:** UI-049, UI-050
+
+### Resumen
+Durante la revision local/demo en navegador, Javier identifico dos superficies globales que
+reducen innecesariamente el espacio de formularios: la sidebar desktop fija y una barra
+superior con una franja amplia sin contenido util. Tras verificar que los IDs estaban libres,
+se registraron dos tareas separadas y coordinadas:
+
+- `UI-049`: sidebar desktop como rail colapsable y accesible, con iconos por defecto,
+  expansion por hover/foco, fijado opcional y preservacion del drawer movil y filtros por rol.
+- `UI-050`: barra superior como encabezado contextual compacto, con contexto de modulo,
+  ambiente, usuario, rol y acciones primarias distribuidos en una fila estable.
+
+### Clasificacion y orden
+Ambas tareas quedan como Nivel 2 por modificar la interaccion y el layout del shell global.
+No requieren DEC mientras conserven rutas, permisos, Auth y comportamiento funcional. Como
+compartiran `App.tsx` y sus capas CSS, se recomienda implementar primero UI-049 y despues
+UI-050, en ramas y PRs seriales separados.
+
+### Documentos sincronizados
+- `00_ESTADO_GENERAL_PROYECTO.md`: propuestas y secuencia agregadas al estado vigente.
+- `01_PENDIENTES_PROYECTO.md`: filas de vista rapida y fichas completas agregadas.
+- `04_UI_UX_PULIDO_VISUAL.md`: criterio visual, accesibilidad y responsive consolidados.
+- `06_BITACORA_CAMBIOS.md`: LOG-106 agregado.
+- `09_NIVELES_DOCUMENTACION.md`: UI-049/UI-050 clasificadas como Nivel 2.
+- `auditorias/CTRL-015_SYNC_DOCUMENTAL_POST_PR_125_126.md`: alcance, riesgos y trazabilidad
+  del PR actualizados.
+
+`README.md` y `05_DECISIONES_PROYECTO.md` fueron revisados y no requieren cambio adicional:
+las tareas siguen como propuestas pendientes y no alteran el contrato operativo ni una
+decision aprobada del proyecto.
+
+### Restricciones respetadas
+- Solo documentacion; sin cambios en `src/` ni CSS.
+- Sin cambios de rutas, Auth/RLS, DB, migraciones, `.env`, Supabase remoto o servicios.
+- Sin produccion ni datos reales; `PROD-001` sigue bloqueante.
+- `supabase/snippets/` permanece fuera de alcance y sin versionar.
+
+### Resultado
+UI-049 y UI-050 quedan registradas de forma consistente, pendientes de implementacion y sin
+presentarlas como integradas. La documentacion conserva el orden serial y el alcance real.
+

@@ -9,7 +9,8 @@
 
 Ordenar la documentacion de control despues de la integracion de PR #125 y PR #126 en
 `main`, retirando referencias temporales que ya no representaban el estado real de
-UI-045/UI-046 y dejando registrado el siguiente bloque de QA recomendado.
+UI-045/UI-046, dejando registrado el siguiente bloque de QA recomendado e incorporando las
+propuestas visuales UI-048/UI-049/UI-050 observadas durante la revision local/demo.
 
 ## Optimizacion aplicada al prompt
 
@@ -25,6 +26,12 @@ Ajustes menores aplicados:
 - Se registro UI-048 como pendiente recomendado tras observacion visual de Javier sobre la
   fila de indicadores superiores de `PacientesPage`: deben mantenerse en una sola linea, pero
   con menor alto y densidad mas armoniosa.
+- Se registro UI-049 como pendiente recomendado para convertir la sidebar desktop en un rail
+  colapsable accesible, sin reemplazar el drawer movil ni el filtrado por rol existentes.
+- Se registro UI-050 como pendiente recomendado para reemplazar la franja superior vacia por
+  un encabezado contextual compacto que preserve ambiente, usuario, rol y acciones.
+- UI-049/UI-050 se clasificaron como Nivel 2 y se ordenaron en implementaciones seriales:
+  primero UI-049 y despues UI-050, porque ambas comparten el shell global.
 - Se registro QA-013 como pendiente recomendado al detectar `startup_failure` en las ultimas
   corridas de GitHub Actions.
 - No se amplio el alcance hacia implementacion, migraciones, Auth/RLS, Supabase remoto,
@@ -74,14 +81,20 @@ Ajustes menores aplicados:
 - `00_ESTADO_GENERAL_PROYECTO.md`: fecha de corte actualizada a 2026-07-10 y resumen de
   PRs #100-#126 alineado.
 - `01_PENDIENTES_PROYECTO.md`: registro de CTRL-015, QA-012, QA-013, UI-047 y UI-048;
-  estados de UI-045 y UI-046 corregidos; UI-044 alineada con PR #124.
+  registro posterior de UI-049/UI-050; estados de UI-045 y UI-046 corregidos; UI-044 alineada
+  con PR #124.
 - `04_UI_UX_PULIDO_VISUAL.md`: estado post UI-034/UI-045/UI-046, recomendacion QA-012 y
-  hallazgo visual UI-048.
+  propuestas visuales UI-048/UI-049/UI-050.
 - `05_DECISIONES_PROYECTO.md`: observaciones post-merge para DEC-044 y DEC-045.
-- `06_BITACORA_CAMBIOS.md`: LOG-103/LOG-104 alineados con PR #125/#126 y LOG-105 agregado.
+- `06_BITACORA_CAMBIOS.md`: LOG-103/LOG-104 alineados con PR #125/#126; LOG-105 y LOG-106
+  agregados.
 - `09_NIVELES_DOCUMENTACION.md`: clasificacion de QA-012, QA-013 y UI-047 como Nivel 2, y
-  UI-048 como Nivel 1.
+  UI-048 como Nivel 1; UI-049/UI-050 como Nivel 2.
 - `README.md`: IMP-002 actualizado como integrado local/demo y manual.
+
+Para UI-049/UI-050 se revisaron adicionalmente `README.md` y
+`05_DECISIONES_PROYECTO.md` sin requerir cambios nuevos: siguen siendo propuestas pendientes
+de implementacion y no alteran una decision aprobada, rutas, permisos ni reglas operativas.
 
 ## Expresiones obsoletas eliminadas
 
@@ -136,6 +149,11 @@ recomendado, con alcance minimo:
   usando `queryKey: ['pacientes']`; no se implementa en esta rama.
 - `UI-048` queda recomendado: la fila superior de indicadores de `PacientesPage` debe
   compactarse visualmente manteniendo una sola linea desktop; no se implementa en esta rama.
+- `UI-049` queda recomendado: la sidebar desktop debe evolucionar a rail colapsable accesible,
+  conservando drawer movil y navegacion filtrada por rol; no se implementa en esta rama.
+- `UI-050` queda recomendado despues de UI-049: la barra superior debe convertirse en header
+  contextual compacto sin retirar el indicador de ambiente ni la identidad de usuario; no se
+  implementa en esta rama.
 - `QA-013` queda recomendado: `gh run list --limit 10` muestra corridas recientes de GitHub
   Actions con conclusion `startup_failure`, incluyendo corridas sobre `main` posteriores a
   PR #125/#126. No se corrige en esta rama.
@@ -156,8 +174,10 @@ recomendado, con alcance minimo:
 - `git status --short`: OK, solo archivos documentales stageados y `supabase/snippets/` no
   trackeado fuera de alcance.
 - `git diff --name-only`: OK, sin diferencias unstaged despues del staging final.
+- Verificacion cruzada de UI-049/UI-050: tabla, fichas, memoria UI/UX, nivel, bitacora, estado
+  general y auditoria presentes; sin referencias que las declaren integradas.
 
 ## Veredicto Control Desarrollo V3
 
 Repositorio documentalmente ordenado post PR #125/#126, sin nuevas features funcionales,
-listo para QA-012 o para UI-047/UI-048 en ramas separadas.
+listo para QA-012 o para UI-047/UI-048/UI-049/UI-050 en ramas separadas y seriales.
