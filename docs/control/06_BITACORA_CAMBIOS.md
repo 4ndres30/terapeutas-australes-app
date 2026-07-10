@@ -3968,3 +3968,40 @@ Destacan: UI-040 (el modulo financiero en BD no tiene ninguna UI que escriba en 
 (truncamiento silencioso a 1000 filas afecta KPIs), UI-044 (sin ErrorBoundary, crash conocido
 por colision de queryKey), UI-037 (bug de carga de CasosPage) y BE-031 (columna de terapeuta
 responsable en agenda_eventos, prerrequisito del filtro "mis pacientes" de UI-034).
+
+## LOG-095 - Activacion real de DELETE policies y security_invoker en vista de fotos (PR #113)
+
+**Fecha:** 2026-07-09
+**Responsable:** Control de desarrollo (sesion Claude)
+
+Migracion `20260709000000`: GRANT DELETE a authenticated en las 9 tablas operativas (las
+policies FOR DELETE de `20260704000002` eran inertes sin el grant — Postgres cortaba por
+privilegios antes de evaluar la policy) y `security_invoker=true` + revoke explicito en
+`vista_finanzas_fotos_auditoria` (unica vista sin el patron de doble capa). Verificado
+funcionalmente con rol real: admin borra caso Anulado, caso Abierto protegido. Cierra los 2
+hallazgos criticos de FASE1-BARRIDO-2026-07-08.
+
+## LOG-096 - Skills operativas para agentes de IA (PR #117)
+
+**Fecha:** 2026-07-09
+**Responsable:** Control de desarrollo (sesion Claude) / aprobado por Javier
+
+Se crean `.claude/skills/`: `/demo-env` (reconstruir ambiente demo local: usuarios SEC-007B +
+seed, con gate de verificacion en BD), `/verificar-rls` (probar tablas/vistas/policies
+simulando rol real, con los gotchas que causaron bugs reales: update sin policy select = 0
+filas silencioso, policy sin grant = inerte, vista sin security_invoker = bypass) y `/pre-pr`
+(checklist ejecutable de AGENTS.md: solapamiento con PRs abiertas, colision de IDs, CHECK
+constraints reales, validaciones). Referencian AGENTS.md, no duplican reglas.
+
+## LOG-097 - UI-034 integrada: PacientesPage como panel de trabajo diario (PR #118)
+
+**Fecha:** 2026-07-09
+**Responsable:** Control de desarrollo (sesion Claude) / DEC-043 aprobada por Javier
+
+Implementacion completa de DEC-043: metricas superiores (activos/citas hoy/atendidas/
+pendientes), barra de vistas (Pacientes de hoy default / Registro completo / Nuevo paciente
+bajo demanda), panel del dia con una tarjeta por cita (hora local Chile, tipo, modalidad,
+estado; cancelado/no_asistio excluidos), edicion con wizard precargado (cierra UI-032,
+absorbida) y anulacion logica con Reactivar (BE-021, sin delete fisico). Validacion visual
+real con admin demo contra BD local: metricas, edicion (updated_at verificado), anulacion y
+reactivacion confirmadas. tsc/lint/tests/build limpios; revision de diff sin hallazgos.
