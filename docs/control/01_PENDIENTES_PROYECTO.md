@@ -119,6 +119,7 @@ Este documento es la lista maestra de pendientes. Cada pendiente debe tener un c
 | UI-043 | ReportesPage: eliminar re-resolucion de rol (rolesValidos/esRolUsuario/obtenerRolActivo duplican AuthContext byte a byte y agregan 2 llamadas de red redundantes por carga). | Pendiente | Media | UI / UX |
 | UI-044 | ErrorBoundary global por ruta: hoy cualquier error de render desmonta toda la app a pantalla en blanco (confirmado con el bug de colision de queryKey entre paginas). | Pendiente | Alta | UI / UX |
 | BE-031 | Columna de terapeuta responsable en agenda_eventos (hoy solo created_by, que es auditoria, no responsabilidad clinica). Prerrequisito para filtrar "mis pacientes de hoy" en UI-034 con multiples terapeutas. Nivel 3: requiere DEC previa. | Pendiente | Media-alta | Integracion Backend |
+| UI-045 | Formulario plano de edicion de pacientes: todos los campos visibles a la vez, sin pasos ni preview vivo (DEC-044: crear=guiado, editar=plano; validaciones compartidas con el wizard via hook comun). | Aprobada (DEC-044) / pendiente implementacion | Alta | UI / UX |
 | DOC-001 | Manual de ambientes. | Documental / pendiente implementacion futura | Alta | Control de desarrollo |
 | DOC-002 | Procedimiento de backup/restauracion. | Documental / pendiente prueba futura | Alta | Control de desarrollo / Integracion Backend |
 | DOC-003 | Politica de carga de datos reales. | Documental / pendiente implementacion futura | Alta | Control de desarrollo |
@@ -1382,6 +1383,32 @@ esquema + RLS: **Nivel 3, requiere DEC-0xx aprobada antes de implementar** (patr
 **Ya cubiertos por tareas existentes, no se duplican:** edicion/anulacion de consultas/
 evaluaciones/casos = UI-033; gate clinico del detalle de caso = UI-010 (decision de producto
 pendiente); MFA = UI-024; colision de queryKey y casts `as unknown as` = FASE1/UI-028.
+
+### UI-045 - Formulario plano de edicion de pacientes
+
+**Estado:** Aprobada (DEC-044) / pendiente implementacion
+**Prioridad:** Alta
+**Responsable:** UI / UX
+**Origen:** Observacion de Javier sobre UI-034 en uso / DEC-044
+**Fecha creacion:** 2026-07-09
+**Dependencias:** UI-034 (integrada), DEC-044
+
+#### Descripcion
+
+La edicion abierta desde UI-034 reutilizaba el wizard de alta por secciones. DEC-044 la
+reemplaza por formulario plano: 10 campos (nombres, apellidos, fecha nacimiento, sexo,
+telefono, email, comuna, region, estado) visibles y editables simultaneamente, grid 2
+columnas desktop / 1 mobile, Guardar/Cancelar fijos sin scroll, SIN preview vivo. Alta
+sigue con wizard intacto.
+
+#### Criterios de aceptacion preliminares
+
+- Extraer validaciones/estado a hook compartido con el wizard (anti-duplicados excluyendo
+  al propio paciente incluido) — cero duplicacion de logica de validacion.
+- Sin preview en edicion; el preview del alta no se toca.
+- invalidateQueries y anulacion/reactivar sin cambios.
+- Criterio DEC-044 (crear=guiado, editar=plano) queda como patron para UI-033.
+- Validacion visual con Javier (ambiente demo) antes de merge.
 
 ### DOC-001 - Manual de ambientes
 

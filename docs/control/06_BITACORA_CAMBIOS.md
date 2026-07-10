@@ -4034,3 +4034,15 @@ mecanicamente `gh pr create` si existe cualquier PR abierto sin mergear (aplica 
 Claude Code desde su proximo inicio). CI de GitHub Actions ya existia y cubre
 typecheck+lint+test+build (`build` corre `tsc -b`), sin cambios. Falta solo la branch
 protection de `main` en GitHub, configuracion manual del dueno del repositorio.
+
+## LOG-100 - DEC-044 y UI-045: edicion plana sin pasos ni preview
+
+**Fecha:** 2026-07-09
+**Responsable:** Control de desarrollo (sesion Claude) / aprobado por Javier
+
+Observacion de Javier usando UI-034: editar paciente abria el mismo wizard por secciones del
+alta, lento para correcciones puntuales. DEC-044 fija el criterio general "crear = guiado,
+editar = plano" (sin pasos, sin preview vivo en edicion) y UI-045 lo implementara en
+Pacientes con validaciones compartidas via hook comun. El criterio queda como patron para la
+futura edicion de Consultas/Evaluaciones/Casos (UI-033). Solo documentacion; implementacion
+pendiente en rama propia.

@@ -1348,3 +1348,39 @@ wizard de alta hoy ocupa media pantalla de forma permanente aunque se use espora
 
 Registrada como tarea UI-034 en `01_PENDIENTES_PROYECTO.md`. UI-032 queda absorbida como
 sub-entrega de UI-034 (misma pagina, mismo patron de mutacion).
+
+## DEC-044 - Edicion plana sin pasos ni preview: criterio general "crear guiado, editar plano"
+
+**Estado:** Aprobada
+**Origen:** Observacion directa de Javier sobre UI-034 en uso (2026-07-09)
+**Fecha:** 2026-07-09
+
+### Decision propuesta
+
+La edicion de registros existentes usa formulario plano de una sola vista: todos los campos
+visibles y editables simultaneamente, sin navegacion por pasos y **sin preview vivo**. El
+wizard por secciones queda solo para el alta. Criterio general del proyecto: **crear =
+guiado, editar = plano** — aplica primero a Pacientes (UI-045) y despues a la edicion de
+Consultas/Evaluaciones/Casos (UI-033) sin re-decidirlo por pagina.
+
+### Razon
+
+Editar es corregir 1-2 campos puntuales; re-recorrer un flujo guiado de 4 pasos contradice
+la finalidad declarada de la aplicacion (optimizacion del tiempo y del orden de trabajo).
+El preview vivo aporta en el alta (se construye la ficha desde cero) pero en edicion roba
+espacio sin agregar informacion: los datos ya existen y se ven en los propios campos.
+
+### Impacto
+
+- UI-045: formulario plano de edicion de pacientes (10 campos en grid 2 columnas desktop /
+  1 mobile, botones Guardar/Cancelar fijos visibles sin scroll, sin preview).
+- Validaciones y estado compartidos con el wizard via hook comun (`usePacienteForm` o
+  equivalente): anti-duplicados excluyendo al propio paciente, normalizacion, mensajes.
+  Nunca dos copias de la logica de validacion.
+- El alta con wizard y su preview vivo no cambian. Anulacion/reactivar e invalidateQueries
+  no cambian.
+
+### Restricciones
+
+- Solo local/demo, rama propia, validacion visual con Javier antes de merge.
+- Sin cambios de esquema ni RLS.
