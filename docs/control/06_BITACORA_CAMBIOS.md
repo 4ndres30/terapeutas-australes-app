@@ -4005,3 +4005,17 @@ estado; cancelado/no_asistio excluidos), edicion con wizard precargado (cierra U
 absorbida) y anulacion logica con Reactivar (BE-021, sin delete fisico). Validacion visual
 real con admin demo contra BD local: metricas, edicion (updated_at verificado), anulacion y
 reactivacion confirmadas. tsc/lint/tests/build limpios; revision de diff sin hallazgos.
+
+## LOG-098 - Reglas de orden para agentes: inmutabilidad de instrucciones, flujo serial de PRs y registro obligatorio
+
+**Fecha:** 2026-07-09
+**Responsable:** Control de desarrollo (sesion Claude) / instruccion explicita de Javier
+
+Se agregan a AGENTS.md (y resumen en CLAUDE.md) tres reglas duras: (1) ningun agente puede
+modificar AGENTS.md/CLAUDE.md/.claude/skills/ sin instruccion explicita de Javier citada en
+un PR dedicado; (2) flujo serial obligatorio — prohibido abrir PR nuevo con otro abierto sin
+mergear, paralelo solo con autorizacion explicita + archivos disjuntos + worktrees; (3)
+registro obligatorio en la misma rama — todo PR lleva su LOG-xxx, estado actualizado en
+01_PENDIENTES (tabla y ficha) y regla de veracidad: "Integrada" solo si el codigo respaldo
+esta en ese PR o ya mergeado (el PR #106 documento como integrado codigo de otros PRs sin
+mergear, dejando la documentacion mintiendo sobre main).
