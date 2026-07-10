@@ -4158,6 +4158,7 @@ indicaban draft, merge pendiente, rama lista o dependencia de merge del PR anter
 - `UI-046` queda registrada como integrada en `main` por PR #126 / local-demo / pendiente QA-012.
 - `QA-012` queda recomendada como regresion visual y funcional de `PacientesPage`.
 - `UI-047` queda recomendada para normalizar queryKeys TanStack Query de pacientes y selectores.
+- `UI-048` queda recomendada para compactar la fila de indicadores superiores de `PacientesPage`.
 - `QA-013` queda recomendada para investigar `startup_failure` de GitHub Actions CI.
 - README queda alineado con IMP-002 ya integrado: la derivacion manual hallazgo -> trabajo existe en local/demo.
 
@@ -4179,5 +4180,5 @@ indicaban draft, merge pendiente, rama lista o dependencia de merge del PR anter
 - `PROD-001` sigue bloqueante.
 
 ### Resultado
-Repositorio documentalmente ordenado post PR #125/#126 y listo para ejecutar QA-012 o, en rama separada, UI-047.
+Repositorio documentalmente ordenado post PR #125/#126 y listo para ejecutar QA-012 o, en ramas separadas, UI-047/UI-048.
 

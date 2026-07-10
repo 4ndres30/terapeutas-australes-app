@@ -22,6 +22,9 @@ Ajustes menores aplicados:
   estado de proyecto y seguia diciendo que la derivacion hallazgo -> trabajo estaba pendiente.
 - Se registro UI-047 como pendiente recomendado al confirmar que aun existen queryKeys
   `['pacientes']` compartidas en varias superficies internas.
+- Se registro UI-048 como pendiente recomendado tras observacion visual de Javier sobre la
+  fila de indicadores superiores de `PacientesPage`: deben mantenerse en una sola linea, pero
+  con menor alto y densidad mas armoniosa.
 - Se registro QA-013 como pendiente recomendado al detectar `startup_failure` en las ultimas
   corridas de GitHub Actions.
 - No se amplio el alcance hacia implementacion, migraciones, Auth/RLS, Supabase remoto,
@@ -70,12 +73,14 @@ Ajustes menores aplicados:
 
 - `00_ESTADO_GENERAL_PROYECTO.md`: fecha de corte actualizada a 2026-07-10 y resumen de
   PRs #100-#126 alineado.
-- `01_PENDIENTES_PROYECTO.md`: registro de CTRL-015, QA-012, QA-013 y UI-047; estados de
-  UI-045 y UI-046 corregidos; UI-044 alineada con PR #124.
-- `04_UI_UX_PULIDO_VISUAL.md`: estado post UI-034/UI-045/UI-046 y recomendacion QA-012.
+- `01_PENDIENTES_PROYECTO.md`: registro de CTRL-015, QA-012, QA-013, UI-047 y UI-048;
+  estados de UI-045 y UI-046 corregidos; UI-044 alineada con PR #124.
+- `04_UI_UX_PULIDO_VISUAL.md`: estado post UI-034/UI-045/UI-046, recomendacion QA-012 y
+  hallazgo visual UI-048.
 - `05_DECISIONES_PROYECTO.md`: observaciones post-merge para DEC-044 y DEC-045.
 - `06_BITACORA_CAMBIOS.md`: LOG-103/LOG-104 alineados con PR #125/#126 y LOG-105 agregado.
-- `09_NIVELES_DOCUMENTACION.md`: clasificacion de QA-012, QA-013 y UI-047 como Nivel 2.
+- `09_NIVELES_DOCUMENTACION.md`: clasificacion de QA-012, QA-013 y UI-047 como Nivel 2, y
+  UI-048 como Nivel 1.
 - `README.md`: IMP-002 actualizado como integrado local/demo y manual.
 
 ## Expresiones obsoletas eliminadas
@@ -129,6 +134,8 @@ recomendado, con alcance minimo:
   requiere DEC previa antes de migraciones/RLS.
 - `UI-047` queda recomendado: `ConsultasPage`, `EvaluacionesPage` y `PacientesPage` siguen
   usando `queryKey: ['pacientes']`; no se implementa en esta rama.
+- `UI-048` queda recomendado: la fila superior de indicadores de `PacientesPage` debe
+  compactarse visualmente manteniendo una sola linea desktop; no se implementa en esta rama.
 - `QA-013` queda recomendado: `gh run list --limit 10` muestra corridas recientes de GitHub
   Actions con conclusion `startup_failure`, incluyendo corridas sobre `main` posteriores a
   PR #125/#126. No se corrige en esta rama.
@@ -153,4 +160,4 @@ recomendado, con alcance minimo:
 ## Veredicto Control Desarrollo V3
 
 Repositorio documentalmente ordenado post PR #125/#126, sin nuevas features funcionales,
-listo para QA-012 o para UI-047 en una rama separada.
+listo para QA-012 o para UI-047/UI-048 en ramas separadas.

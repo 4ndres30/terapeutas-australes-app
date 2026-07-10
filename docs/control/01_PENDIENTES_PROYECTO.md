@@ -125,6 +125,7 @@ Este documento es la lista maestra de pendientes. Cada pendiente debe tener un c
 | UI-045 | Formulario plano de edicion de pacientes: todos los campos visibles a la vez, sin pasos ni preview vivo (DEC-044: crear=guiado, editar=plano; validaciones compartidas con el wizard via hook comun). | Integrada en main por PR #125 / local-demo / pendiente QA-012 | Alta | UI / UX |
 | UI-046 | Preview adaptativo en wizard de alta de pacientes: panel lateral en desktop, overlay/modal de confirmacion al guardar en tablet/mobile (DEC-045). | Integrada en main por PR #126 / local-demo / pendiente QA-012 | Alta | UI / UX |
 | UI-047 | Normalizacion de queryKeys TanStack Query para pacientes y selectores. | Pendiente recomendado | Alta | UI / UX / Integracion Backend |
+| UI-048 | Compactar fila de indicadores superiores de PacientesPage manteniendo una sola linea desktop. | Pendiente recomendado | Media-alta | UI / UX / Pulido visual |
 | DOC-001 | Manual de ambientes. | Documental / pendiente implementacion futura | Alta | Control de desarrollo |
 | DOC-002 | Procedimiento de backup/restauracion. | Documental / pendiente prueba futura | Alta | Control de desarrollo / Integracion Backend |
 | DOC-003 | Politica de carga de datos reales. | Documental / pendiente implementacion futura | Alta | Control de desarrollo |
@@ -242,7 +243,7 @@ La siguiente tarea recomendada queda como `QA-006F - Validacion RLS/Storage loca
 Sincronizar la documentacion de control despues de integrar PR #125 y PR #126 en `main`, retirando referencias temporales a draft, merge pendiente o dependencia de PR anterior para UI-045/UI-046.
 
 #### Resultado
-UI-045 queda registrada como integrada en `main` por PR #125 y UI-046 como integrada en `main` por PR #126. Se registra QA-012 como siguiente regresion visual/funcional recomendada para `PacientesPage` y UI-047 como pendiente recomendado para normalizar queryKeys TanStack Query relacionados con pacientes y selectores.
+UI-045 queda registrada como integrada en `main` por PR #125 y UI-046 como integrada en `main` por PR #126. Se registra QA-012 como siguiente regresion visual/funcional recomendada para `PacientesPage`, UI-047 como pendiente recomendado para normalizar queryKeys TanStack Query relacionados con pacientes y selectores, y UI-048 como ajuste visual recomendado para compactar la fila superior de indicadores.
 
 No modifica codigo funcional, migraciones, Auth/RLS, `.env`, Supabase remoto, Google/Gemini, produccion ni datos reales.
 
@@ -374,6 +375,7 @@ Ejecutar una regresion visual y funcional local/demo de `PacientesPage` despues 
 - Sin errores de consola.
 - Sin pantalla blanca.
 - Sin overflow horizontal.
+- Densidad visual de indicadores superiores consistente y sin uso excesivo de alto.
 - Sin regresion del wizard de alta.
 - Sin regresion del formulario plano de edicion.
 
@@ -400,7 +402,7 @@ Investigar por que las corridas recientes de GitHub Actions aparecen con conclus
   o configuracion de repositorio.
 - Confirmar si afecta checks requeridos antes de merge.
 - Mantener separada cualquier correccion de workflow en una rama propia.
-- No mezclar con QA-012, UI-047 ni features funcionales.
+- No mezclar con QA-012, UI-047, UI-048 ni features funcionales.
 
 #### Resultado
 Pendiente recomendado. No se corrige en CTRL-015.
@@ -1560,10 +1562,37 @@ La revision post PR #125/#126 confirma que `ConsultasPage`, `EvaluacionesPage` y
 - Definir nombres de queryKey estables y especificos por superficie o selector.
 - Evitar romper invalidateQueries existentes en `PacientesPage`.
 - Incluir prueba o verificacion visual de navegacion entre Pacientes, Consultas y Evaluaciones.
-- No mezclar con QA-012 ni con nuevas features funcionales.
+- No mezclar con QA-012, UI-048 ni con nuevas features funcionales.
 
 #### Resultado
 Pendiente recomendado. No se implementa en CTRL-015.
+
+### UI-048 - Compactar fila de indicadores superiores de PacientesPage
+
+**Estado:** Pendiente recomendado
+**Prioridad:** Media-alta
+**Responsable:** UI / UX / Pulido visual
+**Origen:** Observacion visual de Javier durante revision local/demo de `PacientesPage`
+**Fecha creacion:** 2026-07-10
+**Dependencias:** UI-034, UI-045, UI-046, QA-012
+
+#### Descripcion
+Reducir el peso visual de los indicadores superiores de `PacientesPage`. La fila actual se
+percibe demasiado alta y poco armoniosa para el panel diario: los indicadores deben seguir
+en una sola linea en desktop, pero ocupar menos alto y menos espacio visual.
+
+#### Criterios de aceptacion propuestos
+
+- Mantener los indicadores superiores en una sola linea en desktop.
+- Reducir alto visual de la fila y tarjetas mediante ajustes de padding, min-height, gap,
+  tamano de iconos y jerarquia tipografica.
+- Conservar lectura rapida de metricas, etiquetas y estados.
+- Evitar overflow horizontal y validar responsive en desktop, tablet y mobile.
+- No modificar logica de metricas, datos, queries, Auth/RLS, DB, migraciones ni servicios.
+
+#### Resultado
+Pendiente recomendado. Solo se registra documentalmente en CTRL-015; no se implementa CSS ni
+codigo funcional en esta rama.
 
 
 ### DOC-001 - Manual de ambientes

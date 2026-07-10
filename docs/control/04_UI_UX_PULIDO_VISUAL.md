@@ -80,6 +80,11 @@ Riesgo tecnico relacionado: `UI-047 - Normalizacion de queryKeys TanStack Query 
 y selectores`, recomendado en tarea separada. No se implementa dentro de la sincronizacion
 CTRL-015.
 
+Hallazgo visual adicional registrado por Javier durante revision en navegador:
+`UI-048 - Compactar fila de indicadores superiores de PacientesPage`. Los indicadores deben
+mantenerse en una sola linea en desktop, pero con una fila mas estrecha y armoniosa mediante
+ajustes de densidad visual. No se implementa dentro de CTRL-015.
+
 ## UI-001 - Auditar pantallas principales y pulido visual
 
 **Estado:** Integrada

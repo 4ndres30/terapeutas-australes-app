@@ -98,6 +98,7 @@ No debe ejecutarse sin:
 | QA-013 | Nivel 2 | Revision de GitHub Actions CI sin tocar produccion ni datos reales. |
 | UI-025B | Nivel 2 | Alta y edicion controlada de `agenda_eventos` dentro del sistema interno. |
 | UI-047 | Nivel 2 | Normalizacion de queryKeys TanStack Query en superficies internas, sin DB/RLS/Auth. |
+| UI-048 | Nivel 1 | Ajuste CSS/visual menor para compactar indicadores de PacientesPage sin cambiar flujo ni datos. |
 | BE-026 | Nivel 3 | Contrato de API publica de agendamiento. |
 | BE-027 | Nivel 3 | Integracion Google Calendar/Gmail/Workspace. |
 | PROD-001 | Bloqueo transversal | Impide datos reales, produccion y uso oficial hasta cierre formal. |
