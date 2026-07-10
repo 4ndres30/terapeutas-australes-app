@@ -684,6 +684,179 @@
   color: var(--ta-danger);
 }
 
+/* UI-034 / DEC-043: panel de trabajo diario */
+.pacientes-acciones-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 16px;
+}
+
+.accion-vista {
+  align-items: center;
+  background: rgba(255, 255, 255, 0.88);
+  border: 1px solid rgba(91, 44, 131, 0.2);
+  border-radius: 14px;
+  color: var(--ta-purple-800);
+  cursor: pointer;
+  display: inline-flex;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 800;
+  justify-content: center;
+  min-height: 42px;
+  padding: 10px 16px;
+  transition: background 160ms ease, border-color 160ms ease, box-shadow 160ms ease, color 160ms ease, transform 160ms ease;
+}
+
+.accion-vista:hover:not(:disabled) {
+  border-color: rgba(109, 63, 211, 0.4);
+  transform: translateY(-1px);
+}
+
+.accion-vista:disabled {
+  cursor: not-allowed;
+  opacity: 0.64;
+}
+
+.accion-vista--activa {
+  background: linear-gradient(135deg, var(--ta-purple-900), var(--ta-purple-700));
+  border-color: var(--ta-purple-800);
+  box-shadow: 0 10px 18px rgba(91, 44, 131, 0.18);
+  color: #ffffff;
+}
+
+.pacientes-vista-contenido {
+  margin-top: 16px;
+}
+
+.pacientes-vista-contenido > section {
+  width: 100%;
+}
+
+.pacientes-mensaje-live {
+  margin-top: 16px;
+}
+
+.pacientes-mensaje-live:empty {
+  border: none;
+  margin: 0;
+  padding: 0;
+}
+
+.pacientes-dia-panel .estado-listado {
+  display: grid;
+  gap: 4px;
+  justify-items: center;
+  padding: 26px 18px;
+}
+
+.pacientes-dia-panel .estado-listado .accion-vista--vacio {
+  margin-top: 12px;
+}
+
+.cita-dia-hora {
+  align-items: center;
+  background: linear-gradient(135deg, var(--ta-lavender-100), #ffffff);
+  border: 1px solid var(--ta-lavender-200);
+  border-radius: 16px;
+  color: var(--ta-purple-900);
+  display: grid;
+  gap: 2px;
+  height: 58px;
+  justify-items: center;
+  padding: 8px 6px;
+  width: 64px;
+}
+
+.cita-dia-hora strong {
+  font-size: 15px;
+  font-weight: 900;
+  letter-spacing: -0.02em;
+  line-height: 1;
+}
+
+.cita-dia-hora span {
+  color: var(--ta-muted);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.paciente-card__acciones {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.card-accion {
+  align-items: center;
+  background: rgba(241, 233, 255, 0.72);
+  border: 1px solid rgba(91, 44, 131, 0.18);
+  border-radius: 999px;
+  color: var(--ta-purple-800);
+  cursor: pointer;
+  display: inline-flex;
+  font: inherit;
+  font-size: 12px;
+  font-weight: 800;
+  justify-content: center;
+  min-height: 32px;
+  padding: 6px 12px;
+  transition: border-color 160ms ease, transform 160ms ease;
+}
+
+.card-accion:hover:not(:disabled) {
+  border-color: rgba(109, 63, 211, 0.36);
+  transform: translateY(-1px);
+}
+
+.card-accion:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.card-accion--peligro {
+  background: var(--ta-danger-bg);
+  border-color: rgba(190, 52, 85, 0.24);
+  color: var(--ta-danger);
+}
+
+.card-accion--positivo {
+  background: var(--ta-success-bg);
+  border-color: rgba(22, 131, 79, 0.24);
+  color: var(--ta-success);
+}
+
+.estado-evento-badge--programado {
+  background: var(--ta-lavender-100);
+  color: var(--ta-purple-800);
+}
+
+.estado-evento-badge--confirmado {
+  background: var(--ta-success-bg);
+  color: var(--ta-success);
+}
+
+.estado-evento-badge--reagendado {
+  background: var(--ta-gold-100);
+  color: var(--ta-gold-500);
+}
+
+.estado-evento-badge--completado {
+  background: rgba(226, 232, 240, 0.8);
+  color: #475569;
+}
+
+.form-panel-actions {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
 @media (max-width: 1320px) {
   .metricas-dashboard {
     grid-template-columns: repeat(2, minmax(0, 1fr));
