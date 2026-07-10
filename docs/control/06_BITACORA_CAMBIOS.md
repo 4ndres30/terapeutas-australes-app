@@ -4058,3 +4058,15 @@ enganosos ("Sin actividad para mostrar") con los datos aun en vuelo. Cambiada a
 `if (cargando)`; setCargando(false) ya estaba en finally, sin riesgo de spinner colgado.
 Verificado visual con admin demo: Reportes carga directo con indicadores reales, sin flash
 de vacios. tsc/lint/tests limpios.
+
+## LOG-102 - UI-044: ErrorBoundary global (PR #124)
+
+**Fecha:** 2026-07-09
+**Responsable:** Control de desarrollo (sesion Claude)
+
+Nuevo src/components/ErrorBoundary.tsx (class component estandar: getDerivedStateFromError +
+componentDidCatch con log a consola) envolviendo el arbol de rutas dentro de BrowserRouter en
+App.tsx. Ante un error de render muestra pantalla de recuperacion en espanol con boton
+Reintentar y enlace al inicio, en vez de desmontar toda la app a pantalla en blanco (riesgo
+real: colision de queryKey ['pacientes'] entre paginas, FASE1 hallazgo alta, aun pendiente).
+tsc/lint/build limpios; app verificada operativa en preview con el boundary montado.
