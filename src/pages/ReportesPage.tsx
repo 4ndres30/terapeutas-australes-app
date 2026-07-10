@@ -815,7 +815,7 @@ function ReportesPage() {
     return () => window.clearTimeout(carga)
   }, [cargarReportes])
 
-  if (cargando && !rolActivo) {
+  if (cargando) {
     return <PantallaCargaReportes />
   }
 
