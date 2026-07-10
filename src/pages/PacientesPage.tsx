@@ -3,6 +3,19 @@ import { useMemo, useState } from 'react'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { formatearFecha, normalizarTexto } from '../lib/format'
 import { supabase } from '../lib/supabase'
+import {
+  type FormularioPaciente,
+  type OpcionFormulario,
+  formularioInicial,
+  opcionesSexo,
+  opcionesEstado,
+  regionesChile,
+  construirClavePaciente,
+  validarFormularioPaciente,
+  prepararPacienteParaGuardar,
+  pacienteAFormulario,
+  obtenerEtiquetaOpcion,
+} from '../hooks/usePacienteForm'
 import './PacientesPage.css'
 
 type Paciente = {
@@ -38,24 +51,8 @@ type CitaDelDia = {
 type VistaPacientes = 'dia' | 'registro' | 'nuevo'
 type FiltroEstado = 'todos' | 'activos' | 'inactivos'
 type TipoMetrica = 'activos' | 'citas' | 'atendidas' | 'pendientes'
+// PasoFicha sigue siendo necesario para el wizard de alta (intacto)
 type PasoFicha = 'identidad' | 'contacto' | 'ubicacion' | 'estado'
-
-type FormularioPaciente = {
-  nombres: string
-  apellidos: string
-  fecha_nacimiento: string
-  sexo: string
-  telefono: string
-  email: string
-  comuna: string
-  region: string
-  estado: string
-}
-
-type OpcionFormulario = {
-  etiqueta: string
-  valor: string
-}
 
 type PasoFichaConfig = {
   clave: PasoFicha
@@ -64,18 +61,6 @@ type PasoFichaConfig = {
   titulo: string
   descripcion: string
   tono: string
-}
-
-const formularioInicial: FormularioPaciente = {
-  nombres: '',
-  apellidos: '',
-  fecha_nacimiento: '',
-  sexo: '',
-  telefono: '',
-  email: '',
-  comuna: '',
-  region: '',
-  estado: 'activo',
 }
 
 const vistasPacientes: { etiqueta: string; valor: VistaPacientes }[] = [
@@ -90,18 +75,6 @@ const filtrosEstado: { etiqueta: string; valor: FiltroEstado }[] = [
   { etiqueta: 'Inactivos', valor: 'inactivos' },
 ]
 
-const opcionesSexo: OpcionFormulario[] = [
-  { etiqueta: 'Femenino', valor: 'femenino' },
-  { etiqueta: 'Masculino', valor: 'masculino' },
-  { etiqueta: 'Otro', valor: 'otro' },
-  { etiqueta: 'Prefiere no decir', valor: 'prefiere_no_decir' },
-]
-
-const opcionesEstado: OpcionFormulario[] = [
-  { etiqueta: 'Activo', valor: 'activo' },
-  { etiqueta: 'Inactivo', valor: 'inactivo' },
-]
-
 const ESTADOS_CITA_ACTIVA: EstadoEventoHoy[] = ['programado', 'confirmado', 'reagendado']
 
 const AGENDA_HOY_SELECT = [
@@ -112,25 +85,6 @@ const AGENDA_HOY_SELECT = [
   'modalidad',
   'tipo_evento',
 ].join(', ')
-
-const regionesChile = [
-  'Arica y Parinacota',
-  'Tarapacá',
-  'Antofagasta',
-  'Atacama',
-  'Coquimbo',
-  'Valparaíso',
-  'Metropolitana de Santiago',
-  "Libertador General Bernardo O'Higgins",
-  'Maule',
-  'Ñuble',
-  'Biobío',
-  'La Araucanía',
-  'Los Ríos',
-  'Los Lagos',
-  'Aysén del General Carlos Ibáñez del Campo',
-  'Magallanes y de la Antártica Chilena',
-]
 
 const pasosFicha: PasoFichaConfig[] = [
   {
@@ -166,6 +120,10 @@ const pasosFicha: PasoFichaConfig[] = [
     tono: 'verde',
   },
 ]
+
+// ---------------------------------------------------------------------------
+// Helpers de acceso a BD
+// ---------------------------------------------------------------------------
 
 async function obtenerPacientes(): Promise<Paciente[]> {
   const { data, error } = await supabase
@@ -210,6 +168,10 @@ async function obtenerEventosHoy(): Promise<EventoAgendaHoy[]> {
   return (data || []) as unknown as EventoAgendaHoy[]
 }
 
+// ---------------------------------------------------------------------------
+// Helpers visuales
+// ---------------------------------------------------------------------------
+
 function horaLocal(fecha: string) {
   const parseada = new Date(fecha)
 
@@ -232,10 +194,6 @@ function formatearEtiqueta(valor: string | null | undefined) {
     .join(' ')
 }
 
-function normalizarClave(texto: string) {
-  return normalizarTexto(texto.trim().replace(/\s+/g, ' '))
-}
-
 function obtenerIniciales(nombres: string, apellidos: string) {
   const inicialNombre = nombres.trim().charAt(0)
   const inicialApellido = apellidos.trim().charAt(0)
@@ -244,54 +202,8 @@ function obtenerIniciales(nombres: string, apellidos: string) {
   return iniciales ? iniciales.toUpperCase() : 'TA'
 }
 
-function obtenerEtiqueta(opciones: OpcionFormulario[], valor: string) {
-  return opciones.find((opcion) => opcion.valor === valor)?.etiqueta || ''
-}
-
 function mostrarDato(valor: string, respaldo = 'Pendiente') {
   return valor.trim() || respaldo
-}
-
-function prepararPacienteParaGuardar(formulario: FormularioPaciente) {
-  return {
-    nombres: formulario.nombres.trim(),
-    apellidos: formulario.apellidos.trim(),
-    fecha_nacimiento: formulario.fecha_nacimiento,
-    sexo: formulario.sexo,
-    telefono: formulario.telefono.trim(),
-    email: formulario.email.trim().toLowerCase(),
-    comuna: formulario.comuna.trim(),
-    region: formulario.region.trim(),
-    estado: formulario.estado,
-  }
-}
-
-function construirClavePaciente(datos: FormularioPaciente | Paciente) {
-  return [
-    normalizarClave(datos.nombres),
-    normalizarClave(datos.apellidos),
-    datos.fecha_nacimiento.trim(),
-    normalizarClave(datos.sexo),
-    normalizarClave(datos.telefono),
-    normalizarClave(datos.email),
-    normalizarClave(datos.comuna),
-    normalizarClave(datos.region),
-    normalizarClave(datos.estado),
-  ].join('|')
-}
-
-function pacienteAFormulario(paciente: Paciente): FormularioPaciente {
-  return {
-    nombres: paciente.nombres || '',
-    apellidos: paciente.apellidos || '',
-    fecha_nacimiento: (paciente.fecha_nacimiento || '').slice(0, 10),
-    sexo: paciente.sexo || '',
-    telefono: paciente.telefono || '',
-    email: paciente.email || '',
-    comuna: paciente.comuna || '',
-    region: paciente.region || '',
-    estado: paciente.estado || 'activo',
-  }
 }
 
 function coincideConBusqueda(paciente: Paciente, busqueda: string) {
@@ -323,6 +235,10 @@ function coincideConFiltroEstado(paciente: Paciente, filtroEstado: FiltroEstado)
   return true
 }
 
+// ---------------------------------------------------------------------------
+// Helpers del wizard de alta (sólo para el modo 'nuevo', intacto)
+// ---------------------------------------------------------------------------
+
 function obtenerResumenPaso(paso: PasoFicha, formulario: FormularioPaciente) {
   if (paso === 'identidad') {
     const nombre = `${formulario.nombres} ${formulario.apellidos}`.trim()
@@ -339,31 +255,7 @@ function obtenerResumenPaso(paso: PasoFicha, formulario: FormularioPaciente) {
     return ubicacion || 'Comuna y región de residencia.'
   }
 
-  return obtenerEtiqueta(opcionesEstado, formulario.estado) || 'Estado actual del paciente.'
-}
-
-function validarFormularioPaciente(formulario: FormularioPaciente): { paso: PasoFicha; mensaje: string } | null {
-  if (!formulario.nombres.trim() || !formulario.apellidos.trim() || !formulario.fecha_nacimiento || !formulario.sexo) {
-    return { paso: 'identidad', mensaje: 'Completa nombres, apellidos, fecha de nacimiento y sexo.' }
-  }
-
-  if (!formulario.telefono.trim()) {
-    return { paso: 'contacto', mensaje: 'Ingresa un teléfono de contacto.' }
-  }
-
-  if (!/^\S+@\S+\.\S+$/.test(formulario.email.trim())) {
-    return { paso: 'contacto', mensaje: 'Ingresa un email válido.' }
-  }
-
-  if (!formulario.comuna.trim() || !formulario.region.trim()) {
-    return { paso: 'ubicacion', mensaje: 'Completa comuna y región.' }
-  }
-
-  if (!formulario.estado) {
-    return { paso: 'estado', mensaje: 'Selecciona el estado del paciente.' }
-  }
-
-  return null
+  return obtenerEtiquetaOpcion(opcionesEstado, formulario.estado) || 'Estado actual del paciente.'
 }
 
 function pasoEstaCompleto(paso: PasoFicha, formulario: FormularioPaciente) {
@@ -390,6 +282,10 @@ function obtenerSiguientePaso(paso: PasoFicha) {
 function formularioCompleto(formulario: FormularioPaciente) {
   return validarFormularioPaciente(formulario) === null
 }
+
+// ---------------------------------------------------------------------------
+// Ícono de métrica
+// ---------------------------------------------------------------------------
 
 function MetricaIcon({ tipo }: { tipo: TipoMetrica }) {
   if (tipo === 'activos') {
@@ -433,6 +329,10 @@ function MetricaIcon({ tipo }: { tipo: TipoMetrica }) {
   )
 }
 
+// ---------------------------------------------------------------------------
+// Componente principal
+// ---------------------------------------------------------------------------
+
 function PacientesPage() {
   const queryClient = useQueryClient()
 
@@ -461,8 +361,11 @@ function PacientesPage() {
   const [mensajeGuardado, setMensajeGuardado] = useState('')
   const [busqueda, setBusqueda] = useState('')
   const [filtroEstado, setFiltroEstado] = useState<FiltroEstado>('todos')
+  // Estado del wizard de alta (intacto)
   const [pasoActivo, setPasoActivo] = useState<PasoFicha>('identidad')
   const [formulario, setFormulario] = useState<FormularioPaciente>(formularioInicial)
+  // Errores inline para formulario plano de edición (UI-045)
+  const [errorEdicion, setErrorEdicion] = useState('')
 
   async function invalidarConsultasPacientes() {
     await Promise.all([
@@ -509,20 +412,24 @@ function PacientesPage() {
 
   const nombrePreview = `${formulario.nombres} ${formulario.apellidos}`.trim()
   const ubicacionPreview = [formulario.comuna, formulario.region].filter(Boolean).join(', ')
-  const sexoPreview = obtenerEtiqueta(opcionesSexo, formulario.sexo)
+  const sexoPreview = obtenerEtiquetaOpcion(opcionesSexo, formulario.sexo)
   const fechaNacimientoPreview = formulario.fecha_nacimiento ? formatearFecha(formulario.fecha_nacimiento) : 'Pendiente'
   const mensaje = mensajeGuardado
     || (errorCarga ? errorCarga.message : '')
     || (errorAgenda ? errorAgenda.message : '')
   const mensajeEsError = mensaje.toLowerCase().startsWith('error')
   const cantidadVisible = pacientesFiltrados.length
-  const mostrarFormulario = vista === 'nuevo' || pacienteEnEdicion !== null
+
+  // ---------------------------------------------------------------------------
+  // Navegación y estado
+  // ---------------------------------------------------------------------------
 
   function cambiarVista(vistaNueva: VistaPacientes) {
     if (pacienteEnEdicion) {
       setPacienteEnEdicion(null)
       setFormulario(formularioInicial)
       setPasoActivo('identidad')
+      setErrorEdicion('')
     }
 
     setMensajeGuardado('')
@@ -534,6 +441,7 @@ function PacientesPage() {
     setFormulario(pacienteAFormulario(paciente))
     setPasoActivo('identidad')
     setMensajeGuardado('')
+    setErrorEdicion('')
   }
 
   function cancelarEdicion() {
@@ -541,6 +449,7 @@ function PacientesPage() {
     setFormulario(formularioInicial)
     setPasoActivo('identidad')
     setMensajeGuardado('')
+    setErrorEdicion('')
   }
 
   async function cambiarEstadoPaciente(paciente: Paciente, estadoNuevo: 'activo' | 'inactivo') {
@@ -589,25 +498,33 @@ function PacientesPage() {
     await cambiarEstadoPaciente(paciente, 'activo')
   }
 
-  function avanzarAlSiguientePasoSiCorresponde(pasoActual: PasoFicha, formularioActualizado: FormularioPaciente) {
-    const siguientePaso = obtenerSiguientePaso(pasoActual)
-
-    if (siguientePaso && pasoEstaCompleto(pasoActual, formularioActualizado)) {
-      window.setTimeout(() => setPasoActivo(siguientePaso), 180)
-    }
+  function actualizarFormulario(campo: keyof FormularioPaciente, valor: string) {
+    setFormulario((formularioActual) => ({
+      ...formularioActual,
+      [campo]: valor,
+    }))
   }
 
-  function actualizarFormulario(campo: keyof FormularioPaciente, valor: string) {
+  // Versión para el wizard (avanza al siguiente paso automáticamente)
+  function actualizarFormularioWizard(campo: keyof FormularioPaciente, valor: string) {
     setFormulario((formularioActual) => {
       const formularioActualizado = {
         ...formularioActual,
         [campo]: valor,
       }
 
-      avanzarAlSiguientePasoSiCorresponde(pasoActivo, formularioActualizado)
+      const siguientePaso = obtenerSiguientePaso(pasoActivo)
+      if (siguientePaso && pasoEstaCompleto(pasoActivo, formularioActualizado)) {
+        window.setTimeout(() => setPasoActivo(siguientePaso), 180)
+      }
+
       return formularioActualizado
     })
   }
+
+  // ---------------------------------------------------------------------------
+  // Guardar (compartido para alta y edición)
+  // ---------------------------------------------------------------------------
 
   async function guardarPaciente(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
@@ -615,8 +532,26 @@ function PacientesPage() {
     const validacion = validarFormularioPaciente(formulario)
 
     if (validacion) {
-      setPasoActivo(validacion.paso)
-      setMensajeGuardado(`Error: ${validacion.mensaje}`)
+      if (pacienteEnEdicion) {
+        // Formulario plano: error inline, no cambio de paso
+        setErrorEdicion(`${validacion.mensaje}`)
+      } else {
+        // Wizard: mapear campo → paso
+        const mapaCampoPaso: Partial<Record<keyof FormularioPaciente, PasoFicha>> = {
+          nombres: 'identidad',
+          apellidos: 'identidad',
+          fecha_nacimiento: 'identidad',
+          sexo: 'identidad',
+          telefono: 'contacto',
+          email: 'contacto',
+          comuna: 'ubicacion',
+          region: 'ubicacion',
+          estado: 'estado',
+        }
+        const paso = mapaCampoPaso[validacion.campo] || 'identidad'
+        setPasoActivo(paso)
+        setMensajeGuardado(`Error: ${validacion.mensaje}`)
+      }
       return
     }
 
@@ -624,16 +559,23 @@ function PacientesPage() {
     const clavePacienteNuevo = construirClavePaciente(pacienteParaGuardar)
     const existeDuplicado = pacientes.some((paciente) => (
       paciente.id !== pacienteEnEdicion?.id
-      && construirClavePaciente(paciente) === clavePacienteNuevo
+      && construirClavePaciente(pacienteAFormulario(paciente)) === clavePacienteNuevo
     ))
 
     if (existeDuplicado) {
-      setPasoActivo('identidad')
-      setMensajeGuardado('Error: Este paciente ya existe con exactamente los mismos datos.')
+      if (pacienteEnEdicion) {
+        setErrorEdicion('Este paciente ya existe con exactamente los mismos datos.')
+      } else {
+        setPasoActivo('identidad')
+        setMensajeGuardado('Error: Este paciente ya existe con exactamente los mismos datos.')
+      }
       return
     }
 
     setGuardando(true)
+    if (pacienteEnEdicion) {
+      setErrorEdicion('')
+    }
     setMensajeGuardado(pacienteEnEdicion ? 'Guardando cambios...' : 'Guardando paciente...')
 
     if (pacienteEnEdicion) {
@@ -643,7 +585,7 @@ function PacientesPage() {
         .eq('id', pacienteEnEdicion.id)
 
       if (error) {
-        setMensajeGuardado(`Error al guardar: ${error.message}`)
+        setErrorEdicion(`Error al guardar: ${error.message}`)
         setGuardando(false)
         return
       }
@@ -668,6 +610,10 @@ function PacientesPage() {
     setPasoActivo('identidad')
     setGuardando(false)
   }
+
+  // ---------------------------------------------------------------------------
+  // Wizard: Enter avanza al siguiente paso
+  // ---------------------------------------------------------------------------
 
   function manejarEnterFormulario(event: KeyboardEvent<HTMLFormElement>) {
     if (event.key !== 'Enter' || event.shiftKey) {
@@ -697,10 +643,26 @@ function PacientesPage() {
     const validacion = validarFormularioPaciente(formulario)
 
     if (validacion) {
-      setPasoActivo(validacion.paso)
+      const mapaCampoPaso: Partial<Record<keyof FormularioPaciente, PasoFicha>> = {
+        nombres: 'identidad',
+        apellidos: 'identidad',
+        fecha_nacimiento: 'identidad',
+        sexo: 'identidad',
+        telefono: 'contacto',
+        email: 'contacto',
+        comuna: 'ubicacion',
+        region: 'ubicacion',
+        estado: 'estado',
+      }
+      const paso = mapaCampoPaso[validacion.campo] || 'identidad'
+      setPasoActivo(paso)
       setMensajeGuardado(`Error: ${validacion.mensaje}`)
     }
   }
+
+  // ---------------------------------------------------------------------------
+  // Métricas
+  // ---------------------------------------------------------------------------
 
   const metricas: { etiqueta: string; valor: number | string; detalle: string; tipo: TipoMetrica }[] = [
     { etiqueta: 'Pacientes activos', valor: pacientesActivos, detalle: 'En seguimiento', tipo: 'activos' },
@@ -708,6 +670,10 @@ function PacientesPage() {
     { etiqueta: 'Atendidas hoy', valor: atendidasHoy, detalle: 'Completadas', tipo: 'atendidas' },
     { etiqueta: 'Pendientes hoy', valor: pendientesHoy, detalle: 'Por atender', tipo: 'pendientes' },
   ]
+
+  // ---------------------------------------------------------------------------
+  // Renders: acciones de tarjeta
+  // ---------------------------------------------------------------------------
 
   function renderAccionesPaciente(paciente: Paciente) {
     const ocupado = accionEnCurso === paciente.id
@@ -745,6 +711,10 @@ function PacientesPage() {
     )
   }
 
+  // ---------------------------------------------------------------------------
+  // Renders: wizard de alta (intacto, sin cambios)
+  // ---------------------------------------------------------------------------
+
   function renderCamposPaso(paso: PasoFicha) {
     if (paso === 'identidad') {
       return (
@@ -757,7 +727,7 @@ function PacientesPage() {
                 disabled={guardando}
                 placeholder="Ej: Catalina Belén"
                 value={formulario.nombres}
-                onChange={(event) => actualizarFormulario('nombres', event.target.value)}
+                onChange={(event) => actualizarFormularioWizard('nombres', event.target.value)}
                 required
               />
             </label>
@@ -769,7 +739,7 @@ function PacientesPage() {
                 disabled={guardando}
                 placeholder="Ej: Troncoso Caro"
                 value={formulario.apellidos}
-                onChange={(event) => actualizarFormulario('apellidos', event.target.value)}
+                onChange={(event) => actualizarFormularioWizard('apellidos', event.target.value)}
                 required
               />
             </label>
@@ -780,7 +750,7 @@ function PacientesPage() {
                 disabled={guardando}
                 type="date"
                 value={formulario.fecha_nacimiento}
-                onChange={(event) => actualizarFormulario('fecha_nacimiento', event.target.value)}
+                onChange={(event) => actualizarFormularioWizard('fecha_nacimiento', event.target.value)}
                 required
               />
             </label>
@@ -798,7 +768,7 @@ function PacientesPage() {
                     checked={formulario.sexo === opcion.valor}
                     disabled={guardando}
                     name="sexo"
-                    onChange={(event) => actualizarFormulario('sexo', event.target.value)}
+                    onChange={(event) => actualizarFormularioWizard('sexo', event.target.value)}
                     required
                     type="radio"
                     value={opcion.valor}
@@ -823,7 +793,7 @@ function PacientesPage() {
               placeholder="Ej: +56 9 1234 5678"
               type="tel"
               value={formulario.telefono}
-              onChange={(event) => actualizarFormulario('telefono', event.target.value)}
+              onChange={(event) => actualizarFormularioWizard('telefono', event.target.value)}
               required
             />
           </label>
@@ -836,7 +806,7 @@ function PacientesPage() {
               placeholder="Ej: paciente@correo.cl"
               type="email"
               value={formulario.email}
-              onChange={(event) => actualizarFormulario('email', event.target.value)}
+              onChange={(event) => actualizarFormularioWizard('email', event.target.value)}
               required
             />
           </label>
@@ -854,7 +824,7 @@ function PacientesPage() {
               disabled={guardando}
               placeholder="Ej: Castro"
               value={formulario.comuna}
-              onChange={(event) => actualizarFormulario('comuna', event.target.value)}
+              onChange={(event) => actualizarFormularioWizard('comuna', event.target.value)}
               required
             />
           </label>
@@ -867,7 +837,7 @@ function PacientesPage() {
               list="regiones-chile"
               placeholder="Ej: Los Lagos"
               value={formulario.region}
-              onChange={(event) => actualizarFormulario('region', event.target.value)}
+              onChange={(event) => actualizarFormularioWizard('region', event.target.value)}
               required
             />
           </label>
@@ -886,7 +856,7 @@ function PacientesPage() {
               checked={formulario.estado === opcion.valor}
               disabled={guardando}
               name="estado"
-              onChange={(event) => actualizarFormulario('estado', event.target.value)}
+              onChange={(event) => actualizarFormularioWizard('estado', event.target.value)}
               required
               type="radio"
               value={opcion.valor}
@@ -935,6 +905,315 @@ function PacientesPage() {
       </section>
     )
   }
+
+  // ---------------------------------------------------------------------------
+  // Renders: formulario plano de edición (UI-045 / DEC-044)
+  // ---------------------------------------------------------------------------
+
+  function renderFormularioEdicion() {
+    if (!pacienteEnEdicion) return null
+
+    const nombreEnEdicion = `${pacienteEnEdicion.nombres} ${pacienteEnEdicion.apellidos}`.trim()
+
+    return (
+      <section
+        className="edicion-plana-panel pacientes-intake-panel"
+        aria-label={`Editar paciente: ${nombreEnEdicion}`}
+      >
+        {/* Cabecera */}
+        <div className="edicion-plana-cabecera">
+          <div className="form-panel-title">
+            <span className="form-panel-icon" aria-hidden="true">E</span>
+            <div>
+              <span className="panel-kicker">Edición</span>
+              <h2>Editar paciente</h2>
+              <p>Todos los campos disponibles. Guardá los cambios cuando estés listo.</p>
+            </div>
+          </div>
+        </div>
+
+        {/* Mensaje de error inline */}
+        {errorEdicion && (
+          <p
+            aria-live="assertive"
+            className="mensaje mensaje--error edicion-plana-error"
+            role="alert"
+          >
+            {errorEdicion}
+          </p>
+        )}
+
+        {/* Formulario plano — grid 2 col desktop / 1 col mobile */}
+        <form
+          className="formulario-edicion-plana"
+          id="edicion-paciente-form"
+          onSubmit={guardarPaciente}
+        >
+          <datalist id="regiones-chile-edicion">
+            {regionesChile.map((region) => (
+              <option key={region} value={region} />
+            ))}
+          </datalist>
+
+          {/* Fila 1: Nombres / Apellidos */}
+          <label className="edicion-campo-label">
+            Nombres *
+            <input
+              autoComplete="given-name"
+              disabled={guardando}
+              id="edicion-nombres"
+              placeholder="Ej: Catalina Belén"
+              value={formulario.nombres}
+              onChange={(e) => actualizarFormulario('nombres', e.target.value)}
+              required
+            />
+          </label>
+
+          <label className="edicion-campo-label">
+            Apellidos *
+            <input
+              autoComplete="family-name"
+              disabled={guardando}
+              id="edicion-apellidos"
+              placeholder="Ej: Troncoso Caro"
+              value={formulario.apellidos}
+              onChange={(e) => actualizarFormulario('apellidos', e.target.value)}
+              required
+            />
+          </label>
+
+          {/* Fila 2: Fecha nacimiento / Sexo */}
+          <label className="edicion-campo-label">
+            Fecha de nacimiento *
+            <input
+              disabled={guardando}
+              id="edicion-fecha-nacimiento"
+              type="date"
+              value={formulario.fecha_nacimiento}
+              onChange={(e) => actualizarFormulario('fecha_nacimiento', e.target.value)}
+              required
+            />
+          </label>
+
+          <div className="edicion-campo-label edicion-chips-field">
+            <span>Sexo *</span>
+            <div className="selector-chips" role="group" aria-label="Sexo del paciente">
+              {opcionesSexo.map((opcion: OpcionFormulario) => (
+                <label
+                  className={formulario.sexo === opcion.valor ? 'selector-chip selector-chip--activo' : 'selector-chip'}
+                  key={opcion.valor}
+                >
+                  <input
+                    checked={formulario.sexo === opcion.valor}
+                    disabled={guardando}
+                    name="edicion-sexo"
+                    onChange={(e) => actualizarFormulario('sexo', e.target.value)}
+                    type="radio"
+                    value={opcion.valor}
+                  />
+                  {opcion.etiqueta}
+                </label>
+              ))}
+            </div>
+          </div>
+
+          {/* Fila 3: Teléfono / Email */}
+          <label className="edicion-campo-label">
+            Teléfono *
+            <input
+              autoComplete="tel"
+              disabled={guardando}
+              id="edicion-telefono"
+              placeholder="Ej: +56 9 1234 5678"
+              type="tel"
+              value={formulario.telefono}
+              onChange={(e) => actualizarFormulario('telefono', e.target.value)}
+              required
+            />
+          </label>
+
+          <label className="edicion-campo-label">
+            Email *
+            <input
+              autoComplete="email"
+              disabled={guardando}
+              id="edicion-email"
+              placeholder="Ej: paciente@correo.cl"
+              type="email"
+              value={formulario.email}
+              onChange={(e) => actualizarFormulario('email', e.target.value)}
+              required
+            />
+          </label>
+
+          {/* Fila 4: Comuna / Región */}
+          <label className="edicion-campo-label">
+            Comuna *
+            <input
+              autoComplete="address-level2"
+              disabled={guardando}
+              id="edicion-comuna"
+              placeholder="Ej: Castro"
+              value={formulario.comuna}
+              onChange={(e) => actualizarFormulario('comuna', e.target.value)}
+              required
+            />
+          </label>
+
+          <label className="edicion-campo-label">
+            Región *
+            <input
+              autoComplete="address-level1"
+              disabled={guardando}
+              id="edicion-region"
+              list="regiones-chile-edicion"
+              placeholder="Ej: Los Lagos"
+              value={formulario.region}
+              onChange={(e) => actualizarFormulario('region', e.target.value)}
+              required
+            />
+          </label>
+
+          {/* Fila 5: Estado (ancho completo) */}
+          <div className="edicion-campo-label edicion-chips-field edicion-campo--full">
+            <span>Estado *</span>
+            <div className="selector-chips" role="group" aria-label="Estado del paciente">
+              {opcionesEstado.map((opcion: OpcionFormulario) => (
+                <label
+                  className={formulario.estado === opcion.valor ? 'selector-chip selector-chip--activo' : 'selector-chip'}
+                  key={opcion.valor}
+                >
+                  <input
+                    checked={formulario.estado === opcion.valor}
+                    disabled={guardando}
+                    name="edicion-estado"
+                    onChange={(e) => actualizarFormulario('estado', e.target.value)}
+                    type="radio"
+                    value={opcion.valor}
+                  />
+                  {opcion.etiqueta}
+                </label>
+              ))}
+            </div>
+          </div>
+        </form>
+
+        {/* Barra de acciones fija (sticky bottom) */}
+        <div className="edicion-plana-barra-acciones">
+          <button
+            className="accion-vista"
+            disabled={guardando}
+            onClick={cancelarEdicion}
+            type="button"
+          >
+            Cancelar
+          </button>
+          <button
+            className="guardar-paciente"
+            disabled={guardando}
+            form="edicion-paciente-form"
+            type="submit"
+          >
+            {guardando ? 'Guardando...' : 'Guardar cambios'}
+          </button>
+        </div>
+      </section>
+    )
+  }
+
+  // ---------------------------------------------------------------------------
+  // Renders: wizard de alta (intacto)
+  // ---------------------------------------------------------------------------
+
+  function renderFormularioPaciente() {
+    return (
+      <section className="pacientes-intake-panel" aria-label="Nuevo paciente">
+        <div className="form-panel-header form-panel-header--command">
+          <div className="form-panel-title">
+            <span className="form-panel-icon" aria-hidden="true">N</span>
+            <div>
+              <span className="panel-kicker">Ficha inteligente</span>
+              <h2>Nuevo paciente</h2>
+              <p>Ingreso inicial con preview en vivo antes de guardar.</p>
+            </div>
+          </div>
+
+          <div className="form-panel-actions">
+            <button className="guardar-paciente" disabled={guardando} form="paciente-form" type="submit">
+              {guardando ? 'Guardando...' : 'Guardar paciente'}
+            </button>
+          </div>
+        </div>
+
+        <div className="form-stepper" aria-label="Etapas de la ficha de paciente">
+          {pasosFicha.map((paso) => (
+            <button
+              aria-current={pasoActivo === paso.clave ? 'step' : undefined}
+              className={pasoActivo === paso.clave ? 'form-stepper__item form-stepper__item--activo' : 'form-stepper__item'}
+              key={paso.numero}
+              onClick={() => setPasoActivo(paso.clave)}
+              type="button"
+            >
+              <strong>{paso.numero}</strong>
+              {paso.etiqueta}
+            </button>
+          ))}
+        </div>
+
+        <div className="intake-command-layout">
+          <form
+            className="formulario-ficha formulario-ficha--command"
+            id="paciente-form"
+            onKeyDown={manejarEnterFormulario}
+            onSubmit={guardarPaciente}
+          >
+            <datalist id="regiones-chile">
+              {regionesChile.map((region) => (
+                <option key={region} value={region} />
+              ))}
+            </datalist>
+            {pasosFicha.map(renderPasoFormulario)}
+          </form>
+
+          <aside className="preview-paciente preview-paciente--command" aria-label="Preview del paciente">
+            <div className="preview-avatar" aria-hidden="true">
+              {obtenerIniciales(formulario.nombres, formulario.apellidos)}
+            </div>
+
+            <div className="preview-heading">
+              <span>Preview vivo</span>
+              <h3>{nombrePreview || 'Nuevo paciente'}</h3>
+              <p>
+                {formularioTieneDatos
+                  ? 'Así se verá la ficha antes de guardarla.'
+                  : 'Completa la ficha para construir el resumen clínico.'}
+              </p>
+            </div>
+
+            <span className={`estado-badge estado-badge--${formulario.estado}`}>
+              {obtenerEtiquetaOpcion(opcionesEstado, formulario.estado) || formulario.estado}
+            </span>
+
+            <div className="preview-data preview-data--command">
+              <p><strong>Tel.</strong> <span>{mostrarDato(formulario.telefono)}</span></p>
+              <p><strong>Email</strong> <span>{mostrarDato(formulario.email)}</span></p>
+              <p><strong>Zona</strong> <span>{mostrarDato(ubicacionPreview)}</span></p>
+              <p><strong>Sexo</strong> <span>{sexoPreview || 'Pendiente'}</span></p>
+              <p><strong>Nacimiento</strong> <span>{fechaNacimientoPreview}</span></p>
+            </div>
+
+            <div className="preview-help">
+              Esta tarjeta se actualiza mientras completas la ficha, sin guardar cambios hasta confirmar.
+            </div>
+          </aside>
+        </div>
+      </section>
+    )
+  }
+
+  // ---------------------------------------------------------------------------
+  // Renders: panel del día y registro completo (sin cambios)
+  // ---------------------------------------------------------------------------
 
   function renderPanelDia() {
     return (
@@ -1079,7 +1358,7 @@ function PacientesPage() {
                           </p>
                         </div>
                         <span className={`estado-badge estado-badge--${paciente.estado}`}>
-                          {obtenerEtiqueta(opcionesEstado, paciente.estado) || paciente.estado}
+                          {obtenerEtiquetaOpcion(opcionesEstado, paciente.estado) || paciente.estado}
                         </span>
                       </div>
 
@@ -1109,111 +1388,9 @@ function PacientesPage() {
     )
   }
 
-  function renderFormularioPaciente() {
-    const nombreEnEdicion = pacienteEnEdicion
-      ? `${pacienteEnEdicion.nombres} ${pacienteEnEdicion.apellidos}`.trim()
-      : ''
-
-    return (
-      <section className="pacientes-intake-panel" aria-label={pacienteEnEdicion ? 'Editar paciente' : 'Nuevo paciente'}>
-        <div className="form-panel-header form-panel-header--command">
-          <div className="form-panel-title">
-            <span className="form-panel-icon" aria-hidden="true">{pacienteEnEdicion ? 'E' : 'N'}</span>
-            <div>
-              <span className="panel-kicker">Ficha inteligente</span>
-              <h2>{pacienteEnEdicion ? 'Editar paciente' : 'Nuevo paciente'}</h2>
-              <p>
-                {pacienteEnEdicion
-                  ? `Edición de ${nombreEnEdicion} con las mismas validaciones del alta.`
-                  : 'Ingreso inicial con preview en vivo antes de guardar.'}
-              </p>
-            </div>
-          </div>
-
-          <div className="form-panel-actions">
-            {pacienteEnEdicion && (
-              <button
-                className="accion-vista"
-                disabled={guardando}
-                onClick={cancelarEdicion}
-                type="button"
-              >
-                Cancelar edición
-              </button>
-            )}
-            <button className="guardar-paciente" disabled={guardando} form="paciente-form" type="submit">
-              {guardando
-                ? 'Guardando...'
-                : (pacienteEnEdicion ? 'Guardar cambios' : 'Guardar paciente')}
-            </button>
-          </div>
-        </div>
-
-        <div className="form-stepper" aria-label="Etapas de la ficha de paciente">
-          {pasosFicha.map((paso) => (
-            <button
-              aria-current={pasoActivo === paso.clave ? 'step' : undefined}
-              className={pasoActivo === paso.clave ? 'form-stepper__item form-stepper__item--activo' : 'form-stepper__item'}
-              key={paso.numero}
-              onClick={() => setPasoActivo(paso.clave)}
-              type="button"
-            >
-              <strong>{paso.numero}</strong>
-              {paso.etiqueta}
-            </button>
-          ))}
-        </div>
-
-        <div className="intake-command-layout">
-          <form
-            className="formulario-ficha formulario-ficha--command"
-            id="paciente-form"
-            onKeyDown={manejarEnterFormulario}
-            onSubmit={guardarPaciente}
-          >
-            <datalist id="regiones-chile">
-              {regionesChile.map((region) => (
-                <option key={region} value={region} />
-              ))}
-            </datalist>
-            {pasosFicha.map(renderPasoFormulario)}
-          </form>
-
-          <aside className="preview-paciente preview-paciente--command" aria-label="Preview del paciente">
-            <div className="preview-avatar" aria-hidden="true">
-              {obtenerIniciales(formulario.nombres, formulario.apellidos)}
-            </div>
-
-            <div className="preview-heading">
-              <span>Preview vivo</span>
-              <h3>{nombrePreview || (pacienteEnEdicion ? 'Paciente en edición' : 'Nuevo paciente')}</h3>
-              <p>
-                {formularioTieneDatos
-                  ? 'Así se verá la ficha antes de guardarla.'
-                  : 'Completa la ficha para construir el resumen clínico.'}
-              </p>
-            </div>
-
-            <span className={`estado-badge estado-badge--${formulario.estado}`}>
-              {obtenerEtiqueta(opcionesEstado, formulario.estado) || formulario.estado}
-            </span>
-
-            <div className="preview-data preview-data--command">
-              <p><strong>Tel.</strong> <span>{mostrarDato(formulario.telefono)}</span></p>
-              <p><strong>Email</strong> <span>{mostrarDato(formulario.email)}</span></p>
-              <p><strong>Zona</strong> <span>{mostrarDato(ubicacionPreview)}</span></p>
-              <p><strong>Sexo</strong> <span>{sexoPreview || 'Pendiente'}</span></p>
-              <p><strong>Nacimiento</strong> <span>{fechaNacimientoPreview}</span></p>
-            </div>
-
-            <div className="preview-help">
-              Esta tarjeta se actualiza mientras completas la ficha, sin guardar cambios hasta confirmar.
-            </div>
-          </aside>
-        </div>
-      </section>
-    )
-  }
+  // ---------------------------------------------------------------------------
+  // Render principal
+  // ---------------------------------------------------------------------------
 
   return (
     <main className="pacientes-shell pacientes-shell--command">
@@ -1261,9 +1438,11 @@ function PacientesPage() {
       </p>
 
       <section className="pacientes-vista-contenido">
-        {mostrarFormulario
-          ? renderFormularioPaciente()
-          : (vista === 'registro' ? renderRegistroCompleto() : renderPanelDia())}
+        {pacienteEnEdicion
+          ? renderFormularioEdicion()
+          : vista === 'nuevo'
+            ? renderFormularioPaciente()
+            : (vista === 'registro' ? renderRegistroCompleto() : renderPanelDia())}
       </section>
     </main>
   )
