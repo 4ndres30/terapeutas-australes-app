@@ -27,9 +27,10 @@ Al corte 2026-07-10: PRs #100-#126 integrados en main. Destacan: primera Edge Fu
 Actualizacion 2026-07-11: el repositorio paso a visibilidad publica. QA-013 quedo integrada
 por PR #128 (`d0c22ce`) y el push posterior a `main` completo `CI / Quality gate` en el run
 `29139395491`. Branch protection permanece sin activar y preparada para aplicacion manual.
-UI-047 se ejecuta en rama separada para normalizar queryKeys de pacientes/consultas sin tocar
-UI visual, Supabase, Auth/RLS ni migraciones; PR #129 paso `Quality gate` en el run
-`29139673940` y permanece pendiente de revision/merge.
+UI-047 quedo integrada por PR #129 (`06756cf`) y el run post-merge `29139876399` paso
+`Quality gate`. UI-048 se ejecuta en rama separada para compactar los indicadores superiores
+de `PacientesPage`, sin cambiar JSX, metricas, datos, Supabase, Auth/RLS ni migraciones; queda
+pendiente de PR/merge.
 
 El proyecto se mantiene alineado con el metodo acordado: primero documentar, auditar y decidir; luego implementar por tareas aprobadas.
 
