@@ -4606,3 +4606,98 @@ abierto en modo draft, **pendiente de revision y merge** -- no se declara "Integ
 que el codigo este efectivamente en `main`. UI-050 queda habilitada como siguiente tarea
 recomendada, en rama y PR propios, una vez esta se mergee.
 
+## LOG-114 - UI-050: barra superior como encabezado contextual compacto
+
+**Rama:** `ui-050-encabezado-contextual`
+**PR:** (ver arriba al abrir)
+**Responsable:** Control de desarrollo (Copilot CLI)
+**Fecha:** 2026-07-11
+**Origen:** Tarea documentada en LOG-106 (`Pendiente recomendado`, Nivel 2), habilitada
+inmediatamente despues de mergear UI-049 (PR #134, mismo commit `83dabc4` en `main`) por
+compartir `App.tsx` y sus capas CSS con esa tarea.
+
+### Contexto de partida
+
+Antes de codificar se corrigieron dos estados desincronizados encontrados al verificar PRs
+recientes con `gh pr view` (no relacionados con UI-050 en si, pero descubiertos en el mismo
+barrido documental): UI-048 (PR #130) y UI-051 (PR #132) ya estaban mergeados hace horas pero
+sus fichas en `01_PENDIENTES_PROYECTO.md` seguian diciendo "pendiente merge". Corregido en el
+mismo commit que cerro UI-049 como integrada (ver commit `docs: cierra UI-049 como integrada y
+corrige estado stale de UI-048/UI-051`), por ser el mismo tipo de ajuste documental de bajo
+riesgo sobre los mismos archivos.
+
+### Que se hizo
+
+Diagnostico previo del estado real de la barra superior (`.dashboard-topbar`) leyendo
+`App.tsx` y las 5 hojas CSS en cascada:
+
+- `.dashboard-topbar-copy` (el bloque de contexto a la izquierda) estaba en `display: none`
+  desde `App.css` (capa base) para **todo ancho de escritorio**, sin ninguna capa posterior
+  que lo reactivara ahi (`ReferencePolish.css` solo la reactivaba con un selector
+  `> div:first-child` que nunca coincide con el DOM actual, porque el primer hijo real es el
+  boton `dashboard-menu-toggle`, no un `div` -- deuda de una version anterior del marcado,
+  dejada intacta para no ampliar el alcance). En movil/tablet (`<=1080px`) si se reactivaba
+  correctamente via `ReferenceFinalPass.css`, pero con el mismo texto estatico.
+- El texto del bloque era fijo ("Centro clinico" / "Gestion interna de Terapeutas Australes")
+  en todas las rutas: no reflejaba el modulo activo en ningun ancho de pantalla.
+
+Cambios:
+
+- `App.tsx`: nueva funcion `obtenerContextoRuta(pathname)` que reutiliza las mismas etiquetas
+  de `navegacionPrincipal` (una sola fuente de verdad con la sidebar) para mostrar el nombre
+  real del modulo activo (`Pacientes`, `Consultas`, `Finanzas / Pagos`, etc.), con un caso
+  especial para `/casos/:id` (`Casos · Detalle de caso`). `DashboardShell` ahora usa
+  `useLocation()` de `react-router-dom` para leer la ruta activa. El eyebrow pasa de
+  "Centro clinico" a "Modulo" (etiqueta fija, ya que el contenido variable va en el parrafo).
+- `ReferenceFinalPass.css`: reactiva `.dashboard-topbar-copy` en todos los anchos (con
+  `overflow`/`text-overflow: ellipsis` para nombres largos), fija la barra a `min-height: 64px`
+  en desktop (dentro del rango 56-72px pedido) y usa `margin-left: auto` en
+  `.dashboard-environment-badge` para agrupar el indicador de ambiente y el usuario en el
+  extremo derecho sin envolver ambos en un contenedor nuevo (evita romper el grid movil de
+  UI-027, que ubica cada uno por `grid-column`/`grid-row` propios).
+
+### Bug preexistente encontrado y corregido (no causado por este cambio)
+
+Validacion visual con Playwright detecto que `.dashboard-topbar` renderizaba a **158.6px de
+alto en desktop** (y peor aun, 232px en tablet) en vez de los ~64px de su propio contenido.
+Aislado por eliminacion (ver script de diagnostico descartado al cerrar la tarea): la causa
+es que `.dashboard-main` es un grid de 2 filas sin `grid-template-rows` declarado (ambas
+filas quedaban en `auto` implicito), y Chromium calcula mal el tamano intrinseco de un
+contenedor flex con `align-items: center` (la barra superior) cuando es a la vez un item de
+grid con fila `auto` -- el resultado es una fila de grid mucho mas alta que el contenido real,
+dejando literalmente la "franja vacia" que UI-050 pide eliminar. Confirmado que es
+preexistente (no aparece por los cambios de este PR): ocultar `.dashboard-topbar-copy` o
+`.dashboard-environment-badge` de forma aislada no cambiaba la altura inflada.
+
+Corregido declarando `.dashboard-main { grid-template-rows: auto 1fr; }` en
+`ReferenceFinalPass.css`: la segunda fila (contenido de cada pagina) pasa de "auto" implicito
+a `1fr` (ocupa el resto del espacio disponible), lo que evita el calculo defectuoso de la
+primera fila sin cambiar el resultado visual de ninguna pagina (el contenido ya ocupaba ese
+espacio de todos modos, verificado en Pacientes, Finanzas y Reportes).
+
+### Validacion
+
+`npm run lint`, `npm run build` (`tsc -b && vite build`), `npm run test` (vitest, 29/29): OK.
+Suite e2e completa `npx playwright test` (8/8): OK. Verificacion visual con Playwright ad hoc
+(no commiteado): `.dashboard-topbar` a exactamente 64px en desktop (1440px) en las rutas
+Pacientes, Reportes, Agenda y Finanzas (rol finanzas), con el texto de contexto cambiando
+correctamente por ruta (`Pacientes`, `Reportes`, `Agenda`, `Finanzas / Pagos`) y sin overflow
+horizontal. Tablet (768px) y mobile (375px) revisados por captura: header compacto de 2 filas
+(contexto+usuario / indicador de ambiente), sin solapamientos; el boton y drawer de UI-027 sin
+cambios. Filtrado por rol confirmado intacto (Finanzas ve solo Finanzas/Reportes en sidebar).
+
+### Restricciones respetadas
+
+- Sin cambios de rutas, permisos, Auth/RLS, DB, migraciones, `.env`, Supabase remoto o
+  servicios.
+- Sin produccion ni datos reales; `PROD-001` sigue bloqueante.
+- `IndicadorAmbiente` (UI-020/UI-021) y el bloqueo visual de produccion se conservan sin
+  cambios de comportamiento, solo reposicionados.
+- `supabase/snippets/` permanece fuera de alcance y sin versionar.
+
+### Resultado
+
+UI-050 validada (automatizado + visual). Rama `ui-050-encabezado-contextual`, PR pendiente de
+apertura al momento de escribir esta entrada. No se declara "Integrada" hasta que el codigo
+este efectivamente en `main`.
+
