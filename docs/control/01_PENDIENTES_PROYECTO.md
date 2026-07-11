@@ -66,7 +66,7 @@ Este documento es la lista maestra de pendientes. Cada pendiente debe tener un c
 | BE-012 | Disenar backend de Agenda tipificada. | Diseno documentado / pend. implementacion | Alta | Integracion Backend/Estructura |
 | BE-013 | Ajustar reglas de cobros por unidad cobrable. | Integrada (PR #106) | Alta | Integracion Backend/Estructura |
 | BE-014 | Crear vistas clinicas agregadas. | Integrada (PR #109) / RLS pendiente | Media-alta | Integracion Backend/Estructura |
-| BE-015 | Validar RLS por roles para modulos nuevos. | Pendiente | Alta | Integracion Backend/Estructura |
+| BE-015 | Validar RLS por roles para modulos nuevos. | Validada, 210 verificaciones, 9 hallazgos (1 critico) — ver LOG-116 y auditorias/BE-015 | Alta | Integracion Backend/Estructura |
 | BE-016 | Disenar vista financiera por unidad cobrable. | Integrada | Media | Integracion Backend/Estructura |
 | BE-017 | Definir estrategia SQL de agenda operativa. | Diseno documentado / pend. implementacion | Media | Integracion Backend/Estructura |
 | SEC-001 | Validar RLS runtime por roles. | Integrada | Alta | Integracion Backend / Seguridad |
@@ -82,6 +82,7 @@ Este documento es la lista maestra de pendientes. Cada pendiente debe tener un c
 | SEC-009 | Disenar seguridad de API publica. | Diseno documental / pendiente implementacion futura | Alta | Integracion Backend / Seguridad |
 | SEC-010 | Disenar seguridad cloud, OAuth, IAM e identidades tecnicas. | Diseno documental / pendiente implementacion futura | Alta | Integracion Backend / Seguridad |
 | SEC-011 | Disenar hardening tecnico de fotos y Storage. | Integrada | Alta | Integracion Backend / Seguridad |
+| SEC-012 | Revocar el GRANT TRUNCATE (grant tipo ALL) sobre `pacientes_identidad_financiera` para `authenticated`; acotarlo al patron granular de `cobros`/`pagos`. Confirmado en runtime: un terapeuta activo (sin policy SELECT sobre la tabla) puede truncarla completa, saltandose RLS por completo (TRUNCATE no esta cubierto por RLS). | Pendiente recomendado — Nivel 3, requiere DEC — ver LOG-116 y auditorias/BE-015 | Critica | Integracion Backend / Seguridad |
 | BE-018 | Separacion tecnica de ambientes. | Diseno documental / pendiente implementacion futura | Alta | Integracion Backend |
 | BE-019 | Estrategia de backup/restauracion. | Diseno documental / pendiente implementacion futura | Alta | Integracion Backend / Produccion |
 | BE-020 | Consentimiento informado y tratamiento de datos. | Diseno documental base / pendiente validacion clinica/legal | Alta | Control de desarrollo / Revision Clinica / Backend |
@@ -113,7 +114,7 @@ Este documento es la lista maestra de pendientes. Cada pendiente debe tener un c
 | UI-034 | Redisenar PacientesPage como panel de trabajo diario: metricas arriba, barra de acciones (registro completo / nuevo / editar / anular), directorio del dia con citas de hoy desde agenda_eventos. Absorbe UI-032. | Integrada local/demo por PR #118 / validada visual con admin demo | Alta | UI / UX / Integracion Backend |
 | UI-035 | ConsultasPage: vista del dia (consultas de hoy por defecto) + formulario de alta bajo demanda, replicando el patron DEC-043 de Pacientes. | Pendiente | Media-alta | UI / UX |
 | UI-036 | EvaluacionesPage: exponer hora_evaluacion en formulario y tarjetas (columna NOT NULL en BD, hoy invisible: siempre guarda hora del servidor). | Pendiente | Baja | UI / UX |
-| UI-037 | Migrar CasosPage y CasoDetallePage a TanStack Query + corregir bug de carga (si falla 1 de 4 consultas encadenadas se descarta todo el estado, incluidos datos ya cargados). | Validada, pendiente PR — ver LOG-115 | Alta | UI / UX / Integracion Backend |
+| UI-037 | Migrar CasosPage y CasoDetallePage a TanStack Query + corregir bug de carga (si falla 1 de 4 consultas encadenadas se descarta todo el estado, incluidos datos ya cargados). | Integrada en main por PR #136 | Alta | UI / UX / Integracion Backend |
 | UI-038 | Verificar y activar el formulario de intervenciones (UI-013/PR #108) dentro del flujo real de CasoDetallePage post-merge de tabs (PR #107); ambos PRs tocaron TrabajosCasoPanel. | Pendiente | Media | UI / UX / QA |
 | UI-039 | AgendaPage: anulacion/cancelacion de eventos desde UI (unica pagina con update pero sin flujo de anulacion; estados cancelado/anulado existen en el CHECK). | Pendiente | Media-alta | UI / UX |
 | UI-040 | Finanzas: flujo de creacion de cobros y registro de pagos desde UI. Todo el modulo de pagos en BD (tablas, triggers, vistas, RLS) existe sin forma de recibir datos desde la app: la pagina solo lee. | Pendiente | Alta | UI / UX / Integracion Backend |
@@ -129,6 +130,8 @@ Este documento es la lista maestra de pendientes. Cada pendiente debe tener un c
 | UI-049 | Convertir la sidebar desktop en rail colapsable: iconos por defecto, expansion por hover/foco y fijado opcional, conservando drawer movil y navegacion por rol. | Integrada en main por PR #134 | Media-alta | UI / UX / Pulido visual |
 | UI-050 | Redisenar la barra superior como encabezado contextual compacto, sin franja vacia y preservando ambiente, usuario y acciones del modulo. | Integrada en main por PR #135 | Media-alta | UI / UX / Pulido visual |
 | UI-051 | Mantener la fila de indicadores de PacientesPage en una sola linea (4 columnas) en tablet y mobile, ajustando tamano y contenido. | Integrada en main por PR #132 | Alta | UI / UX / Pulido visual |
+| BE-032 | Finanzas no puede crear cobros/pagos vinculados a un origen clinico (caso/consulta/evaluacion/revision/trabajo): el trigger `validar_cobro_relaciones()` (SECURITY INVOKER) no ve esas tablas porque su SELECT esta restringido a `es_terapeuta_o_admin()`. Bloquea UI-040 en el momento en que se implemente. Requiere funcion `security definer` acotada (patron `caso_tiene_cobro_vencido`). Nivel 3: requiere DEC previa. | Pendiente recomendado — ver LOG-116 y auditorias/BE-015 | Alta | Integracion Backend |
+| BE-033 | 3 vistas de reporte con datos financieros/de fotos silenciosamente incompletos o incorrectos por rol: `vista_finanzas_fotos_auditoria` devuelve 0 filas para finanzas (su publico objetivo); `vista_resumen_evolutivo_caso` muestra `total_cobros=0` a terapeuta aunque el caso tenga cobros reales; `vista_cobros_estado` no lleva `security_invoker=true` (diverge de la convencion del proyecto). Incluye nota de alcance a confirmar con Javier: `vista_objetos_storage_huerfanos`/`vista_fotos_metadatos_sin_objeto` exponen metadatos de TODOS los pacientes a cualquier terapeuta activo (documentado como intencional, no bug). Nivel 3: requiere DEC previa. | Pendiente recomendado — ver LOG-116 y auditorias/BE-015 | Media | Integracion Backend |
 | DOC-001 | Manual de ambientes. | Documental / pendiente implementacion futura | Alta | Control de desarrollo |
 | DOC-002 | Procedimiento de backup/restauracion. | Documental / pendiente prueba futura | Alta | Control de desarrollo / Integracion Backend |
 | DOC-003 | Politica de carga de datos reales. | Documental / pendiente implementacion futura | Alta | Control de desarrollo |
@@ -2019,8 +2022,98 @@ boton "Guardar caso" y un guard en `guardarCaso` que rechaza el submit mientras 
 cargando. Detalle en LOG-115.
 
 #### Resultado
-Validada (automatizado + visual). No se declara "Integrada" hasta que el codigo este
-efectivamente en `main`. Detalle completo en LOG-115 (`06_BITACORA_CAMBIOS.md`).
+Integrada en `main` por PR #136 (validada: automatizado + visual + revision adversarial).
+Detalle completo en LOG-115 (`06_BITACORA_CAMBIOS.md`).
+
+### BE-032 - Finanzas no puede crear cobros/pagos vinculados a un origen clinico
+
+**Estado:** Pendiente recomendado — Nivel 3, requiere DEC previa
+**Prioridad:** Alta
+**Responsable:** Integracion Backend
+**Origen:** Hallazgo de BE-015 (auditoria RLS runtime, `docs/control/auditorias/BE-015_VALIDACION_RLS_ROLES.md`)
+**Fecha creacion:** 2026-07-11
+**Dependencias:** BE-015, UI-040 (lo bloquea)
+**Nivel documental:** Nivel 3
+
+#### Descripcion
+`cobros` tiene una policy `INSERT` valida para `finanzas` (`cobros_insert_finanzas`), pero el
+trigger `validar_cobro_relaciones()` corre `SECURITY INVOKER` (no `SECURITY DEFINER`) y hace
+`SELECT` sobre `casos`/`consultas`/`evaluaciones`/`revisiones`/`trabajos` para validar el FK
+de origen del cobro. Esas 5 tablas restringen `SELECT` a `es_terapeuta_o_admin()`, que excluye
+a `finanzas`. Como `chk_cobro_origen_valido` exige que el cobro apunte a una de esas
+entidades, todo INSERT de `finanzas` con un origen clinico falla con un mensaje enganoso
+("El caso/consulta indicado no existe"), aunque el registro exista y sea visible para
+terapeuta/admin. Confirmado con `caso_id` y `consulta_id`; por simetria del trigger aplica
+igual a `evaluacion_id`/`revision_id`/`trabajo_id`. Mismo mecanismo (trigger no-security-
+definer + RLS de la tabla de origen) reproducido tambien en `trabajos` y su familia
+(`trabajo_sesiones`/`trabajo_acciones`/`trabajo_elementos`), aunque ahi el bloqueo resultante
+es el deseado (finanzas no deberia poder crear trabajos clinicos).
+
+#### Por que es urgente
+Bloquea `UI-040` ("Finanzas: flujo de creacion de cobros y registro de pagos desde UI") en el
+momento en que se implemente esa UI: hoy `FinanzasPage` solo lee, pero cuando se construya el
+formulario de alta de cobros, `finanzas` (su usuario principal) no podra guardar nada con
+origen clinico vinculado sin este fix.
+
+#### Criterios de aceptacion propuestos
+- Crear una funcion `security definer` acotada (patron ya usado en `caso_tiene_cobro_vencido`)
+  que exponga solo la existencia/pertenencia del caso/consulta/evaluacion/revision/trabajo
+  referenciado, para que `validar_cobro_relaciones()` (y el equivalente de `trabajos` si se
+  decide corregir el mensaje enganoso, ver nota tecnica en la auditoria) la use en vez de un
+  `SELECT` directo sobre la tabla base.
+- No ampliar el acceso de lectura de `finanzas` a contenido clinico completo (casos,
+  consultas, etc.) — solo la validacion puntual de existencia/pertenencia necesaria para el
+  INSERT de `cobros`.
+- Validar en runtime (simulando el rol `finanzas` real, no service role) que el INSERT
+  funciona con cada tipo de origen (`caso_id`, `consulta_id`, `evaluacion_id`, `revision_id`,
+  `trabajo_id`).
+- Requiere `DEC-0xx` previa (Nivel 3: modifica logica de seguridad de un trigger).
+
+### BE-033 - Vistas de reporte con datos financieros/fotos incompletos por rol
+
+**Estado:** Pendiente recomendado — Nivel 3, requiere DEC previa
+**Prioridad:** Media
+**Responsable:** Integracion Backend
+**Origen:** Hallazgo de BE-015 (auditoria RLS runtime, `docs/control/auditorias/BE-015_VALIDACION_RLS_ROLES.md`)
+**Fecha creacion:** 2026-07-11
+**Dependencias:** BE-015
+**Nivel documental:** Nivel 3
+
+#### Descripcion
+3 defectos de exactitud/consistencia encontrados en la auditoria BE-015, agrupados por ser
+del mismo tipo (vista devuelve datos incompletos/incorrectos para un rol, sin fuga de datos):
+
+1. `vista_finanzas_fotos_auditoria` devuelve 0 filas para `finanzas` (su publico objetivo
+   explicito segun el comentario de su propia migracion), porque el `LEFT JOIN` a
+   `fotos_elementos_caso` quedo sujeto a la RLS de esa tabla (`es_terapeuta_o_admin()`, sin
+   `finanzas`) al agregarsele `security_invoker=true`.
+2. `vista_resumen_evolutivo_caso` muestra `total_cobros=0`/`monto_pagado=0` a `terapeuta`
+   aunque el caso tenga cobros reales, porque el `LEFT JOIN` a `cobros` queda filtrado en
+   silencio por la policy `es_finanzas_o_admin()` de esa tabla.
+3. `vista_cobros_estado` no lleva `security_invoker=true` (diverge de la convencion del
+   proyecto); hoy funciona por un filtro manual `WHERE es_finanzas_o_admin()` embebido, pero
+   quedaria desincronizada ante un cambio futuro de policies.
+
+Incluye ademas una nota de alcance a confirmar con Javier (no es un bug, es una decision de
+diseno documentada que vale la pena revisar): `vista_objetos_storage_huerfanos` y
+`vista_fotos_metadatos_sin_objeto` exponen `storage_path`/metadatos de fotos de **todos** los
+pacientes a cualquier terapeuta activo, no solo los de sus propios casos (documentado en el
+comentario de la migracion `20260708000003`), a diferencia de `vista_carga_trabajo_terapeutica`
+que si se acoto a `es_admin()`.
+
+#### Criterios de aceptacion propuestos
+- `vista_finanzas_fotos_auditoria`: usar una funcion `security definer` acotada (o una policy
+  adicional en `fotos_elementos_caso` para `finanzas` via `caso -> cobro`) que exponga solo
+  los campos de foto necesarios para la auditoria financiera, sin dar a `finanzas` acceso
+  clinico general a fotos.
+- `vista_resumen_evolutivo_caso`: usar el mismo patron `security definer` que
+  `caso_tiene_cobro_vencido` para `total_cobros`/`monto_pagado`, o documentar explicitamente
+  que esos campos son "no disponibles" para `terapeuta` en vez de mostrar `0`.
+- `vista_cobros_estado`: agregar `security_invoker=true`, confirmando que el filtro manual
+  existente sigue siendo redundante/correcto tras el cambio.
+- Confirmar con Javier el alcance deseado de `vista_objetos_storage_huerfanos`/
+  `vista_fotos_metadatos_sin_objeto` antes de decidir si se acotan a `es_admin()`.
+- Requiere `DEC-0xx` previa (Nivel 3: cambios de RLS/`security_invoker` en vistas existentes).
 
 ### BE-022 - Soporte de fotos para elementos del caso con Supabase Storage
 
@@ -2581,6 +2674,35 @@ Implementar el endurecimiento de privilegios de metadatos de fotos y vistas de a
 #### Resultado
 Implementada localmente mediante la migración `20260708000003_sec_011_hardening_fotos_storage.sql`. Se revocaron todos los privilegios sobre `fotos_elementos_caso` de los roles `public` y `anon`, se definieron los privilegios por defecto (`ALTER DEFAULT PRIVILEGES`) para revocar accesos amplios a futuras tablas, y se crearon las vistas de diagnóstico `vista_objetos_storage_huerfanos` y `vista_fotos_metadatos_sin_objeto` (con `security_invoker = true` y acceso restringido).
 
+### SEC-012 - Revocar GRANT TRUNCATE excesivo en pacientes_identidad_financiera
+
+**Estado:** Pendiente recomendado — Nivel 3, requiere DEC previa
+**Prioridad:** Critica
+**Responsable:** Integracion Backend / Seguridad
+**Origen:** Hallazgo de BE-015 (auditoria RLS runtime, `docs/control/auditorias/BE-015_VALIDACION_RLS_ROLES.md`)
+**Fecha creacion:** 2026-07-11
+**Dependencias:** BE-015
+**Nivel documental:** Nivel 3
+
+#### Descripcion
+`pacientes_identidad_financiera` tiene un `GRANT ALL` a `authenticated` (incluye `TRUNCATE`,
+`REFERENCES`, `TRIGGER`), a diferencia del patron granular (`SELECT`/`INSERT`/`UPDATE`/
+`DELETE`) usado en `cobros`/`pagos`. `TRUNCATE` no esta cubierto por RLS: confirmado en
+runtime que un **terapeuta activo** (sin policy `SELECT` sobre la tabla, cuya unica policy es
+`es_admin()`) puede ejecutar `TRUNCATE TABLE pacientes_identidad_financiera` con exito,
+saltandose la policy por completo. Verificado dentro de una transaccion con `rollback`; no
+se perdio ningun dato real durante la auditoria.
+
+#### Criterios de aceptacion propuestos
+- Revocar `TRUNCATE`, `REFERENCES` y `TRIGGER` de `authenticated` sobre esta tabla.
+- Dejar el grant identico al patron ya usado en `cobros`/`pagos` (`SELECT`/`INSERT`/`UPDATE`/
+  `DELETE`, acotado por las policies RLS existentes).
+- Revisar si `ALTER DEFAULT PRIVILEGES` (ya definido en SEC-011 para tablas futuras) deberia
+  cubrir este caso o si esta tabla se creo antes/fuera de ese alcance.
+- No modificar policies de RLS existentes (`es_admin()` en `pacientes_identidad_financiera`
+  no esta en discusion aqui, solo el grant excesivo).
+- Requiere `DEC-0xx` previa (Nivel 3: grants sobre datos financieros sensibles).
+
 ### UI-013 - Disenar experiencia de trabajos, sesiones y acciones
 
 **Estado:** Pendiente
@@ -2819,12 +2941,13 @@ Evaluar vistas como `vista_caso_clinico_completo`, `vista_revisiones_con_hallazg
 
 ### BE-015 - Validar RLS por roles para modulos nuevos
 
-**Estado:** Pendiente
+**Estado:** Validada — 210 verificaciones runtime, 9 hallazgos (1 critico, 2 altos, 3 medios,
+3 bajos) — ver LOG-116 y `docs/control/auditorias/BE-015_VALIDACION_RLS_ROLES.md`
 **Prioridad:** Alta
 **Responsable:** Integracion Backend/Estructura
 **Origen:** BE-002
 **Fecha creacion:** 2026-06-12
-**Rama sugerida:** `docs/be-015-validacion-rls-roles`
+**Rama:** `docs/be-015-validacion-rls-roles`
 **Dependencias:** BE-010, BE-011, BE-012, BE-013, BE-014
 
 #### Descripcion
@@ -2836,6 +2959,16 @@ Validar runtime local para perfiles `admin`, `terapeuta` y `finanzas`, especialm
 - No tocar Supabase remoto.
 - No hacer `supabase db push`.
 - No tocar `.env`.
+
+#### Resultado
+Validada en runtime real (simulando cada rol via `set local role`/`request.jwt.claims`,
+nunca service role), no solo leyendo el SQL. Las areas `hallazgos` y `agenda` no presentan
+hallazgos. `cobros-pagos` y `reportes` presentan 9 hallazgos en total, incluido uno critico
+(GRANT TRUNCATE excesivo en `pacientes_identidad_financiera`, confirmado explotable por un
+terapeuta activo en runtime). Los hallazgos que requieren cambio de codigo quedan
+registrados como pendientes nuevos (`SEC-012` critico, `BE-032` alto, `BE-033` medio), todos
+Nivel 3 (requieren DEC antes de implementarse) — ningun codigo, RLS, grant ni dato se
+modifico en este PR. Detalle completo por area y por check en el informe de auditoria.
 
 ### BE-016 - Disenar vista financiera por unidad cobrable
 
