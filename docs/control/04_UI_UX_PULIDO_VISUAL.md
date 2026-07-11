@@ -127,7 +127,7 @@ test de logout que fallaba antes del fix). Integrada en `main` por PR #134.
 
 ## UI-050 - Barra superior como encabezado contextual compacto
 
-**Estado:** Pendiente recomendado
+**Estado:** Validada, PR #135 abierto, pendiente merge — ver LOG-114 en `06_BITACORA_CAMBIOS.md`
 **Prioridad:** Media-alta
 **Nivel documental:** Nivel 2
 
@@ -139,6 +139,19 @@ pagina y evitar que el track del grid se estire verticalmente.
 `IndicadorAmbiente` y el bloqueo visual de produccion de UI-020/UI-021 son controles de
 seguridad operativa y se conservan. En tablet/mobile tambien se mantiene el boton del drawer
 de UI-027, con titulo y controles compactos sin recortes ni superposiciones.
+
+Implementada en rama `ui-050-encabezado-contextual`: el contexto de ruta activa (reutilizando
+las etiquetas de la sidebar) reemplaza el texto estatico "Centro clinico", que ademas estaba
+en `display:none` permanente en desktop -- de ahi la "franja vacia" reportada. Barra fijada a
+64px en desktop (dentro de 56-72px). Validacion e2e y visual detecto y corrigio un bug
+preexistente (no causado por este cambio): `.dashboard-main` sin `grid-template-rows`
+declarado calculaba una altura de fila muy inflada (158-232px segun ancho) por un problema
+conocido de medicion de grid con flexbox anidado y `align-items:center`; corregido con
+`grid-template-rows: auto 1fr` sin alterar el resultado visual de ninguna pagina. No se
+reubicaron acciones primarias de cada pagina hacia el encabezado (criterio marcado "cuando
+corresponda"): se evaluo y se dejo fuera de esta pasada por ser un cambio de mayor alcance
+por-pagina, no del shell global. Validada por `npm run lint`/`build`/`test` (29/29) y la suite
+e2e completa (8/8). PR #135 abierto, pendiente merge.
 
 UI-050 se implementa despues de UI-049 y en PR propio. No requiere DEC mientras conserve
 rutas, permisos y comportamiento; cualquier cambio de esas reglas debe volver a Control.

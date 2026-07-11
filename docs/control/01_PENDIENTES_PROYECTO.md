@@ -127,7 +127,7 @@ Este documento es la lista maestra de pendientes. Cada pendiente debe tener un c
 | UI-047 | Normalizacion de queryKeys TanStack Query para pacientes y selectores. | Integrada en main por PR #129 | Alta | UI / UX / Integracion Backend |
 | UI-048 | Compactar fila de indicadores superiores de PacientesPage manteniendo una sola linea desktop. | Integrada en main por PR #130 | Media-alta | UI / UX / Pulido visual |
 | UI-049 | Convertir la sidebar desktop en rail colapsable: iconos por defecto, expansion por hover/foco y fijado opcional, conservando drawer movil y navegacion por rol. | Integrada en main por PR #134 | Media-alta | UI / UX / Pulido visual |
-| UI-050 | Redisenar la barra superior como encabezado contextual compacto, sin franja vacia y preservando ambiente, usuario y acciones del modulo. | Pendiente recomendado | Media-alta | UI / UX / Pulido visual |
+| UI-050 | Redisenar la barra superior como encabezado contextual compacto, sin franja vacia y preservando ambiente, usuario y acciones del modulo. | Validada, PR #135 abierto, pendiente merge — ver LOG-114 | Media-alta | UI / UX / Pulido visual |
 | UI-051 | Mantener la fila de indicadores de PacientesPage en una sola linea (4 columnas) en tablet y mobile, ajustando tamano y contenido. | Integrada en main por PR #132 | Alta | UI / UX / Pulido visual |
 | DOC-001 | Manual de ambientes. | Documental / pendiente implementacion futura | Alta | Control de desarrollo |
 | DOC-002 | Procedimiento de backup/restauracion. | Documental / pendiente prueba futura | Alta | Control de desarrollo / Integracion Backend |
@@ -1734,11 +1734,13 @@ LOG-113 (`06_BITACORA_CAMBIOS.md`).
 
 ### UI-050 - Barra superior como encabezado contextual compacto
 
-**Estado:** Pendiente recomendado
+**Estado:** Validada, PR #135 abierto, pendiente merge — ver LOG-114 en `06_BITACORA_CAMBIOS.md`
 **Prioridad:** Media-alta
-**Responsable:** UI / UX / Pulido visual
+**Responsable:** UI / UX / Pulido visual + Control de desarrollo
 **Origen:** Observacion visual de Javier durante revision local/demo del shell interno
 **Fecha creacion:** 2026-07-10
+**Rama:** `ui-050-encabezado-contextual`
+**PR:** #135
 **Dependencias:** UI-020, UI-021, UI-023, UI-027, UI-029, UI-049
 **Nivel documental:** Nivel 2
 
@@ -1771,6 +1773,43 @@ usuario y el rol visible.
 No se crea una DEC en esta etapa: UI-050 registra una propuesta Nivel 2 pendiente. La
 implementacion debe definir el contrato de contexto por ruta dentro de su propio alcance y
 solo requeriria una DEC nueva si intentara cambiar navegacion, permisos o reglas funcionales.
+
+#### Cambio realizado
+`App.tsx` agrega `obtenerContextoRuta(pathname)`, que reutiliza las etiquetas de
+`navegacionPrincipal` (misma fuente que la sidebar) para mostrar el modulo activo real a la
+izquierda de la barra superior (antes un texto estatico "Centro clinico" que ademas estaba en
+`display:none` permanente en desktop). `ReferenceFinalPass.css` reactiva ese bloque en todos
+los anchos, fija la altura de la barra a 64px en desktop (dentro de 56-72px) y agrupa
+`IndicadorAmbiente` + usuario en el extremo derecho con `margin-left:auto` (sin envolver en un
+contenedor nuevo, para no romper el grid movil de UI-027).
+
+De alcance explicitamente **no** cubierto en esta pasada: "acercar las acciones primarias del
+modulo al encabezado" (criterio marcado "cuando corresponda" en la propuesta original). Se
+evaluo y se decidio no mover botones de accion de cada pagina (ej. "Nuevo paciente") hacia la
+barra superior: es un cambio por-pagina de mayor alcance y riesgo que redisenar el shell
+global, y las paginas ya tienen sus propias acciones visibles y funcionales en su lugar
+actual. Queda anotado como posible extension futura si Javier lo pide explicitamente.
+
+#### Bug preexistente encontrado y corregido
+`.dashboard-topbar` renderizaba con una altura muy superior a su contenido real (158.6px en
+desktop, 232px en tablet) porque `.dashboard-main` (grid de 2 filas) no declaraba
+`grid-template-rows`, y el motor del navegador calcula mal el tamano intrinseco de un
+contenedor flex con `align-items:center` cuando ademas es una fila `auto` de un grid. No lo
+causa este cambio (confirmado ocultando cada hijo por separado, la altura no variaba).
+Corregido con `.dashboard-main { grid-template-rows: auto 1fr; }`, sin alterar el resultado
+visual de ninguna pagina.
+
+#### Validacion
+`npm run lint`, `npm run build`, `npm run test` (29/29): OK. Suite e2e completa
+`npx playwright test` (8/8): OK. Verificacion visual con Playwright en desktop (1440px,
+Pacientes/Reportes/Agenda/Finanzas), tablet (768px) y mobile (375px, incluido el drawer de
+UI-027): barra a 64px estable en desktop, contexto de ruta correcto en cada modulo y rol, sin
+overflow horizontal ni solapamientos.
+
+#### Resultado
+Validada (automatizado + visual). Rama `ui-050-encabezado-contextual`, PR #135 abierto. No se
+declara "Integrada" hasta que el codigo este efectivamente en `main`. Detalle completo en
+LOG-114 (`06_BITACORA_CAMBIOS.md`).
 
 ### UI-051 - Metricas de Pacientes en una sola linea en tablet/mobile
 

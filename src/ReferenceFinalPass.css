@@ -418,6 +418,52 @@
   color: #7d1a32;
 }
 
+/* UI-050: barra superior como encabezado contextual compacto.
+   App.css deja .dashboard-topbar-copy en display:none (franja vacia en
+   desktop); aca se reactiva con el contexto real de la ruta activa
+   (ver obtenerContextoRuta en App.tsx) en vez de un texto estatico. */
+.dashboard-topbar-copy {
+  display: block;
+  min-width: 0;
+}
+
+.dashboard-topbar-copy p {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Bugfix (validacion UI-050, preexistente, no causado por este cambio):
+   sin declarar grid-template-rows, .dashboard-main (grid de 2 filas:
+   topbar + contenido) calculaba una altura "auto" de la fila del topbar
+   muy por encima de su contenido real (~64px de contenido terminaba en
+   una fila de ~120-230px segun el ancho), dejando literalmente la franja
+   vacia que UI-050 pide eliminar. El causante es un problema conocido de
+   Chromium al medir el tamano intrinseco de un contenedor flex con
+   align-items:center dentro de una fila "auto" de grid. Declarar la
+   segunda fila como 1fr (en vez de dejar ambas en "auto" implicito)
+   evita el calculo defectuoso sin cambiar visualmente el resultado en
+   ninguna pagina (el contenido ya ocupaba ese espacio de todos modos). */
+.dashboard-main {
+  grid-template-rows: auto 1fr;
+}
+
+@media (min-width: 1081px) {
+  .dashboard-topbar {
+    justify-content: flex-start;
+    min-height: 64px;
+  }
+
+  /* Empuja IndicadorAmbiente (y por lo tanto tambien dashboard-userbar,
+     que va justo despues en el DOM) al extremo derecho, agrupados y
+     separados del contexto de ruta a la izquierda, sin envolver ambos
+     en un contenedor nuevo (evita romper el grid mobile de mas abajo,
+     que ubica cada uno por separado con grid-column/grid-row propios). */
+  .dashboard-environment-badge {
+    margin-left: auto;
+  }
+}
+
 .dashboard-environment-badge--produccion .dashboard-environment-badge__dot,
 .dashboard-environment-badge--bloqueado .dashboard-environment-badge__dot,
 .dashboard-environment-badge--desconocido .dashboard-environment-badge__dot {

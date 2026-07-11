@@ -42,7 +42,17 @@ JetBrains/WebStorm); Control de desarrollo la reviso, encontro y corrigio una re
 hover/foco o al fijar en pantallas de ~720-800px de alto, por usar `position: fixed` sin scroll
 interno) y valido con `npm run lint`/`build`/`test` (29/29) y la suite e2e completa
 (`npx playwright test`, 8/8, incluido el test de logout que fallaba por timeout antes del fix).
-Detalle en LOG-113. UI-050 queda habilitada como siguiente tarea recomendada.
+Detalle en LOG-113.
+
+UI-050 (barra superior como encabezado contextual compacto) queda validada en la rama
+`ui-050-encabezado-contextual`, PR #135 abierto, pendiente merge. Reemplaza el texto estatico y
+permanentemente oculto en desktop ("Centro clinico") por el modulo real de la ruta activa
+(reutilizando las etiquetas de la sidebar) y fija la barra a 64px de alto estable. En el
+camino se encontro y corrigio un bug preexistente (no causado por este cambio): sin
+`grid-template-rows` declarado, `.dashboard-main` calculaba una altura muy inflada para la fila
+de la barra superior (158-232px segun el ancho) por un problema conocido de medicion de grid
+con flexbox anidado; corregido sin alterar el resultado visual de ninguna pagina. Validado con
+`npm run lint`/`build`/`test` (29/29) y la suite e2e completa (8/8). Detalle en LOG-114.
 
 El proyecto se mantiene alineado con el metodo acordado: primero documentar, auditar y decidir; luego implementar por tareas aprobadas.
 
@@ -95,7 +105,7 @@ El proyecto se mantiene alineado con el metodo acordado: primero documentar, aud
 
 - UI-010, UI-012 y UI-015: prioridades de planificacion UI derivadas de UI-001 + UI-002 y del estado post IMP-001 e IMP-002.
 - UI-013, UI-014, UI-017, UI-018 y UI-019: pendientes UI derivados, aun sin activacion tecnica.
-- UI-048/UI-049/UI-050/UI-051: propuestas de densidad y aprovechamiento de espacio en `PacientesPage` y el shell interno registradas durante revision local/demo. UI-048 (PR #130), UI-049 (PR #134) y UI-051 (PR #132) quedan integradas en `main`. UI-050 sigue pendiente; por compartir `App.tsx` y sus capas CSS con UI-049, ya puede implementarse y validarse en rama propia.
+- UI-048/UI-049/UI-050/UI-051: propuestas de densidad y aprovechamiento de espacio en `PacientesPage` y el shell interno registradas durante revision local/demo. UI-048 (PR #130), UI-049 (PR #134) y UI-051 (PR #132) quedan integradas en `main`. UI-050 queda validada, PR #135 abierto pendiente merge (ver LOG-114).
 - UI-025/UI-025B/UI-026/UI-027: Agenda operativa cuenta con vista interna, filtros, gestion manual minima de `agenda_eventos`, selector controlado de fecha/hora y correccion responsive del shell con drawer movil; QA-008 queda cerrada post-merge como validacion funcional local/demo, con desktop/admin y mobile sin overflow horizontal.
 - BE-014 a BE-015: tareas backend sugeridas por BE-002 para vistas, RLS y reportes.
 - API-001, SEC-009 y DOC-004: estrategia futura para API publica segura, seguridad API y flujo pagina publica -> API -> sistema interno -> Google.

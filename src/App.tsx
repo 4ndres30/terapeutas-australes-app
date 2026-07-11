@@ -1,6 +1,6 @@
 import { lazy, Suspense, useState, useEffect, type ReactNode } from 'react'
 import { LogOut, Menu, Pin, PinOff, ShieldAlert, X } from 'lucide-react'
-import { BrowserRouter, Navigate, NavLink, Outlet, Route, Routes } from 'react-router-dom'
+import { BrowserRouter, Navigate, NavLink, Outlet, Route, Routes, useLocation } from 'react-router-dom'
 import ErrorBoundary from './components/ErrorBoundary'
 import { AuthProvider, useAuth } from './context/AuthContext'
 import type { RolUsuario, UsuarioInterno } from './context/authTypes'
@@ -174,6 +174,19 @@ function obtenerNavegacionPorRol(rol: RolUsuario) {
   ))
 }
 
+// UI-050: contexto real de la ruta activa para la barra superior, en vez de
+// un texto estatico. Reutiliza las mismas etiquetas de navegacionPrincipal
+// para no tener una segunda fuente de verdad para el nombre de cada modulo.
+function obtenerContextoRuta(pathname: string) {
+  if (pathname.startsWith('/casos/')) {
+    return 'Casos · Detalle de caso'
+  }
+
+  const item = navegacionPrincipal.find((entry) => entry.ruta === pathname)
+
+  return item?.etiqueta ?? 'Terapeutas Australes'
+}
+
 function obtenerInicialesUsuario(nombreCompleto: string) {
   const iniciales = nombreCompleto
     .trim()
@@ -260,6 +273,8 @@ function DashboardShell({ children }: {
   children: ReactNode
 }) {
   const { usuarioInterno, cerrarSesion } = useAuth()
+  const location = useLocation()
+  const contextoRuta = obtenerContextoRuta(location.pathname)
   const inicialesUsuario = usuarioInterno ? obtenerInicialesUsuario(usuarioInterno.nombre_completo) : ''
   const rolVisible = usuarioInterno ? formatearRol(usuarioInterno.rol) : ''
   const navegacionVisible = usuarioInterno ? obtenerNavegacionPorRol(usuarioInterno.rol) : []
@@ -410,8 +425,8 @@ function DashboardShell({ children }: {
           </button>
 
           <div className="dashboard-topbar-copy">
-            <span className="dashboard-eyebrow">Centro clínico</span>
-            <p>Gestión interna de Terapeutas Australes</p>
+            <span className="dashboard-eyebrow">Módulo</span>
+            <p>{contextoRuta}</p>
           </div>
 
           <IndicadorAmbiente configuracion={configuracionAmbiente} />
