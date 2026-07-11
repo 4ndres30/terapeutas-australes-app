@@ -38,7 +38,7 @@ Este documento es la lista maestra de pendientes. Cada pendiente debe tener un c
 | QA-007 | Checklist pre-migracion cloud. | Checklist documental / pendiente ejecucion futura | Alta | Control de desarrollo / QA |
 | QA-008 | Validacion funcional completa de Agenda interna. | Cerrada post-merge local/demo | Alta | Control de Desarrollo / QA / UI-UX / Integracion Backend |
 | QA-009 | Validacion visual UI-020/UI-021 ambiente. | Cerrada local/demo | Alta | Control de desarrollo / QA / UI-UX |
-| QA-012 | Regresion visual y funcional de PacientesPage. | Pendiente / recomendada como siguiente paso | Alta | Control de desarrollo / QA / UI-UX |
+| QA-012 | Regresion visual y funcional de PacientesPage. | Parcial: 9/12 items OK, faltan envio alta desktop/mobile, tablet, overlay | Alta | Control de desarrollo / QA / UI-UX |
 | QA-013 | Revisar `startup_failure` de GitHub Actions CI. | Cerrada con CI remoto exitoso | Alta | Control de desarrollo / QA / DevOps |
 | API-001 | Disenar API publica segura e integracion Google Workspace. | Diseno documental / pendiente implementacion | Alta | Control de desarrollo / Integracion Backend |
 | DEC-035 | Migracion progresiva a plataforma Google Cloud. | Propuesta documental / pendiente validacion Javier | Alta | Control de desarrollo |
@@ -352,7 +352,7 @@ Checklist documental. No habilita produccion mientras PROD-001 siga abierto.
 
 ### QA-012 - Regresion visual y funcional de PacientesPage
 
-**Estado:** Pendiente / recomendada como siguiente paso
+**Estado:** Parcial (9/12 items) — ver LOG-110 en `06_BITACORA_CAMBIOS.md`
 **Prioridad:** Alta
 **Responsable:** Control de desarrollo / QA / UI-UX
 **Origen:** CTRL-015 / post-merge PR #118, #125 y #126
@@ -364,18 +364,24 @@ Ejecutar una regresion visual y funcional local/demo de `PacientesPage` despues 
 
 #### Alcance minimo
 
-- Panel diario de pacientes.
-- Registro completo.
-- Alta de paciente desktop.
-- Alta de paciente tablet/mobile.
-- Overlay de confirmacion mobile/tablet.
-- Edicion plana.
-- Guardar cambios.
-- Cancelar edicion.
-- Anular paciente.
-- Reactivar paciente.
-- Sin errores de consola.
-- Sin pantalla blanca.
+- [x] Panel diario de pacientes.
+- [x] Registro completo.
+- [x] Alta de paciente desktop (carga; envio completo sin probar).
+- [x] Alta de paciente mobile (carga; envio completo sin probar). Tablet sin probar.
+- [ ] Overlay de confirmacion mobile/tablet. **Pendiente.**
+- [x] Edicion plana.
+- [x] Guardar cambios.
+- [x] Cancelar edicion.
+- [x] Anular paciente (hallazgo no bloqueante: usa `window.confirm()` nativo, ver LOG-110).
+- [x] Reactivar paciente.
+- [x] Sin errores de consola (solo artefacto conocido de refresh-token stale).
+- [x] Sin pantalla blanca.
+
+#### Resultado
+
+9 de 12 items verificados sin bugs nuevos en `qa-012-regresion-pacientes`. Faltan: envio
+completo del formulario de alta (desktop/mobile), tablet explicito, y el overlay de
+confirmacion — quedan para una proxima sesion, no se cierra como "Integrada" hasta cubrirlos.
 - Sin overflow horizontal.
 - Densidad visual de indicadores superiores consistente y sin uso excesivo de alto.
 - Sin regresion del wizard de alta.

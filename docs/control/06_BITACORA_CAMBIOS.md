@@ -4369,3 +4369,53 @@ Validada en PR #130 / pendiente merge. Lint OK, 3 archivos / 29 pruebas OK, buil
 `git diff --check` OK y validacion Playwright responsive sin overflow. Run remoto
 `29140053227`: `Quality gate` exitoso en 29 s.
 
+## LOG-110 - QA-012 regresion visual y funcional PacientesPage (parcial)
+
+**Rama:** `qa-012-regresion-pacientes`
+**PR:** (ver arriba al abrir)
+**Responsable:** Control de desarrollo (Claude)
+**Fecha:** 2026-07-11
+
+### Que se hizo
+
+Reconstruccion de ambiente demo local (`db reset` para aplicar migraciones pendientes desde
+`20260708000003` hasta `20260709000000` + reprovision SEC-007B + seed `caso_demo_integral.sql`,
+gate `usuarios=4, pacientes=1` OK). Pasada manual con navegador (usuario `admin`) sobre
+`PacientesPage` cubriendo:
+
+- Panel diario (UI-034): carga correcta, metricas en 0/1 segun corresponde.
+- Registro completo: carga, muestra el paciente seed.
+- Editar -> edicion plana (UI-045): formulario sin pasos, todos los campos visibles.
+- Cancelar edicion: vuelve al panel diario sin persistir cambios.
+- Guardar cambios: edite telefono, guardo, mensaje "Paciente actualizado correctamente" y el
+  cambio persistio en el listado.
+- Anular: funciona: contador "Pacientes activos" 1 -> 0. **Hallazgo:** el boton dispara un
+  `window.confirm()` nativo del navegador (bloqueante); no es un bug -- es una confirmacion
+  deliberada -- pero bloqueo la automatizacion (timeout en `screenshot`/`click` hasta aceptar
+  con `Enter`). Dejar registrado por si en el futuro se evalua reemplazarlo por un modal propio
+  consistente con el resto de la UI (fuera de alcance de QA-012).
+- Reactivar: funciona, contador 0 -> 1.
+- Alta de paciente (UI-046, ficha inteligente): carga correctamente en desktop (1902px) y en
+  mobile (375px, preset), sin errores nuevos de consola en ningun tamano.
+
+### Que NO se cubrio (presupuesto de contexto de la sesion agotado)
+
+- Envio completo del formulario de alta (desktop y mobile) -- solo se verifico que carga, no
+  que el guardado final funciona end-to-end.
+- Tablet (768px) explicito.
+- Overlay de confirmacion mobile/tablet (UI-046) -- no se llego a disparar.
+
+### Consola
+
+Unico error observado en todas las pantallas: `AuthApiError: Invalid Refresh Token: Refresh
+Token Not Found` -- artefacto conocido de token de sesion viejo en localStorage tras un
+`db reset` reciente, no relacionado con el codigo bajo prueba (ya documentado como patron
+benigno en sesiones anteriores). Sin pantallas blancas en ningun paso cubierto.
+
+### Recomendacion
+
+No hay bugs funcionales nuevos detectados en lo cubierto. QA-012 puede cerrarse parcialmente
+(los 9 items cubiertos pasan) pero **no debe marcarse "Integrada"/completa** -- quedan 3 items
+pendientes (envio completo alta desktop/mobile, tablet, overlay) para una sesion con mas
+presupuesto de contexto disponible.
+
