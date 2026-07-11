@@ -637,11 +637,83 @@
     grid-column: 2;
     justify-self: start;
   }
+
+  .dashboard-main .pacientes-metricas-rail {
+    gap: 8px;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .dashboard-main .metrica-rail-card {
+    gap: 6px;
+    min-height: 64px;
+    padding: 8px 6px;
+  }
+
+  .dashboard-main .metrica-rail-card .metrica-icon {
+    height: 30px;
+    width: 30px;
+  }
+
+  .dashboard-main .metrica-rail-card .metrica-icon svg {
+    height: 15px;
+    width: 15px;
+  }
+
+  .dashboard-main .metrica-rail-card strong {
+    font-size: 16px;
+  }
+
+  .dashboard-main .metrica-rail-card span:not(.metrica-icon) {
+    font-size: 9px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .dashboard-main .metrica-rail-card p {
+    display: none;
+  }
 }
 
 @media (max-width: 680px) {
   .dashboard-main {
     padding: 14px;
+  }
+
+  .dashboard-main .pacientes-metricas-rail {
+    gap: 6px;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .dashboard-main .metrica-rail-card {
+    gap: 4px;
+    min-height: 56px;
+    padding: 6px 4px;
+  }
+
+  .dashboard-main .metrica-rail-card .metrica-icon {
+    height: 24px;
+    width: 24px;
+  }
+
+  .dashboard-main .metrica-rail-card .metrica-icon svg {
+    height: 13px;
+    width: 13px;
+  }
+
+  .dashboard-main .metrica-rail-card strong {
+    font-size: 13px;
+  }
+
+  .dashboard-main .metrica-rail-card span:not(.metrica-icon) {
+    font-size: 7px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .dashboard-main .metrica-rail-card p {
+    display: none;
   }
 
   .dashboard-sidebar {
