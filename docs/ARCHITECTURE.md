@@ -41,7 +41,7 @@ Roles: `admin`, `terapeuta`, `finanzas`. Terapeuta no ve Finanzas; Finanzas solo
 
 ## Testing
 
-Vitest para unit tests (`src/lib/*.test.ts`, corridos con `npm test`). CI en GitHub Actions (`.github/workflows/ci-quality.yml`) corre `npm ci` + `lint` + `test` + `build` en cada push a `main` y cada PR. Sin E2E todavia (Playwright pendiente, requiere Supabase local en el runner de CI).
+Vitest para unit tests (`src/lib/*.test.ts`, corridos con `npm test`). CI en GitHub Actions (`.github/workflows/ci-quality.yml`) define `npm ci` + `lint` + `test` + `build` en cada push a `main` y cada PR. Al corte 2026-07-11, GitHub registra `CI / Quality gate`, pero no asigna runner porque la cuenta esta bloqueada por facturacion (QA-013). Sin E2E todavia (Playwright pendiente, requiere Supabase local en el runner de CI).
 
 ## Ambientes
 

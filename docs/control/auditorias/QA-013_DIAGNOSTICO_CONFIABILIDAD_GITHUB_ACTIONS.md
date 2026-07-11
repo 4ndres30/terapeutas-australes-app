@@ -1,10 +1,10 @@
 # QA-013 - Diagnostico de confiabilidad de GitHub Actions
 
-**Fecha:** 2026-07-10
+**Fecha:** 2026-07-10; revalidacion 2026-07-11
 **Rama:** `qa-013-recuperar-confiabilidad-ci`
 **Responsable:** Control de desarrollo (Codex)
 **Nivel documental:** Nivel 2
-**Estado:** Diagnostico parcial / bloqueo externo
+**Estado:** Bloqueada / facturacion de cuenta confirmada
 
 ## Resumen ejecutivo
 
@@ -18,9 +18,16 @@ primera ingestion del archivo. El YAML vigente es valido segun `actionlint 1.7.1
 esta habilitado y la cadena npm pasa localmente.
 
 La correccion versionada reemplazo la ruta del workflow para forzar una identidad nueva y
-agrego controles acotados de confiabilidad. La validacion remota de PR #128 genero dos runs
-adicionales, pero ambos volvieron a `startup_failure`, asociados a `BuildFailed` y con 0
-jobs. QA-013 queda en diagnostico parcial / bloqueo externo.
+agrego controles acotados de confiabilidad. Mientras el repositorio fue privado, seis runs
+adicionales volvieron a `startup_failure`, asociados a `BuildFailed` y con 0 jobs.
+
+El 2026-07-11 el propietario hizo publico el repositorio y se disparo una validacion nueva
+mediante el commit vacio `63297ab`. GitHub registro `.github/workflows/ci-quality.yml` como
+workflow `CI` (`id=311082990`), creo el run `29138928820`, el check `Quality gate` y un job
+real. El job no recibio runner ni ejecuto steps: su anotacion informa exactamente `The job
+was not started because your account is locked due to a billing issue.` La causa queda
+confirmada como categoria E, problema de cuenta/facturacion, y QA-013 permanece bloqueada
+hasta regularizar la cuenta y obtener un check exitoso.
 
 ## Estado inicial
 
@@ -31,6 +38,9 @@ jobs. QA-013 queda en diagnostico parcial / bloqueo externo.
 - Rama exclusiva: `qa-013-recuperar-confiabilidad-ci`.
 - Archivo local ajeno: `supabase/snippets/Untitled query 315.sql`, no trackeado y excluido.
 - `PROD-001`: vigente y bloqueante.
+
+Cambio externo posterior: al corte de revalidacion el repositorio es publico. Este cambio no
+fue realizado por la rama, pero permitio registrar y observar el workflow nuevo.
 
 ## Optimizacion aplicada al prompt
 
@@ -44,6 +54,7 @@ evitar atribuir el fallo al YAML o a npm sin evidencia:
   verificado por SHA-256;
 - consulta read-only de permisos de Actions, workflows, runners, branch protection y rulesets;
 - intento read-only de facturacion, sin ampliar scopes cuando GitHub exigio permiso `user`;
+- revalidacion posterior al cambio de visibilidad, incluyendo job, check run y anotaciones;
 - reproduccion local posterior a `npm ci` y registro de duraciones aproximadas.
 
 No se uso navegador para inferir estados que la CLI/API ya entregaban de forma estructurada.
@@ -57,14 +68,17 @@ No se uso navegador para inferir estados que la CLI/API ya entregaban de forma e
 | `28805413952` | `push` | `test/setup-vitest-unit-tests` / `9c58451` | 2026-07-06 16:05:13 | `startup_failure` | 0 |
 | `29133444311` | `push` | `qa-013-recuperar-confiabilidad-ci` / `e28ef87` | 2026-07-11 00:49:56 | `startup_failure` | 0 |
 | `29133463045` | `pull_request` | `qa-013-recuperar-confiabilidad-ci` / `e28ef87` | 2026-07-11 00:50:26 | `startup_failure` | 0 |
+| `29133601911` | `pull_request` | `qa-013-recuperar-confiabilidad-ci` / `caa17a7` | 2026-07-11 00:54:26 | `startup_failure` | 0 |
+| `29138928820` | `pull_request` | `qa-013-recuperar-confiabilidad-ci` / `63297ab` | 2026-07-11 04:01:11 | `failure` | 1, sin runner/steps |
 
 Resumen completo:
 
 - Corte inicial: 192 runs, todos `startup_failure`.
-- Validacion remota QA-013: 2 runs adicionales, ambos `startup_failure`.
-- Corte observado tras abrir PR #128: 194 runs; 96 `push` y 98 `pull_request`.
-- Runs asociados al workflow activo `CI`: 0.
-- Runs asociados a `BuildFailed`: 194.
+- Validacion remota privada QA-013: 6 runs adicionales, todos `startup_failure`.
+- Corte posterior al cambio de visibilidad: 199 runs totales; 97 `push` y 102
+  `pull_request`.
+- Runs asociados a `BuildFailed`: 198.
+- Runs asociados al workflow nuevo `CI` (`311082990`): 1.
 
 ## Evidencia de startup_failure
 
@@ -76,10 +90,18 @@ Resumen completo:
 - El endpoint de jobs devuelve `total_count: 0`.
 - La check suite termina como `startup_failure` con `latest_check_runs_count: 0`.
 - `gh run view ... --log-failed` responde `log not found`.
-- Los dos runs de PR #128 conservan `path: BuildFailed`, `workflow_id: 308144935` y
-  `jobs: []`, aun despues de reemplazar la ruta versionada del workflow.
+- Los seis runs privados de PR #128 conservan `path: BuildFailed`,
+  `workflow_id: 308144935` y `jobs: []`, aun despues de reemplazar la ruta versionada del
+  workflow.
+- Tras hacer publico el repositorio, `29138928820` usa
+  `path: .github/workflows/ci-quality.yml`, `workflow_id: 311082990` y crea el job
+  `Quality gate` (`86508389905`).
+- El job tiene `runner_id: 0`, `steps: []` y no genera logs.
+- La API de anotaciones del check devuelve el mensaje exacto: `The job was not started
+  because your account is locked due to a billing issue.`
 
-El workflow fallo antes de crear jobs.
+El sintoma evoluciono de fallos de ingestion sin jobs a un check correctamente registrado
+que GitHub bloquea antes de asignar runner.
 
 ## Estado del workflow
 
@@ -102,6 +124,13 @@ Permisos del repositorio:
 - runners self-hosted: 0; el workflow usa GitHub-hosted `ubuntu-latest`.
 
 `actionlint 1.7.12` no reporta errores en el archivo original.
+
+Identidades observadas tras la revalidacion:
+
+- `BuildFailed` (`308144935`), eliminada: 198 runs historicos;
+- `CI` de `.github/workflows/ci.yml` en `main` (`308145174`): 0 runs;
+- `CI` de `.github/workflows/ci-quality.yml` en PR #128 (`311082990`): 1 run y un check
+  `Quality gate`.
 
 ## Reproduccion local
 
@@ -126,34 +155,37 @@ intento finalizo con `exit 0`; no es una falla del lockfile ni del workflow Linu
 
 ## Causa raiz
 
-GitHub no esta ejecutando la identidad activa del workflow. Desde la primera ingestion del
-archivo, cada evento se dirige a la identidad eliminada `BuildFailed`, mientras el workflow
-activo `CI` permanece con 0 runs. Esta asociacion obsoleta ocurre antes de construir el grafo
-de jobs y explica la ausencia total de logs.
+La causa confirmada del bloqueo actual es una restriccion de cuenta por facturacion. GitHub
+registra el workflow, crea el check y construye el job, pero lo detiene antes de asignar un
+runner. La evidencia primaria es la anotacion del job `86508389905`: `The job was not started
+because your account is locked due to a billing issue.`
 
-La sustitucion versionada por una ruta nueva no modifico el comportamiento en PR #128. Por
-lo tanto, la causa exacta no puede resolverse desde los archivos, CLI o API disponibles: el
-bloqueo persiste en la capa externa de ingestion/configuracion de GitHub Actions.
+Los 198 runs historicos asociados a `BuildFailed` no conservan una anotacion equivalente, por
+lo que no se afirma retrospectivamente que todos tuvieron la misma causa. Sin embargo, el
+bloqueo de cuenta confirmado explica de forma consistente que CI no pueda comenzar. La
+hipotesis anterior de ingestion/registro queda superada para el estado actual: el workflow
+nuevo ya se registra correctamente.
 
-No se encontro un error sintactico actual que justifique editar comandos npm. La correccion
-debe forzar un registro limpio del workflow, no modificar codigo funcional ni dependencias.
+No existe evidencia de un error sintactico o de comandos npm que justifique mas cambios en
+archivos versionados.
 
 ## Clasificacion del fallo
 
-**Categoria I - combinacion de A y H.**
+**Categoria E - problema de cuenta, facturacion o limite de minutos.**
 
-- **A, configuracion/registro del workflow:** todos los eventos se asocian a `BuildFailed` y
-  nunca al workflow activo.
-- **H, informacion parcial del servicio:** GitHub no expone por CLI/API el mensaje interno de
-  la primera ingestion, la correccion versionada no cambia el resultado y la consulta de
-  facturacion requiere scope `user`, no disponible.
+- La anotacion remota identifica explicitamente una cuenta bloqueada por un problema de
+  facturacion.
+- El job se crea, pero no recibe runner ni steps, comportamiento coherente con un bloqueo
+  previo al consumo de capacidad.
 
 Descartado con evidencia:
 
+- A: el YAML pasa `actionlint` y GitHub registra `CI / Quality gate`.
 - B/C: Actions esta habilitado y permite todas las acciones.
-- D: el fallo ocurre antes de crear jobs o solicitar runner.
+- D: no es falta de disponibilidad de `ubuntu-latest`; la cuenta impide asignarlo.
 - F: instalacion, lint, tests y build pasan localmente.
-- G: los eventos `push` y `pull_request` si se generan; quedan asociados al workflow errado.
+- G: el evento `pull_request` dispara el workflow nuevo.
+- H: la anotacion del check ya entrega causa suficiente para clasificar el fallo actual.
 
 ## Correccion aplicada
 
@@ -169,21 +201,26 @@ Descartado con evidencia:
 
 No se modifican `package.json`, `package-lock.json`, dependencias ni codigo funcional.
 
-Resultado remoto: la correccion propuesta no logro crear jobs en PR #128. Se conserva en el
-PR para revision humana, sin iterar nuevamente sobre YAML por ensayo y error.
+Resultado remoto actualizado: despues del cambio externo de visibilidad, la identidad nueva
+se registro y creo `CI / Quality gate`. La correccion versionada deja una definicion CI
+reproducible, pero no puede resolver el bloqueo de facturacion de la cuenta. Se conserva en
+PR #128 para revision humana, sin iterar nuevamente sobre YAML.
 
 ## Configuracion manual pendiente
 
-No se modifico configuracion externa. Si el workflow nuevo vuelve a fallar antes de crear
-jobs, el propietario debe revisar en GitHub:
+No se modifico configuracion de cuenta. El propietario debe:
 
-1. `Settings > Billing & licensing > Usage`, filtrando producto Actions.
-2. Presupuesto o limite que impida consumo de minutos en repositorios privados.
-3. Estado de pagos del propietario, si GitHub muestra una advertencia.
-4. `Settings > Actions > General`, confirmando que Actions siga habilitado.
+1. Abrir la configuracion personal de GitHub y entrar en `Billing & licensing`.
+2. Revisar avisos de cuenta bloqueada, saldo pendiente, metodo de pago y presupuestos.
+3. Regularizar el problema indicado por GitHub hasta retirar el bloqueo de la cuenta.
+4. Confirmar en `Settings > Actions > General` que Actions siga habilitado.
+5. Reejecutar una sola vez el run `29138928820` y comprobar que se asigne un runner, se
+   ejecuten todos los steps y `Quality gate` termine exitoso.
+6. Solo despues del check exitoso, configurar branch protection usando el nombre remoto
+   confirmado `Quality gate`.
 
-Despues de cualquier ajuste manual debe reejecutarse el run del PR una sola vez y comprobar
-que se cree `Quality gate`.
+La visibilidad publica no elimino el bloqueo de facturacion. No corresponde cambiar codigo,
+YAML, runners ni permisos mientras la cuenta siga bloqueada.
 
 ## Validaciones posteriores
 
@@ -204,24 +241,29 @@ Resultados remotos de PR #128:
 | --- | --- | --- |
 | `29133444311` | `push` | `startup_failure`, `BuildFailed`, 0 jobs, sin logs |
 | `29133463045` | `pull_request` | `startup_failure`, `BuildFailed`, 0 jobs, sin logs |
+| `29138928820` | `pull_request` | `failure`, `CI / Quality gate`, 1 job, sin runner/steps por bloqueo de facturacion |
 
-No se creo `Quality gate`; `gh pr checks 128` informa que no existen checks reportados.
+`gh pr checks 128` ya informa `Quality gate`, pero en estado fallido. La existencia del check
+confirma que eventos, ruta e identidad del workflow funcionan; no valida todavia la cadena npm
+en runner remoto.
 
 ## Riesgos restantes
 
-- El detalle de facturacion no fue accesible sin ampliar el token con scope `user`.
-- GitHub conserva el bloqueo con la identidad versionada nueva; no corresponde seguir
-  cambiando YAML y debe revisarse facturacion/configuracion manual.
-- No existe todavia un nombre de check exitoso confirmado para branch protection.
+- La cuenta de GitHub permanece bloqueada por facturacion y ningun job puede recibir runner.
+- El repositorio ahora es publico; su codigo e historial quedan accesibles publicamente hasta
+  que el propietario decida otro cambio de visibilidad.
+- `Quality gate` existe como contexto remoto, pero nunca ha terminado exitoso.
+- `main` no tiene branch protection y no existen rulesets.
 - `PROD-001` sigue bloqueante.
 
 ## Branch protection
 
-Estado actual: no configurable en el plan/visibilidad actuales. Tanto el endpoint de branch
-protection como el de rulesets responden HTTP 403: `Upgrade to GitHub Pro or make this
-repository public to enable this feature`.
+Estado actual: configurable tras hacer publico el repositorio, pero no activada. El endpoint
+de branch protection responde `404 Branch not protected` y el repositorio tiene 0 rulesets.
 
-No se activa automaticamente. Cuando el plan lo permita y QA-013 este cerrada, configurar:
+No se activa antes de resolver facturacion, porque exigir un check que la cuenta no puede
+ejecutar bloquearia todos los merges. Despues de obtener el primer `Quality gate` exitoso,
+configurar:
 
 - requerir pull request;
 - requerir el check exitoso cuyo nombre remoto se confirme para `Quality gate`;
@@ -238,6 +280,7 @@ No iniciar UI-047, UI-048, QA-012, UI-049 ni UI-050 dentro de esta ejecucion.
 
 ## Veredicto
 
-Diagnostico parcial / bloqueo externo. La correccion versionada pasa localmente pero PR #128
-reproduce `startup_failure` sin jobs. QA-013 permanece abierta, el PR queda para revision
-humana y no debe mergearse hasta resolver la configuracion externa y obtener un run exitoso.
+Bloqueada / facturacion de cuenta confirmada. El workflow nuevo se registra y crea
+`CI / Quality gate`, pero GitHub impide asignar runner porque la cuenta esta bloqueada por un
+problema de facturacion. QA-013 permanece abierta, PR #128 queda para revision humana y no
+debe mergearse hasta regularizar la cuenta y obtener un run exitoso.

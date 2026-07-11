@@ -4232,17 +4232,17 @@ presentarlas como integradas. La documentacion conserva el orden serial y el alc
 
 ## LOG-107 - QA-013 diagnostico y recuperacion controlada de GitHub Actions CI
 
-**Fecha:** 2026-07-10
+**Fecha:** 2026-07-10; revalidacion 2026-07-11
 **Rama:** `qa-013-recuperar-confiabilidad-ci`
 **PR:** #128
 **Responsable:** Control de desarrollo (Codex)
 **Tarea:** QA-013
 
 ### Diagnostico
-Desde la incorporacion inicial del workflow en `9c58451`, GitHub genero 192 ejecuciones y
-todas terminaron con `startup_failure` antes de crear jobs: 95 eventos `push` y 97 eventos
-`pull_request`. El workflow activo `CI` (`308145174`) no registra ejecuciones; todas quedaron
-vinculadas a una identidad interna eliminada llamada `BuildFailed` (`308144935`).
+Al iniciar QA-013 existian 192 ejecuciones y todas habian terminado con `startup_failure`
+antes de crear jobs: 95 eventos `push` y 97 eventos `pull_request`. Las seis validaciones
+privadas de PR #128 elevaron el historial de `BuildFailed` (`308144935`) a 198 runs. El
+workflow `CI` de `main` (`308145174`) permanecio sin ejecuciones.
 
 Actions esta habilitado y permite todas las acciones. Los runs relevantes no tienen jobs,
 check runs ni logs. El YAML original pasa `actionlint 1.7.12`, y la reproduccion local pasa
@@ -4255,12 +4255,19 @@ registro de una identidad nueva y verificable. El workflow mantiene checkout, No
 `npm ci`, lint, tests y build. Agrega permisos minimos `contents: read`, cache npm, timeout de
 15 minutos, concurrencia cancelable y nombres estables de job/steps.
 
+### Revalidacion tras cambio de visibilidad
+El propietario hizo publico el repositorio y se genero el commit vacio `63297ab` para disparar
+un evento nuevo sin alterar archivos. El run `29138928820` se asocio correctamente al workflow
+`CI` nuevo (`311082990`) y creo el check `Quality gate` y el job `86508389905`. El job termino
+en 3 segundos, sin runner (`runner_id: 0`), sin steps y sin logs. La anotacion de GitHub
+identifica la causa exacta: `The job was not started because your account is locked due to a
+billing issue.` La clasificacion final cambia a categoria E, problema de cuenta/facturacion.
+
 ### Estado
-Diagnostico parcial / bloqueo externo. Los runs `29133444311` (`push`) y `29133463045`
-(`pull_request`) de PR #128 volvieron a `startup_failure`, quedaron asociados a
-`BuildFailed` (`308144935`) y crearon 0 jobs. No se realizan mas cambios especulativos al
-workflow. QA-013 solo puede cerrarse despues de resolver la configuracion externa y observar
-un `Quality gate` remoto exitoso.
+Bloqueada / facturacion de cuenta confirmada. La ingestion del workflow y la creacion del
+check ya funcionan; el bloqueo restante esta en la cuenta de GitHub y ocurre antes de asignar
+runner. No se realizan mas cambios al workflow. QA-013 solo puede cerrarse despues de resolver
+la facturacion y observar un `Quality gate` remoto exitoso.
 
 No se modifican `src/`, dependencias, Supabase, Auth/RLS, migraciones, secretos, produccion
 ni datos reales.
@@ -4269,7 +4276,8 @@ Validacion local posterior: `actionlint 1.7.12` OK; `npm ci` OK (214 paquetes, 0
 vulnerabilidades); lint OK; 2 archivos / 24 tests OK; build OK; `git diff --check` OK.
 
 Se sincronizan `docs/DEVELOPMENT.md` y `docs/ARCHITECTURE.md` con la nueva ruta y el orden
-reproducible de la cadena CI. Las referencias historicas al workflow original se conservan.
+reproducible de la cadena CI, y el estado general, pendientes y niveles documentales con el
+bloqueo confirmado. Las referencias historicas al workflow original se conservan.
 
 Informe: `docs/control/auditorias/QA-013_DIAGNOSTICO_CONFIABILIDAD_GITHUB_ACTIONS.md`.
 
