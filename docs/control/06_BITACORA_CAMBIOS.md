@@ -4295,7 +4295,7 @@ quedaron PR abiertos antes de iniciar UI-047.
 
 **Fecha:** 2026-07-11
 **Rama:** `ui-047-normalizar-querykeys-pacientes`
-**PR:** pendiente
+**PR:** #129
 **Responsable:** Control de desarrollo (Codex)
 **Tarea:** UI-047
 
@@ -4324,6 +4324,7 @@ bloqueante y `supabase/snippets/` permanece ajeno y sin versionar.
 
 ### Estado
 
-Implementada en rama / pendiente PR. Validacion local: `npm ci` OK (214 paquetes, 0
-vulnerabilidades), lint OK, 3 archivos / 29 pruebas OK, build OK y `git diff --check` OK.
+Implementada en PR #129 / pendiente validacion remota. Validacion local: `npm ci` OK (214
+paquetes, 0 vulnerabilidades), lint OK, 3 archivos / 29 pruebas OK, build OK y
+`git diff --check` OK.
 
