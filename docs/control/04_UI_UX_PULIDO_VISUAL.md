@@ -84,7 +84,7 @@ Hallazgo visual adicional registrado por Javier durante revision en navegador:
 `UI-048 - Compactar fila de indicadores superiores de PacientesPage`. Implementada en rama
 `ui-048-compactar-indicadores-pacientes`: cuatro tarjetas en una linea desktop, 72 px de alto,
 iconos y tipografia reducidos, decoracion secundaria retirada y responsive 2x2 sin overflow
-en tablet/mobile. Pendiente de PR/merge.
+en tablet/mobile. PR #130 pendiente de validacion remota/merge.
 
 Hallazgos del shell global registrados en la misma revision:
 

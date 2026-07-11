@@ -30,7 +30,7 @@ por PR #128 (`d0c22ce`) y el push posterior a `main` completo `CI / Quality gate
 UI-047 quedo integrada por PR #129 (`06756cf`) y el run post-merge `29139876399` paso
 `Quality gate`. UI-048 se ejecuta en rama separada para compactar los indicadores superiores
 de `PacientesPage`, sin cambiar JSX, metricas, datos, Supabase, Auth/RLS ni migraciones; queda
-pendiente de PR/merge.
+en PR #130 pendiente de validacion remota/merge.
 
 El proyecto se mantiene alineado con el metodo acordado: primero documentar, auditar y decidir; luego implementar por tareas aprobadas.
 

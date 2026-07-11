@@ -125,7 +125,7 @@ Este documento es la lista maestra de pendientes. Cada pendiente debe tener un c
 | UI-045 | Formulario plano de edicion de pacientes: todos los campos visibles a la vez, sin pasos ni preview vivo (DEC-044: crear=guiado, editar=plano; validaciones compartidas con el wizard via hook comun). | Integrada en main por PR #125 / local-demo / pendiente QA-012 | Alta | UI / UX |
 | UI-046 | Preview adaptativo en wizard de alta de pacientes: panel lateral en desktop, overlay/modal de confirmacion al guardar en tablet/mobile (DEC-045). | Integrada en main por PR #126 / local-demo / pendiente QA-012 | Alta | UI / UX |
 | UI-047 | Normalizacion de queryKeys TanStack Query para pacientes y selectores. | Integrada en main por PR #129 | Alta | UI / UX / Integracion Backend |
-| UI-048 | Compactar fila de indicadores superiores de PacientesPage manteniendo una sola linea desktop. | Implementada en rama / pendiente PR | Media-alta | UI / UX / Pulido visual |
+| UI-048 | Compactar fila de indicadores superiores de PacientesPage manteniendo una sola linea desktop. | Implementada en PR #130 / pendiente validacion remota | Media-alta | UI / UX / Pulido visual |
 | UI-049 | Convertir la sidebar desktop en rail colapsable: iconos por defecto, expansion por hover/foco y fijado opcional, conservando drawer movil y navegacion por rol. | Pendiente recomendado | Media-alta | UI / UX / Pulido visual |
 | UI-050 | Redisenar la barra superior como encabezado contextual compacto, sin franja vacia y preservando ambiente, usuario y acciones del modulo. | Pendiente recomendado | Media-alta | UI / UX / Pulido visual |
 | DOC-001 | Manual de ambientes. | Documental / pendiente implementacion futura | Alta | Control de desarrollo |
@@ -1618,13 +1618,14 @@ y build exitosos. El run post-merge `29139876399` tambien paso `Quality gate` en
 
 ### UI-048 - Compactar fila de indicadores superiores de PacientesPage
 
-**Estado:** Implementada en rama / pendiente PR
+**Estado:** Implementada en PR #130 / pendiente validacion remota
 **Prioridad:** Media-alta
 **Responsable:** UI / UX / Pulido visual
 **Origen:** Observacion visual de Javier durante revision local/demo de `PacientesPage`
 **Fecha creacion:** 2026-07-10
 **Fecha ejecucion:** 2026-07-11
 **Rama usada:** `ui-048-compactar-indicadores-pacientes`
+**PR:** #130
 **Dependencias:** UI-034, UI-045, UI-046, QA-012
 **Nivel documental:** Nivel 1
 
@@ -1644,7 +1645,8 @@ en una sola linea en desktop, pero ocupar menos alto y menos espacio visual.
 - No modificar logica de metricas, datos, queries, Auth/RLS, DB, migraciones ni servicios.
 
 #### Resultado
-Implementada en rama y pendiente de PR/merge. `ReferenceFinalPass.css` reduce el rail a un
+Implementada en PR #130 y pendiente de validacion remota/merge. `ReferenceFinalPass.css`
+reduce el rail a un
 gap de 12 px y cada tarjeta a 72 px reales, con padding 10x12 px, icono 40 px, valor 22 px,
 radio 8 px y sombra mas discreta. Se retira la decoracion diagonal secundaria para reducir
 peso visual. Playwright confirma cuatro columnas a 1600 px, distribucion 2x2 a 1024/390 px y

@@ -4338,7 +4338,7 @@ UI-048.
 
 **Fecha:** 2026-07-11
 **Rama:** `ui-048-compactar-indicadores-pacientes`
-**PR:** pendiente
+**PR:** #130
 **Responsable:** Control de desarrollo (Codex)
 **Tarea:** UI-048
 
@@ -4365,6 +4365,6 @@ dependencias, datos ni produccion. QA-012, UI-049 y UI-050 permanecen fuera de e
 
 ### Estado
 
-Implementada en rama / pendiente PR. Lint OK, 3 archivos / 29 pruebas OK, build OK,
-`git diff --check` OK y validacion Playwright responsive sin overflow.
+Implementada en PR #130 / pendiente validacion remota. Lint OK, 3 archivos / 29 pruebas OK,
+build OK, `git diff --check` OK y validacion Playwright responsive sin overflow.
 
