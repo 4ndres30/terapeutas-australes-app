@@ -3,6 +3,7 @@ import { useMemo, useState } from 'react'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { supabase } from '../lib/supabase'
 import { formatearFecha, normalizarTexto, textoCorto } from '../lib/format'
+import { QUERY_KEYS } from '../lib/queryKeys'
 import './ClinicalModuleBase.css'
 
 type Paciente = {
@@ -181,7 +182,7 @@ function EvaluacionesPage() {
     isLoading: cargandoPacientes,
     error: errorPacientes,
   } = useQuery({
-    queryKey: ['pacientes'],
+    queryKey: QUERY_KEYS.pacientes.selectorClinico,
     queryFn: obtenerPacientes,
   })
 
@@ -190,7 +191,7 @@ function EvaluacionesPage() {
     isLoading: cargandoConsultas,
     error: errorConsultas,
   } = useQuery({
-    queryKey: ['consultas'],
+    queryKey: QUERY_KEYS.consultas.selectorEvaluaciones,
     queryFn: obtenerConsultas,
   })
 
@@ -199,7 +200,7 @@ function EvaluacionesPage() {
     isLoading: cargandoEvaluaciones,
     error: errorEvaluaciones,
   } = useQuery({
-    queryKey: ['evaluaciones'],
+    queryKey: QUERY_KEYS.evaluaciones.registroCompleto,
     queryFn: obtenerEvaluaciones,
   })
 
@@ -305,7 +306,7 @@ function EvaluacionesPage() {
       return
     }
 
-    await queryClient.invalidateQueries({ queryKey: ['evaluaciones'] })
+    await queryClient.invalidateQueries({ queryKey: QUERY_KEYS.evaluaciones.all })
     setFormulario(crearFormularioInicial())
     setMensajeGuardado('Evaluación guardada correctamente')
     setGuardando(false)

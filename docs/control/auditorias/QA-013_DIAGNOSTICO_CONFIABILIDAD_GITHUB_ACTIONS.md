@@ -215,8 +215,8 @@ No se modifican `package.json`, `package-lock.json`, dependencias ni codigo func
 
 Resultado remoto actualizado: despues del cambio externo de visibilidad, la identidad nueva
 se registro y creo `CI / Quality gate`. El primer run fue bloqueado por facturacion y el
-segundo completo la definicion CI reproducible con exito. La correccion se conserva en PR
-#128 para revision humana, sin iteraciones adicionales sobre YAML.
+segundo completo la definicion CI reproducible con exito. La correccion se integro mediante
+PR #128, sin iteraciones adicionales sobre YAML.
 
 ## Configuracion manual pendiente
 
@@ -288,6 +288,6 @@ No iniciar UI-047, UI-048, QA-012, UI-049 ni UI-050 dentro de esta ejecucion.
 ## Veredicto
 
 Cerrada con CI remoto exitoso. El workflow nuevo se registra, crea `CI / Quality gate`, asigna
-runner y completa instalacion, lint, 24 tests y build en el run `29139105668`. PR #128 queda
-listo para revision humana y no se mergea automaticamente. La siguiente tarea recomendada es
-UI-047, en una rama separada despues de integrar este PR.
+runner y completa instalacion, lint, 24 tests y build en el run `29139105668`. PR #128 fue
+integrado en `main` como `d0c22ce` el 2026-07-11; el run post-merge `29139395491` tambien paso
+`Quality gate`. UI-047 comienza despues en una rama separada.

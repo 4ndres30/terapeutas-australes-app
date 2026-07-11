@@ -2,6 +2,7 @@ import type { FormEvent, KeyboardEvent } from 'react'
 import { useMemo, useRef, useState } from 'react'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { formatearFecha, normalizarTexto } from '../lib/format'
+import { QUERY_KEYS } from '../lib/queryKeys'
 import { supabase } from '../lib/supabase'
 import {
   type FormularioPaciente,
@@ -341,7 +342,7 @@ function PacientesPage() {
     isLoading: cargando,
     error: errorCarga,
   } = useQuery({
-    queryKey: ['pacientes'],
+    queryKey: QUERY_KEYS.pacientes.registroCompleto,
     queryFn: obtenerPacientes,
   })
 
@@ -373,7 +374,7 @@ function PacientesPage() {
 
   async function invalidarConsultasPacientes() {
     await Promise.all([
-      queryClient.invalidateQueries({ queryKey: ['pacientes'] }),
+      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.pacientes.all }),
       queryClient.invalidateQueries({ queryKey: ['agenda-hoy-pacientes'] }),
     ])
   }
