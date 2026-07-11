@@ -4230,3 +4230,41 @@ decision aprobada del proyecto.
 UI-049 y UI-050 quedan registradas de forma consistente, pendientes de implementacion y sin
 presentarlas como integradas. La documentacion conserva el orden serial y el alcance real.
 
+## LOG-107 - QA-013 diagnostico y recuperacion controlada de GitHub Actions CI
+
+**Fecha:** 2026-07-10
+**Rama:** `qa-013-recuperar-confiabilidad-ci`
+**PR:** Pendiente de creacion
+**Responsable:** Control de desarrollo (Codex)
+**Tarea:** QA-013
+
+### Diagnostico
+Desde la incorporacion inicial del workflow en `9c58451`, GitHub genero 192 ejecuciones y
+todas terminaron con `startup_failure` antes de crear jobs: 95 eventos `push` y 97 eventos
+`pull_request`. El workflow activo `CI` (`308145174`) no registra ejecuciones; todas quedaron
+vinculadas a una identidad interna eliminada llamada `BuildFailed` (`308144935`).
+
+Actions esta habilitado y permite todas las acciones. Los runs relevantes no tienen jobs,
+check runs ni logs. El YAML original pasa `actionlint 1.7.12`, y la reproduccion local pasa
+`npm ci`, lint, 24/24 tests y build. Se descartan fallos de comandos npm, codigo funcional y
+asignacion de runner como causa del `startup_failure` observado.
+
+### Correccion
+Se reemplaza `.github/workflows/ci.yml` por `.github/workflows/ci-quality.yml` para forzar el
+registro de una identidad nueva y verificable. El workflow mantiene checkout, Node 20,
+`npm ci`, lint, tests y build. Agrega permisos minimos `contents: read`, cache npm, timeout de
+15 minutos, concurrencia cancelable y nombres estables de job/steps.
+
+### Estado
+Correccion implementada / pendiente validacion remota. QA-013 solo puede cerrarse si el PR
+crea el job `Quality gate` y termina exitosamente. No se modifican `src/`, dependencias,
+Supabase, Auth/RLS, migraciones, secretos, produccion ni datos reales.
+
+Validacion local posterior: `actionlint 1.7.12` OK; `npm ci` OK (214 paquetes, 0
+vulnerabilidades); lint OK; 2 archivos / 24 tests OK; build OK; `git diff --check` OK.
+
+Se sincronizan `docs/DEVELOPMENT.md` y `docs/ARCHITECTURE.md` con la nueva ruta y el orden
+reproducible de la cadena CI. Las referencias historicas al workflow original se conservan.
+
+Informe: `docs/control/auditorias/QA-013_DIAGNOSTICO_CONFIABILIDAD_GITHUB_ACTIONS.md`.
+

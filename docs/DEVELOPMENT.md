@@ -55,7 +55,7 @@ npm run test:e2e   # Playwright, requiere Supabase local + usuarios demo + npm r
 
 Para `test:e2e`, exportar `QA_DEMO_PASSWORD` (ver seccion de usuarios demo) antes de correr; los specs se saltan solos si no esta seteada.
 
-CI (`.github/workflows/ci.yml`) corre `lint` + `build` + `test` (unit) en cada PR y push a `main`. El job de E2E aun no esta en CI: requiere un Supabase completo corriendo en el runner, que no se ha validado con una ejecucion real de GitHub Actions todavia. Por ahora, correr `npm run test:e2e` localmente antes de mergear cambios de auth/routing.
+CI (`.github/workflows/ci-quality.yml`) corre `npm ci` + `lint` + `test` (unit) + `build` en cada PR y push a `main`. El job de E2E aun no esta en CI: requiere un Supabase completo corriendo en el runner, que no se ha validado con una ejecucion real de GitHub Actions todavia. Por ahora, correr `npm run test:e2e` localmente antes de mergear cambios de auth/routing.
 
 ## Checklist antes de abrir PR
 

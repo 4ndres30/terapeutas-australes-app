@@ -39,7 +39,7 @@ Este documento es la lista maestra de pendientes. Cada pendiente debe tener un c
 | QA-008 | Validacion funcional completa de Agenda interna. | Cerrada post-merge local/demo | Alta | Control de Desarrollo / QA / UI-UX / Integracion Backend |
 | QA-009 | Validacion visual UI-020/UI-021 ambiente. | Cerrada local/demo | Alta | Control de desarrollo / QA / UI-UX |
 | QA-012 | Regresion visual y funcional de PacientesPage. | Pendiente / recomendada como siguiente paso | Alta | Control de desarrollo / QA / UI-UX |
-| QA-013 | Revisar `startup_failure` de GitHub Actions CI. | Pendiente recomendado | Alta | Control de desarrollo / QA / DevOps |
+| QA-013 | Revisar `startup_failure` de GitHub Actions CI. | Correccion implementada / pendiente validacion remota | Alta | Control de desarrollo / QA / DevOps |
 | API-001 | Disenar API publica segura e integracion Google Workspace. | Diseno documental / pendiente implementacion | Alta | Control de desarrollo / Integracion Backend |
 | DEC-035 | Migracion progresiva a plataforma Google Cloud. | Propuesta documental / pendiente validacion Javier | Alta | Control de desarrollo |
 | BE-001 | Inventariar estructura backend y Supabase local. | Integrada | Alta | Integracion Backend/Estructura |
@@ -387,12 +387,16 @@ Solo local/demo con datos ficticios. No habilita produccion, datos reales, fotos
 
 ### QA-013 - Revisar `startup_failure` de GitHub Actions CI
 
-**Estado:** Pendiente recomendado
+**Estado:** Correccion implementada / pendiente validacion remota
 **Prioridad:** Alta
 **Responsable:** Control de desarrollo / QA / DevOps
 **Origen:** CTRL-015 / revision GitHub Actions post PR #125/#126
 **Fecha creacion:** 2026-07-10
+**Fecha diagnostico:** 2026-07-10
+**Rama usada:** `qa-013-recuperar-confiabilidad-ci`
+**Informe:** `docs/control/auditorias/QA-013_DIAGNOSTICO_CONFIABILIDAD_GITHUB_ACTIONS.md`
 **Dependencias:** BLOQUE-4-TEST, DEC-039, LOG-099
+**Nivel documental:** Nivel 2
 
 #### Descripcion
 Investigar por que las corridas recientes de GitHub Actions aparecen con conclusion
@@ -406,8 +410,27 @@ Investigar por que las corridas recientes de GitHub Actions aparecen con conclus
 - Mantener separada cualquier correccion de workflow en una rama propia.
 - No mezclar con QA-012, UI-047, UI-048, UI-049, UI-050 ni features funcionales.
 
+#### Diagnostico
+
+- Las 192 ejecuciones existentes desde la creacion del workflow terminaron como
+  `startup_failure`: 95 por `push` y 97 por `pull_request`.
+- Cada ejecucion fallo antes de crear jobs y no genero logs.
+- El workflow activo `CI` (`id=308145174`) tiene 0 runs; todas las ejecuciones quedaron
+  asociadas a una identidad eliminada `BuildFailed` (`id=308144935`).
+- Actions esta habilitado y permite todas las acciones. El YAML vigente pasa
+  `actionlint 1.7.12`; `npm ci`, lint, 24 tests y build pasan localmente.
+- Branch protection y rulesets responden HTTP 403 porque requieren GitHub Pro o repositorio
+  publico en la configuracion actual.
+
+#### Correccion aplicada
+
+Se reemplaza `.github/workflows/ci.yml` por `.github/workflows/ci-quality.yml` para forzar una
+identidad limpia del workflow. Se conservan Node 20, `npm ci`, lint, tests y build, y se
+agregan permisos `contents: read`, cache npm, timeout, concurrencia y nombres estables.
+
 #### Resultado
-Pendiente recomendado. No se corrige en CTRL-015.
+Correccion implementada localmente. QA-013 no se cierra hasta que el PR de esta rama genere
+jobs y finalice con CI remoto exitoso.
 
 ### PEND-001 - Levantar inventario real del proyecto desde main
 
