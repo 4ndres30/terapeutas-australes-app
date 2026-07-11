@@ -4365,6 +4365,7 @@ dependencias, datos ni produccion. QA-012, UI-049 y UI-050 permanecen fuera de e
 
 ### Estado
 
-Implementada en PR #130 / pendiente validacion remota. Lint OK, 3 archivos / 29 pruebas OK,
-build OK, `git diff --check` OK y validacion Playwright responsive sin overflow.
+Validada en PR #130 / pendiente merge. Lint OK, 3 archivos / 29 pruebas OK, build OK,
+`git diff --check` OK y validacion Playwright responsive sin overflow. Run remoto
+`29140053227`: `Quality gate` exitoso en 29 s.
 
