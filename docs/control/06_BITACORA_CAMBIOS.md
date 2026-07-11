@@ -4263,17 +4263,21 @@ en 3 segundos, sin runner (`runner_id: 0`), sin steps y sin logs. La anotacion d
 identifica la causa exacta: `The job was not started because your account is locked due to a
 billing issue.` La clasificacion final cambia a categoria E, problema de cuenta/facturacion.
 
+El commit documental posterior `c385c85` genero el run `29139105668`. Sin cambios adicionales
+de workflow, GitHub asigno runner y `Quality gate` completo checkout, setup de Node,
+`npm ci`, lint, 24 tests y build en 29 segundos. El resultado remoto fue exitoso.
+
 ### Estado
-Bloqueada / facturacion de cuenta confirmada. La ingestion del workflow y la creacion del
-check ya funcionan; el bloqueo restante esta en la cuenta de GitHub y ocurre antes de asignar
-runner. No se realizan mas cambios al workflow. QA-013 solo puede cerrarse despues de resolver
-la facturacion y observar un `Quality gate` remoto exitoso.
+Cerrada con CI remoto exitoso. La ingestion, creacion del check, asignacion de runner y cadena
+completa quedaron verificadas. No se realizan mas cambios al workflow. Branch protection no
+se activa automaticamente; queda preparada para aplicacion manual posterior.
 
 No se modifican `src/`, dependencias, Supabase, Auth/RLS, migraciones, secretos, produccion
 ni datos reales.
 
 Validacion local posterior: `actionlint 1.7.12` OK; `npm ci` OK (214 paquetes, 0
 vulnerabilidades); lint OK; 2 archivos / 24 tests OK; build OK; `git diff --check` OK.
+Validacion remota: run `29139105668`, `Quality gate` exitoso en 29 s.
 
 Se sincronizan `docs/DEVELOPMENT.md` y `docs/ARCHITECTURE.md` con la nueva ruta y el orden
 reproducible de la cadena CI, y el estado general, pendientes y niveles documentales con el

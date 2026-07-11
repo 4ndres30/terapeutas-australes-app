@@ -55,7 +55,7 @@ npm run test:e2e   # Playwright, requiere Supabase local + usuarios demo + npm r
 
 Para `test:e2e`, exportar `QA_DEMO_PASSWORD` (ver seccion de usuarios demo) antes de correr; los specs se saltan solos si no esta seteada.
 
-CI (`.github/workflows/ci-quality.yml`) define `npm ci` + `lint` + `test` (unit) + `build` en cada PR y push a `main`. Al corte 2026-07-11, `CI / Quality gate` se crea, pero queda sin runner ni steps porque GitHub informa que la cuenta esta bloqueada por facturacion (QA-013); hasta resolverlo, las validaciones locales siguen siendo obligatorias. El job de E2E aun no esta en CI: requiere un Supabase completo corriendo en el runner. Por ahora, correr `npm run test:e2e` localmente antes de mergear cambios de auth/routing.
+CI (`.github/workflows/ci-quality.yml`) ejecuta `npm ci` + `lint` + `test` (unit) + `build` en cada PR y push a `main`. QA-013 valido `CI / Quality gate` de extremo a extremo con el run exitoso `29139105668` del 2026-07-11. El job de E2E aun no esta en CI: requiere un Supabase completo corriendo en el runner. Por ahora, correr `npm run test:e2e` localmente antes de mergear cambios de auth/routing.
 
 ## Checklist antes de abrir PR
 

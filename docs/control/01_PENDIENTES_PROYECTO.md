@@ -39,7 +39,7 @@ Este documento es la lista maestra de pendientes. Cada pendiente debe tener un c
 | QA-008 | Validacion funcional completa de Agenda interna. | Cerrada post-merge local/demo | Alta | Control de Desarrollo / QA / UI-UX / Integracion Backend |
 | QA-009 | Validacion visual UI-020/UI-021 ambiente. | Cerrada local/demo | Alta | Control de desarrollo / QA / UI-UX |
 | QA-012 | Regresion visual y funcional de PacientesPage. | Pendiente / recomendada como siguiente paso | Alta | Control de desarrollo / QA / UI-UX |
-| QA-013 | Revisar `startup_failure` de GitHub Actions CI. | Bloqueada / facturacion de cuenta confirmada | Alta | Control de desarrollo / QA / DevOps |
+| QA-013 | Revisar `startup_failure` de GitHub Actions CI. | Cerrada con CI remoto exitoso | Alta | Control de desarrollo / QA / DevOps |
 | API-001 | Disenar API publica segura e integracion Google Workspace. | Diseno documental / pendiente implementacion | Alta | Control de desarrollo / Integracion Backend |
 | DEC-035 | Migracion progresiva a plataforma Google Cloud. | Propuesta documental / pendiente validacion Javier | Alta | Control de desarrollo |
 | BE-001 | Inventariar estructura backend y Supabase local. | Integrada | Alta | Integracion Backend/Estructura |
@@ -387,13 +387,14 @@ Solo local/demo con datos ficticios. No habilita produccion, datos reales, fotos
 
 ### QA-013 - Revisar `startup_failure` de GitHub Actions CI
 
-**Estado:** Bloqueada / facturacion de cuenta confirmada
+**Estado:** Cerrada con CI remoto exitoso
 **Prioridad:** Alta
 **Responsable:** Control de desarrollo / QA / DevOps
 **Origen:** CTRL-015 / revision GitHub Actions post PR #125/#126
 **Fecha creacion:** 2026-07-10
 **Fecha diagnostico:** 2026-07-10
 **Fecha revalidacion:** 2026-07-11
+**Fecha cierre:** 2026-07-11
 **Rama usada:** `qa-013-recuperar-confiabilidad-ci`
 **Informe:** `docs/control/auditorias/QA-013_DIAGNOSTICO_CONFIABILIDAD_GITHUB_ACTIONS.md`
 **Dependencias:** BLOQUE-4-TEST, DEC-039, LOG-099
@@ -427,8 +428,10 @@ Investigar por que las corridas recientes de GitHub Actions aparecen con conclus
   `The job was not started because your account is locked due to a billing issue.`
 - La causa queda clasificada como **E: problema de cuenta/facturacion**. Actions permanece
   habilitado; no corresponde seguir modificando YAML por ensayo y error.
+- Sin nuevos cambios de workflow, el run posterior `29139105668` asigno runner y completo
+  checkout, Node, `npm ci`, lint, 24 tests y build. `Quality gate` termino exitoso en 29 s.
 - Branch protection ya es configurable por la visibilidad publica, pero `main` sigue sin
-  proteccion y no se debe exigir un check hasta observar al menos una ejecucion exitosa.
+  proteccion porque QA-013 prohibe activarla automaticamente.
 
 #### Correccion aplicada
 
@@ -437,11 +440,10 @@ identidad limpia del workflow. Se conservan Node 20, `npm ci`, lint, tests y bui
 agregan permisos `contents: read`, cache npm, timeout, concurrencia y nombres estables.
 
 #### Resultado
-La correccion versionada pasa todas las validaciones locales. Publicar el repositorio resolvio
-la ingestion del workflow y permitio crear `CI / Quality gate`, pero el run `29138928820`
-fallo antes de asignar runner porque la cuenta esta bloqueada por facturacion. QA-013 queda
-bloqueada por configuracion externa y no se cierra hasta regularizar la cuenta, reejecutar una
-sola vez y obtener un `Quality gate` exitoso.
+La correccion versionada pasa todas las validaciones locales. Publicar el repositorio permitio
+registrar `CI / Quality gate`; el primer run expuso un bloqueo de facturacion y el siguiente,
+`29139105668`, completo todos los steps en 29 s. QA-013 queda cerrada con CI remoto exitoso.
+Branch protection permanece pendiente de aplicacion manual y no bloquea este cierre.
 
 ### PEND-001 - Levantar inventario real del proyecto desde main
 

@@ -95,7 +95,7 @@ No debe ejecutarse sin:
 | --- | --- | --- |
 | QA-008 | Nivel 2 | Validacion funcional completa de Agenda interna ya integrada. |
 | QA-012 | Nivel 2 | Regresion visual y funcional de PacientesPage integrada con datos local/demo. |
-| QA-013 | Nivel 2 | Diagnostico y correccion versionada del workflow CI; check remoto identificado y ejecucion bloqueada por facturacion, sin codigo funcional, secretos ni produccion. |
+| QA-013 | Nivel 2 | Diagnostico, correccion versionada y validacion remota exitosa del workflow CI, sin codigo funcional, secretos ni produccion. |
 | UI-025B | Nivel 2 | Alta y edicion controlada de `agenda_eventos` dentro del sistema interno. |
 | UI-047 | Nivel 2 | Normalizacion de queryKeys TanStack Query en superficies internas, sin DB/RLS/Auth. |
 | UI-048 | Nivel 1 | Ajuste CSS/visual menor para compactar indicadores de PacientesPage sin cambiar flujo ni datos. |
