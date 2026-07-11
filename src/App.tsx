@@ -1,5 +1,5 @@
 import { lazy, Suspense, useState, useEffect, type ReactNode } from 'react'
-import { Menu, ShieldAlert, X } from 'lucide-react'
+import { LogOut, Menu, Pin, PinOff, ShieldAlert, X } from 'lucide-react'
 import { BrowserRouter, Navigate, NavLink, Outlet, Route, Routes } from 'react-router-dom'
 import ErrorBoundary from './components/ErrorBoundary'
 import { AuthProvider, useAuth } from './context/AuthContext'
@@ -264,6 +264,17 @@ function DashboardShell({ children }: {
   const rolVisible = usuarioInterno ? formatearRol(usuarioInterno.rol) : ''
   const navegacionVisible = usuarioInterno ? obtenerNavegacionPorRol(usuarioInterno.rol) : []
   const [menuMovilAbierto, setMenuMovilAbierto] = useState(false)
+  const [railFijado, setRailFijado] = useState(() => {
+    if (typeof window === 'undefined') {
+      return false
+    }
+
+    return window.localStorage.getItem('ta-sidebar-rail-fijado') === '1'
+  })
+
+  useEffect(() => {
+    window.localStorage.setItem('ta-sidebar-rail-fijado', railFijado ? '1' : '0')
+  }, [railFijado])
 
   useEffect(() => {
     document.body.classList.toggle('dashboard-menu-open', menuMovilAbierto)
@@ -291,8 +302,14 @@ function DashboardShell({ children }: {
     }
   }, [menuMovilAbierto])
 
+  const clasesShell = [
+    'dashboard-shell',
+    menuMovilAbierto ? 'dashboard-shell--menu-open' : '',
+    railFijado ? 'dashboard-shell--rail-fijado' : '',
+  ].filter(Boolean).join(' ')
+
   return (
-    <div className={menuMovilAbierto ? 'dashboard-shell dashboard-shell--menu-open' : 'dashboard-shell'}>
+    <div className={clasesShell}>
       <button
         aria-label="Cerrar panel de navegación"
         className="dashboard-menu-backdrop"
@@ -304,11 +321,22 @@ function DashboardShell({ children }: {
         <div className="sidebar-mobile-header">
           <div className="sidebar-brand">
             <div className="sidebar-logo" aria-hidden="true">✦</div>
-            <div>
+            <div className="sidebar-label">
               <strong>Terapeutas Australes</strong>
               <span>Gestión profesional</span>
             </div>
           </div>
+
+          <button
+            aria-label={railFijado ? 'Liberar barra lateral' : 'Fijar barra lateral expandida'}
+            aria-pressed={railFijado}
+            className="sidebar-pin-toggle"
+            onClick={() => setRailFijado((valorActual) => !valorActual)}
+            title={railFijado ? 'Liberar barra lateral' : 'Fijar barra lateral expandida'}
+            type="button"
+          >
+            {railFijado ? <PinOff aria-hidden="true" /> : <Pin aria-hidden="true" />}
+          </button>
 
           <button
             aria-label="Cerrar menú lateral"
@@ -329,15 +357,16 @@ function DashboardShell({ children }: {
                 )}
                 key={item.etiqueta}
                 onClick={() => setMenuMovilAbierto(false)}
+                title={item.etiqueta}
                 to={item.ruta}
               >
                 <span className="sidebar-nav-icon" aria-hidden="true">{item.icono}</span>
-                {item.etiqueta}
+                <span className="sidebar-label">{item.etiqueta}</span>
               </NavLink>
             ) : (
-              <span className="sidebar-nav-item sidebar-nav-item--soon" key={item.etiqueta}>
+              <span className="sidebar-nav-item sidebar-nav-item--soon" key={item.etiqueta} title={item.etiqueta}>
                 <span className="sidebar-nav-icon" aria-hidden="true">{item.icono}</span>
-                {item.etiqueta}
+                <span className="sidebar-label">{item.etiqueta}</span>
               </span>
             )
           ))}
@@ -349,15 +378,21 @@ function DashboardShell({ children }: {
         </div>
 
         <div className="sidebar-footer">
-          <span>v1.0.0</span>
+          <span className="sidebar-label">v1.0.0</span>
           <div className="sidebar-status">
             <span aria-hidden="true" />
-            En línea
+            <span className="sidebar-label">En línea</span>
           </div>
         </div>
 
-        <button className="sidebar-logout" type="button" onClick={() => void cerrarSesion()}>
-          Cerrar sesión
+        <button
+          className="sidebar-logout"
+          onClick={() => void cerrarSesion()}
+          title="Cerrar sesión"
+          type="button"
+        >
+          <LogOut aria-hidden="true" />
+          <span className="sidebar-label">Cerrar sesión</span>
         </button>
       </aside>
 
