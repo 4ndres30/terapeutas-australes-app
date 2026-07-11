@@ -113,7 +113,7 @@ Este documento es la lista maestra de pendientes. Cada pendiente debe tener un c
 | UI-034 | Redisenar PacientesPage como panel de trabajo diario: metricas arriba, barra de acciones (registro completo / nuevo / editar / anular), directorio del dia con citas de hoy desde agenda_eventos. Absorbe UI-032. | Integrada local/demo por PR #118 / validada visual con admin demo | Alta | UI / UX / Integracion Backend |
 | UI-035 | ConsultasPage: vista del dia (consultas de hoy por defecto) + formulario de alta bajo demanda, replicando el patron DEC-043 de Pacientes. | Pendiente | Media-alta | UI / UX |
 | UI-036 | EvaluacionesPage: exponer hora_evaluacion en formulario y tarjetas (columna NOT NULL en BD, hoy invisible: siempre guarda hora del servidor). | Pendiente | Baja | UI / UX |
-| UI-037 | Migrar CasosPage y CasoDetallePage a TanStack Query + corregir bug de carga (si falla 1 de 4 consultas encadenadas se descarta todo el estado, incluidos datos ya cargados). | Pendiente | Alta | UI / UX / Integracion Backend |
+| UI-037 | Migrar CasosPage y CasoDetallePage a TanStack Query + corregir bug de carga (si falla 1 de 4 consultas encadenadas se descarta todo el estado, incluidos datos ya cargados). | Validada, pendiente PR — ver LOG-115 | Alta | UI / UX / Integracion Backend |
 | UI-038 | Verificar y activar el formulario de intervenciones (UI-013/PR #108) dentro del flujo real de CasoDetallePage post-merge de tabs (PR #107); ambos PRs tocaron TrabajosCasoPanel. | Pendiente | Media | UI / UX / QA |
 | UI-039 | AgendaPage: anulacion/cancelacion de eventos desde UI (unica pagina con update pero sin flujo de anulacion; estados cancelado/anulado existen en el CHECK). | Pendiente | Media-alta | UI / UX |
 | UI-040 | Finanzas: flujo de creacion de cobros y registro de pagos desde UI. Todo el modulo de pagos en BD (tablas, triggers, vistas, RLS) existe sin forma de recibir datos desde la app: la pagina solo lee. | Pendiente | Alta | UI / UX / Integracion Backend |
@@ -127,7 +127,7 @@ Este documento es la lista maestra de pendientes. Cada pendiente debe tener un c
 | UI-047 | Normalizacion de queryKeys TanStack Query para pacientes y selectores. | Integrada en main por PR #129 | Alta | UI / UX / Integracion Backend |
 | UI-048 | Compactar fila de indicadores superiores de PacientesPage manteniendo una sola linea desktop. | Integrada en main por PR #130 | Media-alta | UI / UX / Pulido visual |
 | UI-049 | Convertir la sidebar desktop en rail colapsable: iconos por defecto, expansion por hover/foco y fijado opcional, conservando drawer movil y navegacion por rol. | Integrada en main por PR #134 | Media-alta | UI / UX / Pulido visual |
-| UI-050 | Redisenar la barra superior como encabezado contextual compacto, sin franja vacia y preservando ambiente, usuario y acciones del modulo. | Validada, PR #135 abierto, pendiente merge — ver LOG-114 | Media-alta | UI / UX / Pulido visual |
+| UI-050 | Redisenar la barra superior como encabezado contextual compacto, sin franja vacia y preservando ambiente, usuario y acciones del modulo. | Integrada en main por PR #135 | Media-alta | UI / UX / Pulido visual |
 | UI-051 | Mantener la fila de indicadores de PacientesPage en una sola linea (4 columnas) en tablet y mobile, ajustando tamano y contenido. | Integrada en main por PR #132 | Alta | UI / UX / Pulido visual |
 | DOC-001 | Manual de ambientes. | Documental / pendiente implementacion futura | Alta | Control de desarrollo |
 | DOC-002 | Procedimiento de backup/restauracion. | Documental / pendiente prueba futura | Alta | Control de desarrollo / Integracion Backend |
@@ -1734,7 +1734,7 @@ LOG-113 (`06_BITACORA_CAMBIOS.md`).
 
 ### UI-050 - Barra superior como encabezado contextual compacto
 
-**Estado:** Validada, PR #135 abierto, pendiente merge — ver LOG-114 en `06_BITACORA_CAMBIOS.md`
+**Estado:** Integrada en main por PR #135 — ver LOG-114 en `06_BITACORA_CAMBIOS.md`
 **Prioridad:** Media-alta
 **Responsable:** UI / UX / Pulido visual + Control de desarrollo
 **Origen:** Observacion visual de Javier durante revision local/demo del shell interno
@@ -1807,8 +1807,7 @@ UI-027): barra a 64px estable en desktop, contexto de ruta correcto en cada modu
 overflow horizontal ni solapamientos.
 
 #### Resultado
-Validada (automatizado + visual). Rama `ui-050-encabezado-contextual`, PR #135 abierto. No se
-declara "Integrada" hasta que el codigo este efectivamente en `main`. Detalle completo en
+Integrada en `main` por PR #135 (validada: automatizado + visual). Detalle completo en
 LOG-114 (`06_BITACORA_CAMBIOS.md`).
 
 ### UI-051 - Metricas de Pacientes en una sola linea en tablet/mobile
@@ -1963,6 +1962,65 @@ DOC-004 ordena el flujo futuro de solicitud publica, validacion API, registro en
 
 #### Observaciones
 DOC-004 no implementa endpoints, codigo, migraciones, Google, Supabase remoto ni produccion. La implementacion real debe esperar BE-020, SEC-005, BE-018, DOC-001, DOC-003, BE-027, SEC-010 y PROD-001.
+
+### UI-037 - Migrar CasosPage y CasoDetallePage a TanStack Query
+
+**Estado:** Validada, pendiente PR — ver LOG-115 en `06_BITACORA_CAMBIOS.md`
+**Prioridad:** Alta
+**Responsable:** UI / UX / Integracion Backend + Control de desarrollo
+**Origen:** Hallazgo tecnico durante barrido de patrones de carga de datos (bug de perdida de
+estado ya cargado ante fallo parcial)
+**Fecha creacion:** 2026-07-04 (fila de pendientes) / implementada 2026-07-11
+**Rama:** `ui-037-casos-tanstack-query`
+**Dependencias:** Ninguna (usa el mismo patron ya validado en ConsultasPage/EvaluacionesPage)
+**Nivel documental:** Nivel 2
+
+#### Descripcion
+`CasosPage.tsx` cargaba pacientes, consultas, evaluaciones y casos con 4 llamadas
+secuenciales a Supabase, y solo asignaba los 4 `setState` al final de la funcion. Si
+cualquiera de las 4 fallaba, se descartaba todo el estado -- incluidos los datos que ya
+habian llegado correctamente. `CasoDetallePage.tsx` encadenaba caso -> paciente -> consulta
+-> evaluacion con el mismo riesgo estructural (menos severo, porque si asignaba cada
+`setState` a medida que resolvia, pero igual dependia de un unico flag `cargando` global).
+
+#### Cambio realizado
+Migrados ambos componentes al patron TanStack Query ya usado en `PacientesPage`,
+`ConsultasPage` y `EvaluacionesPage`: cada dataset es un `useQuery` independiente con su
+propio `queryKey` (nuevos namespaces agregados a `src/lib/queryKeys.ts`:
+`QUERY_KEYS.casos`, `QUERY_KEYS.evaluaciones.selectorCasos`, `QUERY_KEYS.evaluaciones.detalle`,
+`QUERY_KEYS_DETALLE.paciente/consulta`), su propio `isLoading` y su propio `error`, en vez de
+un unico flag compartido. En `CasoDetallePage.tsx` las consultas de paciente/consulta/
+evaluacion usan `enabled` para depender del `caso` ya resuelto, sin bloquear entre si: si
+falla la consulta de origen, el caso y el paciente igual se muestran. `guardarCaso` ahora usa
+`queryClient.invalidateQueries` en vez de mutar el arreglo de casos a mano, replicando el
+patron de `PacientesPage`/`ConsultasPage`. Se reutilizan las queryKeys compartidas
+`pacientes.selectorClinico` y `consultas.selectorEvaluaciones` solo donde el `select` de
+columnas es identico al de las paginas que ya las usan (evita corromper el cache
+compartido); para evaluaciones se creo una key propia (`selectorCasos`) porque su `select`
+es mas acotado que el de `EvaluacionesPage`.
+
+#### Validacion
+`npx tsc -b`, `npm run lint`, `npm run build`: OK. `npm run test` (vitest, 29/29): OK.
+`npx playwright test` (suite e2e completa, 8/8, con `QA_DEMO_PASSWORD` provisionada para la
+sesion): OK. Verificacion visual en navegador real (sesion admin): listado de Casos con
+metricas correctas, ficha de caso `DATA-001` mostrando paciente, consulta y evaluacion de
+origen correctamente resueltos, pestaña "Elementos" con datos filtrados por caso/paciente,
+boton "Actualizar ficha" disparando refetch real (verificado via `read_network_requests`),
+y creacion de un caso nuevo de punta a punta (aparece de inmediato en el listado via
+invalidacion de query, sin necesidad de recargar la pagina).
+
+#### Bug encontrado y corregido durante la validacion
+Una revision adversarial independiente detecto que desacoplar las 4 queries de
+`CasosPage.tsx` rompia una garantia implicita de la version anterior: el chequeo de
+duplicado (`nombre_caso` + `paciente_id` con caso abierto/en proceso) podia evaluarse contra
+`casos` todavia vacio si esa query no habia resuelto antes que la de `pacientes`, permitiendo
+guardar un caso duplicado. Corregido agregando `cargando` a la condicion `disabled` del
+boton "Guardar caso" y un guard en `guardarCaso` que rechaza el submit mientras se sigue
+cargando. Detalle en LOG-115.
+
+#### Resultado
+Validada (automatizado + visual). No se declara "Integrada" hasta que el codigo este
+efectivamente en `main`. Detalle completo en LOG-115 (`06_BITACORA_CAMBIOS.md`).
 
 ### BE-022 - Soporte de fotos para elementos del caso con Supabase Storage
 

@@ -127,7 +127,7 @@ test de logout que fallaba antes del fix). Integrada en `main` por PR #134.
 
 ## UI-050 - Barra superior como encabezado contextual compacto
 
-**Estado:** Validada, PR #135 abierto, pendiente merge — ver LOG-114 en `06_BITACORA_CAMBIOS.md`
+**Estado:** Integrada en main por PR #135 — ver LOG-114 en `06_BITACORA_CAMBIOS.md`
 **Prioridad:** Media-alta
 **Nivel documental:** Nivel 2
 
@@ -151,7 +151,7 @@ conocido de medicion de grid con flexbox anidado y `align-items:center`; corregi
 reubicaron acciones primarias de cada pagina hacia el encabezado (criterio marcado "cuando
 corresponda"): se evaluo y se dejo fuera de esta pasada por ser un cambio de mayor alcance
 por-pagina, no del shell global. Validada por `npm run lint`/`build`/`test` (29/29) y la suite
-e2e completa (8/8). PR #135 abierto, pendiente merge.
+e2e completa (8/8). Integrada en `main` por PR #135.
 
 UI-050 se implementa despues de UI-049 y en PR propio. No requiere DEC mientras conserve
 rutas, permisos y comportamiento; cualquier cambio de esas reglas debe volver a Control.

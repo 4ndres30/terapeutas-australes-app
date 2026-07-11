@@ -4697,6 +4697,79 @@ cambios. Filtrado por rol confirmado intacto (Finanzas ve solo Finanzas/Reportes
 
 ### Resultado
 
-UI-050 validada (automatizado + visual). Rama `ui-050-encabezado-contextual`, PR #135 abierto.
-No se declara "Integrada" hasta que el codigo este efectivamente en `main`.
+UI-050 integrada en `main` por PR #135 (validada: automatizado + visual).
 
+## LOG-115 - UI-037: migracion de CasosPage y CasoDetallePage a TanStack Query
+
+**Rama:** `ui-037-casos-tanstack-query`
+**PR:** (ver arriba al abrir)
+**Responsable:** Control de desarrollo (Claude)
+**Fecha:** 2026-07-11
+**Origen:** Fila de pendientes registrada (UI-037), sin ficha previa; tomada como siguiente
+tarea recomendada tras el cierre de UI-049/UI-050 por ser un bug funcional real (no solo
+pulido visual) con patron de solucion ya validado en el resto de la app.
+
+### Que se hizo
+
+`CasosPage.tsx` cargaba pacientes, consultas, evaluaciones y casos con 4 llamadas
+secuenciales a Supabase y solo llamaba a los 4 `setState` al final de la funcion. Si
+cualquiera de las 4 fallaba, se perdia todo el estado, incluidos los datos que ya habian
+llegado bien. `CasoDetallePage.tsx` encadenaba caso -> paciente -> consulta -> evaluacion
+con el mismo riesgo estructural, aunque algo mas resiliente porque cada `setState` se
+llamaba a medida que resolvia (no todos al final).
+
+Ambos componentes se migraron al patron TanStack Query ya usado en `PacientesPage.tsx`,
+`ConsultasPage.tsx` y `EvaluacionesPage.tsx`: cada dataset es un `useQuery` independiente,
+con su propio `isLoading` y `error`, combinados con `||` para el estado agregado de carga y
+mensaje. En `CasoDetallePage.tsx`, las consultas de paciente/consulta/evaluacion usan
+`enabled` para depender del `caso` ya resuelto (`enabled: Boolean(caso?.consulta_id)`, etc.),
+de forma que un fallo en la consulta de origen no bloquea que el caso y el paciente se
+muestren igual. `guardarCaso` en `CasosPage.tsx` ahora usa
+`queryClient.invalidateQueries({ queryKey: QUERY_KEYS.casos.all })` en vez de mutar el
+arreglo de casos a mano, replicando el patron ya usado en `PacientesPage`/`ConsultasPage`.
+
+`src/lib/queryKeys.ts` gana los namespaces `QUERY_KEYS.casos` (`all`/`registroCompleto`/
+`detalle(id)`), `QUERY_KEYS.evaluaciones.selectorCasos` y `.detalle(id)`, y un nuevo
+`QUERY_KEYS_DETALLE` con `paciente(id)`/`consulta(id)` para las consultas por id de
+`CasoDetallePage`. Se reutilizan las keys compartidas `pacientes.selectorClinico` y
+`consultas.selectorEvaluaciones` solo despues de confirmar que el `select` de columnas de
+`CasosPage` coincide exactamente con el que ya usan `ConsultasPage`/`EvaluacionesPage` bajo
+esas mismas keys (evita corromper el cache compartido con formas de datos distintas bajo la
+misma key); para evaluaciones se creo una key propia (`selectorCasos`) porque el `select`
+que necesita `CasosPage` es mas acotado que el de `EvaluacionesPage`.
+
+### Validacion
+
+`npx tsc -b`, `npm run lint`, `npm run build`: OK. `npm run test` (vitest, 29/29): OK.
+`npx playwright test` (suite e2e completa, 8/8, con `QA_DEMO_PASSWORD` provisionada para la
+sesion local): OK. Verificacion visual en navegador real (sesion admin, datos del seed
+local): listado de Casos con metricas correctas; ficha de caso `DATA-001` mostrando paciente,
+consulta y evaluacion de origen correctamente resueltos; pestaña "Elementos" con datos
+filtrados por caso/paciente; boton "Actualizar ficha" disparando peticiones reales de
+refetch (confirmado via inspeccion de red); creacion de un caso nuevo de punta a punta
+(aparece de inmediato en el listado por invalidacion de query, sin recargar la pagina).
+Revision adversarial independiente del diff completo (agente separado, sin el contexto de
+esta sesion) enfocada en bugs de correctitud: enable/deshabilitado de queries dependientes,
+colision de shape bajo keys compartidas, y codigo huerfano de la implementacion anterior.
+
+### Bug real encontrado por la revision adversarial y corregido
+
+Al desacoplar las 4 queries de `CasosPage.tsx`, se perdio una garantia implicita de la
+implementacion anterior: antes, los 4 `setState` se asignaban juntos solo cuando las 4
+llamadas secuenciales terminaban, asi que `pacientes.length > 0` implicaba que `casos` ya
+habia cargado tambien. Con queries independientes eso deja de ser cierto: si `pacientes`
+resuelve antes que `casos` (variacion normal de tiempos de red), el formulario quedaba
+habilitado con `casos` todavia en `[]`, y el chequeo de duplicado
+(`validarFormularioCaso`/`casos.some(...)`) evaluaba contra un arreglo vacio -- un usuario
+podia guardar un caso duplicado (mismo paciente, mismo nombre, caso abierto/en proceso ya
+existente) sin que la validacion lo detectara, porque `casos` aun no habia llegado. No hay
+constraint de BD que actue de respaldo. Corregido agregando `cargando` a la condicion
+`disabled` del boton "Guardar caso" y un guard adicional al inicio de `guardarCaso` que
+rechaza el submit mientras `cargando` sea `true`, para no depender solo del estado del boton
+(cubre tambien el submit implicito via Enter en `manejarEnterFormulario`).
+
+### Resultado
+
+UI-037 validada (automatizado + visual + revision adversarial). Rama
+`ui-037-casos-tanstack-query`, PR pendiente de apertura al momento de escribir esta entrada.
+No se declara "Integrada" hasta que el codigo este efectivamente en `main`.
