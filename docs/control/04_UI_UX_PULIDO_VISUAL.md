@@ -81,9 +81,10 @@ y selectores`, recomendado en tarea separada. No se implementa dentro de la sinc
 CTRL-015.
 
 Hallazgo visual adicional registrado por Javier durante revision en navegador:
-`UI-048 - Compactar fila de indicadores superiores de PacientesPage`. Los indicadores deben
-mantenerse en una sola linea en desktop, pero con una fila mas estrecha y armoniosa mediante
-ajustes de densidad visual. No se implementa dentro de CTRL-015.
+`UI-048 - Compactar fila de indicadores superiores de PacientesPage`. Implementada en rama
+`ui-048-compactar-indicadores-pacientes`: cuatro tarjetas en una línea desktop, 72 px de alto,
+iconos y tipografia reducidos, decoracion secundaria retirada y responsive 2x2 sin overflow
+en tablet/mobile. Validada por `Quality gate` en PR #130 y pendiente de merge.
 
 Hallazgos del shell global registrados en la misma revision:
 

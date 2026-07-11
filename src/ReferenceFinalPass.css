@@ -92,69 +92,41 @@
 }
 
 .dashboard-main .pacientes-metricas-rail {
-  gap: 16px;
+  gap: 12px;
 }
 
 .dashboard-main .metrica-rail-card {
   border: 1px solid rgba(85, 55, 125, 0.10);
-  border-radius: 22px;
-  min-height: 96px;
+  border-radius: 8px;
+  box-sizing: border-box;
+  box-shadow: 0 8px 20px rgba(53, 28, 86, 0.06);
+  gap: 10px;
+  min-height: 72px;
   overflow: hidden;
-  padding: 18px 70px 18px 20px;
+  padding: 10px 12px;
   position: relative;
 }
 
+.dashboard-main .metrica-rail-card::before,
 .dashboard-main .metrica-rail-card::after {
-  background:
-    linear-gradient(135deg, transparent 0 14%, rgba(109, 63, 211, 0.18) 14% 17%, transparent 17% 32%, rgba(109, 63, 211, 0.32) 32% 35%, transparent 35% 49%, rgba(109, 63, 211, 0.22) 49% 52%, transparent 52% 66%, rgba(109, 63, 211, 0.34) 66% 69%, transparent 69% 100%);
-  border-radius: 999px;
-  bottom: 22px;
-  content: '';
-  height: 34px;
-  opacity: 0.72;
-  position: absolute;
-  right: 18px;
-  width: 58px;
-}
-
-.dashboard-main .metrica-rail-card::before {
-  background: rgba(109, 63, 211, 0.07);
-  border-radius: 999px;
-  bottom: 31px;
-  content: '';
-  height: 10px;
-  position: absolute;
-  right: 18px;
-  width: 62px;
-}
-
-.dashboard-main .metrica-rail-card:nth-child(2)::after {
-  background: linear-gradient(135deg, transparent 0 16%, rgba(28, 173, 102, 0.18) 16% 19%, transparent 19% 34%, rgba(28, 173, 102, 0.32) 34% 37%, transparent 37% 54%, rgba(28, 173, 102, 0.22) 54% 57%, transparent 57% 72%, rgba(28, 173, 102, 0.35) 72% 75%, transparent 75% 100%);
-}
-
-.dashboard-main .metrica-rail-card:nth-child(3)::after {
-  background: linear-gradient(135deg, transparent 0 16%, rgba(225, 44, 103, 0.16) 16% 19%, transparent 19% 36%, rgba(225, 44, 103, 0.30) 36% 39%, transparent 39% 52%, rgba(225, 44, 103, 0.22) 52% 55%, transparent 55% 70%, rgba(225, 44, 103, 0.34) 70% 73%, transparent 73% 100%);
-}
-
-.dashboard-main .metrica-rail-card:nth-child(4)::after {
-  background: linear-gradient(135deg, transparent 0 16%, rgba(212, 155, 45, 0.18) 16% 19%, transparent 19% 36%, rgba(212, 155, 45, 0.32) 36% 39%, transparent 39% 55%, rgba(212, 155, 45, 0.22) 55% 58%, transparent 58% 72%, rgba(212, 155, 45, 0.35) 72% 75%, transparent 75% 100%);
+  content: none;
 }
 
 .dashboard-main .metrica-rail-card .metrica-icon {
   background: linear-gradient(135deg, #6d3fd3, #8f59ef 72%, #d6b4ff);
   color: #ffffff;
-  height: 50px;
-  width: 50px;
+  height: 40px;
+  width: 40px;
 }
 
 .dashboard-main .metrica-rail-card .metrica-icon svg {
   fill: none;
-  height: 26px;
+  height: 20px;
   stroke: currentColor;
   stroke-linecap: round;
   stroke-linejoin: round;
   stroke-width: 1.8;
-  width: 26px;
+  width: 20px;
 }
 
 .dashboard-main .metrica-rail-card:nth-child(2) .metrica-icon {
@@ -174,8 +146,21 @@
 
 .dashboard-main .metrica-rail-card strong {
   color: var(--ta-ink);
-  font-size: 28px;
+  font-size: 22px;
+  letter-spacing: 0;
   line-height: 1;
+}
+
+.dashboard-main .metrica-rail-card span:not(.metrica-icon) {
+  font-size: 11px;
+  line-height: 1.15;
+  margin-top: 2px;
+}
+
+.dashboard-main .metrica-rail-card p {
+  font-size: 10px;
+  line-height: 1.15;
+  margin-top: 2px;
 }
 
 .dashboard-main .pacientes-command-grid {

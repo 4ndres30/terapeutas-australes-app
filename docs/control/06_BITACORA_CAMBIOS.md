@@ -4328,3 +4328,44 @@ Validada en PR #129 / pendiente merge. Validacion local: `npm ci` OK (214 paquet
 vulnerabilidades), lint OK, 3 archivos / 29 pruebas OK, build OK y `git diff --check` OK.
 Validacion remota: run `29139673940`, `Quality gate` exitoso en 28 s.
 
+### Confirmacion post-merge
+
+PR #129 fue integrado en `main` como `06756cf` el 2026-07-11. El run post-merge
+`29139876399` completo `Quality gate` en 28 s y la rama remota fue eliminada antes de iniciar
+UI-048.
+
+## LOG-109 - UI-048 compactación de indicadores de Pacientes
+
+**Fecha:** 2026-07-11
+**Rama:** `ui-048-compactar-indicadores-pacientes`
+**PR:** #130
+**Responsable:** Control de desarrollo (Codex)
+**Tarea:** UI-048
+
+### Implementacion
+
+- Se ajusta exclusivamente la capa final de `src/ReferenceFinalPass.css`.
+- El rail conserva cuatro columnas desktop y reduce su gap de 16 a 12 px.
+- Las tarjetas quedan en 72 px reales mediante `box-sizing: border-box`, padding 10x12 px y
+  radio de 8 px.
+- Iconos bajan a 40 px, SVG a 20 px y valor principal a 22 px sin letter-spacing negativo.
+- Se eliminan los pseudo-elementos diagonales para reducir ruido y recuperar ancho útil.
+
+### Validacion visual
+
+Fixture Playwright con el cascade real: 1600 px muestra 4 columnas de 72 px; 1024 y 390 px
+muestran 2x2; ningun viewport presenta overflow horizontal. La captura confirma textos e
+iconos contenidos sin solapamiento.
+
+### Alcance
+
+No se modifica JSX, logica de metricas, queries, formularios, Supabase, Auth/RLS, migraciones,
+dependencias, datos ni produccion. QA-012, UI-049 y UI-050 permanecen fuera de esta rama.
+`PROD-001` sigue bloqueante y `supabase/snippets/` permanece ajeno y sin versionar.
+
+### Estado
+
+Validada en PR #130 / pendiente merge. Lint OK, 3 archivos / 29 pruebas OK, build OK,
+`git diff --check` OK y validacion Playwright responsive sin overflow. Run remoto
+`29140053227`: `Quality gate` exitoso en 29 s.
+
