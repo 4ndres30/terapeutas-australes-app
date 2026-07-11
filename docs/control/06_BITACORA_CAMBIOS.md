@@ -4230,3 +4230,58 @@ decision aprobada del proyecto.
 UI-049 y UI-050 quedan registradas de forma consistente, pendientes de implementacion y sin
 presentarlas como integradas. La documentacion conserva el orden serial y el alcance real.
 
+## LOG-107 - QA-013 diagnostico y recuperacion controlada de GitHub Actions CI
+
+**Fecha:** 2026-07-10; revalidacion 2026-07-11
+**Rama:** `qa-013-recuperar-confiabilidad-ci`
+**PR:** #128
+**Responsable:** Control de desarrollo (Codex)
+**Tarea:** QA-013
+
+### Diagnostico
+Al iniciar QA-013 existian 192 ejecuciones y todas habian terminado con `startup_failure`
+antes de crear jobs: 95 eventos `push` y 97 eventos `pull_request`. Las seis validaciones
+privadas de PR #128 elevaron el historial de `BuildFailed` (`308144935`) a 198 runs. El
+workflow `CI` de `main` (`308145174`) permanecio sin ejecuciones.
+
+Actions esta habilitado y permite todas las acciones. Los runs relevantes no tienen jobs,
+check runs ni logs. El YAML original pasa `actionlint 1.7.12`, y la reproduccion local pasa
+`npm ci`, lint, 24/24 tests y build. Se descartan fallos de comandos npm, codigo funcional y
+asignacion de runner como causa del `startup_failure` observado.
+
+### Correccion
+Se reemplaza `.github/workflows/ci.yml` por `.github/workflows/ci-quality.yml` para forzar el
+registro de una identidad nueva y verificable. El workflow mantiene checkout, Node 20,
+`npm ci`, lint, tests y build. Agrega permisos minimos `contents: read`, cache npm, timeout de
+15 minutos, concurrencia cancelable y nombres estables de job/steps.
+
+### Revalidacion tras cambio de visibilidad
+El propietario hizo publico el repositorio y se genero el commit vacio `63297ab` para disparar
+un evento nuevo sin alterar archivos. El run `29138928820` se asocio correctamente al workflow
+`CI` nuevo (`311082990`) y creo el check `Quality gate` y el job `86508389905`. El job termino
+en 3 segundos, sin runner (`runner_id: 0`), sin steps y sin logs. La anotacion de GitHub
+identifica la causa exacta: `The job was not started because your account is locked due to a
+billing issue.` La clasificacion final cambia a categoria E, problema de cuenta/facturacion.
+
+El commit documental posterior `c385c85` genero el run `29139105668`. Sin cambios adicionales
+de workflow, GitHub asigno runner y `Quality gate` completo checkout, setup de Node,
+`npm ci`, lint, 24 tests y build en 29 segundos. El resultado remoto fue exitoso.
+
+### Estado
+Cerrada con CI remoto exitoso. La ingestion, creacion del check, asignacion de runner y cadena
+completa quedaron verificadas. No se realizan mas cambios al workflow. Branch protection no
+se activa automaticamente; queda preparada para aplicacion manual posterior.
+
+No se modifican `src/`, dependencias, Supabase, Auth/RLS, migraciones, secretos, produccion
+ni datos reales.
+
+Validacion local posterior: `actionlint 1.7.12` OK; `npm ci` OK (214 paquetes, 0
+vulnerabilidades); lint OK; 2 archivos / 24 tests OK; build OK; `git diff --check` OK.
+Validacion remota: run `29139105668`, `Quality gate` exitoso en 29 s.
+
+Se sincronizan `docs/DEVELOPMENT.md` y `docs/ARCHITECTURE.md` con la nueva ruta y el orden
+reproducible de la cadena CI, y el estado general, pendientes y niveles documentales con el
+bloqueo confirmado. Las referencias historicas al workflow original se conservan.
+
+Informe: `docs/control/auditorias/QA-013_DIAGNOSTICO_CONFIABILIDAD_GITHUB_ACTIONS.md`.
+

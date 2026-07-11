@@ -24,6 +24,12 @@ IMP-001 dejo disponible una implementacion funcional minima de hallazgos operati
 
 Al corte 2026-07-10: PRs #100-#126 integrados en main. Destacan: primera Edge Function del proyecto (detector de huecos de agenda con Gemini, DEC-041), detector de riesgo de abandono sin IA (DEC-042, vista SQL), activacion real de DELETE policies + security_invoker en vista de fotos (PR #113, cerraba hallazgos criticos de FASE1-BARRIDO-2026-07-08), unificacion y enforcement de reglas para agentes de IA (PR #120 y #121), recuperacion de contrasena (UI-024 parcial, MFA pendiente), navegacion por tabs en ficha de caso (UI-010 con gate clinico aun pendiente de decision), formulario de intervenciones (UI-013), vistas clinicas agregadas (BE-014), bloque de seguridad de cobros e identidad financiera (SEC-005/SEC-008B/SEC-011/BE-013/BE-023/BE-024/BE-025), rediseño de PacientesPage como panel de trabajo diario (UI-034/DEC-043), formulario plano de edicion de pacientes (UI-045/DEC-044, PR #125) y preview adaptativo del wizard de alta (UI-046/DEC-045, PR #126). Quedan recomendadas QA-012 como regresion visual/funcional de PacientesPage, UI-047 para normalizar queryKeys TanStack Query de pacientes/selectores, UI-048 para compactar sus indicadores, UI-049 para convertir la sidebar desktop en un rail colapsable accesible, UI-050 para reemplazar la franja superior desaprovechada por un encabezado contextual compacto y QA-013 para investigar `startup_failure` de GitHub Actions. PROD-001 sigue bloqueante.
 
+Actualizacion 2026-07-11: el repositorio paso a visibilidad publica. El primer reintento de
+QA-013 expuso un bloqueo de facturacion de la cuenta; el segundo completo `CI / Quality gate`
+en el run `29139105668`, con instalacion, lint, 24 tests y build exitosos. QA-013 queda cerrada
+con CI remoto exitoso. Branch protection permanece sin activar y preparada para aplicacion
+manual. La siguiente tarea recomendada es UI-047, en una rama separada.
+
 El proyecto se mantiene alineado con el metodo acordado: primero documentar, auditar y decidir; luego implementar por tareas aprobadas.
 
 ## Aprobado / integrado
