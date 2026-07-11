@@ -125,9 +125,10 @@ Este documento es la lista maestra de pendientes. Cada pendiente debe tener un c
 | UI-045 | Formulario plano de edicion de pacientes: todos los campos visibles a la vez, sin pasos ni preview vivo (DEC-044: crear=guiado, editar=plano; validaciones compartidas con el wizard via hook comun). | Integrada en main por PR #125 / local-demo / pendiente QA-012 | Alta | UI / UX |
 | UI-046 | Preview adaptativo en wizard de alta de pacientes: panel lateral en desktop, overlay/modal de confirmacion al guardar en tablet/mobile (DEC-045). | Integrada en main por PR #126 / local-demo / pendiente QA-012 | Alta | UI / UX |
 | UI-047 | Normalizacion de queryKeys TanStack Query para pacientes y selectores. | Integrada en main por PR #129 | Alta | UI / UX / Integracion Backend |
-| UI-048 | Compactar fila de indicadores superiores de PacientesPage manteniendo una sola linea desktop. | Validada en PR #130 / pendiente merge | Media-alta | UI / UX / Pulido visual |
+| UI-048 | Compactar fila de indicadores superiores de PacientesPage manteniendo una sola linea desktop. | Integrada en main por PR #130 | Media-alta | UI / UX / Pulido visual |
 | UI-049 | Convertir la sidebar desktop en rail colapsable: iconos por defecto, expansion por hover/foco y fijado opcional, conservando drawer movil y navegacion por rol. | Pendiente recomendado | Media-alta | UI / UX / Pulido visual |
 | UI-050 | Redisenar la barra superior como encabezado contextual compacto, sin franja vacia y preservando ambiente, usuario y acciones del modulo. | Pendiente recomendado | Media-alta | UI / UX / Pulido visual |
+| UI-051 | Mantener la fila de indicadores de PacientesPage en una sola linea (4 columnas) en tablet y mobile, ajustando tamano y contenido. | Validada, pendiente merge | Alta | UI / UX / Pulido visual |
 | DOC-001 | Manual de ambientes. | Documental / pendiente implementacion futura | Alta | Control de desarrollo |
 | DOC-002 | Procedimiento de backup/restauracion. | Documental / pendiente prueba futura | Alta | Control de desarrollo / Integracion Backend |
 | DOC-003 | Politica de carga de datos reales. | Documental / pendiente implementacion futura | Alta | Control de desarrollo |
@@ -1739,6 +1740,46 @@ usuario y el rol visible.
 No se crea una DEC en esta etapa: UI-050 registra una propuesta Nivel 2 pendiente. La
 implementacion debe definir el contrato de contexto por ruta dentro de su propio alcance y
 solo requeriria una DEC nueva si intentara cambiar navegacion, permisos o reglas funcionales.
+
+### UI-051 - Metricas de Pacientes en una sola linea en tablet/mobile
+
+**Estado:** Validada, pendiente merge — ver LOG-111 en `06_BITACORA_CAMBIOS.md`
+**Prioridad:** Alta
+**Responsable:** Control de desarrollo / UI / UX
+**Origen:** Pedido directo de Javier con captura de pantalla (fila de indicadores colapsaba
+a grid 2x2 en tablet/mobile)
+**Fecha creacion:** 2026-07-11
+**Dependencias:** UI-048
+**Nivel documental:** Nivel 2
+
+#### Descripcion
+La fila de 4 tarjetas de metricas (`pacientes activos`, `citas hoy`, `atendidas hoy`,
+`pendientes hoy`) debe mantenerse en una sola linea de 4 columnas en cualquier ancho de
+pantalla (desktop, tablet, mobile), ajustando tamano de icono/texto y ocultando el detalle
+descriptivo en anchos reducidos en vez de apilar o pasar a grid 2x2.
+
+#### Causa raiz
+`.pacientes-metricas-rail` estaba definida en 4 hojas CSS distintas; 3 de ellas fijaban
+`grid-template-columns` a 2 columnas (`max-width: 1080px`) y 1 columna (`max-width: 680px`).
+
+#### Cambio realizado
+Reglas nuevas en `ReferenceFinalPass.css` (ultima hoja cargada, gana el cascade) dentro de
+los `@media` de 1080px y 680px existentes: fuerzan 4 columnas y compactan
+padding/icono/svg/fuente de `.metrica-rail-card`, ocultando el parrafo descriptivo en ambos
+breakpoints.
+
+#### Validacion
+`git diff --check`, `npm run lint`, `npm run build` OK. Verificacion visual real en
+navegador (mobile 375px y tablet 768px, sesion admin, datos del seed local) confirmando via
+`getBoundingClientRect()` que las 4 tarjetas comparten el mismo `top` (misma fila) y no
+exceden el ancho del viewport. Sin errores nuevos de consola.
+
+#### Deuda tecnica registrada (fuera de alcance de esta tarea)
+`App.css`, `DashboardPremium.css` y `ReferencePolish.css` conservan reglas de 2/1 columnas
+para el mismo selector que ya no ganan el cascade (redundantes, no eliminadas en esta tarea
+puntual para minimizar el diff). Candidato a una futura consolidacion de las 5 hojas de CSS
+en capas (`App.css` -> `DashboardPremium.css` -> `TypographyElegant.css` ->
+`ReferencePolish.css` -> `ReferenceFinalPass.css`).
 
 #### Resultado
 Pendiente recomendado. Solo se registra documentalmente en CTRL-015; no se implementa codigo

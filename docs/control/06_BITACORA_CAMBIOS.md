@@ -4419,3 +4419,50 @@ No hay bugs funcionales nuevos detectados en lo cubierto. QA-012 puede cerrarse 
 pendientes (envio completo alta desktop/mobile, tablet, overlay) para una sesion con mas
 presupuesto de contexto disponible.
 
+## LOG-111 - UI-051 fila de metricas de Pacientes en una sola linea en tablet/mobile
+
+**Rama:** `ui-049-metricas-pacientes-una-fila` (nombre de rama con id previo a verificar
+colision; el id real de la tarea es UI-051, ver mas abajo)
+**PR:** (ver arriba al abrir)
+**Responsable:** Control de desarrollo (Claude)
+**Fecha:** 2026-07-11
+**Origen:** Pedido directo de Javier con captura de pantalla: la fila de 4 indicadores de
+`PacientesPage` colapsaba a grid 2x2 en tablet/mobile; se pidio que se mantenga en una sola
+fila en todos los anchos, ajustando tamano y contenido.
+
+### Causa raiz
+
+`.pacientes-metricas-rail` esta definida en 4 hojas de CSS distintas (`App.css`,
+`DashboardPremium.css`, `ReferencePolish.css`, `ReferenceFinalPass.css`), cargadas en ese
+orden desde `App.tsx`. Tres de ellas (`App.css`, `DashboardPremium.css`, `ReferencePolish.css`)
+fijaban `grid-template-columns: repeat(2, ...)` a `max-width: 1080px` y `1fr` (1 columna) a
+`max-width: 680px`, causando el colapso 2x2 / apilado que se ve en la captura.
+
+### Cambio
+
+Se agregaron reglas en `ReferenceFinalPass.css` (ultima hoja cargada, gana el cascade a
+igual especificidad) dentro de los `@media` existentes de 1080px y 680px, forzando
+`grid-template-columns: repeat(4, minmax(0, 1fr))` en ambos y compactando proporcionalmente
+`.metrica-rail-card` (padding, `min-height`, icono, svg, `strong`/`span`) para que las 4
+tarjetas quepan sin overflow. El parrafo descriptivo (`<p>`, ej. "En seguimiento") se oculta
+en esos dos breakpoints para liberar espacio horizontal -- ajuste de contenido, no solo de
+tamano, tal como se pidio.
+
+No se tocaron `App.css`, `DashboardPremium.css` ni `ReferencePolish.css`: quedan con sus
+reglas de 2/1 columnas sin usar (nunca ganan el cascade contra `ReferenceFinalPass.css` para
+este selector en estos breakpoints), lo cual es deuda tecnica preexistente de capas de CSS
+duplicadas -- fuera de alcance de esta tarea puntual, dejar registrado para una futura
+consolidacion de CSS.
+
+### Validacion
+
+- `git diff --check`: OK.
+- `npm run lint`: OK.
+- `npm run build`: OK.
+- Verificacion visual real en navegador (viewport mobile 375px y tablet 768px, sesion admin
+  con datos del seed local): las 4 tarjetas quedan en la misma fila (`top` identico via
+  `getBoundingClientRect()`) y sin overflow horizontal (borde derecho de la ultima tarjeta
+  dentro del viewport en ambos anchos). Sin errores nuevos de consola (solo el artefacto
+  conocido de refresh-token stale tras `db reset`, no relacionado).
+- Desktop (>1500px, regla base de 4 columnas ya existente) no se modifico y sigue igual.
+
