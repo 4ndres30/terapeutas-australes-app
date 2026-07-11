@@ -4609,7 +4609,7 @@ recomendada, en rama y PR propios, una vez esta se mergee.
 ## LOG-114 - UI-050: barra superior como encabezado contextual compacto
 
 **Rama:** `ui-050-encabezado-contextual`
-**PR:** (ver arriba al abrir)
+**PR:** #135
 **Responsable:** Control de desarrollo (Copilot CLI)
 **Fecha:** 2026-07-11
 **Origen:** Tarea documentada en LOG-106 (`Pendiente recomendado`, Nivel 2), habilitada
@@ -4697,7 +4697,6 @@ cambios. Filtrado por rol confirmado intacto (Finanzas ve solo Finanzas/Reportes
 
 ### Resultado
 
-UI-050 validada (automatizado + visual). Rama `ui-050-encabezado-contextual`, PR pendiente de
-apertura al momento de escribir esta entrada. No se declara "Integrada" hasta que el codigo
-este efectivamente en `main`.
+UI-050 validada (automatizado + visual). Rama `ui-050-encabezado-contextual`, PR #135 abierto.
+No se declara "Integrada" hasta que el codigo este efectivamente en `main`.
 
