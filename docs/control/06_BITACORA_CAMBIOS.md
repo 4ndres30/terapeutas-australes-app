@@ -4324,7 +4324,7 @@ bloqueante y `supabase/snippets/` permanece ajeno y sin versionar.
 
 ### Estado
 
-Implementada en PR #129 / pendiente validacion remota. Validacion local: `npm ci` OK (214
-paquetes, 0 vulnerabilidades), lint OK, 3 archivos / 29 pruebas OK, build OK y
-`git diff --check` OK.
+Validada en PR #129 / pendiente merge. Validacion local: `npm ci` OK (214 paquetes, 0
+vulnerabilidades), lint OK, 3 archivos / 29 pruebas OK, build OK y `git diff --check` OK.
+Validacion remota: run `29139673940`, `Quality gate` exitoso en 28 s.
 

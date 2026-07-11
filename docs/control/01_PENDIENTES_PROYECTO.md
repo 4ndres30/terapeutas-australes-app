@@ -124,7 +124,7 @@ Este documento es la lista maestra de pendientes. Cada pendiente debe tener un c
 | BE-031 | Columna de terapeuta responsable en agenda_eventos (hoy solo created_by, que es auditoria, no responsabilidad clinica). Prerrequisito para filtrar "mis pacientes de hoy" en UI-034 con multiples terapeutas. Nivel 3: requiere DEC previa. | Pendiente | Media-alta | Integracion Backend |
 | UI-045 | Formulario plano de edicion de pacientes: todos los campos visibles a la vez, sin pasos ni preview vivo (DEC-044: crear=guiado, editar=plano; validaciones compartidas con el wizard via hook comun). | Integrada en main por PR #125 / local-demo / pendiente QA-012 | Alta | UI / UX |
 | UI-046 | Preview adaptativo en wizard de alta de pacientes: panel lateral en desktop, overlay/modal de confirmacion al guardar en tablet/mobile (DEC-045). | Integrada en main por PR #126 / local-demo / pendiente QA-012 | Alta | UI / UX |
-| UI-047 | Normalizacion de queryKeys TanStack Query para pacientes y selectores. | Implementada en PR #129 / pendiente validacion remota | Alta | UI / UX / Integracion Backend |
+| UI-047 | Normalizacion de queryKeys TanStack Query para pacientes y selectores. | Validada en PR #129 / pendiente merge | Alta | UI / UX / Integracion Backend |
 | UI-048 | Compactar fila de indicadores superiores de PacientesPage manteniendo una sola linea desktop. | Pendiente recomendado | Media-alta | UI / UX / Pulido visual |
 | UI-049 | Convertir la sidebar desktop en rail colapsable: iconos por defecto, expansion por hover/foco y fijado opcional, conservando drawer movil y navegacion por rol. | Pendiente recomendado | Media-alta | UI / UX / Pulido visual |
 | UI-050 | Redisenar la barra superior como encabezado contextual compacto, sin franja vacia y preservando ambiente, usuario y acciones del modulo. | Pendiente recomendado | Media-alta | UI / UX / Pulido visual |
@@ -1582,7 +1582,7 @@ regresion visual y funcional post-merge.
 
 ### UI-047 - Normalizacion de queryKeys TanStack Query para pacientes y selectores
 
-**Estado:** Implementada en PR #129 / pendiente validacion remota
+**Estado:** Validada en PR #129 / pendiente merge
 **Prioridad:** Alta
 **Responsable:** UI / UX / Integracion Backend
 **Origen:** CTRL-015 / riesgo funcional detectado en FASE1 y revisado post PR #125/#126
@@ -1607,13 +1607,14 @@ La revision post PR #125/#126 confirma que `ConsultasPage`, `EvaluacionesPage` y
 - No mezclar con QA-012, UI-048, UI-049, UI-050 ni con nuevas features funcionales.
 
 #### Resultado
-Implementada en PR #129 y pendiente de validacion remota/merge. Se crea
-`src/lib/queryKeys.ts` con claves
+Validada en PR #129 y pendiente de merge. Se crea `src/lib/queryKeys.ts` con claves
 jerarquicas por entidad y proyeccion. `PacientesPage` usa registro completo;
 `ConsultasPage` y `EvaluacionesPage` comparten el selector clinico de pacientes; las consultas
 completas quedan separadas del selector de evaluaciones. Las invalidaciones usan la raiz de
 cada entidad y alcanzan todas sus variantes. La prueba unitaria cubre separacion de cache e
 invalidacion jerarquica. QA-012, UI-048, UI-049 y UI-050 no se ejecutan en esta rama.
+El run remoto `29139673940` completo `Quality gate` en 28 s con instalacion, lint, 29 pruebas
+y build exitosos.
 
 ### UI-048 - Compactar fila de indicadores superiores de PacientesPage
 

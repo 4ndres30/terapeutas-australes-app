@@ -28,8 +28,8 @@ Actualizacion 2026-07-11: el repositorio paso a visibilidad publica. QA-013 qued
 por PR #128 (`d0c22ce`) y el push posterior a `main` completo `CI / Quality gate` en el run
 `29139395491`. Branch protection permanece sin activar y preparada para aplicacion manual.
 UI-047 se ejecuta en rama separada para normalizar queryKeys de pacientes/consultas sin tocar
-UI visual, Supabase, Auth/RLS ni migraciones; PR #129 permanece pendiente de validacion
-remota/merge.
+UI visual, Supabase, Auth/RLS ni migraciones; PR #129 paso `Quality gate` en el run
+`29139673940` y permanece pendiente de revision/merge.
 
 El proyecto se mantiene alineado con el metodo acordado: primero documentar, auditar y decidir; luego implementar por tareas aprobadas.
 
