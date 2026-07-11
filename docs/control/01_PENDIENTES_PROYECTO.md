@@ -126,9 +126,9 @@ Este documento es la lista maestra de pendientes. Cada pendiente debe tener un c
 | UI-046 | Preview adaptativo en wizard de alta de pacientes: panel lateral en desktop, overlay/modal de confirmacion al guardar en tablet/mobile (DEC-045). | Integrada en main por PR #126 / local-demo / pendiente QA-012 | Alta | UI / UX |
 | UI-047 | Normalizacion de queryKeys TanStack Query para pacientes y selectores. | Integrada en main por PR #129 | Alta | UI / UX / Integracion Backend |
 | UI-048 | Compactar fila de indicadores superiores de PacientesPage manteniendo una sola linea desktop. | Integrada en main por PR #130 | Media-alta | UI / UX / Pulido visual |
-| UI-049 | Convertir la sidebar desktop en rail colapsable: iconos por defecto, expansion por hover/foco y fijado opcional, conservando drawer movil y navegacion por rol. | Pendiente recomendado | Media-alta | UI / UX / Pulido visual |
+| UI-049 | Convertir la sidebar desktop en rail colapsable: iconos por defecto, expansion por hover/foco y fijado opcional, conservando drawer movil y navegacion por rol. | Integrada en main por PR #134 | Media-alta | UI / UX / Pulido visual |
 | UI-050 | Redisenar la barra superior como encabezado contextual compacto, sin franja vacia y preservando ambiente, usuario y acciones del modulo. | Pendiente recomendado | Media-alta | UI / UX / Pulido visual |
-| UI-051 | Mantener la fila de indicadores de PacientesPage en una sola linea (4 columnas) en tablet y mobile, ajustando tamano y contenido. | Validada, pendiente merge | Alta | UI / UX / Pulido visual |
+| UI-051 | Mantener la fila de indicadores de PacientesPage en una sola linea (4 columnas) en tablet y mobile, ajustando tamano y contenido. | Integrada en main por PR #132 | Alta | UI / UX / Pulido visual |
 | DOC-001 | Manual de ambientes. | Documental / pendiente implementacion futura | Alta | Control de desarrollo |
 | DOC-002 | Procedimiento de backup/restauracion. | Documental / pendiente prueba futura | Alta | Control de desarrollo / Integracion Backend |
 | DOC-003 | Politica de carga de datos reales. | Documental / pendiente implementacion futura | Alta | Control de desarrollo |
@@ -1630,7 +1630,7 @@ y build exitosos. El run post-merge `29139876399` tambien paso `Quality gate` en
 
 ### UI-048 - Compactar fila de indicadores superiores de PacientesPage
 
-**Estado:** Validada en PR #130 / pendiente merge
+**Estado:** Integrada en main por PR #130
 **Prioridad:** Media-alta
 **Responsable:** UI / UX / Pulido visual
 **Origen:** Observacion visual de Javier durante revision local/demo de `PacientesPage`
@@ -1657,7 +1657,7 @@ en una sola linea en desktop, pero ocupar menos alto y menos espacio visual.
 - No modificar logica de metricas, datos, queries, Auth/RLS, DB, migraciones ni servicios.
 
 #### Resultado
-Validada en PR #130 y pendiente de merge. `ReferenceFinalPass.css` reduce el rail a un gap de
+Integrada en `main` por PR #130 (mergeado 2026-07-11). `ReferenceFinalPass.css` reduce el rail a un gap de
 12 px y cada tarjeta a 72 px reales, con padding 10x12 px, icono 40 px, valor 22 px,
 radio 8 px y sombra mas discreta. Se retira la decoracion diagonal secundaria para reducir
 peso visual. Playwright confirma cuatro columnas a 1600 px, distribucion 2x2 a 1024/390 px y
@@ -1666,11 +1666,13 @@ El run remoto `29140053227` completo `Quality gate` en 29 s.
 
 ### UI-049 - Sidebar desktop como rail colapsable y accesible
 
-**Estado:** Pendiente recomendado
+**Estado:** Integrada en main por PR #134 — ver LOG-113 en `06_BITACORA_CAMBIOS.md`
 **Prioridad:** Media-alta
-**Responsable:** UI / UX / Pulido visual
+**Responsable:** UI / UX / Pulido visual + Control de desarrollo
 **Origen:** Observacion visual de Javier durante revision local/demo del shell interno
 **Fecha creacion:** 2026-07-10
+**Rama:** `ui-049-sidebar-rail-colapsable`
+**PR:** #134
 **Dependencias:** UI-023, UI-027
 **Nivel documental:** Nivel 2
 
@@ -1702,9 +1704,33 @@ integrado por UI-027 ni el filtrado de modulos por rol de UI-023.
 Implementar y validar UI-049 antes de UI-050 porque ambas tareas modificaran el shell global,
 `App.tsx` y sus capas CSS. Deben ir en ramas y PRs seriales separados.
 
+#### Causa raiz de la regresion encontrada en validacion
+Con 9 items de navegacion, el contenido de la sidebar supera 100vh en pantallas de ~720-800px
+de alto. El estado expandido por hover/`focus-within` usa `position: fixed; height: 100vh;
+overflow: visible`, que saca la sidebar del flujo de scroll de la pagina: el contenido que
+excede 100vh (pie, cierre de sesion) quedaba inalcanzable, sin scroll interno ni de pagina que
+lo trajera a la vista. Confirmado como regresion nueva (no preexistente): en `main`, el mismo
+test e2e pasa porque la sidebar siempre expandida usa `position: sticky` sin tope de altura, y
+el scroll de pagina si alcanza el pie.
+
+#### Cambio realizado (ademas de la propuesta original)
+En `src/ReferenceFinalPass.css`, dentro del `@media (min-width: 1081px)`: `.sidebar-nav` recibe
+`min-height: 0; overflow-y: auto;` quedando acotada al espacio disponible y desplazable
+internamente cuando el rail esta expandido por hover/`focus-within` o fijado. Marca y pie
+(version, cierre de sesion) quedan en filas `auto` del grid, siempre visibles sin necesidad de
+scroll.
+
+#### Validacion
+`git diff --check`, `npm run lint`, `npm run build`, `npm run test` (29/29): OK. Suite e2e
+completa `npx playwright test` (8/8) OK -- incluye el test de logout de admin, que fallaba por
+timeout de 30s antes del fix por la regresion descrita arriba. Verificacion visual manual
+(Playwright ad hoc, viewport 1280x720, sesion `qa.demo.admin`) confirmando que las 9 rutas, el
+boton de fijado y el cierre de sesion permanecen alcanzables en los 3 estados (colapsado,
+hover, fijado), con scroll interno de la navegacion verificado via `mouse.wheel`.
+
 #### Resultado
-Pendiente recomendado. Solo se registra documentalmente en CTRL-015; no se implementa codigo
-ni CSS en esta rama.
+Integrada en `main` por PR #134 (validada: automatizado + visual). Detalle completo en
+LOG-113 (`06_BITACORA_CAMBIOS.md`).
 
 ### UI-050 - Barra superior como encabezado contextual compacto
 
@@ -1748,12 +1774,13 @@ solo requeriria una DEC nueva si intentara cambiar navegacion, permisos o reglas
 
 ### UI-051 - Metricas de Pacientes en una sola linea en tablet/mobile
 
-**Estado:** Validada, pendiente merge — ver LOG-111 en `06_BITACORA_CAMBIOS.md`
+**Estado:** Integrada en main por PR #132 — ver LOG-111 en `06_BITACORA_CAMBIOS.md`
 **Prioridad:** Alta
 **Responsable:** Control de desarrollo / UI / UX
 **Origen:** Pedido directo de Javier con captura de pantalla (fila de indicadores colapsaba
 a grid 2x2 en tablet/mobile)
 **Fecha creacion:** 2026-07-11
+**PR:** #132
 **Dependencias:** UI-048
 **Nivel documental:** Nivel 2
 
@@ -1787,8 +1814,8 @@ en capas (`App.css` -> `DashboardPremium.css` -> `TypographyElegant.css` ->
 `ReferencePolish.css` -> `ReferenceFinalPass.css`).
 
 #### Resultado
-Pendiente recomendado. Solo se registra documentalmente en CTRL-015; no se implementa codigo
-ni CSS en esta rama.
+Integrada en `main` por PR #132 (mergeado 2026-07-11). Ver LOG-111 para el detalle completo
+de causa raiz, cambio y validacion.
 
 
 ### DOC-001 - Manual de ambientes

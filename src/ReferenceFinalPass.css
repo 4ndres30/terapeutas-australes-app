@@ -751,4 +751,186 @@
     justify-self: stretch;
     width: 100%;
   }
+
+  .sidebar-pin-toggle {
+    display: none;
+  }
+}
+
+/* UI-049: sidebar desktop como rail colapsable.
+   Solo aplica a partir de 1081px; el drawer movil de UI-027 no se toca. */
+.sidebar-logout {
+  align-items: center;
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+}
+
+.sidebar-logout svg {
+  flex: 0 0 auto;
+  height: 18px;
+  width: 18px;
+}
+
+@media (min-width: 1081px) {
+  .dashboard-shell {
+    grid-template-columns: 72px minmax(0, 1fr);
+  }
+
+  .dashboard-shell--rail-fijado {
+    grid-template-columns: 232px minmax(0, 1fr);
+  }
+
+  .dashboard-sidebar {
+    overflow: hidden;
+    padding: 18px 12px;
+    transition: width 0.18s ease, padding 0.18s ease, box-shadow 0.18s ease;
+    width: 72px;
+    z-index: 30;
+  }
+
+  .dashboard-shell:not(.dashboard-shell--rail-fijado) .dashboard-sidebar:hover,
+  .dashboard-shell:not(.dashboard-shell--rail-fijado) .dashboard-sidebar:focus-within {
+    box-shadow: 12px 0 32px rgba(21, 9, 39, 0.28);
+    height: 100vh;
+    left: 0;
+    overflow: visible;
+    padding: 18px 14px;
+    position: fixed;
+    top: 0;
+    width: 232px;
+  }
+
+  .dashboard-shell--rail-fijado .dashboard-sidebar {
+    overflow: visible;
+    padding: 18px 14px;
+    width: 232px;
+  }
+
+  /* Bugfix (validacion UI-049): con 9 items de navegacion, la marca y el
+     pie (cierre de sesion incluido) pueden superar 100vh en pantallas bajas
+     (<=800px de alto aprox). Sin esto, foco/hover/fijado dejaban acciones
+     inalcanzables (ver "sin acciones ocultas" en el criterio de aceptacion). */
+  .dashboard-sidebar:hover .sidebar-nav,
+  .dashboard-sidebar:focus-within .sidebar-nav,
+  .dashboard-shell--rail-fijado .sidebar-nav {
+    min-height: 0;
+    overflow-y: auto;
+  }
+
+  .sidebar-mobile-header {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .dashboard-sidebar:hover .sidebar-mobile-header,
+  .dashboard-sidebar:focus-within .sidebar-mobile-header,
+  .dashboard-shell--rail-fijado .sidebar-mobile-header {
+    flex-direction: row;
+    justify-content: space-between;
+  }
+
+  .sidebar-brand {
+    justify-content: center;
+  }
+
+  .dashboard-sidebar:hover .sidebar-brand,
+  .dashboard-sidebar:focus-within .sidebar-brand,
+  .dashboard-shell--rail-fijado .sidebar-brand {
+    justify-content: flex-start;
+  }
+
+  .sidebar-pin-toggle {
+    align-items: center;
+    background: rgba(255, 255, 255, 0.10);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    border-radius: 10px;
+    color: #ffffff;
+    cursor: pointer;
+    display: inline-flex;
+    flex: 0 0 auto;
+    height: 30px;
+    justify-content: center;
+    width: 30px;
+  }
+
+  .sidebar-pin-toggle:hover {
+    background: rgba(255, 255, 255, 0.18);
+  }
+
+  .sidebar-pin-toggle svg {
+    height: 16px;
+    width: 16px;
+  }
+
+  .sidebar-nav-item {
+    justify-content: center;
+  }
+
+  .dashboard-sidebar:hover .sidebar-nav-item,
+  .dashboard-sidebar:focus-within .sidebar-nav-item,
+  .dashboard-shell--rail-fijado .sidebar-nav-item {
+    justify-content: flex-start;
+  }
+
+  .sidebar-quote {
+    display: none;
+  }
+
+  .dashboard-sidebar:hover .sidebar-quote,
+  .dashboard-sidebar:focus-within .sidebar-quote,
+  .dashboard-shell--rail-fijado .sidebar-quote {
+    display: block;
+  }
+
+  .sidebar-footer {
+    justify-content: center;
+  }
+
+  .dashboard-sidebar:hover .sidebar-footer,
+  .dashboard-sidebar:focus-within .sidebar-footer,
+  .dashboard-shell--rail-fijado .sidebar-footer {
+    justify-content: space-between;
+  }
+
+  .sidebar-logout {
+    justify-content: center;
+    padding: 10px;
+  }
+
+  .dashboard-sidebar:hover .sidebar-logout,
+  .dashboard-sidebar:focus-within .sidebar-logout,
+  .dashboard-shell--rail-fijado .sidebar-logout {
+    justify-content: flex-start;
+  }
+
+  .sidebar-label {
+    border: 0;
+    clip: rect(0, 0, 0, 0);
+    height: 1px;
+    margin: -1px;
+    overflow: hidden;
+    padding: 0;
+    position: absolute;
+    white-space: nowrap;
+    width: 1px;
+  }
+
+  .dashboard-sidebar:hover .sidebar-label,
+  .dashboard-sidebar:focus-within .sidebar-label,
+  .dashboard-shell--rail-fijado .sidebar-label {
+    clip: auto;
+    height: auto;
+    margin: 0;
+    overflow: visible;
+    position: static;
+    white-space: normal;
+    width: auto;
+  }
+}
+
+@media (min-width: 1081px) and (prefers-reduced-motion: reduce) {
+  .dashboard-sidebar {
+    transition: none;
+  }
 }
