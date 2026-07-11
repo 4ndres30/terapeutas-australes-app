@@ -100,7 +100,7 @@ en secuencia: primero UI-049 y, una vez validada, UI-050. No se implementan en C
 
 ## UI-049 - Sidebar desktop como rail colapsable y accesible
 
-**Estado:** Pendiente recomendado
+**Estado:** Validada, pendiente merge — ver LOG-113 en `06_BITACORA_CAMBIOS.md` (PR #134, draft)
 **Prioridad:** Media-alta
 **Nivel documental:** Nivel 2
 
@@ -114,6 +114,16 @@ deben disponer de una variante compacta coherente, sin textos recortados ni acci
 
 Validacion minima futura: rutas principales, roles admin/terapeuta/finanzas, desktop y
 transicion al drawer responsive, sin overflow, solapamientos ni saltos del contenido.
+
+Implementada en rama `ui-049-sidebar-rail-colapsable`: rail de 72px colapsado, 232px
+expandido/fijado, patron visualmente-oculto para etiquetas y soporte `prefers-reduced-motion`.
+Validacion e2e (`npx playwright test`) detecto una regresion real -- con 9 items de
+navegacion, el pie de la sidebar (version, cierre de sesion) quedaba inalcanzable al expandir
+por hover/foco o al fijar en pantallas de ~720-800px de alto, porque `position: fixed` sacaba
+el contenido del flujo de scroll de la pagina sin scroll interno propio. Corregido agregando
+scroll interno acotado en `.sidebar-nav` (marca y pie permanecen siempre visibles, sin scroll).
+Validada por `npm run lint`/`build`/`test` (29/29) y la suite e2e completa (8/8, incluido el
+test de logout que fallaba antes del fix). PR #134 (draft), pendiente de revision/merge.
 
 ## UI-050 - Barra superior como encabezado contextual compacto
 

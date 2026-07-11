@@ -4522,3 +4522,87 @@ extrapolacion razonada y declarada. Se considera la tarea cerrada en la practica
 tablet queda anotado para verificacion directa si en el futuro se detecta una discrepancia
 especifica de ese breakpoint.
 
+## LOG-113 - UI-049: sidebar desktop como rail colapsable y accesible (PR #134)
+
+**Rama:** `ui-049-sidebar-rail-colapsable`
+**PR:** #134 (draft)
+**Responsable:** Control de desarrollo (Copilot CLI)
+**Fecha:** 2026-07-11
+**Origen:** Tarea documentada en LOG-106 (`Pendiente recomendado`, Nivel 2). La base de la
+implementacion fue construida por una sesion concurrente de ejecucion tecnica (Codex
+JetBrains/WebStorm, ver roles en `AGENTS.md`) sobre `src/App.tsx` y
+`src/ReferenceFinalPass.css`, encontrada sin commit ni PR al retomar esta sesion. Se detecto
+en vivo la colision de agentes que `AGENTS.md` advierte (ver
+`docs/control/auditorias/REVISION-6-PRS-PARALELAS-2026-07-08.md`); se detuvo todo cambio
+propio hasta que Javier confirmo que esa sesion habia terminado.
+
+### Que se hizo
+
+Revision linea por linea de ambos archivos (diseno, accesibilidad, cascada CSS de las 5 hojas
+importadas), seguida de validacion automatizada y visual real antes de dar por buena la
+implementacion:
+
+- `npm run lint`, `npm run build` (`tsc -b && vite build`) y `npm run test` (vitest, 29/29):
+  sin errores.
+- `npx playwright test` (suite e2e existente, 8 tests) detecto una **regresion real**: el test
+  `admin ve todos los modulos y puede cerrar sesion` fallaba por timeout de 30s al hacer click
+  en "Cerrar sesion".
+
+### Causa raiz encontrada
+
+Con 9 items de navegacion, el contenido de la sidebar (marca + nav + mensaje institucional +
+pie + cierre de sesion) supera 100vh en pantallas de ~720-800px de alto (ej. 1280x720,
+1366x768 -- alturas comunes de laptop). Se confirmo que el problema es una regresion nueva de
+UI-049 y no preexistente: en `main` (sidebar siempre expandida a 240px, `position: sticky`,
+`min-height: 100vh` sin tope), el mismo test pasa porque el scroll de la pagina alcanza el pie
+al desenganchar el sticky. En la rama UI-049, el estado expandido por hover/`focus-within` usa
+`position: fixed; height: 100vh; overflow: visible`, que saca la sidebar del flujo de scroll de
+la pagina; el contenido que excede 100vh queda simplemente inalcanzable (no hay scroll interno
+ni de pagina que lo traiga a la vista). Esto viola el criterio de aceptacion explicito de
+UI-049: "sin textos recortados ni acciones ocultas".
+
+### Cambio realizado
+
+En `src/ReferenceFinalPass.css`, dentro del `@media (min-width: 1081px)` ya existente, se
+agrega:
+
+```css
+.dashboard-sidebar:hover .sidebar-nav,
+.dashboard-sidebar:focus-within .sidebar-nav,
+.dashboard-shell--rail-fijado .sidebar-nav {
+  min-height: 0;
+  overflow-y: auto;
+}
+```
+
+Esto acota `.sidebar-nav` (la fila `1fr` del grid de la sidebar) al espacio real disponible y
+la vuelve desplazable internamente, sin tocar el layout de marca/pie/cierre de sesion (quedan
+en filas `auto`, siempre visibles). El estado colapsado en reposo y el estado fijado (que usa
+`position: sticky`, no `fixed`) no requerian el cambio -- se verificaron sin regresion.
+
+### Validacion posterior al fix
+
+- `npx playwright test`: 8/8 OK (incluido el test de logout, antes en falla).
+- Script Playwright ad hoc (no commiteado, descartado al cerrar la tarea) en viewport
+  1280x720, sesion `qa.demo.admin`: confirmo con `getBoundingClientRect()` que el boton de
+  cierre de sesion es alcanzable y clickeable en los 3 estados (colapsado, expandido por
+  hover, fijado), y que `mouse.wheel` dentro de la navegacion expandida revela los items que
+  no entran en pantalla (Agenda, Finanzas/Pagos, Reportes, Configuracion).
+- `npm run lint`, `npm run build`, `npm run test`: repetidos post-fix, sin errores.
+- `git diff --check`: OK.
+
+### Restricciones respetadas
+
+- Sin cambios de rutas, permisos, Auth/RLS, DB, migraciones, `.env`, Supabase remoto o
+  servicios.
+- Sin produccion ni datos reales; `PROD-001` sigue bloqueante.
+- Un PR a la vez: `gh pr list --state open` vacio antes de crear el PR #134.
+- `supabase/snippets/` permanece fuera de alcance y sin versionar.
+
+### Resultado
+
+UI-049 validada (automatizado + visual) en la rama `ui-049-sidebar-rail-colapsable`, PR #134
+abierto en modo draft, **pendiente de revision y merge** -- no se declara "Integrada" hasta
+que el codigo este efectivamente en `main`. UI-050 queda habilitada como siguiente tarea
+recomendada, en rama y PR propios, una vez esta se mergee.
+
