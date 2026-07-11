@@ -1,7 +1,9 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useState } from 'react'
+import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { Link, Navigate, useParams } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import { formatearFecha } from '../lib/format'
+import { QUERY_KEYS, QUERY_KEYS_DETALLE } from '../lib/queryKeys'
 import DetalleRevisionesPanel from './casos/DetalleRevisionesPanel'
 import ElementosCasoPanel from './casos/ElementosCasoPanel'
 import PagosCasoPanel from './casos/PagosCasoPanel'
@@ -37,8 +39,6 @@ type Paciente = {
   id: string
   nombres: string
   apellidos: string
-  telefono: string
-  email: string
 }
 
 type Consulta = {
@@ -138,115 +138,138 @@ function textoOpcional(texto: string | null | undefined, respaldo = 'Sin informa
 
 type TabSeccion = 'resumen' | 'elementos' | 'revisiones' | 'intervenciones' | 'pagos'
 
+async function obtenerCasoPorId(casoId: string): Promise<Caso | null> {
+  const { data, error } = await supabase
+    .from('casos')
+    .select(CASO_SELECT)
+    .eq('id_caso', casoId)
+    .maybeSingle()
+
+  if (error) {
+    throw new Error(`Error al cargar caso: ${error.message}`)
+  }
+
+  return (data || null) as unknown as Caso | null
+}
+
+async function obtenerPacienteDeCaso(pacienteId: string): Promise<Paciente | null> {
+  const { data, error } = await supabase
+    .from('pacientes')
+    .select('id, nombres, apellidos')
+    .eq('id', pacienteId)
+    .maybeSingle()
+
+  if (error) {
+    throw new Error(`Error al cargar paciente del caso: ${error.message}`)
+  }
+
+  return (data || null) as Paciente | null
+}
+
+async function obtenerConsultaDeCaso(consultaId: string): Promise<Consulta | null> {
+  const { data, error } = await supabase
+    .from('consultas')
+    .select(CONSULTA_SELECT)
+    .eq('id_consulta', consultaId)
+    .maybeSingle()
+
+  if (error) {
+    throw new Error(`Error al cargar consulta de origen: ${error.message}`)
+  }
+
+  return (data || null) as unknown as Consulta | null
+}
+
+async function obtenerEvaluacionDeCaso(evaluacionId: string): Promise<Evaluacion | null> {
+  const { data, error } = await supabase
+    .from('evaluaciones')
+    .select(EVALUACION_SELECT)
+    .eq('id_evaluacion', evaluacionId)
+    .maybeSingle()
+
+  if (error) {
+    throw new Error(`Error al cargar evaluación de origen: ${error.message}`)
+  }
+
+  return (data || null) as unknown as Evaluacion | null
+}
+
 function CasoDetallePage() {
   const { id } = useParams()
   const casoId = id || ''
-  const [caso, setCaso] = useState<Caso | null>(null)
-  const [paciente, setPaciente] = useState<Paciente | null>(null)
-  const [consulta, setConsulta] = useState<Consulta | null>(null)
-  const [evaluacion, setEvaluacion] = useState<Evaluacion | null>(null)
-  const [mensaje, setMensaje] = useState('')
-  const [cargando, setCargando] = useState(true)
+  const queryClient = useQueryClient()
+
+  const {
+    data: caso = null,
+    isLoading: cargandoCaso,
+    error: errorCaso,
+    refetch: refetchCaso,
+  } = useQuery({
+    queryKey: QUERY_KEYS.casos.detalle(casoId),
+    queryFn: () => obtenerCasoPorId(casoId),
+    enabled: Boolean(casoId),
+  })
+
+  const {
+    data: paciente = null,
+    isLoading: cargandoPaciente,
+    error: errorPaciente,
+    refetch: refetchPaciente,
+  } = useQuery({
+    queryKey: QUERY_KEYS_DETALLE.paciente(caso?.paciente_id || ''),
+    queryFn: () => obtenerPacienteDeCaso(caso?.paciente_id || ''),
+    enabled: Boolean(caso?.paciente_id),
+  })
+
+  const {
+    data: consulta = null,
+    isLoading: cargandoConsulta,
+    error: errorConsulta,
+    refetch: refetchConsulta,
+  } = useQuery({
+    queryKey: QUERY_KEYS_DETALLE.consulta(caso?.consulta_id || ''),
+    queryFn: () => obtenerConsultaDeCaso(caso?.consulta_id || ''),
+    enabled: Boolean(caso?.consulta_id),
+  })
+
+  const {
+    data: evaluacion = null,
+    isLoading: cargandoEvaluacion,
+    error: errorEvaluacion,
+    refetch: refetchEvaluacion,
+  } = useQuery({
+    queryKey: QUERY_KEYS.evaluaciones.detalle(caso?.evaluacion_id || ''),
+    queryFn: () => obtenerEvaluacionDeCaso(caso?.evaluacion_id || ''),
+    enabled: Boolean(caso?.evaluacion_id),
+  })
+
+  const cargando = cargandoCaso || cargandoPaciente || cargandoConsulta || cargandoEvaluacion
+  const errorCarga = errorCaso || errorPaciente || errorConsulta || errorEvaluacion
+  const mensaje = errorCarga ? errorCarga.message : ''
+
   const [activeTab, setActiveTab] = useState<TabSeccion>('resumen')
   const [visitedTabs, setVisitedTabs] = useState<Set<TabSeccion>>(() => new Set<TabSeccion>(['resumen']))
 
-  const seleccionarTab = useCallback((tab: TabSeccion) => {
+  function seleccionarTab(tab: TabSeccion) {
     setActiveTab(tab)
     setVisitedTabs((previo) => (previo.has(tab) ? previo : new Set(previo).add(tab)))
-  }, [])
+  }
 
   const pacienteNombre = obtenerNombrePaciente(paciente)
 
-  const cargarFichaCaso = useCallback(async () => {
-    if (!casoId) {
-      return
+  function actualizarFicha() {
+    void queryClient.invalidateQueries({ queryKey: QUERY_KEYS.casos.detalle(casoId) })
+    void refetchCaso()
+    void refetchPaciente()
+
+    if (caso?.consulta_id) {
+      void refetchConsulta()
     }
 
-    setCargando(true)
-    setMensaje('')
-
-    const { data: casoData, error: casoError } = await supabase
-      .from('casos')
-      .select(CASO_SELECT)
-      .eq('id_caso', casoId)
-      .maybeSingle()
-
-    if (casoError) {
-      setMensaje(`Error al cargar caso: ${casoError.message}`)
-      setCargando(false)
-      return
+    if (caso?.evaluacion_id) {
+      void refetchEvaluacion()
     }
-
-    if (!casoData) {
-      setMensaje('Error: No se encontró el caso solicitado.')
-      setCaso(null)
-      setCargando(false)
-      return
-    }
-
-    const casoActual = casoData as unknown as Caso
-    setCaso(casoActual)
-
-    const { data: pacienteData, error: pacienteError } = await supabase
-      .from('pacientes')
-      .select('id, nombres, apellidos, telefono, email')
-      .eq('id', casoActual.paciente_id)
-      .maybeSingle()
-
-    if (pacienteError) {
-      setMensaje(`Error al cargar paciente del caso: ${pacienteError.message}`)
-      setCargando(false)
-      return
-    }
-
-    setPaciente((pacienteData || null) as Paciente | null)
-
-    if (casoActual.consulta_id) {
-      const { data: consultaData, error: consultaError } = await supabase
-        .from('consultas')
-        .select(CONSULTA_SELECT)
-        .eq('id_consulta', casoActual.consulta_id)
-        .maybeSingle()
-
-      if (consultaError) {
-        setMensaje(`Error al cargar consulta de origen: ${consultaError.message}`)
-        setCargando(false)
-        return
-      }
-
-      setConsulta((consultaData || null) as Consulta | null)
-    } else {
-      setConsulta(null)
-    }
-
-    if (casoActual.evaluacion_id) {
-      const { data: evaluacionData, error: evaluacionError } = await supabase
-        .from('evaluaciones')
-        .select(EVALUACION_SELECT)
-        .eq('id_evaluacion', casoActual.evaluacion_id)
-        .maybeSingle()
-
-      if (evaluacionError) {
-        setMensaje(`Error al cargar evaluación de origen: ${evaluacionError.message}`)
-        setCargando(false)
-        return
-      }
-
-      setEvaluacion((evaluacionData || null) as Evaluacion | null)
-    } else {
-      setEvaluacion(null)
-    }
-
-    setCargando(false)
-  }, [casoId])
-
-  useEffect(() => {
-    const carga = window.setTimeout(() => {
-      void cargarFichaCaso()
-    }, 0)
-
-    return () => window.clearTimeout(carga)
-  }, [cargarFichaCaso])
+  }
 
   if (!casoId) {
     return <Navigate to="/casos" replace />
@@ -286,7 +309,7 @@ function CasoDetallePage() {
           <p>{textoOpcional(caso.motivo_apertura)}</p>
           <div className="caso-hero-actions">
             <Link className="caso-back-link" to="/casos">Volver a Casos</Link>
-            <button className="caso-secondary-action" type="button" onClick={() => void cargarFichaCaso()}>Actualizar ficha</button>
+            <button className="caso-secondary-action" type="button" onClick={actualizarFicha}>Actualizar ficha</button>
           </div>
         </div>
 

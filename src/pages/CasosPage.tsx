@@ -1,8 +1,10 @@
 import type { FormEvent, KeyboardEvent } from 'react'
-import { useEffect, useMemo, useState } from 'react'
+import { useMemo, useState } from 'react'
+import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { Link } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import { formatearFecha, normalizarTexto } from '../lib/format'
+import { QUERY_KEYS } from '../lib/queryKeys'
 import './CasosPage.css'
 import './CasoDetallePage.css'
 
@@ -10,8 +12,6 @@ type Paciente = {
   id: string
   nombres: string
   apellidos: string
-  telefono: string
-  email: string
 }
 
 type Consulta = {
@@ -323,17 +323,107 @@ function formularioCompleto(
   return validarFormularioCaso(formulario, pacientes, consultasPorId, evaluacionesPorId, casos) === null
 }
 
+async function obtenerPacientesCasos(): Promise<Paciente[]> {
+  const { data, error } = await supabase
+    .from('pacientes')
+    .select('id, nombres, apellidos')
+    .order('created_at', { ascending: false })
+
+  if (error) {
+    throw new Error(`Error al cargar pacientes: ${error.message}`)
+  }
+
+  return (data || []) as Paciente[]
+}
+
+async function obtenerConsultasCasos(): Promise<Consulta[]> {
+  const { data, error } = await supabase
+    .from('consultas')
+    .select('id_consulta, paciente_id, fecha_consulta, tipo_consulta, estado_consulta, motivo_consulta')
+    .order('fecha_consulta', { ascending: false })
+
+  if (error) {
+    throw new Error(`Error al cargar consultas: ${error.message}`)
+  }
+
+  return (data || []) as Consulta[]
+}
+
+async function obtenerEvaluacionesCasos(): Promise<Evaluacion[]> {
+  const { data, error } = await supabase
+    .from('evaluaciones')
+    .select('id_evaluacion, paciente_id, consulta_id, fecha_evaluacion, decision_revision, estado_evaluacion, relato_antecedentes')
+    .order('fecha_evaluacion', { ascending: false })
+
+  if (error) {
+    throw new Error(`Error al cargar evaluaciones: ${error.message}`)
+  }
+
+  return (data || []) as Evaluacion[]
+}
+
+async function obtenerCasos(): Promise<Caso[]> {
+  const { data, error } = await supabase
+    .from('casos')
+    .select(CASO_SELECT)
+    .order('created_at', { ascending: false })
+
+  if (error) {
+    throw new Error(`Error al cargar casos: ${error.message}`)
+  }
+
+  return (data || []) as unknown as Caso[]
+}
+
 function CasosPage() {
-  const [pacientes, setPacientes] = useState<Paciente[]>([])
-  const [consultas, setConsultas] = useState<Consulta[]>([])
-  const [evaluaciones, setEvaluaciones] = useState<Evaluacion[]>([])
-  const [casos, setCasos] = useState<Caso[]>([])
+  const queryClient = useQueryClient()
+
+  const {
+    data: pacientes = [],
+    isLoading: cargandoPacientes,
+    error: errorPacientes,
+  } = useQuery({
+    queryKey: QUERY_KEYS.pacientes.selectorClinico,
+    queryFn: obtenerPacientesCasos,
+  })
+
+  const {
+    data: consultas = [],
+    isLoading: cargandoConsultas,
+    error: errorConsultas,
+  } = useQuery({
+    queryKey: QUERY_KEYS.consultas.selectorEvaluaciones,
+    queryFn: obtenerConsultasCasos,
+  })
+
+  const {
+    data: evaluaciones = [],
+    isLoading: cargandoEvaluaciones,
+    error: errorEvaluaciones,
+  } = useQuery({
+    queryKey: QUERY_KEYS.evaluaciones.selectorCasos,
+    queryFn: obtenerEvaluacionesCasos,
+  })
+
+  const {
+    data: casos = [],
+    isLoading: cargandoCasos,
+    error: errorCasos,
+  } = useQuery({
+    queryKey: QUERY_KEYS.casos.registroCompleto,
+    queryFn: obtenerCasos,
+  })
+
+  const cargando = cargandoPacientes || cargandoConsultas || cargandoEvaluaciones || cargandoCasos
+  const errorCarga = errorPacientes || errorConsultas || errorEvaluaciones || errorCasos
+
   const [busqueda, setBusqueda] = useState('')
   const [pasoActivo, setPasoActivo] = useState<PasoCaso>('origen')
   const [formulario, setFormulario] = useState<FormularioCaso>(() => crearFormularioInicial())
-  const [mensaje, setMensaje] = useState('')
-  const [cargando, setCargando] = useState(true)
+  const [mensajeGuardado, setMensajeGuardado] = useState('')
   const [guardando, setGuardando] = useState(false)
+
+  const mensaje = mensajeGuardado || (errorCarga ? errorCarga.message : '')
 
   const pacienteSeleccionado = pacientes.find((paciente) => paciente.id === formulario.paciente_id)
   const consultaSeleccionada = consultas.find((consulta) => consulta.id_consulta === formulario.consulta_id)
@@ -430,71 +520,24 @@ function CasosPage() {
     })
   }
 
-  async function cargarBaseCasos() {
-    const { data: pacientesData, error: pacientesError } = await supabase
-      .from('pacientes')
-      .select('id, nombres, apellidos, telefono, email')
-      .order('created_at', { ascending: false })
-
-    if (pacientesError) {
-      setMensaje(`Error al cargar pacientes: ${pacientesError.message}`)
-      setCargando(false)
-      return
-    }
-
-    const { data: consultasData, error: consultasError } = await supabase
-      .from('consultas')
-      .select('id_consulta, paciente_id, fecha_consulta, tipo_consulta, estado_consulta, motivo_consulta')
-      .order('fecha_consulta', { ascending: false })
-
-    if (consultasError) {
-      setMensaje(`Error al cargar consultas: ${consultasError.message}`)
-      setCargando(false)
-      return
-    }
-
-    const { data: evaluacionesData, error: evaluacionesError } = await supabase
-      .from('evaluaciones')
-      .select('id_evaluacion, paciente_id, consulta_id, fecha_evaluacion, decision_revision, estado_evaluacion, relato_antecedentes')
-      .order('fecha_evaluacion', { ascending: false })
-
-    if (evaluacionesError) {
-      setMensaje(`Error al cargar evaluaciones: ${evaluacionesError.message}`)
-      setCargando(false)
-      return
-    }
-
-    const { data: casosData, error: casosError } = await supabase
-      .from('casos')
-      .select(CASO_SELECT)
-      .order('created_at', { ascending: false })
-
-    if (casosError) {
-      setMensaje(`Error al cargar casos: ${casosError.message}`)
-      setCargando(false)
-      return
-    }
-
-    setPacientes((pacientesData || []) as Paciente[])
-    setConsultas((consultasData || []) as Consulta[])
-    setEvaluaciones((evaluacionesData || []) as Evaluacion[])
-    setCasos((casosData || []) as unknown as Caso[])
-    setCargando(false)
-  }
-
   async function guardarCaso(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
+
+    if (cargando) {
+      setMensajeGuardado('Error: Espera a que terminen de cargar los datos antes de guardar.')
+      return
+    }
 
     const validacion = validarFormularioCaso(formulario, pacientes, consultasPorId, evaluacionesPorId, casos)
 
     if (validacion) {
       setPasoActivo(validacion.paso)
-      setMensaje(`Error: ${validacion.mensaje}`)
+      setMensajeGuardado(`Error: ${validacion.mensaje}`)
       return
     }
 
     setGuardando(true)
-    setMensaje('Guardando caso...')
+    setMensajeGuardado('Guardando caso...')
 
     const payload = {
       paciente_id: formulario.paciente_id,
@@ -512,22 +555,22 @@ function CasosPage() {
       notas_seguimiento: formulario.notas_seguimiento.trim() || null,
     }
 
-    const { data, error } = await supabase
+    const { error } = await supabase
       .from('casos')
       .insert(payload)
       .select(CASO_SELECT)
       .single()
 
     if (error) {
-      setMensaje(`Error al guardar caso: ${error.message}`)
+      setMensajeGuardado(`Error al guardar caso: ${error.message}`)
       setGuardando(false)
       return
     }
 
-    setCasos((actuales) => [data as unknown as Caso, ...actuales])
+    await queryClient.invalidateQueries({ queryKey: QUERY_KEYS.casos.all })
     setFormulario(crearFormularioInicial())
     setPasoActivo('origen')
-    setMensaje('Caso guardado correctamente')
+    setMensajeGuardado('Caso guardado correctamente')
     setGuardando(false)
   }
 
@@ -560,7 +603,7 @@ function CasosPage() {
 
     if (validacion) {
       setPasoActivo(validacion.paso)
-      setMensaje(`Error: ${validacion.mensaje}`)
+      setMensajeGuardado(`Error: ${validacion.mensaje}`)
     }
   }
 
@@ -788,14 +831,6 @@ function CasosPage() {
     )
   }
 
-  useEffect(() => {
-    const cargaInicial = window.setTimeout(() => {
-      void cargarBaseCasos()
-    }, 0)
-
-    return () => window.clearTimeout(cargaInicial)
-  }, [])
-
   return (
     <main className="pacientes-shell pacientes-shell--command casos-page">
       <section className="pacientes-command-topbar">
@@ -904,7 +939,7 @@ function CasosPage() {
                 <p>Formulario progresivo con avance automático por secciones.</p>
               </div>
             </div>
-            <button className="guardar-paciente" disabled={guardando || pacientes.length === 0} form="caso-form" type="submit">
+            <button className="guardar-paciente" disabled={guardando || cargando || pacientes.length === 0} form="caso-form" type="submit">
               {guardando ? 'Guardando...' : 'Guardar caso'}
             </button>
           </div>
