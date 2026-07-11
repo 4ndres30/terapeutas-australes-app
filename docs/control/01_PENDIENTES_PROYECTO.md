@@ -1645,9 +1645,8 @@ en una sola linea en desktop, pero ocupar menos alto y menos espacio visual.
 - No modificar logica de metricas, datos, queries, Auth/RLS, DB, migraciones ni servicios.
 
 #### Resultado
-Validada en PR #130 y pendiente de merge. `ReferenceFinalPass.css`
-reduce el rail a un
-gap de 12 px y cada tarjeta a 72 px reales, con padding 10x12 px, icono 40 px, valor 22 px,
+Validada en PR #130 y pendiente de merge. `ReferenceFinalPass.css` reduce el rail a un gap de
+12 px y cada tarjeta a 72 px reales, con padding 10x12 px, icono 40 px, valor 22 px,
 radio 8 px y sombra mas discreta. Se retira la decoracion diagonal secundaria para reducir
 peso visual. Playwright confirma cuatro columnas a 1600 px, distribucion 2x2 a 1024/390 px y
 cero overflow horizontal. No se modifica JSX, logica de metricas ni datos.

@@ -4334,7 +4334,7 @@ PR #129 fue integrado en `main` como `06756cf` el 2026-07-11. El run post-merge
 `29139876399` completo `Quality gate` en 28 s y la rama remota fue eliminada antes de iniciar
 UI-048.
 
-## LOG-109 - UI-048 compactacion de indicadores de Pacientes
+## LOG-109 - UI-048 compactación de indicadores de Pacientes
 
 **Fecha:** 2026-07-11
 **Rama:** `ui-048-compactar-indicadores-pacientes`
@@ -4349,7 +4349,7 @@ UI-048.
 - Las tarjetas quedan en 72 px reales mediante `box-sizing: border-box`, padding 10x12 px y
   radio de 8 px.
 - Iconos bajan a 40 px, SVG a 20 px y valor principal a 22 px sin letter-spacing negativo.
-- Se eliminan los pseudo-elementos diagonales para reducir ruido y recuperar ancho util.
+- Se eliminan los pseudo-elementos diagonales para reducir ruido y recuperar ancho útil.
 
 ### Validacion visual
 
