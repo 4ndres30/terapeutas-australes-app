@@ -14,7 +14,7 @@ React 19 + Vite + TypeScript, sin backend propio: Supabase (Postgres + Auth + RL
 - `src/pages/casos/` — subcomponentes especificos del detalle de un caso (`ElementosCasoPanel`, `RevisionesCasoPanel`, `DetalleRevisionesPanel`, `TrabajosCasoPanel`, `PagosCasoPanel`), montados como pestañas dentro de `CasoDetallePage`.
 - `src/context/` — `AuthContext.tsx`/`authTypes.ts`: unico contexto del proyecto. Centraliza `estadoAuth`/`session`/`usuarioInterno`/`cerrarSesion`, consumido via `useAuth()`. Expone solo estado de lectura, no setters.
 - `src/hooks/` — `useRevisionHallazgos.ts` es el unico hook custom compartido.
-- `src/lib/` — `supabase.ts` (cliente), `format.ts` (formatters compartidos: `formatearFecha`, `normalizarTexto`, `textoCorto`, `aNumero`, `formatearMoneda`, `obtenerInicialesNombre`), `constants.ts` (roles/estados/validaciones derivados de los CHECK constraints reales), `queries.ts` (catalogo de referencia de columnas `*_SELECT`, no consumido automaticamente por todas las paginas: cada pagina puede seguir manteniendo su propia constante local si su proyeccion difiere).
+- `src/lib/` — `supabase.ts` (cliente), `format.ts` (formatters compartidos), `constants.ts` (roles/estados/validaciones), `queries.ts` (catalogo de referencia de columnas `*_SELECT`) y `queryKeys.ts` (claves jerarquicas TanStack Query por entidad/proyeccion).
 - `supabase/migrations/` — SQL versionado. Convencion de nombre: 14 digitos corridos `YYYYMMDDHHMMSS_descripcion.sql`, sin guion bajo entre fecha y hora (un guion bajo ahi rompe el parseo de version del CLI de Supabase — ver LOG-081 en `06_BITACORA_CAMBIOS.md`).
 - `supabase/dev-seeds/` — `caso_demo_integral.sql`, datos ficticios para validar el flujo de Casos end-to-end en local.
 - `docs/control/` — centro documental: decisiones (`05_DECISIONES_PROYECTO.md`), pendientes (`01_PENDIENTES_PROYECTO.md`), bitacora (`06_BITACORA_CAMBIOS.md`).
@@ -39,9 +39,16 @@ Roles: `admin`, `terapeuta`, `finanzas`. Terapeuta no ve Finanzas; Finanzas solo
 - Estados en Postgres son strings capitalizados en español con espacios/acentos (`'Abierto'`, `'En proceso'`, `'No asistió'`), nunca snake_case en minuscula.
 - PKs no son uniformes: `pacientes.id`, pero `casos.id_caso`, `consultas.id_consulta`, `evaluaciones.id_evaluacion`, `cobros.id_cobro`, `pagos.id_pago`, `fotos_elementos_caso.id_foto_elemento_caso`. Un bug recurrente en este proyecto (ver LOG-078) fue asumir `id` generico donde la tabla real usa `id_<tabla>`.
 
+## Cache de datos
+
+TanStack Query usa `src/lib/queryKeys.ts` para separar proyecciones incompatibles bajo una
+raiz comun por entidad. Por ejemplo, pacientes completos y pacientes para selectores tienen
+claves distintas, mientras `invalidateQueries` sobre `QUERY_KEYS.pacientes.all` invalida ambas.
+No reutilizar una misma clave para funciones que devuelven columnas o shapes diferentes.
+
 ## Testing
 
-Vitest para unit tests (`src/lib/*.test.ts`, corridos con `npm test`). CI en GitHub Actions (`.github/workflows/ci-quality.yml`) ejecuta `npm ci` + `lint` + `test` + `build` en cada push a `main` y cada PR. QA-013 confirmo la cadena remota completa con `CI / Quality gate` exitoso en el run `29139105668` del 2026-07-11. Sin E2E todavia (Playwright pendiente, requiere Supabase local en el runner de CI).
+Vitest para unit tests (`src/lib/*.test.ts`, corridos con `npm test`). CI en GitHub Actions (`.github/workflows/ci-quality.yml`) ejecuta `npm ci` + `lint` + `test` + `build` en cada push a `main` y cada PR. QA-013 confirmo la cadena remota completa y el push post-merge a `main` paso `CI / Quality gate` en el run `29139395491` del 2026-07-11. Sin E2E todavia (Playwright pendiente, requiere Supabase local en el runner de CI).
 
 ## Ambientes
 

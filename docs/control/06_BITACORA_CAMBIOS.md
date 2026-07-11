@@ -4285,3 +4285,46 @@ bloqueo confirmado. Las referencias historicas al workflow original se conservan
 
 Informe: `docs/control/auditorias/QA-013_DIAGNOSTICO_CONFIABILIDAD_GITHUB_ACTIONS.md`.
 
+### Confirmacion post-merge
+
+PR #128 fue integrado en `main` como `d0c22ce` el 2026-07-11. El run de push a `main`
+`29139395491` completo `Quality gate` en 32 s. La rama remota de QA-013 fue eliminada y no
+quedaron PR abiertos antes de iniciar UI-047.
+
+## LOG-108 - UI-047 normalizacion de queryKeys clinicas
+
+**Fecha:** 2026-07-11
+**Rama:** `ui-047-normalizar-querykeys-pacientes`
+**PR:** #129
+**Responsable:** Control de desarrollo (Codex)
+**Tarea:** UI-047
+
+### Problema
+
+`PacientesPage`, `ConsultasPage` y `EvaluacionesPage` reutilizaban las claves literales
+`['pacientes']` y `['consultas']` con proyecciones de columnas incompatibles. El cache global
+de TanStack Query podia entregar temporalmente objetos parciales a una pagina que esperaba el
+registro completo al navegar entre modulos.
+
+### Implementacion
+
+- Se crea `src/lib/queryKeys.ts` con claves jerarquicas por entidad y shape.
+- Pacientes completos se separan del selector clinico compartido por Consultas/Evaluaciones.
+- Consultas completas se separan del selector resumido de Evaluaciones.
+- Evaluaciones adopta la misma convencion jerarquica.
+- Las invalidaciones conservan la raiz por entidad para alcanzar todas sus proyecciones.
+- Se agrega `src/lib/queryKeys.test.ts` con cobertura de no colision, aislamiento de datos e
+  invalidacion por prefijo usando un `QueryClient` real.
+
+### Alcance
+
+No se modifican formularios, estilos, Supabase, Auth/RLS, migraciones, dependencias, datos ni
+produccion. QA-012, UI-048, UI-049 y UI-050 permanecen fuera de esta rama. `PROD-001` sigue
+bloqueante y `supabase/snippets/` permanece ajeno y sin versionar.
+
+### Estado
+
+Validada en PR #129 / pendiente merge. Validacion local: `npm ci` OK (214 paquetes, 0
+vulnerabilidades), lint OK, 3 archivos / 29 pruebas OK, build OK y `git diff --check` OK.
+Validacion remota: run `29139673940`, `Quality gate` exitoso en 28 s.
+
