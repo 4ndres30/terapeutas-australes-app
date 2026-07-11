@@ -4702,7 +4702,7 @@ UI-050 integrada en `main` por PR #135 (validada: automatizado + visual).
 ## LOG-115 - UI-037: migracion de CasosPage y CasoDetallePage a TanStack Query
 
 **Rama:** `ui-037-casos-tanstack-query`
-**PR:** (ver arriba al abrir)
+**PR:** #136
 **Responsable:** Control de desarrollo (Claude)
 **Fecha:** 2026-07-11
 **Origen:** Fila de pendientes registrada (UI-037), sin ficha previa; tomada como siguiente
@@ -4770,6 +4770,59 @@ rechaza el submit mientras `cargando` sea `true`, para no depender solo del esta
 
 ### Resultado
 
-UI-037 validada (automatizado + visual + revision adversarial). Rama
-`ui-037-casos-tanstack-query`, PR pendiente de apertura al momento de escribir esta entrada.
-No se declara "Integrada" hasta que el codigo este efectivamente en `main`.
+UI-037 integrada en `main` por PR #136 (validada: automatizado + visual + revision
+adversarial, que encontro y permitio corregir el bug de duplicado descrito arriba antes del
+merge).
+
+## LOG-116 - BE-015: validacion RLS runtime por rol (admin/terapeuta/finanzas)
+
+**Rama:** `docs/be-015-validacion-rls-roles`
+**PR:** (ver arriba al abrir)
+**Responsable:** Control de desarrollo (Claude) — 5 agentes de verificacion en paralelo via
+Workflow, uno por area
+**Fecha:** 2026-07-11
+**Origen:** BE-015 (`01_PENDIENTES_PROYECTO.md`), pendiente desde 2026-06-12; tomada como
+siguiente tarea recomendada tras el cierre de UI-037 por ser una verificacion de seguridad
+de alta prioridad, sin riesgo de romper produccion (solo lectura/simulacion).
+
+### Que se hizo
+
+Se simulo runtime real (nunca service role) para los roles `admin`, `terapeuta` (activo e
+inactivo) y `finanzas`, mas `anon` como caso negativo universal, sobre 26 tablas/vistas
+agrupadas en 5 areas: hallazgos, trabajos, agenda, cobros/pagos y reportes. Metodologia
+exacta del skill `verificar-rls`: `begin; set local request.jwt.claims=...; set local role
+authenticated; <query>; rollback;` — 210 verificaciones individuales, siempre con rollback,
+sin dejar ninguna fila de prueba.
+
+### Resultado
+
+- **hallazgos** y **agenda**: sin hallazgos (0 de 210 verificaciones combinadas para esas 2
+  areas). Confirmado que el filtrado de Agenda por rol (UI-023) esta blindado tambien en el
+  backend.
+- **cobros-pagos**: 3 hallazgos, incluido el unico critico de la auditoria.
+- **reportes**: 4 hallazgos.
+- **trabajos**: 1 hallazgo (severidad baja).
+
+9 hallazgos en total. El mas grave: `pacientes_identidad_financiera` tiene un `GRANT ALL` a
+`authenticated` que incluye `TRUNCATE` (no cubierto por RLS) — confirmado en runtime que un
+terapeuta activo, sin siquiera policy `SELECT` sobre esa tabla, puede truncarla por completo.
+Segundo mas grave: `finanzas` no puede crear cobros vinculados a un origen clinico porque el
+trigger de validacion cruzada (`SECURITY INVOKER`) hereda la RLS de `casos`/`consultas`/etc.,
+lo que bloquearia `UI-040` quirendo se implemente. Detalle completo de los 9 hallazgos, con
+SQL exacto, esperado/obtenido y severidad, en
+`docs/control/auditorias/BE-015_VALIDACION_RLS_ROLES.md`.
+
+Los hallazgos que requieren cambio de codigo/RLS quedan registrados como pendientes nuevos,
+todos Nivel 3 (requieren DEC antes de implementarse): `SEC-012` (critico), `BE-032` (alto,
+bloquea UI-040), `BE-033` (medio, 3 vistas de reporte).
+
+### Validacion
+
+`git diff --check`: OK. Sin cambios de codigo, RLS, grants, triggers ni datos — PR
+exclusivamente documental (informe de auditoria + actualizacion de `01_PENDIENTES_PROYECTO.md`
+con BE-015 cerrada y 3 pendientes nuevos registrados).
+
+### Resultado final
+
+BE-015 validada (210 verificaciones runtime, 9 hallazgos documentados). No se declara
+"Integrada" hasta que el codigo este efectivamente en `main`.
