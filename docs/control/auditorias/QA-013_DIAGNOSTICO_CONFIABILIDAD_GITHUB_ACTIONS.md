@@ -4,22 +4,23 @@
 **Rama:** `qa-013-recuperar-confiabilidad-ci`
 **Responsable:** Control de desarrollo (Codex)
 **Nivel documental:** Nivel 2
-**Estado:** Correccion implementada / pendiente validacion remota
+**Estado:** Diagnostico parcial / bloqueo externo
 
 ## Resumen ejecutivo
 
-GitHub Actions no alcanzo a ejecutar el workflow CI desde su incorporacion. Las 192
-ejecuciones registradas terminaron como `startup_failure` antes de crear jobs: 95 fueron
-eventos `push` y 97 eventos `pull_request`.
+GitHub Actions no alcanzo a ejecutar el workflow CI desde su incorporacion. Al iniciar
+QA-013 existian 192 ejecuciones y todas habian terminado como `startup_failure` antes de
+crear jobs: 95 eventos `push` y 97 eventos `pull_request`.
 
 El workflow activo `CI` (`id=308145174`) tiene 0 ejecuciones. Los 192 runs quedaron asociados
 a una identidad interna eliminada llamada `BuildFailed` (`id=308144935`), creada durante la
 primera ingestion del archivo. El YAML vigente es valido segun `actionlint 1.7.12`, Actions
 esta habilitado y la cadena npm pasa localmente.
 
-La correccion versionada reemplaza la ruta del workflow para forzar una identidad nueva y
-agrega controles acotados de confiabilidad. QA-013 no se cierra hasta observar un job remoto
-exitoso.
+La correccion versionada reemplazo la ruta del workflow para forzar una identidad nueva y
+agrego controles acotados de confiabilidad. La validacion remota de PR #128 genero dos runs
+adicionales, pero ambos volvieron a `startup_failure`, asociados a `BuildFailed` y con 0
+jobs. QA-013 queda en diagnostico parcial / bloqueo externo.
 
 ## Estado inicial
 
@@ -54,15 +55,16 @@ No se uso navegador para inferir estados que la CLI/API ya entregaban de forma e
 | `29131617934` | `push` | `main` / `43f2ff4` | 2026-07-10 23:59:33 | `startup_failure` | 0 |
 | `29131618193` | `pull_request` | `ctrl-015-sync-docs-post-pr-125-126` / `fc6bfbc` | 2026-07-10 23:59:33 | `startup_failure` | 0 |
 | `28805413952` | `push` | `test/setup-vitest-unit-tests` / `9c58451` | 2026-07-06 16:05:13 | `startup_failure` | 0 |
+| `29133444311` | `push` | `qa-013-recuperar-confiabilidad-ci` / `e28ef87` | 2026-07-11 00:49:56 | `startup_failure` | 0 |
+| `29133463045` | `pull_request` | `qa-013-recuperar-confiabilidad-ci` / `e28ef87` | 2026-07-11 00:50:26 | `startup_failure` | 0 |
 
 Resumen completo:
 
-- Total: 192 runs.
-- `startup_failure`: 192.
-- `push`: 95.
-- `pull_request`: 97.
+- Corte inicial: 192 runs, todos `startup_failure`.
+- Validacion remota QA-013: 2 runs adicionales, ambos `startup_failure`.
+- Corte observado tras abrir PR #128: 194 runs; 96 `push` y 98 `pull_request`.
 - Runs asociados al workflow activo `CI`: 0.
-- Runs asociados a `BuildFailed`: 192.
+- Runs asociados a `BuildFailed`: 194.
 
 ## Evidencia de startup_failure
 
@@ -74,6 +76,8 @@ Resumen completo:
 - El endpoint de jobs devuelve `total_count: 0`.
 - La check suite termina como `startup_failure` con `latest_check_runs_count: 0`.
 - `gh run view ... --log-failed` responde `log not found`.
+- Los dos runs de PR #128 conservan `path: BuildFailed`, `workflow_id: 308144935` y
+  `jobs: []`, aun despues de reemplazar la ruta versionada del workflow.
 
 El workflow fallo antes de crear jobs.
 
@@ -127,6 +131,10 @@ archivo, cada evento se dirige a la identidad eliminada `BuildFailed`, mientras 
 activo `CI` permanece con 0 runs. Esta asociacion obsoleta ocurre antes de construir el grafo
 de jobs y explica la ausencia total de logs.
 
+La sustitucion versionada por una ruta nueva no modifico el comportamiento en PR #128. Por
+lo tanto, la causa exacta no puede resolverse desde los archivos, CLI o API disponibles: el
+bloqueo persiste en la capa externa de ingestion/configuracion de GitHub Actions.
+
 No se encontro un error sintactico actual que justifique editar comandos npm. La correccion
 debe forzar un registro limpio del workflow, no modificar codigo funcional ni dependencias.
 
@@ -137,7 +145,8 @@ debe forzar un registro limpio del workflow, no modificar codigo funcional ni de
 - **A, configuracion/registro del workflow:** todos los eventos se asocian a `BuildFailed` y
   nunca al workflow activo.
 - **H, informacion parcial del servicio:** GitHub no expone por CLI/API el mensaje interno de
-  la primera ingestion y la consulta de facturacion requiere scope `user`, no disponible.
+  la primera ingestion, la correccion versionada no cambia el resultado y la consulta de
+  facturacion requiere scope `user`, no disponible.
 
 Descartado con evidencia:
 
@@ -159,6 +168,9 @@ Descartado con evidencia:
 - Se sincronizan `docs/DEVELOPMENT.md` y `docs/ARCHITECTURE.md` con la nueva ruta y cadena.
 
 No se modifican `package.json`, `package-lock.json`, dependencias ni codigo funcional.
+
+Resultado remoto: la correccion propuesta no logro crear jobs en PR #128. Se conserva en el
+PR para revision humana, sin iterar nuevamente sobre YAML por ensayo y error.
 
 ## Configuracion manual pendiente
 
@@ -186,13 +198,20 @@ Resultados locales despues del cambio:
 | `npm run build` | OK | 15.1 s |
 | `git diff --check` | OK | < 1 s |
 
-Pendiente: ejecucion remota del PR con el job `Quality gate` creado y conclusion `success`.
+Resultados remotos de PR #128:
+
+| Run | Evento | Resultado |
+| --- | --- | --- |
+| `29133444311` | `push` | `startup_failure`, `BuildFailed`, 0 jobs, sin logs |
+| `29133463045` | `pull_request` | `startup_failure`, `BuildFailed`, 0 jobs, sin logs |
+
+No se creo `Quality gate`; `gh pr checks 128` informa que no existen checks reportados.
 
 ## Riesgos restantes
 
 - El detalle de facturacion no fue accesible sin ampliar el token con scope `user`.
-- GitHub podria conservar el bloqueo aun con una identidad nueva; en ese caso no corresponde
-  seguir cambiando YAML y debe revisarse facturacion/configuracion manual.
+- GitHub conserva el bloqueo con la identidad versionada nueva; no corresponde seguir
+  cambiando YAML y debe revisarse facturacion/configuracion manual.
 - No existe todavia un nombre de check exitoso confirmado para branch protection.
 - `PROD-001` sigue bloqueante.
 
@@ -219,5 +238,6 @@ No iniciar UI-047, UI-048, QA-012, UI-049 ni UI-050 dentro de esta ejecucion.
 
 ## Veredicto
 
-Correccion versionada preparada y pendiente de validacion remota. QA-013 permanece abierta
-hasta que GitHub cree jobs y complete el workflow con conclusion `success`.
+Diagnostico parcial / bloqueo externo. La correccion versionada pasa localmente pero PR #128
+reproduce `startup_failure` sin jobs. QA-013 permanece abierta, el PR queda para revision
+humana y no debe mergearse hasta resolver la configuracion externa y obtener un run exitoso.

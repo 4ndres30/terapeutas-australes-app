@@ -4234,7 +4234,7 @@ presentarlas como integradas. La documentacion conserva el orden serial y el alc
 
 **Fecha:** 2026-07-10
 **Rama:** `qa-013-recuperar-confiabilidad-ci`
-**PR:** Pendiente de creacion
+**PR:** #128
 **Responsable:** Control de desarrollo (Codex)
 **Tarea:** QA-013
 
@@ -4256,9 +4256,14 @@ registro de una identidad nueva y verificable. El workflow mantiene checkout, No
 15 minutos, concurrencia cancelable y nombres estables de job/steps.
 
 ### Estado
-Correccion implementada / pendiente validacion remota. QA-013 solo puede cerrarse si el PR
-crea el job `Quality gate` y termina exitosamente. No se modifican `src/`, dependencias,
-Supabase, Auth/RLS, migraciones, secretos, produccion ni datos reales.
+Diagnostico parcial / bloqueo externo. Los runs `29133444311` (`push`) y `29133463045`
+(`pull_request`) de PR #128 volvieron a `startup_failure`, quedaron asociados a
+`BuildFailed` (`308144935`) y crearon 0 jobs. No se realizan mas cambios especulativos al
+workflow. QA-013 solo puede cerrarse despues de resolver la configuracion externa y observar
+un `Quality gate` remoto exitoso.
+
+No se modifican `src/`, dependencias, Supabase, Auth/RLS, migraciones, secretos, produccion
+ni datos reales.
 
 Validacion local posterior: `actionlint 1.7.12` OK; `npm ci` OK (214 paquetes, 0
 vulnerabilidades); lint OK; 2 archivos / 24 tests OK; build OK; `git diff --check` OK.

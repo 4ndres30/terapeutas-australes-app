@@ -39,7 +39,7 @@ Este documento es la lista maestra de pendientes. Cada pendiente debe tener un c
 | QA-008 | Validacion funcional completa de Agenda interna. | Cerrada post-merge local/demo | Alta | Control de Desarrollo / QA / UI-UX / Integracion Backend |
 | QA-009 | Validacion visual UI-020/UI-021 ambiente. | Cerrada local/demo | Alta | Control de desarrollo / QA / UI-UX |
 | QA-012 | Regresion visual y funcional de PacientesPage. | Pendiente / recomendada como siguiente paso | Alta | Control de desarrollo / QA / UI-UX |
-| QA-013 | Revisar `startup_failure` de GitHub Actions CI. | Correccion implementada / pendiente validacion remota | Alta | Control de desarrollo / QA / DevOps |
+| QA-013 | Revisar `startup_failure` de GitHub Actions CI. | Diagnostico parcial / bloqueo externo | Alta | Control de desarrollo / QA / DevOps |
 | API-001 | Disenar API publica segura e integracion Google Workspace. | Diseno documental / pendiente implementacion | Alta | Control de desarrollo / Integracion Backend |
 | DEC-035 | Migracion progresiva a plataforma Google Cloud. | Propuesta documental / pendiente validacion Javier | Alta | Control de desarrollo |
 | BE-001 | Inventariar estructura backend y Supabase local. | Integrada | Alta | Integracion Backend/Estructura |
@@ -387,7 +387,7 @@ Solo local/demo con datos ficticios. No habilita produccion, datos reales, fotos
 
 ### QA-013 - Revisar `startup_failure` de GitHub Actions CI
 
-**Estado:** Correccion implementada / pendiente validacion remota
+**Estado:** Diagnostico parcial / bloqueo externo
 **Prioridad:** Alta
 **Responsable:** Control de desarrollo / QA / DevOps
 **Origen:** CTRL-015 / revision GitHub Actions post PR #125/#126
@@ -429,8 +429,10 @@ identidad limpia del workflow. Se conservan Node 20, `npm ci`, lint, tests y bui
 agregan permisos `contents: read`, cache npm, timeout, concurrencia y nombres estables.
 
 #### Resultado
-Correccion implementada localmente. QA-013 no se cierra hasta que el PR de esta rama genere
-jobs y finalice con CI remoto exitoso.
+La correccion versionada pasa todas las validaciones locales, pero los runs remotos
+`29133444311` (`push`) y `29133463045` (`pull_request`) volvieron a terminar como
+`startup_failure`, asociados a `BuildFailed` y con 0 jobs. QA-013 queda en diagnostico parcial
+por bloqueo externo; no se cierra ni se realizan mas cambios especulativos al workflow.
 
 ### PEND-001 - Levantar inventario real del proyecto desde main
 
