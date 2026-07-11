@@ -84,23 +84,23 @@ Hallazgo visual adicional registrado por Javier durante revision en navegador:
 `UI-048 - Compactar fila de indicadores superiores de PacientesPage`. Implementada en rama
 `ui-048-compactar-indicadores-pacientes`: cuatro tarjetas en una línea desktop, 72 px de alto,
 iconos y tipografia reducidos, decoracion secundaria retirada y responsive 2x2 sin overflow
-en tablet/mobile. Validada por `Quality gate` en PR #130 y pendiente de merge.
+en tablet/mobile. Integrada en `main` por PR #130.
 
 Hallazgos del shell global registrados en la misma revision:
 
 - `UI-049 - Sidebar desktop como rail colapsable y accesible`: recuperar ancho util mostrando
   iconos por defecto y etiquetas al pasar el puntero o enfocar la navegacion, con opcion de
-  fijado y sin reemplazar el drawer responsive de UI-027.
+  fijado y sin reemplazar el drawer responsive de UI-027. Integrada en `main` por PR #134.
 - `UI-050 - Barra superior como encabezado contextual compacto`: eliminar la franja vacia,
   reunir contexto del modulo, ambiente e identidad de usuario en una fila estable y acercar
   acciones primarias sin duplicar encabezados.
 
-Ambas son propuestas Nivel 2 pendientes. Por compartir el shell global deben implementarse
-en secuencia: primero UI-049 y, una vez validada, UI-050. No se implementan en CTRL-015.
+Ambas son propuestas Nivel 2. Por compartir el shell global deben implementarse
+en secuencia: primero UI-049 (ya integrada) y ahora UI-050.
 
 ## UI-049 - Sidebar desktop como rail colapsable y accesible
 
-**Estado:** Validada, pendiente merge — ver LOG-113 en `06_BITACORA_CAMBIOS.md` (PR #134, draft)
+**Estado:** Integrada en main por PR #134 — ver LOG-113 en `06_BITACORA_CAMBIOS.md`
 **Prioridad:** Media-alta
 **Nivel documental:** Nivel 2
 
@@ -123,7 +123,7 @@ por hover/foco o al fijar en pantallas de ~720-800px de alto, porque `position: 
 el contenido del flujo de scroll de la pagina sin scroll interno propio. Corregido agregando
 scroll interno acotado en `.sidebar-nav` (marca y pie permanecen siempre visibles, sin scroll).
 Validada por `npm run lint`/`build`/`test` (29/29) y la suite e2e completa (8/8, incluido el
-test de logout que fallaba antes del fix). PR #134 (draft), pendiente de revision/merge.
+test de logout que fallaba antes del fix). Integrada en `main` por PR #134.
 
 ## UI-050 - Barra superior como encabezado contextual compacto
 

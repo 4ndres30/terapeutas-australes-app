@@ -28,20 +28,21 @@ Actualizacion 2026-07-11: el repositorio paso a visibilidad publica. QA-013 qued
 por PR #128 (`d0c22ce`) y el push posterior a `main` completo `CI / Quality gate` en el run
 `29139395491`. Branch protection permanece sin activar y preparada para aplicacion manual.
 UI-047 quedo integrada por PR #129 (`06756cf`) y el run post-merge `29139876399` paso
-`Quality gate`. UI-048 se ejecuta en rama separada para compactar los indicadores superiores
-de `PacientesPage`, sin cambiar JSX, metricas, datos, Supabase, Auth/RLS ni migraciones; queda
-validada en PR #130 por el run `29140053227` y pendiente de revision/merge.
+`Quality gate`. UI-048 quedo integrada en `main` por PR #130 (`c20c8b4`), compactando los
+indicadores superiores de `PacientesPage` sin cambiar JSX, metricas, datos, Supabase, Auth/RLS
+ni migraciones; el run `29140053227` paso `Quality gate`. QA-012 quedo registrada como
+regresion parcial por PR #131 (`97f923c`) y posteriormente cerrada 11/12 items (LOG-112, PR
+#133). UI-051 (fila de metricas de Pacientes en una linea en tablet/mobile) quedo integrada
+por PR #132 (merge `05d1838`).
 
-UI-049 (sidebar desktop como rail colapsable) queda validada en la rama
-`ui-049-sidebar-rail-colapsable`, PR #134 (draft) pendiente de revision/merge. La base de la
+UI-049 (sidebar desktop como rail colapsable) queda integrada en `main` por PR #134. La base de la
 implementacion la construyo una sesion concurrente de ejecucion tecnica (Codex
 JetBrains/WebStorm); Control de desarrollo la reviso, encontro y corrigio una regresion real
 (el pie de la sidebar -- version y cierre de sesion -- quedaba inalcanzable al expandir por
 hover/foco o al fijar en pantallas de ~720-800px de alto, por usar `position: fixed` sin scroll
 interno) y valido con `npm run lint`/`build`/`test` (29/29) y la suite e2e completa
 (`npx playwright test`, 8/8, incluido el test de logout que fallaba por timeout antes del fix).
-Detalle en LOG-113. UI-050 queda habilitada como siguiente tarea recomendada una vez UI-049 se
-mergee.
+Detalle en LOG-113. UI-050 queda habilitada como siguiente tarea recomendada.
 
 El proyecto se mantiene alineado con el metodo acordado: primero documentar, auditar y decidir; luego implementar por tareas aprobadas.
 
@@ -94,7 +95,7 @@ El proyecto se mantiene alineado con el metodo acordado: primero documentar, aud
 
 - UI-010, UI-012 y UI-015: prioridades de planificacion UI derivadas de UI-001 + UI-002 y del estado post IMP-001 e IMP-002.
 - UI-013, UI-014, UI-017, UI-018 y UI-019: pendientes UI derivados, aun sin activacion tecnica.
-- UI-048/UI-049/UI-050: propuestas de densidad y aprovechamiento de espacio en `PacientesPage` y el shell interno registradas durante revision local/demo. UI-049 queda validada en PR #134 (draft, pendiente de merge, ver LOG-113); UI-048 (PR #130) y UI-050 siguen su curso propio. Por compartir `App.tsx` y sus capas CSS, UI-050 debe implementarse y validarse despues de que UI-049 se mergee.
+- UI-048/UI-049/UI-050/UI-051: propuestas de densidad y aprovechamiento de espacio en `PacientesPage` y el shell interno registradas durante revision local/demo. UI-048 (PR #130), UI-049 (PR #134) y UI-051 (PR #132) quedan integradas en `main`. UI-050 sigue pendiente; por compartir `App.tsx` y sus capas CSS con UI-049, ya puede implementarse y validarse en rama propia.
 - UI-025/UI-025B/UI-026/UI-027: Agenda operativa cuenta con vista interna, filtros, gestion manual minima de `agenda_eventos`, selector controlado de fecha/hora y correccion responsive del shell con drawer movil; QA-008 queda cerrada post-merge como validacion funcional local/demo, con desktop/admin y mobile sin overflow horizontal.
 - BE-014 a BE-015: tareas backend sugeridas por BE-002 para vistas, RLS y reportes.
 - API-001, SEC-009 y DOC-004: estrategia futura para API publica segura, seguridad API y flujo pagina publica -> API -> sistema interno -> Google.
